@@ -1,0 +1,23 @@
+{
+  "name": "tyler-king/basic-shopify-api",
+  "type": "library",
+  "description": "A basic Shopify API wrapper",
+  "keywords": ["api", "shopify"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Tyler King",
+      "email": "tyler.n.king@outlook.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.4.0",
+    "guzzlehttp/guzzle": "^6.2"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "4.8.*@dev"
+  },
+  "autoload": {
+    "files": ["src/TylerKing/BasicShopifyAPI.php"]
+  }
+}
