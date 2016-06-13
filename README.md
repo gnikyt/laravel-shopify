@@ -92,9 +92,9 @@ Requests are made using Guzzle.
 $api->request($type, $path, $params = []);
 ```
 
-`type` refers to GET, POST, PUT, DELETE, etc
-`path` refers to the API path, example: `/admin/products/1920902.json`
-`params` refers to an array of params you wish to pass to the path, examples: `['handle' => 'cool-coat']`
++ `type` refers to GET, POST, PUT, DELETE, etc
++ `path` refers to the API path, example: `/admin/products/1920902.json`
++ `params` refers to an array of params you wish to pass to the path, examples: `['handle' => 'cool-coat']`
 
 ### Checking API limits
 
