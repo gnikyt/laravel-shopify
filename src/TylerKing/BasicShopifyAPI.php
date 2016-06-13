@@ -94,8 +94,7 @@ class BasicShopifyAPI {
     $request = $this->client->request(
       'POST',
       "{$this->getBaseUrl()}/admin/oauth/access_token",
-      [],
-      ['client_id' => $this->api_key, 'client_secret' => $this->api_secret, 'code' => $code]
+      ['json' => ['client_id' => $this->api_key, 'client_secret' => $this->api_secret, 'code' => $code]]
     );
 
     return json_decode($request->getBody(), true)['access_token'];
@@ -105,8 +104,10 @@ class BasicShopifyAPI {
     $response = $this->client->request(
       $type,
       $this->getBaseUrl().$path,
-      ['X-Shopify-Access-Token' => $this->access_token],
-      json_encode($params)
+      [
+        'headers' => ['X-Shopify-Access-Token' => $this->access_token],
+        'json'    => $params
+      ]
     );
 
     $calls       = explode('/', $response->getHeader('http_x_shopify_shop_api_call_limit')[0]);
