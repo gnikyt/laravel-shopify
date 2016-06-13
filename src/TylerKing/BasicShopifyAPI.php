@@ -24,10 +24,14 @@ class BasicShopifyAPI {
 
   public function setClient($client) {
     $this->client = $client;
+
+    return $this;
   }
 
   public function setShop($shop) {
     $this->shop = $shop;
+
+    return $this;
   }
 
   public function getShop() {
@@ -35,19 +39,27 @@ class BasicShopifyAPI {
   }
 
   public function setAccessToken($access_token) {
-    return $this->access_token = $access_token;
+    $this->access_token = $access_token;
+
+    return $this;
   }
 
   public function setApiKey($api_key) {
-    return $this->api_key = $api_key;
+    $this->api_key = $api_key;
+
+    return $this;
   }
 
   public function setApiSecret($api_secret) {
-    return $this->api_secret = $api_secret;
+    $this->api_secret = $api_secret;
+
+    return $this;
   }
 
   public function setApiPassword($api_password) {
-    return $this->api_password = $api_password;
+    $this->api_password = $api_password;
+
+    return $this;
   }
 
   public function getInstallUrl() {
@@ -111,7 +123,10 @@ class BasicShopifyAPI {
       'limit' => (int) $calls_limit
     ];
 
-    return $response;
+    return (object) [
+      'response' => $response,
+      'body'     => json_decode($response->getBody())
+    ];
   }
 
   public function getApiCalls($key = null) {

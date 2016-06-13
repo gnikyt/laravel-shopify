@@ -207,7 +207,7 @@ class BasicShopifyAPITest extends \PHPUnit_Framework_TestCase
     $response = new Response(
       200,
       [],
-      '{"access_token":"f85632530bf277ec9ac6f649fc327f17","scope":"write_orders,read_customers"}'
+      file_get_contents(__DIR__.'/fixtures/admin__oauth__access_token.json')
     );
     $mock    = new MockHandler([$response]);
     $client  = new Client(['handler' => $mock]);
@@ -281,6 +281,36 @@ class BasicShopifyAPITest extends \PHPUnit_Framework_TestCase
     $api = new BasicShopifyAPI;
     $api->setApiSecret('hush');
     $this->assertEquals(false, $api->verifyRequest($params));
+  }
+
+  /**
+   * @test
+   *
+   * Should get Guzzle response and JSON body
+   */
+  function itShouldReturnGuzzleResponseAndJsonBody() {
+    $response = new Response(
+      200,
+      ['http_x_shopify_shop_api_call_limit' => '2/80'],
+      file_get_contents(__DIR__.'/fixtures/admin__shop.json')
+    );
+
+    $mock     = new MockHandler([$response]);
+    $client   = new Client(['handler' => $mock]);
+
+    $api = new BasicShopifyAPI;
+    $api->setClient($client);
+    $api->setShop('example.myshopify.com');
+    $api->setApiKey('123');
+    $api->setAccessToken('!@#');
+
+    $request = $api->request('GET', '/admin/shop.json');
+
+    $this->assertEquals(true, is_object($request));
+    $this->assertInstanceOf('GuzzleHttp\Psr7\Response', $request->response);
+    $this->assertEquals(200, $request->response->getStatusCode());
+    $this->assertEquals(true, is_object($request->body));
+    $this->assertEquals('Apple Computers', $request->body->shop->name);
   }
 
   /**
