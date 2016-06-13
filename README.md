@@ -96,6 +96,11 @@ $api->request($type, $path, $params = []);
 + `path` refers to the API path, example: `/admin/products/1920902.json`
 + `params` refers to an array of params you wish to pass to the path, examples: `['handle' => 'cool-coat']`
 
+The return value for the request will be an object containing:
+
++ `response` the full Guzzle response object
++ `body` the JSON decoded response body
+
 ### Checking API limits
 
 After each request is made, the API call limits are updated. To access them, simply use:
