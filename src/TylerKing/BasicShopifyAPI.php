@@ -62,16 +62,12 @@ class BasicShopifyAPI {
     return $this;
   }
 
-  public function getInstallUrl() {
-    return "{$this->getBaseUrl()}/admin/api/auth?api_key={$this->api_key}";
-  }
-
   public function getAuthUrl($scopes, $redirect_uri) {
     if (is_array($scopes)) {
       $scopes = implode(',', $scopes);
     }
 
-    return "{$this->getBaseUrl()}/admin/oauth/authorize?client_id={$this->api_key}&scopes={$scopes}&redirect_uri={$redirect_uri}";
+    return "{$this->getBaseUrl()}/admin/oauth/authorize?client_id={$this->api_key}&scope={$scopes}&redirect_uri={$redirect_uri}";
   }
 
   public function verifyRequest($params) {

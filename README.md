@@ -19,6 +19,8 @@ For OAuth applications. The shop domain, API key, API secret, and an access toke
 #### Quick run-down
 
 ```php
+use TylerKing\BasicShopifyAPI;
+
 $api = new BasicShopifyAPI;
 $api->setShop('example.myshopify.com');
 $api->setApiKey('your key here');
@@ -43,7 +45,9 @@ $api->setApiKey($app['config']->shopify_api_key);
 $code = $request->query->get('code');
 if (! $code) {
   # No code, send user to authorize screen
-  header('Location: ' . $api->getAuthUrl());
+  # Pass your scopes as an array for the first argument
+  # Pass your redirect URI as the second argument
+  header('Location: ' . $api->getAuthUrl($app['config']->shopify_scopes, $app['config']->shopify_redirect_uri));
   exit;
 } else {
   # We now have a code, lets grab the access token

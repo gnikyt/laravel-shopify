@@ -132,19 +132,6 @@ class BasicShopifyAPITest extends \PHPUnit_Framework_TestCase
 
   /**
    * @test
-   *
-   * Should get auth URL containing shop and API key
-   */
-  function itShouldGetgetInstallUrl() {
-    $api = new BasicShopifyAPI;
-    $api->setShop('example.myshopify.com');
-    $api->setApiKey('123');
-
-    $this->assertEquals('https://example.myshopify.com/admin/api/auth?api_key=123', $api->getInstallUrl());
-  }
-
-  /**
-   * @test
    * @expectedException Exception
    * @expectedExceptionMessage Shopify domain missing for API calls
    *
@@ -152,7 +139,7 @@ class BasicShopifyAPITest extends \PHPUnit_Framework_TestCase
    */
   function itShouldThrowExceptionForMissingShopifyDomain() {
     $api = new BasicShopifyAPI;
-    $api->getInstallUrl();
+    $api->getAuthUrl(['read_products', 'write_products'], 'https://localapp.local/');
   }
 
   /**
@@ -164,7 +151,7 @@ class BasicShopifyAPITest extends \PHPUnit_Framework_TestCase
    */
   function itShouldThrowExceptionForMissingApiDetails() {
     $api = new BasicShopifyAPI(true);
-    $api->getInstallUrl();
+    $api->getAuthUrl(['read_products', 'write_products'], 'https://localapp.local/');
   }
 
   /**
@@ -231,7 +218,7 @@ class BasicShopifyAPITest extends \PHPUnit_Framework_TestCase
     $api->setApiKey('123');
 
     $this->assertEquals(
-      'https://example.myshopify.com/admin/oauth/authorize?client_id=123&scopes=read_products,write_products&redirect_uri=https://localapp.local/',
+      'https://example.myshopify.com/admin/oauth/authorize?client_id=123&scope=read_products,write_products&redirect_uri=https://localapp.local/',
       $api->getAuthUrl(['read_products', 'write_products'], 'https://localapp.local/')
     );
   }
