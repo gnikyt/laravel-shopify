@@ -196,15 +196,24 @@ class BasicShopifyAPITest extends \PHPUnit_Framework_TestCase
       [],
       file_get_contents(__DIR__.'/fixtures/admin__oauth__access_token.json')
     );
+
     $mock    = new MockHandler([$response]);
     $client  = new Client(['handler' => $mock]);
 
     $api = new BasicShopifyAPI;
     $api->setShop('example.myshopify.com');
+    $api->setApiKey('123');
     $api->setApiSecret('abc');
     $api->setClient($client);
 
-    $this->assertEquals('f85632530bf277ec9ac6f649fc327f17', $api->getAccessToken('123'));
+    $code  = '!@#';
+    $token = $api->getAccessToken($code);
+    $data  = json_decode($mock->getLastRequest()->getBody());
+
+    $this->assertEquals('f85632530bf277ec9ac6f649fc327f17', $token);
+    $this->assertEquals('abc', $data->client_secret);
+    $this->assertEquals('123', $data->client_id);
+    $this->assertEquals($code, $data->code);
   }
 
   /**
@@ -291,13 +300,18 @@ class BasicShopifyAPITest extends \PHPUnit_Framework_TestCase
     $api->setApiKey('123');
     $api->setAccessToken('!@#');
 
-    $request = $api->request('GET', '/admin/shop.json');
+    // Fake param just to test it receives it
+    $request      = $api->request('GET', '/admin/shop.json', ['limit' => 1]);
+    $data         = json_decode($mock->getLastRequest()->getBody());
+    $token_header = $mock->getLastRequest()->getHeader('X-Shopify-Access-Token')[0];
 
     $this->assertEquals(true, is_object($request));
     $this->assertInstanceOf('GuzzleHttp\Psr7\Response', $request->response);
     $this->assertEquals(200, $request->response->getStatusCode());
     $this->assertEquals(true, is_object($request->body));
     $this->assertEquals('Apple Computers', $request->body->shop->name);
+    $this->assertEquals(1, $data->limit);
+    $this->assertEquals('!@#', $token_header);
   }
 
   /**
