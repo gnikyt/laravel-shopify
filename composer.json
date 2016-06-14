@@ -19,5 +19,6 @@
   },
   "autoload": {
     "files": ["src/TylerKing/BasicShopifyAPI.php"]
-  }
+  },
+  "config": { "bin-dir": "bin" }
 }
