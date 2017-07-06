@@ -242,25 +242,12 @@ class BasicShopifyAPITest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      *
-     * @expectedException TypeError
-     *
-     * Check verify with no params
-     */
-    function itShouldFailRequestVerifyWithNoParams() 
-    {
-        $api = new BasicShopifyAPI;
-        $api->verifyRequest(null);
-    }
-
-    /**
-     * @test
-     *
      * Check verify with no params
      */
     function itShouldFailRequestVerifyWithNoParamsAgain() 
     {
         $api = new BasicShopifyAPI;
-        $this->assertEquals(false, $api->verifyRequest([]));
+        $this->assertEquals(false, $api->verifyRequest(null));
     }
 
     /**

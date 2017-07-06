@@ -106,7 +106,7 @@ class BasicShopifyAPI
      *
      * @return self
      */
-    public function setShop(string $shop)
+    public function setShop($shop)
     {
         $this->shop = $shop;
         return $this;
@@ -129,7 +129,7 @@ class BasicShopifyAPI
      *
      * @return self
      */
-    public function setAccessToken(string $accessToken)
+    public function setAccessToken($accessToken)
     {
         $this->accessToken = $accessToken;
         return $this;
@@ -152,7 +152,7 @@ class BasicShopifyAPI
      *
      * @return self
      */
-    public function setApiKey(string $apiKey)
+    public function setApiKey($apiKey)
     {
         $this->apiKey = $apiKey;
         return $this;
@@ -165,7 +165,7 @@ class BasicShopifyAPI
      *
      * @return self
      */
-    public function setApiSecret(string $apiSecret)
+    public function setApiSecret($apiSecret)
     {
         $this->apiSecret = $apiSecret;
         return $this;
@@ -178,7 +178,7 @@ class BasicShopifyAPI
      *
      * @return self
      */
-    public function setApiPassword(string $apiPassword)
+    public function setApiPassword($apiPassword)
     {
         $this->apiPassword = $apiPassword;
         return $this;
@@ -192,7 +192,7 @@ class BasicShopifyAPI
      *
      * @return self
      */
-    public function setSession(string $shop, string $accessToken)
+    public function setSession($shop, $accessToken)
     {
         $this->setShop($shop);
         $this->setAccessToken($accessToken);
@@ -211,7 +211,7 @@ class BasicShopifyAPI
      *
      * @return self
      */
-    public function withSession(string $shop, string $accessToken, Closure $closure)
+    public function withSession($shop, $accessToken, Closure $closure)
     {
         // Clone the API class and bind it to the closure
         $clonedApi = clone $this;
@@ -228,7 +228,7 @@ class BasicShopifyAPI
      *
      * @return string Formatted URL
      */
-    public function getAuthUrl($scopes, string $redirectUri)
+    public function getAuthUrl($scopes, $redirectUri)
     {
         if (is_array($scopes)) {
             $scopes = implode(',', $scopes);
@@ -244,8 +244,12 @@ class BasicShopifyAPI
      *
      * @return boolean If the HMAC is validated
      */
-    public function verifyRequest(array $params)
+    public function verifyRequest($params)
     {
+        if (!is_array($params)) {
+            return false;
+        }
+
         // Ensure shop, timestamp, and HMAC are in the params
         if (array_key_exists('shop', $params)
             && array_key_exists('timestamp', $params)
@@ -273,7 +277,7 @@ class BasicShopifyAPI
      *
      * @throws \Exception When API secret is missing
      */
-    public function requestAccessToken(string $code)
+    public function requestAccessToken($code)
     {
         if ($this->apiSecret === null) {
             // We need the API Secret... getBaseUrl handles rest
@@ -306,7 +310,7 @@ class BasicShopifyAPI
      *
      * @return array An array of the Guzzle response, and JSON-decoded body
      */
-    public function request(string $type, string $path, $params = [])
+    public function request($type, $path, $params = [])
     {
         // Create the request, pass the access token and optional parameters
         $response = $this->client->request(
