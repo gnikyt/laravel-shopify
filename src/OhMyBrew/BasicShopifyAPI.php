@@ -216,7 +216,9 @@ class BasicShopifyAPI
         // Clone the API class and bind it to the closure
         $clonedApi = clone $this;
         $clonedApi->setSession($shop, $accessToken);
-        return $closure->call($clonedApi);
+        $closure->bindTo($clonedApi);
+
+        return call_user_func_array($closure);
     }
 
     /**
