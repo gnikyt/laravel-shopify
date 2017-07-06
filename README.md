@@ -1,7 +1,7 @@
 # Basic Shopify API
 
 [![Build Status](https://travis-ci.org/ohmybrew/Basic-Shopify-API.svg?branch=master)](http://travis-ci.org/ohmybrew/Basic-Shopify-API)
-[![Coverage Status](https://coveralls.io/repos/github/ohmybrew/basic-shopify-api/badge.svg?branch=master)](https://coveralls.io/github/slimphp/Slim?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/ohmybrew/basic-shopify-api/badge.svg?branch=master)](https://coveralls.io/ohmybrew/basic-shopify-api/Slim?branch=master)
 [![License](https://poser.pugx.org/ohmybrew/basic-shopify-api/license)](https://packagist.org/packages/ohmybrew/basic-shopify-api)
 
 A simple, tested, API wrapper for Shopify using Guzzle. I created this to support my legacy apps. It contains helpful methods for generating a installation URL, an authorize URL, HMAC signature validation, call limits, and API requests. It works with both OAuth and private API apps.

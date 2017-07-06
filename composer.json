@@ -15,7 +15,7 @@
     "guzzlehttp/guzzle": "^6.3"
   },
   "require-dev": {
-    "phpunit/phpunit": "^6.2",
+    "phpunit/phpunit": "5.7.x-dev",
     "phpdocumentor/phpdocumentor": "2.*"
   },
   "autoload": {
