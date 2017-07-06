@@ -1,5 +1,5 @@
 {
-  "name": "tyler-king/basic-shopify-api",
+  "name": "ohmybrew/basic-shopify-api",
   "type": "library",
   "description": "A basic Shopify API wrapper",
   "keywords": ["api", "shopify"],
@@ -7,19 +7,19 @@
   "authors": [
     {
       "name": "Tyler King",
-      "email": "tyler.n.king@outlook.com"
+      "email": "tyler.n.king@gmail.com"
     }
   ],
   "require": {
     "php": ">=5.5.0",
-    "guzzlehttp/guzzle": "^6.2"
+    "guzzlehttp/guzzle": "^6.3"
   },
   "require-dev": {
-    "phpunit/phpunit": "4.8.*@dev",
+    "phpunit/phpunit": "^6.2",
     "phpdocumentor/phpdocumentor": "2.*"
   },
   "autoload": {
-    "files": ["src/TylerKing/BasicShopifyAPI.php"]
+    "files": ["src/OhMyBrew/BasicShopifyAPI.php"]
   },
   "config": { "bin-dir": "bin" }
 }
