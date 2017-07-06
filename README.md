@@ -1,7 +1,7 @@
 # Basic Shopify API
 
 [![Build Status](https://travis-ci.org/ohmybrew/Basic-Shopify-API.svg?branch=master)](http://travis-ci.org/ohmybrew/Basic-Shopify-API)
-[![Coverage Status](https://coveralls.io/repos/github/ohmybrew/basic-shopify-api/badge.svg?branch=master)](https://coveralls.io/ohmybrew/basic-shopify-api/Slim?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/ohmybrew/Basic-Shopify-API/badge.svg?branch=master)](https://coveralls.io/github/ohmybrew/Basic-Shopify-API?branch=master)
 [![License](https://poser.pugx.org/ohmybrew/basic-shopify-api/license)](https://packagist.org/packages/ohmybrew/basic-shopify-api)
 
 A simple, tested, API wrapper for Shopify using Guzzle. It contains helpful methods for generating a installation URL, an authorize URL, HMAC signature validation, call limits, and API requests. It works with both OAuth and private API apps.
@@ -25,7 +25,7 @@ For OAuth applications. The shop domain, API key, API secret, and an access toke
 #### Quick run-down
 
 ```php
-use TylerKing\BasicShopifyAPI;
+use OhMyBrew\BasicShopifyAPI;
 
 $api = new BasicShopifyAPI;
 $api->setApiKey('your key here');
@@ -111,7 +111,7 @@ echo $request->body->shop->name;
 Requests are made using Guzzle.
 
 ```php
-$api->request(string $type, string $path, array $params);
+$api->request(string $type, string $path, array $params = null);
 ```
 
 + `type` refers to GET, POST, PUT, DELETE, etc
