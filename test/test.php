@@ -62,12 +62,7 @@ class BasicShopifyAPITest extends \PHPUnit_Framework_TestCase
         $api = new BasicShopifyAPI;
         $api->setAccessToken('123');
 
-        $reflected = new ReflectionClass($api);
-
-        $accessTokenProperty = $reflected->getProperty('accessToken');
-        $accessTokenProperty->setAccessible(true);
-
-        $this->assertEquals('123', $accessTokenProperty->getValue($api));
+        $this->assertEquals('123', $api->getAccessToken());
     }
 
     /**
@@ -192,7 +187,7 @@ class BasicShopifyAPITest extends \PHPUnit_Framework_TestCase
     function itShouldThrowExceptionForMissingApiSecret() 
     {
         $api = new BasicShopifyAPI(true);
-        $api->getAccessToken('123');
+        $api->requestAccessToken('123');
     }
 
     /**
@@ -218,7 +213,7 @@ class BasicShopifyAPITest extends \PHPUnit_Framework_TestCase
         $api->setClient($client);
 
         $code = '!@#';
-        $token = $api->getAccessToken($code);
+        $token = $api->requestAccessToken($code);
         $data = json_decode($mock->getLastRequest()->getBody());
 
         $this->assertEquals('f85632530bf277ec9ac6f649fc327f17', $token);
@@ -247,12 +242,25 @@ class BasicShopifyAPITest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      *
+     * @expectedException TypeError
+     *
      * Check verify with no params
      */
     function itShouldFailRequestVerifyWithNoParams() 
     {
         $api = new BasicShopifyAPI;
-        $this->assertEquals(false, $api->verifyRequest(null));
+        $api->verifyRequest(null);
+    }
+
+    /**
+     * @test
+     *
+     * Check verify with no params
+     */
+    function itShouldFailRequestVerifyWithNoParamsAgain() 
+    {
+        $api = new BasicShopifyAPI;
+        $this->assertEquals(false, $api->verifyRequest([]));
     }
 
     /**
@@ -365,5 +373,65 @@ class BasicShopifyAPITest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(80, $api->getApiCalls('limit'));
         $this->assertEquals(80 - 2, $api->getApiCalls('left'));
         $this->assertEquals(['left' => 80 - 2, 'made' => 2, 'limit' => 80], $api->getApiCalls());
+    }
+
+    /**
+     * @test
+     *
+     * Should set shop and access tokeb via quick method
+     */
+    function itShouldSetSession()
+    {
+        $api = new BasicShopifyAPI;
+        $api->setSession('example.myshopify.com', '1234');
+
+        $this->assertEquals('example.myshopify.com', $api->getShop());
+        $this->assertEquals('1234', $api->getAccessToken());
+    }
+
+    /**
+     * @test
+     *
+     * Should isolate API session
+     */
+    function itShouldWithSession()
+    {
+        $self = $this;
+        $api = new BasicShopifyAPI;
+
+        // Isolated for a shop
+        $api->withSession('example.myshopify.com', '1234', function() use(&$self) {
+            $self->assertEquals('example.myshopify.com', $this->getShop());
+            $self->assertEquals('1234', $this->getAccessToken());
+        });
+
+        // Isolated for a shop
+        $api->withSession('example2.myshopify.com', '12345', function() use(&$self) {
+            $self->assertEquals('example2.myshopify.com', $this->getShop());
+            $self->assertEquals('12345', $this->getAccessToken());
+        });
+
+        // Isolated for a shop and returns a value
+        $valueReturn = $api->withSession('example2.myshopify.com', '12345', function() use(&$self) {
+            return $this->getAccessToken();
+        });
+        $this->assertEquals($valueReturn, '12345');
+
+        // Should remain untouched
+        $this->assertEquals($api->getShop(), null);
+        $this->assertEquals($api->getAccessToken(), null);
+
+    }
+
+    /**
+     * @test
+     * @expectedException TypeError
+     *
+     * Ensure a closure is passed to withSession
+     */
+    function itShouldThrowExceptionForSessionWithNoClosure() 
+    {
+        $api = new BasicShopifyAPI;
+        $api->withSession('example.myshopify.com', '1234', null);
     }
 }

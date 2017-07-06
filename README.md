@@ -26,41 +26,50 @@ For OAuth applications. The shop domain, API key, API secret, and an access toke
 use TylerKing\BasicShopifyAPI;
 
 $api = new BasicShopifyAPI;
-$api->setShop('example.myshopify.com');
 $api->setApiKey('your key here');
 $api->setApiSecret('your secret here');
-$api->setAccessToken('a token here');
 
-# $request will return an object with keys of `response` for full Guzzle response, and `body` with JSON-decoded result
+$api->setShop('example.myshopify.com');
+$api->setAccessToken('a token here');
+// or
+$api->setSession('example.myshopify.com', 'a token here');
+
+/**
+ * $request will return an object with keys of `response` for full Guzzle response
+ * `body` with JSON-decoded result
+ */
 $request = $api->request('GET', '/admin/shop.json');
-print $request->response->getStatusCode();
-print $request->body->shop->name;
+echo $request->response->getStatusCode();
+echo $request->body->shop->name;
 ```
 
 #### Getting access token
 
-After obtaining the user's shop domain, to then direct them to the auth screen use `getAuthUrl`, as example:
+After obtaining the user's shop domain, to then direct them to the auth screen use `getAuthUrl`, as example (basic PHP):
 
 ```php
 $api = new BasicShopifyAPI;
-$api->setShop($app['session']->get('shop'));
-$api->setApiKey($app['config']->shopify_api_key);
+$api->setShop($_SESSION['shop']);
+$api->setApiKey(env('SHOPIFY_API_KEY'));
 
-$code = $request->query->get('code');
-if (! $code) {
-  # No code, send user to authorize screen
-  # Pass your scopes as an array for the first argument
-  # Pass your redirect URI as the second argument
-  header('Location: ' . $api->getAuthUrl($app['config']->shopify_scopes, $app['config']->shopify_redirect_uri));
+$code = $_GET['code'];
+if (!$code) {
+  /**
+   * No code, send user to authorize screen
+   * Pass your scopes as an array for the first argument
+   * Pass your redirect URI as the second argument
+   */
+  $redirect = $api->getAuthUrl(env('SHOPIFY_API_SCOPES'), env('SHOPIFY_API_REDIRECT_URI'));
+  header("Location: {$redirect}");
   exit;
 } else {
-  # We now have a code, lets grab the access token
-  $token = $api->getAccessToken($code);
+  // We now have a code, lets grab the access token
+  $token = $api->requestAccessToken($code);
 
-  # You can now do what you wish with the access token after this (store it to db, etc)
+  // You can now do what you wish with the access token after this (store it to db, etc)
   $api->setAccessToken($token);
 
-  # You can now make API calls as well once you've set the token to `setAccessToken`
+  // You can now make API calls as well once you've set the token to `setAccessToken`
   $request = $api->request('GET', '/admin/shop.json');
 }
 ```
@@ -70,8 +79,8 @@ if (! $code) {
 Simply pass in an array of GET params.
 
 ```php
-# Will return true or false if HMAC signature is good.
-$valid = $api->verifyRequest($request->query->all());
+// Will return true or false if HMAC signature is good.
+$valid = $api->verifyRequest($_GET);
 ```
 
 ### Private API
@@ -86,10 +95,13 @@ $api->setShop('example.myshopify.com');
 $api->setApiKey('your key here');
 $api->setApiPassword('your password here');
 
-# $request will return an object with keys of `response` for full Guzzle response, and `body` with JSON-decoded result
+/**
+ * $request will return an object with keys of `response` for full Guzzle response
+ * `body` with JSON-decoded result
+ */
 $request = $api->request('GET', '/admin/shop.json');
-print $request->response->getStatusCode();
-print $request->body->shop->name;
+echo $request->response->getStatusCode();
+echo $request->body->shop->name;
 ```
 
 ### Making requests
@@ -97,7 +109,7 @@ print $request->body->shop->name;
 Requests are made using Guzzle.
 
 ```php
-$api->request($type, $path, $params = []);
+$api->request(string $type, string $path, array $params);
 ```
 
 + `type` refers to GET, POST, PUT, DELETE, etc
@@ -114,15 +126,47 @@ The return value for the request will be an object containing:
 After each request is made, the API call limits are updated. To access them, simply use:
 
 ```php
-# Returns an array of left, made, and limit.
-# Example: ['left' => 79, 'made' => 1, 'limit' => 80]
+// Returns an array of left, made, and limit.
+// Example: ['left' => 79, 'made' => 1, 'limit' => 80]
 $limits = $api->getApiCalls();
 ```
 
 To quickly get a value, you may pass an optional parameter to the `getApiCalls` method:
 
 ```php
-# As example, this will return 79
-# You may pass 'left', 'made', or 'limit'
+// As example, this will return 79
+// You may pass 'left', 'made', or 'limit'
 $left = $api->getApiCalls('left'); // returns 79
+// or
+$left = $api->getApiCalls()['left']; // returns 79
+```
+
+### Isolated API calls
+
+You can initialize the API once and use it for multiple shops. Each instance will be contained to not pollute the others. This is useful for something like background job processing.
+
+```php
+$api->withSession(string $shop, string $accessToken, Closure $closure);
+```
+
++ `shop` refers to the Shopify domain
++ `accessToken` refers to the access token for the API calls
++ `closure` refers to the closure to call for the session
+
+`$this` will be binded to `BasicShopifyAPI`.
+
+```php
+$api = new BasicShopifyAPI(true);
+$api->setApiKey('your key here');
+$api->setApiPassword('your password here');
+
+$api->withSession('some-shop.myshopify.com', 'token from database?', function() {
+  $request = $this->request('GET', '/admin/shop.json');
+  echo $request->body->shop->name; // Some Shop
+});
+
+$api->withSession('some-shop-two.myshopify.com', 'token from database?', function() {
+  $request = $this->request('GET', '/admin/shop.json');
+  echo $request->body->shop->name; // Some Shop Two
+});
 ```

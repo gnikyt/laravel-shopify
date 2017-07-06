@@ -2,6 +2,7 @@
 
 use GuzzleHttp\Client;
 use \Exception;
+use \Closure;
 
 /**
  * BasicShopifyAPI is a simple wrapper for Shopify API
@@ -71,7 +72,7 @@ class BasicShopifyAPI
      *
      * @return self
      */
-    public function __construct($private = false)
+    public function __construct(bool $private = false)
     {
         // Set if app is private or public
         $this->isPrivate = $private;
@@ -105,7 +106,7 @@ class BasicShopifyAPI
      *
      * @return self
      */
-    public function setShop($shop)
+    public function setShop(string $shop)
     {
         $this->shop = $shop;
         return $this;
@@ -128,10 +129,20 @@ class BasicShopifyAPI
      *
      * @return self
      */
-    public function setAccessToken($accessToken)
+    public function setAccessToken(string $accessToken)
     {
         $this->accessToken = $accessToken;
         return $this;
+    }
+
+    /**
+     * Gets the access token.
+     *
+     * @return string
+     */
+    public function getAccessToken()
+    {
+        return $this->accessToken;
     }
 
     /**
@@ -141,7 +152,7 @@ class BasicShopifyAPI
      *
      * @return self
      */
-    public function setApiKey($apiKey)
+    public function setApiKey(string $apiKey)
     {
         $this->apiKey = $apiKey;
         return $this;
@@ -154,7 +165,7 @@ class BasicShopifyAPI
      *
      * @return self
      */
-    public function setApiSecret($apiSecret)
+    public function setApiSecret(string $apiSecret)
     {
         $this->apiSecret = $apiSecret;
         return $this;
@@ -167,10 +178,45 @@ class BasicShopifyAPI
      *
      * @return self
      */
-    public function setApiPassword($apiPassword)
+    public function setApiPassword(string $apiPassword)
     {
         $this->apiPassword = $apiPassword;
         return $this;
+    }
+
+    /**
+     * Simple quick method to set shop and access token in one shot
+     *
+     * @param string $shop        The shop's domain
+     * @param string $accessToken The access token for API requests
+     *
+     * @return self
+     */
+    public function setSession(string $shop, string $accessToken)
+    {
+        $this->setShop($shop);
+        $this->setAccessToken($accessToken);
+
+        return $this;
+    }
+
+    /**
+     * Accepts a closure to do isolated API calls for a shop
+     *
+     * @param string   $shop        The shop's domain
+     * @param string   $accessToken The access token for API requests
+     * @param Closure  $closure     The closure to run isolated
+     *
+     * @throws \Exception When closure is missing or not callable
+     *
+     * @return self
+     */
+    public function withSession(string $shop, string $accessToken, Closure $closure)
+    {
+        // Clone the API class and bind it to the closure
+        $clonedApi = clone $this;
+        $clonedApi->setSession($shop, $accessToken);
+        return $closure->call($clonedApi);
     }
 
     /**
@@ -182,7 +228,7 @@ class BasicShopifyAPI
      *
      * @return string Formatted URL
      */
-    public function getAuthUrl($scopes, $redirectUri)
+    public function getAuthUrl($scopes, string $redirectUri)
     {
         if (is_array($scopes)) {
             $scopes = implode(',', $scopes);
@@ -198,13 +244,8 @@ class BasicShopifyAPI
      *
      * @return boolean If the HMAC is validated
      */
-    public function verifyRequest($params)
+    public function verifyRequest(array $params)
     {
-        if (!is_array($params)) {
-            // No params, this is not valid
-            return false;
-        }
-
         // Ensure shop, timestamp, and HMAC are in the params
         if (array_key_exists('shop', $params)
             && array_key_exists('timestamp', $params)
@@ -232,7 +273,7 @@ class BasicShopifyAPI
      *
      * @throws \Exception When API secret is missing
      */
-    public function getAccessToken($code)
+    public function requestAccessToken(string $code)
     {
         if ($this->apiSecret === null) {
             // We need the API Secret... getBaseUrl handles rest
@@ -265,7 +306,7 @@ class BasicShopifyAPI
      *
      * @return array An array of the Guzzle response, and JSON-decoded body
      */
-    public function request($type, $path, $params = [])
+    public function request(string $type, string $path, array $params = [])
     {
         // Create the request, pass the access token and optional parameters
         $response = $this->client->request(
