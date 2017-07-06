@@ -1,0 +1,41 @@
+{
+  "name": "ohmybrew/shopify-app",
+  "description": "Shopify App helper for Laravel",
+  "keywords": ["laravel", "shopify"],
+  "license": "MIT",
+  "minimum-stability": "dev",
+  "authors": [
+    {
+      "name": "Tyler King",
+      "email": "tyler.n.king@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.5.9",
+    "illuminate/database": "5.4.*",
+    "illuminate/config": "5.4.*",
+    "illuminate/routing": "5.4.*"
+  },
+  "require-dev":{
+      "orchestra/database": "~3.1",
+      "orchestra/testbench": "~3.0",
+      "phpunit/phpunit": "~5.7"
+  },
+  "autoload": {
+    "psr-4": {
+      "OhMyBrew\\ShopifyApp\\": "src/ShopifyApp"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "OhMyBrew\\ShopifyApp\\Test\\": "tests"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "OhMyBrew\\ShopifyApp\\ShopifyAppProvider"
+      ]
+    }
+  }
+}
