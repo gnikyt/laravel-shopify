@@ -72,7 +72,7 @@ class BasicShopifyAPI
      *
      * @return self
      */
-    public function __construct(bool $private = false)
+    public function __construct($private = false)
     {
         // Set if app is private or public
         $this->isPrivate = $private;
@@ -306,7 +306,7 @@ class BasicShopifyAPI
      *
      * @return array An array of the Guzzle response, and JSON-decoded body
      */
-    public function request(string $type, string $path, array $params = [])
+    public function request(string $type, string $path, $params = [])
     {
         // Create the request, pass the access token and optional parameters
         $response = $this->client->request(
