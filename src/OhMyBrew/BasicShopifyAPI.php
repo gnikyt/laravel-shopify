@@ -72,7 +72,7 @@ class BasicShopifyAPI
      *
      * @return self
      */
-    public function __construct($private = false)
+    public function __construct(bool $private = false)
     {
         // Set if app is private or public
         $this->isPrivate = $private;
@@ -106,7 +106,7 @@ class BasicShopifyAPI
      *
      * @return self
      */
-    public function setShop($shop)
+    public function setShop(string $shop)
     {
         $this->shop = $shop;
         return $this;
@@ -129,7 +129,7 @@ class BasicShopifyAPI
      *
      * @return self
      */
-    public function setAccessToken($accessToken)
+    public function setAccessToken(string $accessToken)
     {
         $this->accessToken = $accessToken;
         return $this;
@@ -152,7 +152,7 @@ class BasicShopifyAPI
      *
      * @return self
      */
-    public function setApiKey($apiKey)
+    public function setApiKey(string $apiKey)
     {
         $this->apiKey = $apiKey;
         return $this;
@@ -165,7 +165,7 @@ class BasicShopifyAPI
      *
      * @return self
      */
-    public function setApiSecret($apiSecret)
+    public function setApiSecret(string $apiSecret)
     {
         $this->apiSecret = $apiSecret;
         return $this;
@@ -178,7 +178,7 @@ class BasicShopifyAPI
      *
      * @return self
      */
-    public function setApiPassword($apiPassword)
+    public function setApiPassword(string $apiPassword)
     {
         $this->apiPassword = $apiPassword;
         return $this;
@@ -192,7 +192,7 @@ class BasicShopifyAPI
      *
      * @return self
      */
-    public function setSession($shop, $accessToken)
+    public function setSession(string $shop, string $accessToken)
     {
         $this->setShop($shop);
         $this->setAccessToken($accessToken);
@@ -211,14 +211,12 @@ class BasicShopifyAPI
      *
      * @return self
      */
-    public function withSession($shop, $accessToken, Closure $closure)
+    public function withSession(string $shop, string $accessToken, Closure $closure)
     {
         // Clone the API class and bind it to the closure
         $clonedApi = clone $this;
         $clonedApi->setSession($shop, $accessToken);
-        $closure->bindTo($clonedApi);
-
-        return call_user_func_array($closure);
+        return $closure->call($clonedApi);
     }
 
     /**
@@ -230,7 +228,7 @@ class BasicShopifyAPI
      *
      * @return string Formatted URL
      */
-    public function getAuthUrl($scopes, $redirectUri)
+    public function getAuthUrl($scopes, string $redirectUri)
     {
         if (is_array($scopes)) {
             $scopes = implode(',', $scopes);
@@ -246,12 +244,8 @@ class BasicShopifyAPI
      *
      * @return boolean If the HMAC is validated
      */
-    public function verifyRequest($params)
+    public function verifyRequest(array $params)
     {
-        if (!is_array($params)) {
-            return false;
-        }
-
         // Ensure shop, timestamp, and HMAC are in the params
         if (array_key_exists('shop', $params)
             && array_key_exists('timestamp', $params)
@@ -266,7 +260,7 @@ class BasicShopifyAPI
             return $hmac === hash_hmac('sha256', urldecode(http_build_query($params)), $this->apiSecret);
         }
 
-        // Missing a required param
+        // Not valid
         return false;
     }
 
@@ -279,7 +273,7 @@ class BasicShopifyAPI
      *
      * @throws \Exception When API secret is missing
      */
-    public function requestAccessToken($code)
+    public function requestAccessToken(string $code)
     {
         if ($this->apiSecret === null) {
             // We need the API Secret... getBaseUrl handles rest
@@ -312,7 +306,7 @@ class BasicShopifyAPI
      *
      * @return array An array of the Guzzle response, and JSON-decoded body
      */
-    public function request($type, $path, $params = [])
+    public function request(string $type, string $path, array $params = null)
     {
         // Create the request, pass the access token and optional parameters
         $response = $this->client->request(
@@ -375,7 +369,7 @@ class BasicShopifyAPI
      *
      * @throws \Exception When attempting to grab a key that doesn't exist
      */
-    public function getApiCalls($key = null)
+    public function getApiCalls(string $key = null)
     {
         if ($key) {
             if (!in_array($key, ['left', 'made', 'limit'])) {
@@ -399,7 +393,7 @@ class BasicShopifyAPI
      * @throws \Exception When missing API key or API password for private apps
      * @throws \Exception When missing Shopify domain
      */
-    protected function getBaseUrl()
+    protected function getBaseUrl() : string
     {
         if ($this->isPrivate && ($this->apiKey === null || $this->apiPassword === null)) {
             // Private apps need key and password
