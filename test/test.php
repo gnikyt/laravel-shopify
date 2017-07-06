@@ -5,7 +5,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
 
-class BasicShopifyAPITest extends \PHPUnit_Framework_TestCase
+class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @test
@@ -241,6 +241,19 @@ class BasicShopifyAPITest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     *
+     * Check verify with no params
+     */
+    function itShouldFailRequestVerifyWithNoParams() 
+    {
+        $api = new BasicShopifyAPI;
+        $this->assertEquals(false, $api->verifyRequest([]));
+    }
+
+    /**
+     * @test
+     *
+     * @expectedException TypeError
      *
      * Check verify with no params
      */
