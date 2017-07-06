@@ -8,7 +8,7 @@ before_script:
   - composer install
   - mkdir coverage
 
-script: bin/phpunit --coverage-clover coverage/clover.xml
+script: bin/phpunit
 
 after_script:
-  - php vendor/bin/coveralls -v
+  - php bin/coveralls -v
