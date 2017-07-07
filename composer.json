@@ -38,5 +38,6 @@
         "OhMyBrew\\ShopifyApp\\ShopifyAppProvider"
       ]
     }
-  }
+  },
+  "config": { "bin-dir": "bin" }
 }

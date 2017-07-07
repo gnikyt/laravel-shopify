@@ -8,7 +8,7 @@ before_script:
   - composer install
   - mkdir build
 
-script: vendor/bin/phpunit
+script: bin/phpunit
 
 after_script:
-  - php vendor/bin/coveralls -v
+  - php bin/coveralls -v
