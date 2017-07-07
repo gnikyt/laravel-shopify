@@ -8,7 +8,8 @@ class ShopifyAppControllerTest extends TestCase
     {
         // No session, no API instance, thus no shop
         $shopifyApp = new ShopifyApp($this->app);
-        $this->assertFalse($shopifyApp->shop());
+        $this->assertNull($shopifyApp->shop());
+        $this->assertNull($shopifyApp->api());
     }
 
     public function testShopWithSession()
@@ -16,12 +17,19 @@ class ShopifyAppControllerTest extends TestCase
         session(['shopify_domain' => 'example.myshopify.com']);
         $shopifyApp = new ShopifyApp($this->app);
 
-        // First run should store the API to shop var
+        // First run should store the shop object to shop var
         $run1 = $shopifyApp->shop();
 
         // Second run should retrive shop var
         $run2 = $shopifyApp->shop();
 
+        // First run should store the shop object to shop var
+        $run3 = $shopifyApp->api();
+
+        // Second run should retrive shop var
+        $run4 = $shopifyApp->api();
+
         $this->assertEquals($run1, $run2);
+        $this->assertEquals($run3, $run4);
     }
 }

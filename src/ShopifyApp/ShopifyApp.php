@@ -1,6 +1,7 @@
 <?php namespace OhMyBrew\ShopifyApp;
 
 use OhMyBrew\BasicShopifyAPI as ShopifyAPI;
+use OhMyBrew\ShopifyApp\Models\Shop;
 use Illuminate\Foundation\Application;
 
 class ShopifyApp
@@ -13,9 +14,16 @@ class ShopifyApp
     public $app;
 
     /**
-     * The current shop
+     * The current API instance
      *
      * @var \OhMyBrew\BasicShopifyAPI
+     */
+    public $api;
+
+    /**
+     * The current shop
+     *
+     * @var \OhMyBrew\ShopifyApp\Models\Shop
      */
     public $shop;
 
@@ -32,32 +40,38 @@ class ShopifyApp
     }
 
     /**
-     * Gets the current shop.
+     * Gets/sets the current shop.
+     *
+     * @return \OhMyBrew\Models\Shop
+     */
+    public function shop() {
+        $shopifyDomain = session('shopify_domain');
+        if (!$this->shop && $shopifyDomain) {
+            // Grab shop from database here
+            $shop = Shop::where('shopify_domain', $shopifyDomain)->first();
+
+            // Update shop instance
+            $this->shop = $shop;
+        }
+
+        return $this->shop;
+    }
+
+    /**
+     * Gets/sets the current API instance.
      *
      * @return \OhMyBrew\BasicShopifyAPI
      */
-    public function shop() {
-        if ($this->shop) {
-            // Return the instance
-            return $this->shop;
-        }
-
-        // New instance
+    public function api() {
         $shopifyDomain = session('shopify_domain');
-        if ($shopifyDomain) {
+        if (!$this->api && $shopifyDomain) {
             // Grab shop from database here
 
-            // Start the API
+            // Update API instance
             $api = new ShopifyAPI;
-            //$api->setSession($shopifyDomain);
-
-            // Update shop instance
-            $this->shop = $api;
-
-            return $api;
+            $this->api = $api;
         }
 
-        // No shop
-        return false;
+        return $this->api;
     }
 }

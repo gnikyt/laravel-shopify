@@ -21,6 +21,9 @@ class ShopifyAppProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/resources/config/shopify-app.php' => config_path('shopify-app.php')
         ]);
+
+        // Database migrations
+        $this->loadMigrationsFrom(__DIR__.'/resources/database/migrations');
     }
 
     /**

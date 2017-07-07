@@ -42,6 +42,10 @@ Open `app/Http/Kernel.php` find `routeMiddleware` array. Add a new line with:
 
 `'auth.shop' => \OhMyBrew\ShopifyApp\Middleware\AuthShop::class,`
 
+### Migrations
+
+Run `php artisan migrate`.
+
 ## Routes
 
 Here are the defined routes and what they do.

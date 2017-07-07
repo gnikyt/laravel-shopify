@@ -15,7 +15,7 @@ class AuthShop
      */
     public function handle(Request $request, Closure $next)
     {
-        if (ShopifyApp::shop() === false) {
+        if (ShopifyApp::shop() === null) {
             // Shall not pass
             abort(403);
         }
