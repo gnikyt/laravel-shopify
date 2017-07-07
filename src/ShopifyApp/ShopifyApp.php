@@ -1,6 +1,7 @@
 <?php namespace OhMyBrew\ShopifyApp;
 
 use OhMyBrew\BasicShopifyAPI as ShopifyAPI;
+use Illuminate\Foundation\Application;
 
 class ShopifyApp
 {
@@ -25,7 +26,7 @@ class ShopifyApp
      *
      * @return void
      */
-    public function __construct($app)
+    public function __construct(Application $app)
     {
         $this->app = $app;
     }

@@ -1,6 +1,8 @@
 <?php namespace OhMyBrew\ShopifyApp\Middleware;
 
 use Closure;
+use Illuminate\Http\Request;
+use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 
 class AuthShop
 {
@@ -11,9 +13,9 @@ class AuthShop
      * @param  \Closure                  $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
-        if (\ShopifyApp::shop() === false) {
+        if (ShopifyApp::shop() === false) {
             // Shall not pass
             abort(403);
         }

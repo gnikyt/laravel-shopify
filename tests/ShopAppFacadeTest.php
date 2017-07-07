@@ -1,15 +1,15 @@
 <?php namespace OhMyBrew\ShopifyApp\Test;
 
 use \ReflectionMethod;
-use OhMyBrew\ShopifyApp\Facades\ShopifyAppFacade;
+use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 
 class ShopifyAppFacadeTest extends TestCase
 {
     public function testBasic()
     {
-        $method = new ReflectionMethod(ShopifyAppFacade::class, 'getFacadeAccessor');
+        $method = new ReflectionMethod(ShopifyApp::class, 'getFacadeAccessor');
         $method->setAccessible(true);
 
-        $this->assertEquals('ShopifyApp', $method->invoke(null));
+        $this->assertEquals('shopifyapp', $method->invoke(null));
     }
 }

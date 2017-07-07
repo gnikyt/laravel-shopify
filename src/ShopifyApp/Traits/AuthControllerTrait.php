@@ -1,7 +1,5 @@
 <?php namespace OhMyBrew\ShopifyApp\Traits;
 
-use Illuminate\Http\Request;
-
 trait AuthControllerTrait
 {
     /**

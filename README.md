@@ -46,10 +46,10 @@ Open `app/Http/Kernel.php` find `routeMiddleware` array. Add a new line with:
 
 Here are the defined routes and what they do.
 
-| Route                | Notes                                    |
-| -------------------- |:---------------------------------------- |
-| /login               | Displays login/install page              |
-| /authenticate        | Authenticates the shop/installs the shop |
+| Route                     | Notes                                    |
+| ------------------------- |:---------------------------------------- |
+| GET /login                | Displays login/install page              |
+| POST /authenticate        | Authenticates the shop/installs the shop |
 
 ## Notes
 

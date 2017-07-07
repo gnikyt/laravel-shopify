@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Facade;
 
-class ShopifyAppFacade extends Facade
+class ShopifyApp extends Facade
 {
     /**
      * Get the registered name of the component.
@@ -11,6 +11,6 @@ class ShopifyAppFacade extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'ShopifyApp';
+        return 'shopifyapp';
     }
 }
