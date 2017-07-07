@@ -42,13 +42,13 @@ class ShopifyApp
         }
 
         // New instance
-        $shopifyDomain = $this->app->request->session()->get('shopify_domain');
+        $shopifyDomain = session('shopify_domain');
         if ($shopifyDomain) {
             // Grab shop from database here
 
             // Start the API
             $api = new ShopifyAPI;
-            $api->setSession($shopifyDomain);
+            //$api->setSession($shopifyDomain);
 
             // Update shop instance
             $this->shop = $api;

@@ -1,0 +1,14 @@
+language: php
+
+php:
+  - 7.0
+  - 7.1
+
+before_script:
+  - composer install
+  - mkdir build
+
+script: bin/phpunit
+
+after_script:
+  - php bin/coveralls -v

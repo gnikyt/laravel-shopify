@@ -1,4 +1,4 @@
-<?php namespace OhMyBrew\ShopifyApp;
+<?php namespace OhMyBrew\ShopifyApp\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
@@ -11,6 +11,6 @@ class ShopifyAppFacade extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'shopifyapp';
+        return 'ShopifyApp';
     }
 }
