@@ -11,10 +11,11 @@
     }
   ],
   "require": {
-    "php": ">=5.5.9",
+    "php": ">=7.0.0",
     "illuminate/database": "5.4.*",
     "illuminate/config": "5.4.*",
-    "illuminate/routing": "5.4.*"
+    "illuminate/routing": "5.4.*",
+    "ohmybrew/basic-shopify-api": "1.0.*"
   },
   "require-dev":{
       "orchestra/database": "~3.1",
