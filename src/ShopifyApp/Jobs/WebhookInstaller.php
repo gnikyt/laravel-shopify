@@ -43,7 +43,7 @@ class WebhookInstaller implements ShouldQueue
     /**
      * Execute the job.
      *
-     * @return void
+     * @return array
      */
     public function handle()
     {
@@ -52,8 +52,11 @@ class WebhookInstaller implements ShouldQueue
 
         // Get the current webhooks installed on the shop
         $api = $this->shop->api();
-        $request = $api->request('GET', '/admin/webhooks.json', ['limit' => 250, 'fields' => 'id,address']);
-        $shopWebhooks = $request->body->webhooks;
+        $shopWebhooks = $api->request(
+            'GET',
+            '/admin/webhooks.json',
+            ['limit' => 250, 'fields' => 'id,address']
+        )->body->webhooks;
 
         foreach ($this->webhooks as $webhook) {
             // Check if the required webhook exists on the shop
@@ -71,11 +74,11 @@ class WebhookInstaller implements ShouldQueue
      * Check if webhook is in the list.
      *
      * @param array $shopWebhooks The webhooks installed on the shop
-     * @param object $webhook     The webhook object
+     * @param array $webhook     The webhook
      *
      * @return boolean
      */
-    protected function webhookExists(array $shopWebhooks, $webhook)
+    protected function webhookExists(array $shopWebhooks, array $webhook)
     {
         foreach ($shopWebhooks as $shopWebhook) {
             if ($shopWebhook->address === $webhook['address']) {
