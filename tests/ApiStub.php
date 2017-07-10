@@ -4,7 +4,7 @@ use OhMyBrew\BasicShopifyAPI;
 
 class ApiStub extends BasicShopifyAPI
 {
-    public function request(string $method, string $endpoint, array $params = [])
+    public function request(string $method, string $path, array $params = null)
     {
         $path = str_replace('/', '_', parse_url($endpoint, PHP_URL_PATH));
         $filePath = __DIR__.'/fixtures/'.strtolower($method).$path;
