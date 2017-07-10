@@ -47,8 +47,11 @@ class WebhookInstaller implements ShouldQueue
      */
     public function handle()
     {
+        // Keep track of whats created
+        $created = [];
+
         // Get the current webhooks installed on the shop
-        $api = ShopifyApp::createApiForShop($this->shop);
+        $api = $this->shop->api();
         $request = $api->request('GET', '/admin/webhooks.json', ['limit' => 250, 'fields' => 'id,address']);
         $shopWebhooks = $request->body->webhooks;
 
@@ -57,8 +60,11 @@ class WebhookInstaller implements ShouldQueue
             if (!$this->webhookExists($shopWebhooks, $webhook)) {
                 // It does not... create the webhook
                 $api->request('POST', '/admin/webhooks.json', ['webhook' => $webhook]);
+                $created[] = $webhook;
             }
         }
+
+        return $created;
     }
 
     /**
@@ -72,7 +78,7 @@ class WebhookInstaller implements ShouldQueue
     protected function webhookExists(array $shopWebhooks, $webhook)
     {
         foreach ($shopWebhooks as $shopWebhook) {
-            if ($shopWebhook->address === $webhook->address) {
+            if ($shopWebhook->address === $webhook['address']) {
                 // Found the webhook in our list
                 return true;
             }

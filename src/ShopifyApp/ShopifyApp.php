@@ -1,7 +1,6 @@
 <?php namespace OhMyBrew\ShopifyApp;
 
 use Illuminate\Foundation\Application;
-use OhMyBrew\BasicShopifyAPI as ShopifyAPI;
 use OhMyBrew\ShopifyApp\Models\Shop;
 
 class ShopifyApp
@@ -12,13 +11,6 @@ class ShopifyApp
      * @var \Illuminate\Foundation\Application
      */
     public $app;
-
-    /**
-     * The current API instance
-     *
-     * @var \OhMyBrew\BasicShopifyAPI
-     */
-    public $api;
 
     /**
      * The current shop
@@ -55,32 +47,5 @@ class ShopifyApp
         }
 
         return $this->shop;
-    }
-
-    /**
-     * Gets/sets the current API instance.
-     *
-     * @return \OhMyBrew\BasicShopifyAPI
-     */
-    public function api() {
-        if (!$this->api && $this->shop()) {
-            // Update API instance
-            $api = $this->createApiForShop($this->shop());
-            $this->api = $api;
-        }
-
-        return $this->api;
-    }
-
-    /**
-     * Creates an API instance for a shop
-     *
-     * @param \OhMyBrew\ShopifyApp\Models\Shop $shop The shop to use
-     *
-     * @return \OhMyBrew\BasicShopifyAPI
-     */
-    public function createApiForShop(Shop $shop)
-    {
-        return new ShopifyAPI;
     }
 }

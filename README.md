@@ -55,6 +55,23 @@ Here are the defined routes and what they do.
 | GET /login                | Displays login/install page              |
 | POST /authenticate        | Authenticates the shop/installs the shop |
 
+## Usage
+
+### Accessing the current shop
+
+Using the facade:
+
+```php
+ShopifyApp::shop()
+```
+
+### Accessing API for the current shop
+
+```php
+$shop = ShopifyApp::shop();
+$shop->api()->request(...);
+```
+
 ## Notes
 
 I have not touched PHP in years, I've been primarily a full-time Ruby developer. Please forgive any quirks :)

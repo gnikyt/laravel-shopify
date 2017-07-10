@@ -14,6 +14,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Shopify API class
+    |--------------------------------------------------------------------------
+    |
+    | This option option allows you to change out the default API class
+    | which is OhMyBrew\BasicShopifyAPI. This option is mainly used for
+    | testing and does not need to be changed unless required.
+    |
+    */
+
+    'api_class' => env('SHOPIFY_API_CLASS', \OhMyBrew\BasicShopifyAPI::class),
+
+    /*
+    |--------------------------------------------------------------------------
     | Shopify Webhooks
     |--------------------------------------------------------------------------
     |
