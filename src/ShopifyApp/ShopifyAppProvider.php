@@ -5,10 +5,10 @@ use Illuminate\Support\ServiceProvider;
 class ShopifyAppProvider extends ServiceProvider
 {
     /**
-    * Bootstrap the application services.
-    *
-    * @return void
-    */
+     * Bootstrap the application services.
+     *
+     * @return void
+     */
     public function boot()
     {
         // Routes
@@ -27,10 +27,10 @@ class ShopifyAppProvider extends ServiceProvider
     }
 
     /**
-    * Register the application services.
-    *
-    * @return void
-    */
+     * Register the application services.
+     *
+     * @return void
+     */
     public function register()
     {
         // Merge options with published config
@@ -39,7 +39,7 @@ class ShopifyAppProvider extends ServiceProvider
         );
 
         // ShopifyApp facade
-        $this->app->bind('shopifyapp', function($app) {
+        $this->app->bind('shopifyapp', function ($app) {
             return new ShopifyApp($app);
         });
     }
