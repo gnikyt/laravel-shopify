@@ -22,6 +22,9 @@
                 font-weight: 300;
                 color: #969A9C;
             }
+            .subhead.error {
+                color: #f4645f;
+            }
             input {
                 width: 300px;
                 height: 50px;
@@ -72,12 +75,16 @@
                 <p class="subhead">
                     <label for="shop">Enter your shop domain to log in or install this app.</label>
                 </p>
+
+                @if (session()->has('error'))
+                    <p class="subheadError">{{ session('error') }}</p>
+                @endif
             </header>
 
             <div class="container__form">
                 <form class="form-horizontal" method="POST" action="{{ route('authenticate') }}">
                     {{ csrf_field() }}
-                    <input type="text" name="shopify_domain" id="shop" placeholder="example.myshopify.com">
+                    <input type="text" name="shop" id="shop" placeholder="example.myshopify.com">
                     <button type="submit">Install</button>
                 </form>
             </div>

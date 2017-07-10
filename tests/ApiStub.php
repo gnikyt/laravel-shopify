@@ -1,6 +1,8 @@
 <?php namespace OhMyBrew\ShopifyApp\Test;
 
-class ApiStub
+use OhMyBrew\BasicShopifyAPI;
+
+class ApiStub extends BasicShopifyAPI
 {
     public function request(string $method, string $endpoint, array $params = [])
     {
@@ -16,5 +18,11 @@ class ApiStub
             'body' => $responseJSON,
             'status' => 200
         ];
+    }
+
+    public function requestAccessToken(string $code)
+    {
+        $filePath = __DIR__.'/fixtures/post_admin_access_token.json';
+        return json_decode(file_get_contents($filePath))->access_token;
     }
 }

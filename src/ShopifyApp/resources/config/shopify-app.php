@@ -14,6 +14,50 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Shopify API Key
+    |--------------------------------------------------------------------------
+    |
+    | This option is for the app's API key.
+    |
+    */
+
+    'api_key' => env('SHOPIFY_API_KEY', ''),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Shopify API Secret
+    |--------------------------------------------------------------------------
+    |
+    | This option is for the app's API secret.
+    |
+    */
+
+    'api_secret' => env('SHOPIFY_API_SECRET', ''),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Shopify API Scopes
+    |--------------------------------------------------------------------------
+    |
+    | This option is for the scopes your application needs in the API.
+    |
+    */
+
+    'api_scopes' => env('SHOPIFY_API_SCOPES', 'read_products,write_products'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Shopify API Redirect
+    |--------------------------------------------------------------------------
+    |
+    | This option is for the redirect after authentication.
+    |
+    */
+
+    'api_redirect' => env('SHOPIFY_API_REDIRECT', 'authenticate'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Shopify API class
     |--------------------------------------------------------------------------
     |
@@ -24,6 +68,19 @@ return [
     */
 
     'api_class' => env('SHOPIFY_API_CLASS', \OhMyBrew\BasicShopifyAPI::class),
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Shopify "MyShopify" domain
+    |--------------------------------------------------------------------------
+    |
+    | The internal URL used by shops. This will not change but in the future
+    | it may.
+    |
+    */
+
+    'myshopify_domain' => 'myshopify.com',
 
     /*
     |--------------------------------------------------------------------------

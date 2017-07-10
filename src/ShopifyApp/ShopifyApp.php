@@ -40,12 +40,48 @@ class ShopifyApp
         $shopifyDomain = session('shopify_domain');
         if (!$this->shop && $shopifyDomain) {
             // Grab shop from database here
-            $shop = Shop::where('shopify_domain', $shopifyDomain)->first();
+            $shop = Shop::firstOrCreate(['shopify_domain' => $shopifyDomain]);
 
             // Update shop instance
             $this->shop = $shop;
         }
 
         return $this->shop;
+    }
+
+    /**
+     * Gets an API instance
+     *
+     * @return object
+     */
+    public function api()
+    {
+        $apiClass = config('shopify-app.api_class');
+        $api = new $apiClass;
+        $api->setApiKey(config('shopify-app.api_key'));
+        $api->setApiSecret(config('shopify-app.api_secret'));
+
+        return $api;
+    }
+
+    /**
+     * Ensures shop domain meets the specs.
+     *
+     * @param string $domain The shopify domain
+     *
+     * @return string
+     */
+    public function sanitizeShopDomain(string $domain)
+    {
+        $domain = preg_replace('/https?:\/\//i', '', trim($domain));
+        if (
+            strpos($domain, config('shopify-app.myshopify_domain')) === false
+            && strpos($domain, '.') === false
+        ) {
+            // No myshopify.com in shop's name
+            $domain .= '.'.config('shopify-app.myshopify_domain');
+        }
+
+        return parse_url("http://{$domain}", PHP_URL_HOST);
     }
 }

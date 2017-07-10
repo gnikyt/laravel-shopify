@@ -16,7 +16,7 @@ class CreateShopsTable extends Migration
         Schema::create('shops', function (Blueprint $table) {
             $table->increments('id');
             $table->string('shopify_domain');
-            $table->string('shopify_token');
+            $table->string('shopify_token')->nullable(true)->default(null);
             $table->timestamps();
         });
     }

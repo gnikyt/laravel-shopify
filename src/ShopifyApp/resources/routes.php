@@ -10,6 +10,22 @@
 */
 
 Route::group(['middleware' => ['web']], function () {
-    Route::get('/login', 'OhMyBrew\ShopifyApp\Controllers\AuthController@index')->name('login');
-    Route::post('/login', 'OhMyBrew\ShopifyApp\Controllers\AuthController@authenticate')->name('authenticate');
+    Route::get(
+        '/',
+        'OhMyBrew\ShopifyApp\Controllers\HomeController@index'
+    )
+    ->middleware('auth.shop')
+    ->name('home');
+
+    Route::get(
+        '/login',
+        'OhMyBrew\ShopifyApp\Controllers\AuthController@index'
+    )->name('login');
+
+    Route::match(
+        ['get', 'post'],
+        '/authenticate',
+        'OhMyBrew\ShopifyApp\Controllers\AuthController@authenticate'
+    )
+    ->name('authenticate');
 });

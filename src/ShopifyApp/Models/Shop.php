@@ -1,9 +1,17 @@
 <?php namespace OhMyBrew\ShopifyApp\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 
 class Shop extends Model
 {
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = ['shopify_domain', 'shopify_token'];
+
     /**
      * The API instance
      *
@@ -20,8 +28,10 @@ class Shop extends Model
     {
         if (!$this->api) {
             // Create new API instance
-            $configClass = config('shopify-app.api_class');
-            $this->api = new $configClass;
+            $api = ShopifyApp::api();
+            $api->setSession($this->shopify_domain, $this->shopify_token);
+
+            $this->api = $api;
         }
 
         // Return existing instance

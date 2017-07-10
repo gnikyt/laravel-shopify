@@ -56,10 +56,11 @@ Run `php artisan migrate`.
 
 Here are the defined routes and what they do.
 
-| Route                     | Notes                                    |
-| ------------------------- |:---------------------------------------- |
-| GET /login                | Displays login/install page              |
-| POST /authenticate        | Authenticates the shop/installs the shop |
+| Route                     | Notes                                        |
+| ------------------------- |:-------------------------------------------- |
+| GET /                     | Displays home of app for authenticated shops |
+| GET /login                | Displays login/install page                  |
+| POST|GET /authenticate    | Authenticates the shop/installs the shop     |
 
 ## Usage
 

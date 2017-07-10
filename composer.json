@@ -13,7 +13,8 @@
   "require": {
     "php": ">=7.0.0",
     "laravel/framework": "5.4.*",
-    "ohmybrew/basic-shopify-api": "1.0.*"
+    "ohmybrew/basic-shopify-api": "1.0.*",
+    "doctrine/dbal": "^2.5"
   },
   "require-dev":{
       "orchestra/database": "~3.1",
