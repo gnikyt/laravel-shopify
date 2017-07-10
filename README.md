@@ -28,19 +28,25 @@ Here are the requirements to run this Laravel package.
 
 Open `config/app.php` find `providers` array. Add a new line with:
 
-`\OhMyBrew\ShopifyApp\ShopifyAppProvider::class,`
+```php
+\OhMyBrew\ShopifyApp\ShopifyAppProvider::class,
+```
 
 ### Facade
 
 Open `config/app.php` find `aliases` array. Add a new line with:
 
-`'ShopifyApp' => \OhMyBrew\ShopifyApp\Facades\ShopifyAppFacade::class,`
+```php
+'ShopifyApp' => \OhMyBrew\ShopifyApp\Facades\ShopifyAppFacade::class,
+```
 
 ### Middleware
 
 Open `app/Http/Kernel.php` find `routeMiddleware` array. Add a new line with:
 
-`'auth.shop' => \OhMyBrew\ShopifyApp\Middleware\AuthShop::class,`
+```php
+'auth.shop' => \OhMyBrew\ShopifyApp\Middleware\AuthShop::class,
+```
 
 ### Migrations
 
@@ -62,12 +68,14 @@ Here are the defined routes and what they do.
 Using the facade:
 
 ```php
+// Returns instance of \OhMyBrew\ShopifyApp\Models\Shop
 ShopifyApp::shop()
 ```
 
 ### Accessing API for the current shop
 
 ```php
+// Returns instance of \OhMyBrew\BasicShopifyAPI (ohmybrew/basic-shopify-api)
 $shop = ShopifyApp::shop();
 $shop->api()->request(...);
 ```
