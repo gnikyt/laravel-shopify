@@ -4,14 +4,13 @@ use OhMyBrew\ShopifyApp\Middleware\AuthShop;
 
 class AuthShopMiddlewareTest extends TestCase
 {
-    /**
-    * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
-    */
     public function testShopHasNoAccessShouldAbort()
     {
         $middleware = new AuthShop;
         $next = function() { };
-        $middleware->handle(request(), $next);
+        $result = $middleware->handle(request(), $next);
+
+        $this->assertEquals(true, strpos($result, 'Redirecting to http://localhost/login') !== false);
     }
 
     public function testShopHasWithAccessShouldPassMiddleware()

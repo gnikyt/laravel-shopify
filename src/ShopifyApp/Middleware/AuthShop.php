@@ -18,7 +18,7 @@ class AuthShop
     {
         if (ShopifyApp::shop() === null) {
             // Shall not pass
-            abort(403);
+            return redirect()->route('login');
         }
 
         // Move on, authenticated

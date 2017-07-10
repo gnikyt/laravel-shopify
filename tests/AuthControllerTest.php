@@ -73,6 +73,7 @@ class AuthControllerTest extends TestCase
 
         $response = $this->call('get', '/authenticate', $params);
 
+        $response->assertSessionHas('error');
         $response->assertStatus(302);
         $this->assertEquals('http://localhost/login', $response->headers->get('location'));
     }
