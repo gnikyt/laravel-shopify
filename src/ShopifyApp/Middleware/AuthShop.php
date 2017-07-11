@@ -17,8 +17,8 @@ class AuthShop
     public function handle(Request $request, Closure $next)
     {
         if (ShopifyApp::shop() === null) {
-            // Shall not pass, redirect to login
-            return redirect()->route('login');
+            // Shall not pass, redirect to authentication
+            return redirect()->route('authenticate')->withInput(['shop' => request('shop')]);
         }
 
         // Move on, authenticated

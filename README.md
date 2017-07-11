@@ -65,7 +65,9 @@ Run `php artisan migrate`.
 
 ### Configuration Properties
 
-*Coming soon...*
+Run `php artisan vendor:publish`.
+
+*More coming soon...*
 
 ## Routes
 
@@ -75,7 +77,7 @@ Here are the defined routes and what they do.
 | ------------------------- |:-------------------------------------------- |
 | GET /                     | Displays home of app for authenticated shops |
 | GET /login                | Displays login/install page                  |
-| POST|GET /authenticate    | Authenticates the shop/installs the shop     |
+| POST/GET /authenticate    | Authenticates the shop/installs the shop     |
 
 ## Usage
 

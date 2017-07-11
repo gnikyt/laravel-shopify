@@ -25,6 +25,11 @@ abstract class TestCase extends OrchestraTestCase
         ];
     }
 
+    protected function resolveApplicationHttpKernel($app)
+    {
+        $app->singleton('Illuminate\Contracts\Http\Kernel', 'OhMyBrew\ShopifyApp\Test\Kernel');
+    }
+
     protected function getEnvironmentSetUp($app)
     {
         // Use memory SQLite, cleans it self up

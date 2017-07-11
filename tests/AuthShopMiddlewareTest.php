@@ -10,7 +10,7 @@ class AuthShopMiddlewareTest extends TestCase
         $next = function() { };
         $result = $middleware->handle(request(), $next);
 
-        $this->assertEquals(true, strpos($result, 'Redirecting to http://localhost/login') !== false);
+        $this->assertEquals(true, strpos($result, 'Redirecting to http://localhost/authenticate') !== false);
     }
 
     public function testShopHasWithAccessShouldPassMiddleware()

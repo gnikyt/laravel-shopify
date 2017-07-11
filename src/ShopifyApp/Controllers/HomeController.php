@@ -5,8 +5,5 @@ use OhMyBrew\ShopifyApp\Traits\HomeControllerTrait;
 
 class HomeController extends Controller
 {
-    public function index()
-    {
-        //
-    }
+    use HomeControllerTrait;
 }
