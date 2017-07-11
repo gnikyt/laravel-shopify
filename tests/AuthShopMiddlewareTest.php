@@ -21,6 +21,7 @@ class AuthShopMiddlewareTest extends TestCase
         $self = $this;
         $middleware = new AuthShop;
         $next = function($request) use(&$self) {
+            // $next should be invoked since shop is authenticated
             $self->assertNotNull($request);
         };
         $middleware->handle(request(), $next);

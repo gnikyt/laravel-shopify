@@ -6,7 +6,7 @@ class ApiStub extends BasicShopifyAPI
 {
     public function request(string $method, string $path, array $params = null)
     {
-        $path = str_replace('/', '_', parse_url($endpoint, PHP_URL_PATH));
+        $path = str_replace('/', '_', parse_url($path, PHP_URL_PATH));
         $filePath = __DIR__.'/fixtures/'.strtolower($method).$path;
 
         $responseJSON = null;

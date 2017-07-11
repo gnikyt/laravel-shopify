@@ -7,20 +7,21 @@
 
 ## Goals
 
-+ Provide assistance in developing Shopify apps with Laravel
-+ Integration with Shopify API
-+ Authentication & installation for shops
-+ Auto install app webhooks and scripttags thorugh background jobs
-+ Provide basic ESDK views
+- [x] Provide assistance in developing Shopify apps with Laravel
+- [x] Integration with Shopify API
+- [x] Authentication & installation for shops
+- [x] Auto install app webhooks and scripttags thorugh background jobs
+- [ ] Provide basic ESDK views
 
 ## Requirements
 
 Here are the requirements to run this Laravel package.
 
-| Package                | Version   | Notes                                    |
-| ---------------------- |:---------:|:---------------------------------------- |
-| `php`                  | 7         | Due to `ohmybrew/basic-shopify-api`      |
-| `laravel/framework`    | 5.4.*     |                                          |
+| Package                       | Version   | Notes                                    |
+| ----------------------------- |:---------:|:---------------------------------------- |
+| `php`                         | 7         | Due to `ohmybrew/basic-shopify-api`      |
+| `laravel/framework`           | 5.4.*     | For the package to work ;)               |
+| `ohmybrew/basic-shopify-api`  | 1.0.*     | For API calls to Shopify                 |
 
 ## Installation
 
@@ -48,9 +49,23 @@ Open `app/Http/Kernel.php` find `routeMiddleware` array. Add a new line with:
 'auth.shop' => \OhMyBrew\ShopifyApp\Middleware\AuthShop::class,
 ```
 
+### Jobs
+
+*Recommendations*
+
+By default Laravel uses the `sync` driver to process jobs. These jobs run immediately and synchronously (blocking).
+
+This package uses jobs to install webhooks and scripttags if any are defined in the configuration. If you do not have any scripttags or webhooks to install on the shop, you may skip this section.
+
+If you do however, you can leave the `sync` driver as default. But, it may impact load times for the customer accessing the app. Its recommended to setup Redis or database as your default driver in `config/queue.php`. See [Laravel's docs on setting up queue drivers](https://laravel.com/docs/5.4/queues).
+
 ### Migrations
 
 Run `php artisan migrate`.
+
+### Configuration Properties
+
+*Coming soon...*
 
 ## Routes
 

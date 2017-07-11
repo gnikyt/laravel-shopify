@@ -12,6 +12,7 @@ class ScripttagInstallerJobTest extends TestCase
     {
         parent::setup();
 
+        // Re-used variables
         $this->shop = Shop::find(1);
         $this->scripttags = [
             [
@@ -19,6 +20,9 @@ class ScripttagInstallerJobTest extends TestCase
                 'event' => 'onload'
             ]
         ];
+
+        // Replace with our API
+        config(['shopify-app.api_class' => new ApiStub]);
     }
 
     public function testJobAcceptsLoad()
@@ -37,7 +41,6 @@ class ScripttagInstallerJobTest extends TestCase
 
     public function testJobShouldTestScripttagExistanceMethod()
     {
-        config(['shopify-app.api_class' => new ApiStub]);
         $job = new ScripttagInstaller($this->shop, $this->scripttags);
 
         $method = new ReflectionMethod($job, 'scripttagExists');
@@ -46,18 +49,22 @@ class ScripttagInstallerJobTest extends TestCase
         $result = $method->invoke(
             $job,
             [
+                // Existing scripttags
                 (object) ['src' => 'https://js-aplenty.com/bar.js']
             ],
             [
+                // Defined scripttag in config
                 'src' => 'https://js-aplenty.com/bar.js'
             ]
         );
         $result_2 = $method->invoke(
             $job,
             [
+                // Existing scripttags
                 (object) ['src' => 'https://js-aplenty.com/bar.js']
             ],
             [
+                // Defined scripttag in config
                 'src' => 'https://js-aplenty.com/foo.js'
             ]
         );
@@ -68,8 +75,6 @@ class ScripttagInstallerJobTest extends TestCase
 
     public function testJobShouldNotRecreateScripttags()
     {
-        // Replace with our API
-        config(['shopify-app.api_class' => new ApiStub]);
         $job = new ScripttagInstaller($this->shop, $this->scripttags);
         $created = $job->handle();
 
@@ -87,8 +92,6 @@ class ScripttagInstallerJobTest extends TestCase
             ]
         ];
 
-        // Replace with our API
-        config(['shopify-app.api_class' => new ApiStub]);
         $job = new ScripttagInstaller($this->shop, $scripttags);
         $created = $job->handle();
 

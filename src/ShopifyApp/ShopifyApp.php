@@ -73,15 +73,15 @@ class ShopifyApp
      */
     public function sanitizeShopDomain(string $domain)
     {
+        $configEndDomain = config('shopify-app.myshopify_domain');
         $domain = preg_replace('/https?:\/\//i', '', trim($domain));
-        if (
-            strpos($domain, config('shopify-app.myshopify_domain')) === false
-            && strpos($domain, '.') === false
-        ) {
-            // No myshopify.com in shop's name
-            $domain .= '.'.config('shopify-app.myshopify_domain');
+
+        if (strpos($domain, $configEndDomain) === false && strpos($domain, '.') === false) {
+            // No myshopify.com ($configEndDomain) in shop's name
+            $domain .= ".{$configEndDomain}";
         }
 
+        // Return the host after cleaned up
         return parse_url("http://{$domain}", PHP_URL_HOST);
     }
 }

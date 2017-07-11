@@ -12,6 +12,7 @@ class WebhookInstallerJobTest extends TestCase
     {
         parent::setup();
 
+        // Re-used variables
         $this->shop = Shop::find(1);
         $this->webhooks = [
             [
@@ -19,6 +20,9 @@ class WebhookInstallerJobTest extends TestCase
                 'address' => 'https://localhost/webhooks/orders-create'
             ]
         ];
+
+        // Stub with our API
+        config(['shopify-app.api_class' => new ApiStub]);
     }
 
     public function testJobAcceptsLoad()
@@ -37,7 +41,6 @@ class WebhookInstallerJobTest extends TestCase
 
     public function testJobShouldTestWebhookExistanceMethod()
     {
-        config(['shopify-app.api_class' => new ApiStub]);
         $job = new WebhookInstaller($this->shop, $this->webhooks);
 
         $method = new ReflectionMethod($job, 'webhookExists');
@@ -46,18 +49,22 @@ class WebhookInstallerJobTest extends TestCase
         $result = $method->invoke(
             $job,
             [
+                // Existing webhooks
                 (object) ['address' => 'http://localhost/webhooks/test']
             ],
             [
+                // Defined webhooks in config
                 'address' => 'http://localhost/webhooks/test'
             ]
         );
         $result_2 = $method->invoke(
             $job,
             [
+                // Existing webhooks
                 (object) ['address' => 'http://localhost/webhooks/test']
             ],
             [
+                // Defined webhook in config
                 'address' => 'http://localhost/webhooks/test-two'
             ]
         );
@@ -68,8 +75,6 @@ class WebhookInstallerJobTest extends TestCase
 
     public function testJobShouldNotRecreateWebhooks()
     {
-        // Replace with our API
-        config(['shopify-app.api_class' => new ApiStub]);
         $job = new WebhookInstaller($this->shop, $this->webhooks);
         $created = $job->handle();
 
@@ -87,8 +92,6 @@ class WebhookInstallerJobTest extends TestCase
             ]
         ];
 
-        // Replace with our API
-        config(['shopify-app.api_class' => new ApiStub]);
         $job = new WebhookInstaller($this->shop, $webhooks);
         $created = $job->handle();
 

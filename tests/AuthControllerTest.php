@@ -12,9 +12,6 @@ class AuthControllerTest extends TestCase
     {
         parent::setUp();
 
-        // Stub in our API class
-        config(['shopify-app.api_class' => new ApiStub]);
-
         // HMAC
         $this->hmac = 'a7448f7c42c9bc025b077ac8b73e7600b6f8012719d21cbeb88db66e5dbbd163';
         $this->hmacParams = [
@@ -23,6 +20,9 @@ class AuthControllerTest extends TestCase
             'code' => '1234678',
             'timestamp' => '1337178173'
         ];
+
+        // Stub in our API class
+        config(['shopify-app.api_class' => new ApiStub]);
     }
 
     public function testLoginTest()
@@ -55,7 +55,7 @@ class AuthControllerTest extends TestCase
         $response = $this->call('get', '/authenticate', $this->hmacParams);
 
         $shop = Shop::where('shopify_domain', 'example.myshopify.com')->first();
-        $this->assertEquals('12345678', $shop->shopify_token);
+        $this->assertEquals('12345678', $shop->shopify_token); // Previous token was 1234
     }
 
     public function testAuthAcceptsShopWithCodeAndRedirectsToHome()
@@ -69,7 +69,7 @@ class AuthControllerTest extends TestCase
     public function testAuthAcceptsShopWithCodeAndRedirectsToLoginIfRequestIsInvalid()
     {
         $params = $this->hmacParams;
-        $params['hmac'] = 'makemeinvalid';
+        $params['hmac'] = 'MakeMeInvalid';
 
         $response = $this->call('get', '/authenticate', $params);
 
@@ -91,6 +91,7 @@ class AuthControllerTest extends TestCase
     public function testAuthenticateDoesFiresJobs()
     {
         Queue::fake();
+        
         config(['shopify-app.webhooks' => [
             [
                 'topic' => 'orders/create',

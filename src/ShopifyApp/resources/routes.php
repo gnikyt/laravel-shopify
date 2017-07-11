@@ -10,6 +10,16 @@
 */
 
 Route::group(['middleware' => ['web']], function () {
+    /*
+    |--------------------------------------------------------------------------
+    | Home Route
+    |--------------------------------------------------------------------------
+    |
+    | Homepage for an authenticated store. Store is checked with the auth.shop
+    | middleware and redirected to login if not.
+    |
+    */
+
     Route::get(
         '/',
         'OhMyBrew\ShopifyApp\Controllers\HomeController@index'
@@ -17,11 +27,29 @@ Route::group(['middleware' => ['web']], function () {
     ->middleware('auth.shop')
     ->name('home');
 
+    /*
+    |--------------------------------------------------------------------------
+    | Login Route
+    |--------------------------------------------------------------------------
+    |
+    | Allows a shop to login/install.
+    |
+    */
+
     Route::get(
         '/login',
         'OhMyBrew\ShopifyApp\Controllers\AuthController@index'
     )->name('login');
 
+    /*
+    |--------------------------------------------------------------------------
+    | Authenticate Method
+    |--------------------------------------------------------------------------
+    |
+    | Authenticates a shop.
+    |
+    */
+    
     Route::match(
         ['get', 'post'],
         '/authenticate',

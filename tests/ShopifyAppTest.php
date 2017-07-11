@@ -5,23 +5,28 @@ use OhMyBrew\ShopifyApp\Models\Shop;
 
 class ShopifyAppControllerTest extends TestCase
 {
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->shopifyApp = new ShopifyApp($this->app);
+    }
+
     public function testShopWithoutSession()
     {
         // No session, no API instance, thus no shop
-        $shopifyApp = new ShopifyApp($this->app);
-        $this->assertNull($shopifyApp->shop());
+        $this->assertNull($this->shopifyApp->shop());
     }
 
     public function testShopWithSession()
     {
         session(['shopify_domain' => 'example.myshopify.com']);
-        $shopifyApp = new ShopifyApp($this->app);
 
         // First run should store the shop object to shop var
-        $run1 = $shopifyApp->shop();
+        $run1 = $this->shopifyApp->shop();
 
         // Second run should retrive shop var
-        $run2 = $shopifyApp->shop();
+        $run2 = $this->shopifyApp->shop();
 
         $this->assertEquals($run1, $run2);
     }
@@ -31,16 +36,14 @@ class ShopifyAppControllerTest extends TestCase
         session(['shopify_domain' => 'example-nonexistant.myshopify.com']);
         $this->assertEquals(null, Shop::where('shopify_domain', 'example-nonexistant.myshopify.com')->first());
 
-        $shopifyApp = new ShopifyApp($this->app);
-        $shopifyApp->shop();
+        $this->shopifyApp->shop();
 
         $this->assertNotNull(Shop::where('shopify_domain', 'example-nonexistant.myshopify.com')->first());
     }
 
     public function testReturnsApiInstance()
     {
-        $shopifyApp = new ShopifyApp($this->app);
-        $this->assertEquals(\OhMyBrew\BasicShopifyAPI::class, get_class($shopifyApp->api()));
+        $this->assertEquals(\OhMyBrew\BasicShopifyAPI::class, get_class($this->shopifyApp->api()));
     }
 
     public function testShopSanitize()
@@ -49,15 +52,14 @@ class ShopifyAppControllerTest extends TestCase
         $domains_2 = ['my-shop', 'my-shop.myshopify.io', 'https://my-shop.myshopify.io', 'http://my-shop.myshopify.io'];
 
         // Test for standard myshopify.com
-        $shopifyApp = new ShopifyApp($this->app);
         foreach ($domains as $domain) {
-            $this->assertEquals('my-shop.myshopify.com', $shopifyApp->sanitizeShopDomain($domain));
+            $this->assertEquals('my-shop.myshopify.com', $this->shopifyApp->sanitizeShopDomain($domain));
         }
 
         // Test if someone changed the domain
         config(['shopify-app.myshopify_domain' => 'myshopify.io']);
         foreach ($domains_2 as $domain) {
-            $this->assertEquals('my-shop.myshopify.io', $shopifyApp->sanitizeShopDomain($domain));
+            $this->assertEquals('my-shop.myshopify.io', $this->shopifyApp->sanitizeShopDomain($domain));
         }
     }
 }
