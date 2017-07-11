@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "f2a75e27b0e22183c7d3c7b015c91d34",
-    "content-hash": "8fc0af29b1075fb5706f142db389bfbd",
+    "hash": "ca2c101b3e9d0bd8c195539d9ee73a9b",
+    "content-hash": "115689213031384585af86eb842fadd2",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -839,7 +839,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/0966ce8ef5cabb99702f3831e33e8c7b7f378daa",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/150433b7bb5431e665f606025892e6cf14b03208",
                 "reference": "e72817b107fa81fed42843f66e1c2e4934b5bbae",
                 "shasum": ""
             },
@@ -1957,7 +1957,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/routing/zipball/65da5542321cdbd117915b711cbee39c859af851",
+                "url": "https://api.github.com/repos/symfony/routing/zipball/4af7c54699852e4fbf1a12685d38ba8a215929bf",
                 "reference": "65da5542321cdbd117915b711cbee39c859af851",
                 "shasum": ""
             },
@@ -2102,7 +2102,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/5942322cc8d3dda87d2d49fcf07a8f543ab99c29",
+                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/787ae298fa2ee8e7df552055621d972d2964bd50",
                 "reference": "5942322cc8d3dda87d2d49fcf07a8f543ab99c29",
                 "shasum": ""
             },
@@ -3851,6 +3851,57 @@
             "time": "2016-10-03 07:35:21"
         },
         {
+            "name": "squizlabs/php_codesniffer",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
+                "reference": "9fcb514c25ad37ef6329908060ab62fcd943c684"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/9fcb514c25ad37ef6329908060ab62fcd943c684",
+                "reference": "9fcb514c25ad37ef6329908060ab62fcd943c684",
+                "shasum": ""
+            },
+            "require": {
+                "ext-simplexml": "*",
+                "ext-tokenizer": "*",
+                "ext-xmlwriter": "*",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0"
+            },
+            "bin": [
+                "bin/phpcs",
+                "bin/phpcbf"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.x-dev"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Greg Sherwood",
+                    "role": "lead"
+                }
+            ],
+            "description": "PHP_CodeSniffer tokenizes PHP, JavaScript and CSS files and detects violations of a defined set of coding standards.",
+            "homepage": "http://www.squizlabs.com/php-codesniffer",
+            "keywords": [
+                "phpcs",
+                "standards"
+            ],
+            "time": "2017-07-06 04:26:27"
+        },
+        {
             "name": "symfony/config",
             "version": "3.4.x-dev",
             "source": {
@@ -3922,7 +3973,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/filesystem/zipball/b8f565808330129d4475d108d0129e897cde9f54",
+                "url": "https://api.github.com/repos/symfony/filesystem/zipball/353cb00e1fb1342b6e30a6c84e4b301568e58b9f",
                 "reference": "b8f565808330129d4475d108d0129e897cde9f54",
                 "shasum": ""
             },

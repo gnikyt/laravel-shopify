@@ -34,9 +34,7 @@ class ShopifyAppProvider extends ServiceProvider
     public function register()
     {
         // Merge options with published config
-        $this->mergeConfigFrom(
-            __DIR__.'/resources/config/shopify-app.php', 'shopify-app'
-        );
+        $this->mergeConfigFrom(__DIR__.'/resources/config/shopify-app.php', 'shopify-app');
 
         // ShopifyApp facade
         $this->app->bind('shopifyapp', function ($app) {

@@ -36,7 +36,8 @@ class ShopifyApp
      *
      * @return \OhMyBrew\Models\Shop
      */
-    public function shop() {
+    public function shop()
+    {
         $shopifyDomain = session('shopify_domain');
         if (!$this->shop && $shopifyDomain) {
             // Grab shop from database here
