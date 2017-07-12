@@ -10,7 +10,10 @@ class Shop extends Model
      *
      * @var array
      */
-    protected $fillable = ['shopify_domain', 'shopify_token'];
+    protected $fillable = [
+        'shopify_domain',
+        'shopify_token'
+    ];
 
     /**
      * The API instance

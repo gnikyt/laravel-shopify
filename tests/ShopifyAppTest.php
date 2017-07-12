@@ -50,6 +50,7 @@ class ShopifyAppControllerTest extends TestCase
     {
         $domains = ['my-shop', 'my-shop.myshopify.com', 'https://my-shop.myshopify.com', 'http://my-shop.myshopify.com'];
         $domains_2 = ['my-shop', 'my-shop.myshopify.io', 'https://my-shop.myshopify.io', 'http://my-shop.myshopify.io'];
+        $domains_3 = ['', false, null];
 
         // Test for standard myshopify.com
         foreach ($domains as $domain) {
@@ -60,6 +61,11 @@ class ShopifyAppControllerTest extends TestCase
         config(['shopify-app.myshopify_domain' => 'myshopify.io']);
         foreach ($domains_2 as $domain) {
             $this->assertEquals('my-shop.myshopify.io', $this->shopifyApp->sanitizeShopDomain($domain));
+        }
+
+        // Test for empty shops
+        foreach ($domains_3 as $domain) {
+            $this->assertEquals(null, $this->shopifyApp->sanitizeShopDomain($domain));
         }
     }
 }

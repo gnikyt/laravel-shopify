@@ -3,7 +3,9 @@
 [![Build Status](https://secure.travis-ci.org/ohmybrew/laravel-shopify.png?branch=master)](http://travis-ci.org/ohmybrew/laravel-shopify)
 [![Coverage Status](https://coveralls.io/repos/github/ohmybrew/laravel-shopify/badge.svg?branch=master)](https://coveralls.io/github/ohmybrew/laravel-shopify?branch=master)
 
-*Work in progress*. A Laravel package for aiding in Shopify App development, it will follow suit to `shopify_app` for Rails.
+A Laravel package for aiding in Shopify App development, similar to `shopify_app` for Rails.
+
+This package is fully tested however I am still doing real-world testing before marking stable.
 
 ## Goals
 
@@ -11,7 +13,7 @@
 - [x] Integration with Shopify API
 - [x] Authentication & installation for shops
 - [x] Auto install app webhooks and scripttags thorugh background jobs
-- [ ] Provide basic ESDK views
+- [x] Provide basic ESDK views
 
 ## Requirements
 
@@ -25,7 +27,7 @@ Here are the requirements to run this Laravel package.
 
 ## Installation
 
-### Provider
+### Providers
 
 Open `config/app.php` find `providers` array. Add a new line with:
 
@@ -33,7 +35,7 @@ Open `config/app.php` find `providers` array. Add a new line with:
 \OhMyBrew\ShopifyApp\ShopifyAppProvider::class,
 ```
 
-### Facade
+### Facades
 
 Open `config/app.php` find `aliases` array. Add a new line with:
 
@@ -41,7 +43,7 @@ Open `config/app.php` find `aliases` array. Add a new line with:
 'ShopifyApp' => \OhMyBrew\ShopifyApp\Facades\ShopifyAppFacade::class,
 ```
 
-### Middleware
+### Middlewares
 
 Open `app/Http/Kernel.php` find `routeMiddleware` array. Add a new line with:
 
@@ -63,13 +65,31 @@ If you do however, you can leave the `sync` driver as default. But, it may impac
 
 Run `php artisan migrate`.
 
-### Configuration Properties
+### Configuration
+
+#### Package
 
 Run `php artisan vendor:publish`.
 
-*More coming soon...*
+You're now able to access config in `config/shopify-app.php`. Essentially you will need to fill in the `app_name`, `api_key`, `api_secret`, and `api_scopes` to generate a working app. Items like `webhooks` and `scripttags` are completely optional depending on your app requirements.
 
-## Routes
+#### Shopify APp
+
+In your app's settings on your Shopify Partner dashboard, you need to set the callback URL to be:
+
+```bash
+https://(your-domain).com/
+```
+
+And the `redirect_uri` to be:
+
+```bash
+https://(your-domain).com/authenticate
+```
+
+The callback URL will point to the home route, while the `redirect_uri` will point to the authentication route.
+
+## Route List
 
 Here are the defined routes and what they do.
 
@@ -97,10 +117,6 @@ ShopifyApp::shop()
 $shop = ShopifyApp::shop();
 $shop->api()->request(...);
 ```
-
-## Notes
-
-I have not touched PHP in years, I've been primarily a full-time Ruby developer. Please forgive any quirks :)
 
 ## LICENSE
 

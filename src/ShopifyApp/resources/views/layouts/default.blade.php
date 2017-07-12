@@ -22,7 +22,7 @@
         <script type="text/javascript">
             ShopifyApp.init({
                 apiKey: '{{ config('shopify-app.api_key') }}',
-                shopOrigin: 'https://{{ \ShopifyApp::shop()->shopify_domain }}',
+                shopOrigin: 'https://{{ ShopifyApp::shop()->shopify_domain }}',
                 debug: false,
                 forceRedirect: true
             });

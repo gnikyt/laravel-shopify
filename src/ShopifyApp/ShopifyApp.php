@@ -72,8 +72,12 @@ class ShopifyApp
      *
      * @return string
      */
-    public function sanitizeShopDomain(string $domain)
+    public function sanitizeShopDomain($domain)
     {
+        if (empty($domain)) {
+            return null;
+        }
+
         $configEndDomain = config('shopify-app.myshopify_domain');
         $domain = preg_replace('/https?:\/\//i', '', trim($domain));
 

@@ -1,15 +1,19 @@
 <?php namespace OhMyBrew\ShopifyApp\Test;
 
 use OhMyBrew\ShopifyApp\Middleware\AuthShop;
+use Illuminate\Support\Facades\Input;
 
 class AuthShopMiddlewareTest extends TestCase
 {
     public function testShopHasNoAccessShouldAbort()
     {
-        $middleware = new AuthShop;
-        $next = function() { };
-        $result = $middleware->handle(request(), $next);
+        $called = false;
+        $result = (new AuthShop)->handle(request(), function($request) use(&$called) {
+            // Should never be called
+            $called = true;
+        });
 
+        $this->assertFalse($called);
         $this->assertEquals(true, strpos($result, 'Redirecting to http://localhost/authenticate') !== false);
     }
 
@@ -18,12 +22,27 @@ class AuthShopMiddlewareTest extends TestCase
         // Set a shop
         session(['shopify_domain' => 'example.myshopify.com']);
 
-        $self = $this;
-        $middleware = new AuthShop;
-        $next = function($request) use(&$self) {
-            // $next should be invoked since shop is authenticated
-            $self->assertNotNull($request);
-        };
-        $middleware->handle(request(), $next);
+        $called = false;
+        (new AuthShop)->handle(request(), function($request) use(&$called) {
+            // Should be called
+            $called = true;
+        });
+
+        $this->assertEquals(true, $called);
+    }
+
+    public function testShopsWhichDoNotMatchShouldKillSessionAndDirectToReAuthenticate()
+    {
+        // Set a shop
+        session(['shopify_domain' => 'example.myshopify.com']);
+        Input::merge(['shop' => 'example-different-shop.myshopify.com']);
+
+        $called = false;
+        (new AuthShop)->handle(request(), function($request) use(&$called) {
+            // Should never be called
+            $called = true;
+        });
+
+        $this->assertFalse($called);
     }
 }

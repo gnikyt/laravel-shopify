@@ -16,10 +16,20 @@ class HomeControllerTest extends TestCase
         $this->assertEquals(true, strpos($response->content(), 'Redirecting to http://localhost/authenticate') !== false);
     }
 
+    public function testWithMismatchedShopsShouldRedirectToAuthenticate()
+    {
+        session(['shopify_domain' => 'example.myshopify.com']);
+        $response = $this->call('get', '/', ['shop' => 'example-different-shop.myshopify.com']);
+        $this->assertEquals(true, strpos($response->content(), 'Redirecting to http://localhost/authenticate') !== false);
+    }
+
+
     public function testShopWithSessionShouldLoad()
     {
         session(['shopify_domain' => 'example.myshopify.com']);
         $response = $this->get('/');
         $response->assertStatus(200);
+        $this->assertEquals(true, strpos($response->content(), "apiKey: ''") !== false);
+        $this->assertEquals(true, strpos($response->content(), "shopOrigin: 'https://example.myshopify.com'") !== false);
     }
 }
