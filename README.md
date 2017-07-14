@@ -7,6 +7,26 @@ A Laravel package for aiding in Shopify App development, similar to `shopify_app
 
 ![Screenshot](https://github.com/ohmybrew/laravel-shopify/raw/master/docs/screenshot.png)
 
+## Table of Contents
+
+- [Goals](#goals)
+- [Requirements](#requirements)
+- [Installation](#installation)
+  - [Providers](#providers)
+  - [Facades](#facades)
+  - [Middlewares](#middlewares)
+  - [Jobs](#jobs)
+  - [Migrations](#migrations)
+  - [Configuration](#configuration)
+    - [Package](#package)
+    - [Shopify App](#shopify-app)
+- [Documentation](#documentation)
+- [Route List](#route-list)
+- [Usage](#usage)
+  - [Accessing the current shop](#accessing-the-current-shop)
+  - [Accessing API for the current shop](#accessing-api-for-the-current-shop)
+- [LICENSE](#license)
+
 ## Goals
 
 - [x] Provide assistance in developing Shopify apps with Laravel
