@@ -23,7 +23,7 @@ class AuthShop
         if ($shop === null || ($shopParam && $shopParam !== $shop->shopify_domain) === true) {
             // Either no shop session or shops do not match
             session()->forget('shopify_domain');
-            return redirect()->route('authenticate')->withInput(['shop' => $shopParam]);
+            return redirect()->route('authenticate')->with('shop', $shopParam);
         }
 
         // Move on, authenticated

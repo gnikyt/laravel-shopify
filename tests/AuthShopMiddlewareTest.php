@@ -44,5 +44,6 @@ class AuthShopMiddlewareTest extends TestCase
         });
 
         $this->assertFalse($called);
+        $this->assertEquals('example-different-shop.myshopify.com', session('shop'));
     }
 }

@@ -5,7 +5,7 @@
 
 A Laravel package for aiding in Shopify App development, similar to `shopify_app` for Rails.
 
-This package is fully tested however I am still doing real-world testing before marking stable.
+![Screenshot](https://github.com/ohmybrew/laravel-shopify/raw/master/docs/screenshot.png)
 
 ## Goals
 
@@ -29,11 +29,19 @@ Here are the requirements to run this Laravel package.
 
 ### Providers
 
-Open `config/app.php` find `providers` array. Add a new line with:
+Open `config/app.php` find `providers` array. Find a line with:
+
+```php
+App\Providers\RouteServiceProvider::class,
+```
+
+Before it, add a new line with:
 
 ```php
 \OhMyBrew\ShopifyApp\ShopifyAppProvider::class,
 ```
+
+This ensures you can override the default routes.
 
 ### Facades
 
@@ -73,7 +81,7 @@ Run `php artisan vendor:publish`.
 
 You're now able to access config in `config/shopify-app.php`. Essentially you will need to fill in the `app_name`, `api_key`, `api_secret`, and `api_scopes` to generate a working app. Items like `webhooks` and `scripttags` are completely optional depending on your app requirements.
 
-#### Shopify APp
+#### Shopify App
 
 In your app's settings on your Shopify Partner dashboard, you need to set the callback URL to be:
 
@@ -88,6 +96,10 @@ https://(your-domain).com/authenticate
 ```
 
 The callback URL will point to the home route, while the `redirect_uri` will point to the authentication route.
+
+## Documentation
+
+Information on getting started, overriding routes, controllers, is located in the `docs` directory of this repo.
 
 ## Route List
 
