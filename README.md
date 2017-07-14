@@ -91,13 +91,17 @@ If you do however, you can leave the `sync` driver as default. But, it may impac
 
 ### Migrations
 
-Run `php artisan migrate`.
+```bash
+php artisan migrate
+```
 
 ### Configuration
 
 #### Package
 
-Run `php artisan vendor:publish`.
+```bash
+php artisan vendor:publish
+```
 
 You're now able to access config in `config/shopify-app.php`. Essentially you will need to fill in the `app_name`, `api_key`, `api_secret`, and `api_scopes` to generate a working app. Items like `webhooks` and `scripttags` are completely optional depending on your app requirements.
 
