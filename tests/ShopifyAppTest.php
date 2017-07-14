@@ -68,4 +68,22 @@ class ShopifyAppControllerTest extends TestCase
             $this->assertEquals(null, $this->shopifyApp->sanitizeShopDomain($domain));
         }
     }
+
+    public function testShouldUseDefaultModel()
+    {
+        session(['shopify_domain' => 'example.myshopify.com']);
+
+        $shop = $this->shopifyApp->shop();
+        $this->assertEquals('OhMyBrew\ShopifyApp\Models\Shop', get_class($shop));
+    }
+
+    public function testShouldAllowForModelOverride()
+    {
+        session(['shopify_domain' => 'example.myshopify.com']);
+        config(['shopify-app.shop_model' => 'OhMyBrew\ShopifyApp\Test\ShopModelStub']);
+
+        $shop = $this->shopifyApp->shop();
+        $this->assertEquals('OhMyBrew\ShopifyApp\Test\ShopModelStub', get_class($shop));
+        $this->assertEquals('hello', $shop->hello());
+    }
 }

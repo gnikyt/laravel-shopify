@@ -34,6 +34,16 @@ use OhMyBrew\ShopifyApp\Models\Shop as BaseShop;
 
 class Shop extends BaseShop
 {
+    protected $table = 'shops';
+
     // Your extensions or changes
 }
+```
+
+Open `config/shopify-app.php` and change `shop_model` to point to your shop model, or set the path to the `SHOPIFY_SHOP_MODEL` environment variable.
+
+Example:
+
+```php
+'shop_model' => '\App\Shop' // or env('SHOPIFY_SHOP_MODEL') and change .env to point to it
 ```
