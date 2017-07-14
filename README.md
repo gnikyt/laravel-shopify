@@ -125,6 +125,11 @@ The callback URL will point to the home route, while the `redirect_uri` will poi
 
 Information on getting started, overriding routes, controllers, is located in the `docs` directory of this repo.
 
+- [Becoming a Shopify Developer](docs/becoming-a-shopify-developer.md)
+- [Process in Authentication](docs/process-in-authentication.md)
+- [Developing Locally](docs/developing-locally.md)
+- [Overriding / Extending Package](docs/overriding-and-extending.md)
+
 ## Route List
 
 Here are the defined routes and what they do.
