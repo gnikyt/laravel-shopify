@@ -56,4 +56,19 @@ Route::group(['middleware' => ['web']], function () {
         'OhMyBrew\ShopifyApp\Controllers\AuthController@authenticate'
     )
     ->name('authenticate');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Webhook Handler
+    |--------------------------------------------------------------------------
+    |
+    | Handles incoming webhooks.
+    |
+    */
+    
+    Route::post(
+        '/webhook/{type}',
+        'OhMyBrew\ShopifyApp\Controllers\WebhookController@handle'
+    )
+    ->name('webhook');
 });

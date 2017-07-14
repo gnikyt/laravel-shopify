@@ -34,6 +34,7 @@ A Laravel package for aiding in Shopify App development, similar to `shopify_app
 - [x] Authentication & installation for shops
 - [x] Auto install app webhooks and scripttags thorugh background jobs
 - [x] Provide basic ESDK views
+- [ ] Handles and processes incoming webhooks
 
 ## Requirements
 
@@ -89,6 +90,8 @@ This package uses jobs to install webhooks and scripttags if any are defined in 
 
 If you do however, you can leave the `sync` driver as default. But, it may impact load times for the customer accessing the app. Its recommended to setup Redis or database as your default driver in `config/queue.php`. See [Laravel's docs on setting up queue drivers](https://laravel.com/docs/5.4/queues).
 
+For more information on creating webhooks, see `docs/creating-webhooks.md`.
+
 ### Migrations
 
 ```bash
@@ -128,6 +131,7 @@ Information on getting started, overriding routes, controllers, is located in th
 - [Becoming a Shopify Developer](docs/becoming-a-shopify-developer.md)
 - [Process in Authentication](docs/process-in-authentication.md)
 - [Developing Locally](docs/developing-locally.md)
+- [Creating Webhooks](docs/creating-webhooks.md)
 - [Overriding / Extending Package](docs/overriding-and-extending.md)
 
 ## Route List
