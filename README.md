@@ -34,7 +34,7 @@ A Laravel package for aiding in Shopify App development, similar to `shopify_app
 - [x] Authentication & installation for shops
 - [x] Auto install app webhooks and scripttags thorugh background jobs
 - [x] Provide basic ESDK views
-- [ ] Handles and processes incoming webhooks
+- [x] Handles and processes incoming webhooks
 
 ## Requirements
 

@@ -10,11 +10,17 @@ class OrdersCreateJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    protected $shopDomain;
+    protected $data;
+
     public function __construct($shopDomain, $data)
     {
+        $this->shopDomain = $shopDomain;
+        $this->data = $data;
     }
 
     public function handle()
     {
+        
     }
 }
