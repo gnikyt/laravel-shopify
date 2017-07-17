@@ -7,7 +7,7 @@ use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 class AuthShop
 {
     /**
-     * Handle an incoming request.
+     * Handle an incoming request
      *
      * @param \Illuminate\Http\Request $request
      * @param \Closure                 $next

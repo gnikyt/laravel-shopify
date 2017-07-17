@@ -10,8 +10,8 @@ class OrdersCreateJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $shopDomain;
-    protected $data;
+    public $shopDomain;
+    public $data;
 
     public function __construct($shopDomain, $data)
     {
@@ -21,6 +21,6 @@ class OrdersCreateJob implements ShouldQueue
 
     public function handle()
     {
-        
+        // Do what you wish with the data
     }
 }

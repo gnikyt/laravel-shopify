@@ -41,4 +41,28 @@ class WebhookControllerTest extends TestCase
             $this->assertEquals("\\App\\Jobs\\$className", $method->invoke($controller, $type));
         }
     }
+
+    public function testWebhookShouldRecieveData()
+    {
+        Queue::fake();
+
+        $response = $this->call(
+            'post',
+            '/webhook/orders-create',
+            [], [], [],
+            [
+                'HTTP_CONTENT_TYPE' => 'application/json',
+                'HTTP_X_SHOPIFY_SHOP_DOMAIN' => 'example.myshopify.com'
+            ],
+            file_get_contents(__DIR__.'/fixtures/webhook.json')
+        );
+        $response->assertStatus(201);
+
+        Queue::assertPushed(\App\Jobs\OrdersCreateJob::class, function ($job) {
+            return $job->shopDomain === 'example.myshopify.com'
+                   && $job->data instanceof \stdClass
+                   && $job->data->email === 'jon@doe.ca'
+            ;
+        });
+    }
 }

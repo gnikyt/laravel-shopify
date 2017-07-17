@@ -12,4 +12,6 @@ and the `redirect_uri` to
 
 https://localhost:8000/authenticate
 
-This way you'll be able to run the app on your local machine. *Note*: HTTPS is note required for Shopify apps, so you will need to use a self-signed certificate accepted by your system/browser to run apps locally. The best way to do this is through a Docker setup, or Homestead, and configuring Nginx to use your self-signed certificate.
+This way you'll be able to run the app on your local machine.
+
+*Note*: HTTPS is note required for Shopify apps, so you will need to use a self-signed certificate accepted by your system/browser to run apps locally. The best way to do this is through a Docker setup, or Homestead, and configuring Nginx to use your self-signed certificate. See `docs/developing-locally.md` for more information.

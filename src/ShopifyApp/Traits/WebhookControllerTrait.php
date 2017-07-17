@@ -8,7 +8,7 @@ trait WebhookControllerTrait
      * Handles an incoming webhook
      *
      * @param string $type The type of webhook
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
     public function handle($type)
@@ -20,8 +20,8 @@ trait WebhookControllerTrait
         }
 
         // Dispatch
-        $shopDomain = request()->header('X-Shopify-Shop-Domain');
-        $data = request()->all();
+        $shopDomain = request()->header('x-shopify-shop-domain');
+        $data = json_decode(request()->getContent());
         dispatch(new $classPath($shopDomain, $data));
 
         return response('', 201);
@@ -31,7 +31,7 @@ trait WebhookControllerTrait
      * Converts type into a class string
      *
      * @param string $type The type of webhook
-     * 
+     *
      * @return string
      */
     protected function getJobClassFromType($type)
