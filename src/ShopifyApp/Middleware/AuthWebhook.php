@@ -15,6 +15,17 @@ class AuthWebhook
      */
     public function handle(Request $request, Closure $next)
     {
-      // ... validate HMAC and headers
+        $hmac = request()->header('x-shopify-hmac-sha256');
+        $shop = request()->header('x-shopify-shop-domain');
+        $data = request()->getContent();
+
+        $hmacLocal = hash_hmac('sha256', $data, config('shopify-app.api_secret'));
+        if ($hmac !== $hmacLocal || empty($shop)) {
+            // Issue with HMAC or missing shop header
+            abort(401, 'Invalid webhook signature');
+        }
+
+        // All good, process webhook
+        return $next($request);
     }
 }

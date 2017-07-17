@@ -70,5 +70,6 @@ Route::group(['middleware' => ['web']], function () {
         '/webhook/{type}',
         'OhMyBrew\ShopifyApp\Controllers\WebhookController@handle'
     )
+    ->middleware('auth.webhook')
     ->name('webhook');
 });

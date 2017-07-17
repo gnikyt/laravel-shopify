@@ -3,15 +3,34 @@
 use \ReflectionMethod;
 use Illuminate\Support\Facades\Queue;
 
-require 'OrdersCreateJobStub.php';
+if (!class_exists('App\Jobs\OrdersCreateJob')) {
+    require 'OrdersCreateJobStub.php';
+}
 
 class WebhookControllerTest extends TestCase
 {
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->headers = [
+            'HTTP_CONTENT_TYPE' => 'application/json',
+            'HTTP_X_SHOPIFY_SHOP_DOMAIN' => 'example.myshopify.com',
+            'HTTP_X_SHOPIFY_HMAC_SHA256' => '8432614ea1ce63b77959195b0e5e1e8469bfb7890e40ab51fb9c3ac26f8b050c', // Matches fixture data and API secret
+        ];
+    }
+
     public function testShouldReturn201ResponseOnSuccess()
     {
         Queue::fake();
 
-        $response = $this->call('post', '/webhook/orders-create');
+        $response = $this->call(
+            'post',
+            '/webhook/orders-create',
+            [], [], [],
+            $this->headers,
+            file_get_contents(__DIR__.'/fixtures/webhook.json')
+        );
         $response->assertStatus(201);
 
         Queue::assertPushed(\App\Jobs\OrdersCreateJob::class);
@@ -20,7 +39,13 @@ class WebhookControllerTest extends TestCase
 
     public function testShouldReturnErrorResponseOnFailure()
     {
-        $response = $this->call('post', '/webhook/products-create');
+        $response = $this->call(
+            'post',
+            '/webhook/products-create',
+            [], [], [],
+            $this->headers,
+            file_get_contents(__DIR__.'/fixtures/webhook.json')
+        );
         $response->assertStatus(500);
         $this->assertEquals('Missing webhook job: \App\Jobs\ProductsCreateJob', $response->exception->getMessage());
     }
@@ -50,10 +75,7 @@ class WebhookControllerTest extends TestCase
             'post',
             '/webhook/orders-create',
             [], [], [],
-            [
-                'HTTP_CONTENT_TYPE' => 'application/json',
-                'HTTP_X_SHOPIFY_SHOP_DOMAIN' => 'example.myshopify.com'
-            ],
+            $this->headers,
             file_get_contents(__DIR__.'/fixtures/webhook.json')
         );
         $response->assertStatus(201);

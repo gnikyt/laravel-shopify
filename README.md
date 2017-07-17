@@ -78,6 +78,7 @@ Open `app/Http/Kernel.php` find `routeMiddleware` array. Add a new line with:
 
 ```php
 'auth.shop' => \OhMyBrew\ShopifyApp\Middleware\AuthShop::class,
+'auth.webhook' => \OhMyBrew\ShopifyApp\Middleware\AuthWebhook::class,
 ```
 
 ### Jobs

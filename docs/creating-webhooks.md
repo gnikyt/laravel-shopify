@@ -78,4 +78,5 @@ Route::post(
     '/webhook/some-string-here',
     'App\Http\Controllers\CustomWebhookController'
 )
+->middleware('auth.middleware')
 ```
