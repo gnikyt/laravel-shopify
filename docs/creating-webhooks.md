@@ -7,38 +7,11 @@
 
 ## Creating a Webhook Job
 
-Create a new job via `php artisan make:job OrdersCreate` (App/Jobs/OrdersCreateJob).
+Create a new job via `php artisan shopify-app:make:webhook [name] [topic]`.
 
-Create a constructor in the job class where the first argument is the shop's myshopify domain and the second argument is the JSON decoded webhook data. For an example:
+The first argument is the class name for the job, the second is the Shopify topic/event for the webhook.
 
-```php
-<?php namespace App\Jobs;
-
-use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-
-class OrdersCreateJob implements ShouldQueue
-{
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-    public $shopDomain;
-    public $data;
-
-    public function __construct($shopDomain, $data)
-    {
-        $this->shopDomain = $shopDomain; // example: example.myshopify.com
-        $this->data = $data; // example: $this->data->line_items;
-    }
-
-    public function handle()
-    {
-        // Do what you wish with the data
-    }
-}
-```
+Example: `php artisan shopify-app:make:webhook OrdersCreateJob orders/create` will create a webhook job file in `App/Jobs/OrdersCreateJob.php` where you can esily modify the `handle` method to do what you need with the webhook data.
 
 ### Config Entry
 

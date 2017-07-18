@@ -40,5 +40,10 @@ class ShopifyAppProvider extends ServiceProvider
         $this->app->bind('shopifyapp', function ($app) {
             return new ShopifyApp($app);
         });
+
+        // Commands
+        $this->commands([
+            \OhMyBrew\ShopifyApp\Console\WebhookJobMakeCommand::class,
+        ]);
     }
 }
