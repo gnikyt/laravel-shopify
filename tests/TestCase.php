@@ -36,7 +36,7 @@ abstract class TestCase extends OrchestraTestCase
     protected function resolveApplicationHttpKernel($app)
     {
         // For adding custom the shop middleware
-        $app->singleton('Illuminate\Contracts\Http\Kernel', 'OhMyBrew\ShopifyApp\Test\Kernel');
+        $app->singleton('Illuminate\Contracts\Http\Kernel', 'OhMyBrew\ShopifyApp\Test\Stubs\Kernel');
     }
 
     protected function getEnvironmentSetUp($app)

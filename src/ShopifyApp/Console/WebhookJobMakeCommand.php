@@ -59,7 +59,7 @@ class WebhookJobMakeCommand extends JobMakeCommand
     'webhooks' => [
         [
             'topic' => '{$this->argument('topic')}',
-            'address' => 'https://your-domain.com/webhook/{$this->getUrlFromName()}'
+            'address' => 'https://your-domain.com/webhook/{$this->getUrlFromName($this->getNameInput())}'
         ]
     ]
         ");
@@ -68,11 +68,12 @@ class WebhookJobMakeCommand extends JobMakeCommand
     /**
      * Converts the job class name into a URL endpoint
      *
+     * @param string $name The name of the job
+     *
      * @return string
      */
-    protected function getUrlFromName()
+    protected function getUrlFromName(string $name)
     {
-        $name = $this->getNameInput();
         if (Str::endsWith($name, 'Job')) {
             $name = substr($name, 0, -3);
         }

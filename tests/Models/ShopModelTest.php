@@ -1,6 +1,7 @@
-<?php namespace OhMyBrew\ShopifyApp\Test;
+<?php namespace OhMyBrew\ShopifyApp\Test\Models;
 
 use OhMyBrew\ShopifyApp\Models\Shop;
+use OhMyBrew\ShopifyApp\Test\TestCase;
 
 class ShopModelTest extends TestCase
 {

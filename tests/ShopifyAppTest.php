@@ -2,6 +2,7 @@
 
 use OhMyBrew\ShopifyApp\ShopifyApp;
 use OhMyBrew\ShopifyApp\Models\Shop;
+use OhMyBrew\ShopifyApp\Test\Stubs\ShopModelStub;
 
 class ShopifyAppControllerTest extends TestCase
 {
@@ -80,10 +81,10 @@ class ShopifyAppControllerTest extends TestCase
     public function testShouldAllowForModelOverride()
     {
         session(['shopify_domain' => 'example.myshopify.com']);
-        config(['shopify-app.shop_model' => 'OhMyBrew\ShopifyApp\Test\ShopModelStub']);
+        config(['shopify-app.shop_model' => 'OhMyBrew\ShopifyApp\Test\Stubs\ShopModelStub']);
 
         $shop = $this->shopifyApp->shop();
-        $this->assertEquals('OhMyBrew\ShopifyApp\Test\ShopModelStub', get_class($shop));
+        $this->assertEquals('OhMyBrew\ShopifyApp\Test\Stubs\ShopModelStub', get_class($shop));
         $this->assertEquals('hello', $shop->hello());
     }
 }

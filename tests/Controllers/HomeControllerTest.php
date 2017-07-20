@@ -1,4 +1,7 @@
-<?php namespace OhMyBrew\ShopifyApp\Test;
+<?php namespace OhMyBrew\ShopifyApp\Test\Controllers;
+
+use OhMyBrew\ShopifyApp\Test\TestCase;
+use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
 
 class HomeControllerTest extends TestCase
 {

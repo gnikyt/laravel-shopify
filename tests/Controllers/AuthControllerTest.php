@@ -1,10 +1,12 @@
-<?php namespace OhMyBrew\ShopifyApp\Test;
+<?php namespace OhMyBrew\ShopifyApp\Test\Controllers;
 
 use Illuminate\Support\Facades\Queue;
 use OhMyBrew\ShopifyApp\Jobs\WebhookInstaller;
 use OhMyBrew\ShopifyApp\Jobs\ScripttagInstaller;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Models\Shop;
+use OhMyBrew\ShopifyApp\Test\TestCase;
+use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
 
 class AuthControllerTest extends TestCase
 {

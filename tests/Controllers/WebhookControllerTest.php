@@ -1,10 +1,11 @@
-<?php namespace OhMyBrew\ShopifyApp\Test;
+<?php namespace OhMyBrew\ShopifyApp\Test\Controllers;
 
 use \ReflectionMethod;
 use Illuminate\Support\Facades\Queue;
+use OhMyBrew\ShopifyApp\Test\TestCase;
 
 if (!class_exists('App\Jobs\OrdersCreateJob')) {
-    require 'OrdersCreateJobStub.php';
+    require __DIR__.'/../Stubs/OrdersCreateJobStub.php';
 }
 
 class WebhookControllerTest extends TestCase
@@ -29,7 +30,7 @@ class WebhookControllerTest extends TestCase
             '/webhook/orders-create',
             [], [], [],
             $this->headers,
-            file_get_contents(__DIR__.'/fixtures/webhook.json')
+            file_get_contents(__DIR__.'/../fixtures/webhook.json')
         );
         $response->assertStatus(201);
 
@@ -44,7 +45,7 @@ class WebhookControllerTest extends TestCase
             '/webhook/products-create',
             [], [], [],
             $this->headers,
-            file_get_contents(__DIR__.'/fixtures/webhook.json')
+            file_get_contents(__DIR__.'/../fixtures/webhook.json')
         );
         $response->assertStatus(500);
         $this->assertEquals('Missing webhook job: \App\Jobs\ProductsCreateJob', $response->exception->getMessage());
@@ -76,7 +77,7 @@ class WebhookControllerTest extends TestCase
             '/webhook/orders-create',
             [], [], [],
             $this->headers,
-            file_get_contents(__DIR__.'/fixtures/webhook.json')
+            file_get_contents(__DIR__.'/../fixtures/webhook.json')
         );
         $response->assertStatus(201);
 

@@ -1,4 +1,4 @@
-<?php namespace OhMyBrew\ShopifyApp\Test;
+<?php namespace OhMyBrew\ShopifyApp\Test\Stubs;
 
 class Kernel extends \Orchestra\Testbench\Http\Kernel
 {

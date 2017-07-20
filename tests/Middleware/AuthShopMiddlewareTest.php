@@ -1,7 +1,8 @@
-<?php namespace OhMyBrew\ShopifyApp\Test;
+<?php namespace OhMyBrew\ShopifyApp\Test\Middleware;
 
 use OhMyBrew\ShopifyApp\Middleware\AuthShop;
 use Illuminate\Support\Facades\Input;
+use OhMyBrew\ShopifyApp\Test\TestCase;
 
 class AuthShopMiddlewareTest extends TestCase
 {

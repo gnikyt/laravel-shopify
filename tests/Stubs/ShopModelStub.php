@@ -1,4 +1,4 @@
-<?php namespace OhMyBrew\ShopifyApp\Test;
+<?php namespace OhMyBrew\ShopifyApp\Test\Stubs;
 
 use OhMyBrew\ShopifyApp\Models\Shop as BaseShop;
 

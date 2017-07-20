@@ -1,10 +1,11 @@
-<?php namespace OhMyBrew\ShopifyApp\Test;
+<?php namespace OhMyBrew\ShopifyApp\Test\Middleware;
 
 use OhMyBrew\ShopifyApp\Middleware\AuthWebhook;
 use Illuminate\Support\Facades\Queue;
+use OhMyBrew\ShopifyApp\Test\TestCase;
 
 if (!class_exists('App\Jobs\OrdersCreateJob')) {
-    require 'OrdersCreateJobStub.php';
+    require __DIR__.'/../Stubs/OrdersCreateJobStub.php';
 }
 
 class AuthWebhookMiddlewareTest extends TestCase
@@ -42,7 +43,7 @@ class AuthWebhookMiddlewareTest extends TestCase
                 'HTTP_X_SHOPIFY_SHOP_DOMAIN' => 'example.myshopify.com',
                 'HTTP_X_SHOPIFY_HMAC_SHA256' => '8432614ea1ce63b77959195b0e5e1e8469bfb7890e40ab51fb9c3ac26f8b050c', // Matches fixture data and API secret
             ],
-            file_get_contents(__DIR__.'/fixtures/webhook.json')
+            file_get_contents(__DIR__.'/../fixtures/webhook.json')
         );
         $response->assertStatus(201);
     }
@@ -60,7 +61,7 @@ class AuthWebhookMiddlewareTest extends TestCase
                 'HTTP_X_SHOPIFY_SHOP_DOMAIN' => 'example.myshopify.com',
                 'HTTP_X_SHOPIFY_HMAC_SHA256' => '8432614ea1ce63b77959195b0e5e1e8469bfb7890e40ab51fb9c3ac26f8b050c', // Matches fixture data and API secret
             ],
-            file_get_contents(__DIR__.'/fixtures/webhook.json') . 'invalid'
+            file_get_contents(__DIR__.'/../fixtures/webhook.json') . 'invalid'
         );
         $response->assertStatus(401);
     }

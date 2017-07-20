@@ -1,10 +1,12 @@
-<?php namespace OhMyBrew\ShopifyApp\Test;
+<?php namespace OhMyBrew\ShopifyApp\Test\Jobs;
 
 use \ReflectionObject;
 use \ReflectionMethod;
 use Illuminate\Support\Facades\Queue;
 use OhMyBrew\ShopifyApp\Jobs\WebhookInstaller;
 use OhMyBrew\ShopifyApp\Models\Shop;
+use OhMyBrew\ShopifyApp\Test\TestCase;
+use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
 
 class WebhookInstallerJobTest extends TestCase
 {

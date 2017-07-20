@@ -1,10 +1,12 @@
-<?php namespace OhMyBrew\ShopifyApp\Test;
+<?php namespace OhMyBrew\ShopifyApp\Test\Jobs;
 
 use \ReflectionObject;
 use \ReflectionMethod;
 use Illuminate\Support\Facades\Queue;
 use OhMyBrew\ShopifyApp\Jobs\ScripttagInstaller;
 use OhMyBrew\ShopifyApp\Models\Shop;
+use OhMyBrew\ShopifyApp\Test\TestCase;
+use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
 
 class ScripttagInstallerJobTest extends TestCase
 {
