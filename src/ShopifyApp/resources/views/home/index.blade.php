@@ -78,7 +78,7 @@
                     buttons: {
                     secondary: {
                         label: 'Documentation',
-                        href: 'http://docs.shopify.com/embedded-app-sdk',
+                        href: 'https://github.com/ohmybrew/laravel-shopify',
                         target: 'new'
                     }
                 }
