@@ -48,6 +48,10 @@ Here are the requirements to run this Laravel package.
 
 ## Installation
 
+First off, the best way is to use Composer to grab the code:
+
+`composer require ohmybrew/laravel-shopify`
+
 ### Providers
 
 Open `config/app.php` find `providers` array. Find a line with:
