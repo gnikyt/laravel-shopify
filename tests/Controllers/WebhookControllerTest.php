@@ -4,9 +4,7 @@ use \ReflectionMethod;
 use Illuminate\Support\Facades\Queue;
 use OhMyBrew\ShopifyApp\Test\TestCase;
 
-if (!class_exists('App\Jobs\OrdersCreateJob')) {
-    require __DIR__.'/../Stubs/OrdersCreateJobStub.php';
-}
+require_once __DIR__.'/../Stubs/OrdersCreateJobStub.php';
 
 class WebhookControllerTest extends TestCase
 {
