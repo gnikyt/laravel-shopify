@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# v1.1.0
+
++ Added support for application proxies via middleware
+
 # v1.0.0
 
 + All features implemented and tested for which includes:
