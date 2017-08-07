@@ -35,6 +35,7 @@ A Laravel package for aiding in Shopify App development, similar to `shopify_app
 - [x] Auto install app webhooks and scripttags thorugh background jobs
 - [x] Provide basic ESDK views
 - [x] Handles and processes incoming webhooks
+- [x] Handles and verifies incoming app proxy requests
 
 ## Requirements
 
@@ -83,6 +84,7 @@ Open `app/Http/Kernel.php` find `routeMiddleware` array. Add a new line with:
 ```php
 'auth.shop' => \OhMyBrew\ShopifyApp\Middleware\AuthShop::class,
 'auth.webhook' => \OhMyBrew\ShopifyApp\Middleware\AuthWebhook::class,
+'auth.proxy' => \OhMyBrew\ShopifyApp\Middleware\AuthProxy::class,
 ```
 
 ### Jobs
@@ -137,6 +139,7 @@ Information on getting started, overriding routes, controllers, is located in th
 - [Process in Authentication](docs/process-in-authentication.md)
 - [Developing Locally](docs/developing-locally.md)
 - [Creating Webhooks](docs/creating-webhooks.md)
+- [App Proxies](docs/app-proxies.md)
 - [Overriding / Extending Package](docs/overriding-and-extending.md)
 
 ## Route List

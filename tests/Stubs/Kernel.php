@@ -19,6 +19,7 @@ class Kernel extends \Orchestra\Testbench\Http\Kernel
 
         // Added for testing
         'auth.shop'  => \OhMyBrew\ShopifyApp\Middleware\AuthShop::class,
-        'auth.webhook'  => \OhMyBrew\ShopifyApp\Middleware\AuthWebhook::class
+        'auth.webhook'  => \OhMyBrew\ShopifyApp\Middleware\AuthWebhook::class,
+        'auth.proxy'  => \OhMyBrew\ShopifyApp\Middleware\AuthProxy::class
     ];
 }
