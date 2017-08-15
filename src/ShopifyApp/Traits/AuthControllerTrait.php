@@ -135,14 +135,14 @@ trait AuthControllerTrait
     /**
      * Runs a job after authentication if provided
      * 
-     * @return void
+     * @return bool
      */
     protected function afterAuthenticateJob()
     {
         $jobConfig = config('shopify-app.after_authenticate_job');
         if (empty($jobConfig) || !isset($jobConfig['job'])) {
             // Empty config or no job assigned
-            return;
+            return false;
         }
 
         // We have a job, pass the shop object to the contructor
@@ -154,5 +154,7 @@ trait AuthControllerTrait
             // Run later
             dispatch($job);
         }
+
+        return true;
     }
 }
