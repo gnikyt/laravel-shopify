@@ -95,6 +95,9 @@ trait AuthControllerTrait
         $this->installWebhooks();
         $this->installScripttags();
 
+        // Run after authenticate job
+        $this->afterAuthenticateJob();
+
         // Go to homepage of app
         return redirect()->route('home');
     }
@@ -126,6 +129,30 @@ trait AuthControllerTrait
             dispatch(
                 new ScripttagInstaller(ShopifyApp::shop(), $scripttags)
             );
+        }
+    }
+
+    /**
+     * Runs a job after authentication if provided
+     * 
+     * @return void
+     */
+    protected function afterAuthenticateJob()
+    {
+        $jobConfig = config('shopify-app.after_authenticate_job');
+        if (empty($jobConfig) || !isset($jobConfig['job'])) {
+            // Empty config or no job assigned
+            return;
+        }
+
+        // We have a job, pass the shop object to the contructor
+        $job = new $jobConfig['job'](ShopifyApp::shop());
+        if (isset($jobConfig['inline']) && $jobConfig['inline'] == true) {
+            // Run this job immediately
+            $job->handle();
+        } else {
+            // Run later
+            dispatch($job);
         }
     }
 }

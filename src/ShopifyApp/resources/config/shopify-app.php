@@ -132,5 +132,23 @@ return [
             ],
             ...
         */
-    ]
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | After Authenticate Job
+    |--------------------------------------------------------------------------
+    |
+    | This option is for firing a job after a shop has been authenticated.
+    | This, like webhooks and scripttag jobs, will fire every time a shop
+    | authenticates, not just once.
+    |
+    */
+
+    'after_authenticate_job' => [
+        /*
+            'job' => env('AFTER_AUTHENTICATE_JOB'), // example: \App\Jobs\AfterAuthenticateJob::class
+            'inline' => env('AFTER_AUTHENTICATE_JOB_INLINE', false) // False = execute inline, true = dispatch job for later
+        */
+    ],
 ];
