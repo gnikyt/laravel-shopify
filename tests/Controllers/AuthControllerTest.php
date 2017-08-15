@@ -1,12 +1,16 @@
 <?php namespace OhMyBrew\ShopifyApp\Test\Controllers;
 
+use \ReflectionMethod;
 use Illuminate\Support\Facades\Queue;
+use OhMyBrew\ShopifyApp\Controllers\AuthController;
 use OhMyBrew\ShopifyApp\Jobs\WebhookInstaller;
 use OhMyBrew\ShopifyApp\Jobs\ScripttagInstaller;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\Test\TestCase;
 use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
+
+require_once __DIR__.'/../Stubs/AfterAuthenticateJobStub.php';
 
 class AuthControllerTest extends TestCase
 {
@@ -110,5 +114,56 @@ class AuthControllerTest extends TestCase
 
         Queue::assertPushed(WebhookInstaller::class);
         Queue::assertPushed(ScripttagInstaller::class);
+    }
+
+    public function testAfterAuthenticateFiresInline()
+    {
+        Queue::fake();
+
+        $jobClass = \App\Jobs\AfterAuthenticateJob::class;
+        config(['shopify-app.after_authenticate_job' => [
+            'job' => $jobClass,
+            'inline' => true
+        ]]);
+
+        $method = new ReflectionMethod(AuthController::class, 'afterAuthenticateJob');
+        $method->setAccessible(true);
+        $result = $method->invoke(new AuthController);
+
+        $this->assertEquals(true, $result);
+        Queue::assertNotPushed($jobClass); // since inline == true
+    }
+
+    public function testAfterAuthenticateFiresDispatched()
+    {
+        Queue::fake();
+
+        $jobClass = \App\Jobs\AfterAuthenticateJob::class;
+        config(['shopify-app.after_authenticate_job' => [
+            'job' => $jobClass,
+            'inline' => false
+        ]]);
+
+        $method = new ReflectionMethod(AuthController::class, 'afterAuthenticateJob');
+        $method->setAccessible(true);
+        $result = $method->invoke(new AuthController);
+
+        $this->assertEquals(true, $result);
+        Queue::assertPushed($jobClass); // since inline == false
+    }
+
+    public function testAfterAuthenticateDoesNotFireForNoConfig()
+    {
+        Queue::fake();
+
+        $jobClass = \App\Jobs\AfterAuthenticateJob::class;
+        config(['shopify-app.after_authenticate_job' => []]);
+
+        $method = new ReflectionMethod(AuthController::class, 'afterAuthenticateJob');
+        $method->setAccessible(true);
+        $result = $method->invoke(new AuthController);
+
+        $this->assertEquals(false, $result);
+        Queue::assertNotPushed($jobClass);
     }
 }
