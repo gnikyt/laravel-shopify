@@ -44,14 +44,15 @@ class WebhookJobMakeCommand extends JobMakeCommand
     }
 
     /**
-     * Execute the console command.
+     * Execute the console command (>=5.5)
      *
-     * @return bool|null
+     * @return void
      */
-    public function fire()
+    public function handle()
     {
-        // Fire parent
-        parent::fire();
+        // Fire parent... handle for >=5.5, fire for <5.5
+        $method = method_exists($this, 'handle') ? 'handle' : 'fire';
+        parent::$method();
 
         // Remind user to enter job into config
         $this->info("Don't forget to register the webhook in config/shopify-app.php. Example:");

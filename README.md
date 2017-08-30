@@ -4,7 +4,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/ohmybrew/laravel-shopify/badge.svg?branch=master)](https://coveralls.io/github/ohmybrew/laravel-shopify?branch=master)
 [![License](https://poser.pugx.org/ohmybrew/laravel-shopify/license)](https://packagist.org/packages/ohmybrew/laravel-shopify)
 
-A Laravel package for aiding in Shopify App development, similar to `shopify_app` for Rails.
+A Laravel package for aiding in Shopify App development, similar to `shopify_app` for Rails. Works for Laravel 5.4-5.5.
 
 ![Screenshot](https://github.com/ohmybrew/laravel-shopify/raw/master/screenshot.png)
 

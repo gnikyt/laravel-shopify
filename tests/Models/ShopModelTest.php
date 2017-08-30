@@ -39,5 +39,6 @@ class ShopModelTest extends TestCase
             ['shopify_domain' => 'abc.myshopify.com', 'shopify_token' => '1234'],
             ['shopify_domain' => 'cba.myshopify.com', 'shopify_token' => '1234']
         );
+        $this->assertEquals(true, true);
     }
 }
