@@ -33,7 +33,7 @@ __*__ *Wiki pages*
 
 ## Documentation
 
-For full resources on this package, see the [wiki](wiki).
+For full resources on this package, see the [wiki](https://github.com/ohmybrew/laravel-shopify/wiki).
 
 ## LICENSE
 
