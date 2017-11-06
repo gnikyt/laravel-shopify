@@ -39,7 +39,7 @@ class AuthWebhookMiddlewareTest extends TestCase
             [
                 'HTTP_CONTENT_TYPE' => 'application/json',
                 'HTTP_X_SHOPIFY_SHOP_DOMAIN' => 'example.myshopify.com',
-                'HTTP_X_SHOPIFY_HMAC_SHA256' => '8432614ea1ce63b77959195b0e5e1e8469bfb7890e40ab51fb9c3ac26f8b050c', // Matches fixture data and API secret
+                'HTTP_X_SHOPIFY_HMAC_SHA256' => 'hDJhTqHOY7d5WRlbDl4ehGm/t4kOQKtR+5w6wm+LBQw=', // Matches fixture data and API secret 
             ],
             file_get_contents(__DIR__.'/../fixtures/webhook.json')
         );
@@ -57,7 +57,7 @@ class AuthWebhookMiddlewareTest extends TestCase
             [
                 'HTTP_CONTENT_TYPE' => 'application/json',
                 'HTTP_X_SHOPIFY_SHOP_DOMAIN' => 'example.myshopify.com',
-                'HTTP_X_SHOPIFY_HMAC_SHA256' => '8432614ea1ce63b77959195b0e5e1e8469bfb7890e40ab51fb9c3ac26f8b050c', // Matches fixture data and API secret
+                'HTTP_X_SHOPIFY_HMAC_SHA256' => 'hDJhTqHOY7d5WRlbDl4ehGm/t4kOQKtR+5w6wm+LBQw=', // Matches fixture data and API secret
             ],
             file_get_contents(__DIR__.'/../fixtures/webhook.json') . 'invalid'
         );
