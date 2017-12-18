@@ -325,8 +325,8 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
         $api->setAccessToken('!@#');
 
         // Fake param just to test it receives it
-        $request = $api->request('GET', '/admin/shop.json', ['limit' => 1]);
-        $data = json_decode($mock->getLastRequest()->getBody());
+        $request = $api->request('GET', '/admin/shop.json', ['limit' => 1, 'page' => 1]);
+        $data = $mock->getLastRequest()->getUri()->getQuery();
         $token_header = $mock->getLastRequest()->getHeader('X-Shopify-Access-Token')[0];
 
         $this->assertEquals(true, is_object($request));
@@ -334,7 +334,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(200, $request->response->getStatusCode());
         $this->assertEquals(true, is_object($request->body));
         $this->assertEquals('Apple Computers', $request->body->shop->name);
-        $this->assertEquals(1, $data->limit);
+        $this->assertEquals('limit=1&page=1', $data);
         $this->assertEquals('!@#', $token_header);
     }
 
@@ -433,5 +433,49 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
     {
         $api = new BasicShopifyAPI;
         $api->withSession('example.myshopify.com', '1234', null);
+    }
+
+    /**
+     * @test
+     *
+     * Should use query for GET requests
+     */
+    function itShouldUseQueryForGetMethod() 
+    {
+        $response = new Response(200, ['http_x_shopify_shop_api_call_limit' => '2/80'], '{}');
+        $mock = new MockHandler([$response]);
+        $client = new Client(['handler' => $mock]);
+
+        $api = new BasicShopifyAPI;
+        $api->setClient($client);
+        $api->setShop('example.myshopify.com');
+        $api->setApiKey('123');
+        $api->setAccessToken('!@#');
+        $api->request('GET', '/admin/shop.json', ['limit' => 1, 'page' => 1]);
+
+        $this->assertEquals('limit=1&page=1', $mock->getLastRequest()->getUri()->getQuery());
+        $this->assertNull(json_decode($mock->getLastRequest()->getBody()));
+    }
+
+    /**
+     * @test
+     *
+     * Should use JSON for non-GET methods
+     */
+    function itShouldUseJsonForNonGetMethods() 
+    {
+        $response = new Response(200, ['http_x_shopify_shop_api_call_limit' => '2/80'], '{}');
+        $mock = new MockHandler([$response]);
+        $client = new Client(['handler' => $mock]);
+
+        $api = new BasicShopifyAPI;
+        $api->setClient($client);
+        $api->setShop('example.myshopify.com');
+        $api->setApiKey('123');
+        $api->setAccessToken('!@#');
+        $api->request('POST', '/admin/gift_cards.json', ['gift_cards' => ['initial_value' => 25.00]]);
+
+        $this->assertEquals('', $mock->getLastRequest()->getUri()->getQuery());
+        $this->assertNotNull(json_decode($mock->getLastRequest()->getBody()));
     }
 }
