@@ -1,6 +1,6 @@
 # CHANGELOG
 
-# Version 1.1.0
+# Version 1.0.1
 
 + Fixed issue #3 by @ncpope, for newly created stores (after December 2017) not accepting GET body
 
