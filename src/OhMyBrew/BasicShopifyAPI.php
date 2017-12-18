@@ -308,14 +308,15 @@ class BasicShopifyAPI
      */
     public function request(string $type, string $path, array $params = null)
     {
+        // Build the request parameters for Guzzle
+        $guzzleParams = ['headers' => ['X-Shopify-Access-Token' => $this->accessToken]];
+        $guzzleParams[strtoupper($type) === 'GET' ? 'query' : 'json'] = $params;
+
         // Create the request, pass the access token and optional parameters
         $response = $this->client->request(
             $type,
             $this->getBaseUrl() . $path,
-            [
-                'headers' => ['X-Shopify-Access-Token' => $this->accessToken],
-                'json' => $params
-            ]
+            $guzzleParams
         );
 
         // Grab the API call limit header returned from Shopify
