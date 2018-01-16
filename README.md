@@ -22,6 +22,8 @@ __*__ *Wiki pages*
 - [Contributing Guide](https://github.com/ohmybrew/laravel-shopify/blob/master/CONTRIBUTING.md)
 - [LICENSE](#license)
 
+For more information, tutorials, etc., please view the project's [wiki](https://github.com/ohmybrew/laravel-shopify/wiki).
+
 ## Goals
 
 - [x] Provide assistance in developing Shopify apps with Laravel
@@ -38,4 +40,4 @@ For full resources on this package, see the [wiki](https://github.com/ohmybrew/l
 
 ## LICENSE
 
-This project is released under the MIT license.
+This project is released under the MIT [license](https://github.com/ohmybrew/laravel-shopify/blob/master/LICENSE).
