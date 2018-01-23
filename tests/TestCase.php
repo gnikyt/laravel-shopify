@@ -50,7 +50,8 @@ abstract class TestCase extends OrchestraTestCase
         ]);
     }
 
-    protected function setupDatabase($app) {
+    protected function setupDatabase($app)
+    {
         // Path to our migrations to load
         $this->loadMigrationsFrom(realpath(__DIR__.'/../src/ShopifyApp/resources/database/migrations'));
     }
@@ -61,6 +62,13 @@ abstract class TestCase extends OrchestraTestCase
         $shop = new Shop;
         $shop->shopify_domain = 'example.myshopify.com';
         $shop->shopify_token = '1234';
+        $shop->charge_id = 678298290;
+        $shop->save();
+
+        $shop = new Shop;
+        $shop->shopify_domain = 'grandfathered.myshopify.com';
+        $shop->shopify_token = '1234';
+        $shop->grandfathered = true;
         $shop->save();
     }
 }

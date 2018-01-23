@@ -37,8 +37,26 @@ class ShopModelTest extends TestCase
 
         $shop = Shop::create(
             ['shopify_domain' => 'abc.myshopify.com', 'shopify_token' => '1234'],
-            ['shopify_domain' => 'cba.myshopify.com', 'shopify_token' => '1234']
+            ['shopify_domain' => 'cba.myshopify.com', 'shopify_token' => '1234', 'grandfathered' => true]
         );
         $this->assertEquals(true, true);
+    }
+
+    public function testShopShouldReturnGrandfatheredState()
+    {
+        $shop = Shop::where('shopify_domain', 'grandfathered.myshopify.com')->first();
+        $shop_2 = Shop::where('shopify_domain', 'example.myshopify.com')->first();
+
+        $this->assertEquals(true, $shop->isGrandfathered());
+        $this->assertEquals(false, $shop_2->isGrandfathered());
+    }
+
+    public function testShopShouldConfirmPaidState()
+    {
+        $shop = Shop::where('shopify_domain', 'grandfathered.myshopify.com')->first();
+        $shop_2 = Shop::where('shopify_domain', 'example.myshopify.com')->first();
+
+        $this->assertEquals(false, $shop->isPaid());
+        $this->assertEquals(true, $shop_2->isPaid());
     }
 }

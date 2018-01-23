@@ -12,11 +12,12 @@ class Shop extends Model
      */
     protected $fillable = [
         'shopify_domain',
-        'shopify_token'
+        'shopify_token',
+        'grandfathered'
     ];
 
     /**
-     * The API instance
+     * The API instance.
      *
      * @var object
      */
@@ -39,5 +40,25 @@ class Shop extends Model
 
         // Return existing instance
         return $this->api;
+    }
+
+    /**
+     * Checks if a shop has a charge ID.
+     *
+     * @return boolean
+     */
+    public function isPaid()
+    {
+        return !is_null($this->charge_id);
+    }
+
+    /**
+     * Checks is shop is grandfathered in.
+     * 
+     * @return boolean
+     */
+    public function isGrandfathered()
+    {
+        return ((boolean) $this->grandfathered) === true;
     }
 }
