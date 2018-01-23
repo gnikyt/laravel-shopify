@@ -34,7 +34,7 @@ class AuthProxyMiddlewareTest extends TestCase
         Input::merge($query);
 
         $called = false;
-        (new AuthProxy)->handle(request(), function($request) use(&$called) {
+        (new AuthProxy)->handle(request(), function ($request) use (&$called) {
             // Should never be called
             $called = true;
         });
@@ -47,7 +47,7 @@ class AuthProxyMiddlewareTest extends TestCase
         Input::merge($this->queryParams);
 
         $called = false;
-        (new AuthProxy)->handle(request(), function($request) use(&$called) {
+        (new AuthProxy)->handle(request(), function ($request) use (&$called) {
             // Should be called
             $called = true;
         });
@@ -66,7 +66,7 @@ class AuthProxyMiddlewareTest extends TestCase
         Input::merge($query);
 
         $called = false;
-        (new AuthProxy)->handle(request(), function($request) use(&$called) {
+        (new AuthProxy)->handle(request(), function ($request) use (&$called) {
             // Should never be called
             $called = true;
         });

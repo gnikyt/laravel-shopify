@@ -54,7 +54,7 @@ class Shop extends Model
 
     /**
      * Checks is shop is grandfathered in.
-     * 
+     *
      * @return boolean
      */
     public function isGrandfathered()

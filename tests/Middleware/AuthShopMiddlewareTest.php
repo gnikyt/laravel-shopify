@@ -9,7 +9,7 @@ class AuthShopMiddlewareTest extends TestCase
     public function testShopHasNoAccessShouldAbort()
     {
         $called = false;
-        $result = (new AuthShop)->handle(request(), function($request) use(&$called) {
+        $result = (new AuthShop)->handle(request(), function ($request) use (&$called) {
             // Should never be called
             $called = true;
         });
@@ -24,7 +24,7 @@ class AuthShopMiddlewareTest extends TestCase
         session(['shopify_domain' => 'example.myshopify.com']);
 
         $called = false;
-        (new AuthShop)->handle(request(), function($request) use(&$called) {
+        (new AuthShop)->handle(request(), function ($request) use (&$called) {
             // Should be called
             $called = true;
         });
@@ -39,7 +39,7 @@ class AuthShopMiddlewareTest extends TestCase
         Input::merge(['shop' => 'example-different-shop.myshopify.com']);
 
         $called = false;
-        (new AuthShop)->handle(request(), function($request) use(&$called) {
+        (new AuthShop)->handle(request(), function ($request) use (&$called) {
             // Should never be called
             $called = true;
         });

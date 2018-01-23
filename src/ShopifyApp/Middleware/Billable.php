@@ -15,6 +15,13 @@ class Billable
      */
     public function handle(Request $request, Closure $next)
     {
-        // ...
+        if (config('shopify_app.billing_enabled') === true)
+        {
+            $shop = ShopifyApp::shop();
+            // ...
+        }
+
+        // Move on, everything's fine
+        return $next($request);
     }
 }

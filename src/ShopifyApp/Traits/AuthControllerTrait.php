@@ -134,7 +134,7 @@ trait AuthControllerTrait
 
     /**
      * Runs a job after authentication if provided
-     * 
+     *
      * @return bool
      */
     protected function afterAuthenticateJob()

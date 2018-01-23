@@ -26,7 +26,9 @@ class WebhookControllerTest extends TestCase
         $response = $this->call(
             'post',
             '/webhook/orders-create',
-            [], [], [],
+            [],
+            [],
+            [],
             $this->headers,
             file_get_contents(__DIR__.'/../fixtures/webhook.json')
         );
@@ -41,7 +43,9 @@ class WebhookControllerTest extends TestCase
         $response = $this->call(
             'post',
             '/webhook/products-create',
-            [], [], [],
+            [],
+            [],
+            [],
             $this->headers,
             file_get_contents(__DIR__.'/../fixtures/webhook.json')
         );
@@ -73,7 +77,9 @@ class WebhookControllerTest extends TestCase
         $response = $this->call(
             'post',
             '/webhook/orders-create',
-            [], [], [],
+            [],
+            [],
+            [],
             $this->headers,
             file_get_contents(__DIR__.'/../fixtures/webhook.json')
         );
