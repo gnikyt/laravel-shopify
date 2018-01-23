@@ -16,6 +16,7 @@ class AuthWebhookMiddlewareTest extends TestCase
     {
         request()->header('x-shopify-hmac-sha256', '1234');
         (new AuthWebhook)->handle(request(), function ($request) {
+            // ...
         });
     }
 
@@ -38,9 +39,7 @@ class AuthWebhookMiddlewareTest extends TestCase
             'post',
             '/webhook/orders-create',
             [],
-        
             [],
-        
             [],
             [
                 'HTTP_CONTENT_TYPE' => 'application/json',
@@ -60,9 +59,7 @@ class AuthWebhookMiddlewareTest extends TestCase
             'post',
             '/webhook/orders-create',
             [],
-        
             [],
-        
             [],
             [
                 'HTTP_CONTENT_TYPE' => 'application/json',

@@ -2,6 +2,7 @@
 
 use Closure;
 use Illuminate\Http\Request;
+use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 
 class Billable
 {
@@ -15,10 +16,12 @@ class Billable
      */
     public function handle(Request $request, Closure $next)
     {
-        if (config('shopify_app.billing_enabled') === true)
-        {
+        if (config('shopify-app.billing_enabled') === true) {
             $shop = ShopifyApp::shop();
-            // ...
+            if (!$shop->isPaid() && !$shop->isGrandfathered()) {
+                // No charge in database and they're not grandfathered in, redirect to billing
+                return redirect()->route('billing');
+            }
         }
 
         // Move on, everything's fine
