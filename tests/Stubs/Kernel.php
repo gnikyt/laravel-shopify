@@ -18,8 +18,9 @@ class Kernel extends \Orchestra\Testbench\Http\Kernel
         'throttle'   => \Illuminate\Routing\Middleware\ThrottleRequests::class,
 
         // Added for testing
-        'auth.shop'  => \OhMyBrew\ShopifyApp\Middleware\AuthShop::class,
-        'auth.webhook'  => \OhMyBrew\ShopifyApp\Middleware\AuthWebhook::class,
-        'auth.proxy'  => \OhMyBrew\ShopifyApp\Middleware\AuthProxy::class
+        'auth.shop'    => \OhMyBrew\ShopifyApp\Middleware\AuthShop::class,
+        'auth.webhook' => \OhMyBrew\ShopifyApp\Middleware\AuthWebhook::class,
+        'auth.proxy'   => \OhMyBrew\ShopifyApp\Middleware\AuthProxy::class,
+        'billable'     => \OhMyBrew\ShopifyApp\Middleware\Billable::class
     ];
 }
