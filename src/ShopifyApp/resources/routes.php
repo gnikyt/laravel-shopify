@@ -59,10 +59,10 @@ Route::group(['middleware' => ['web']], function () {
 
     /*
     |--------------------------------------------------------------------------
-    | Billing Method
+    | Billing Handler
     |--------------------------------------------------------------------------
     |
-    | Billing handler.
+    | Billing handler. Sends to billing screen for Shopify.
     |
     */
     
@@ -71,6 +71,21 @@ Route::group(['middleware' => ['web']], function () {
         'OhMyBrew\ShopifyApp\Controllers\BillingController@index'
     )
     ->name('billing');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Billing Processor
+    |--------------------------------------------------------------------------
+    |
+    | Processes the customer's response to the billing screen.
+    |
+    */
+    
+    Route::get(
+        '/billing/process',
+        'OhMyBrew\ShopifyApp\Controllers\BillingController@process'
+    )
+    ->name('billing.process');
 
     /*
     |--------------------------------------------------------------------------

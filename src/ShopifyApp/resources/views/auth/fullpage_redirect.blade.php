@@ -4,7 +4,7 @@
         <meta charset="utf-8" />
         <base target="_top">
 
-        <title>Redirecting…</title>
+        <title>Redirecting...</title>
 
         <script type="text/javascript">
             // If the current window is the 'parent', change the URL by setting location.href

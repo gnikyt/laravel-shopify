@@ -171,7 +171,7 @@ return [
     |
     */
 
-    'billing_redirect' => env('SHOPIFY_BILLING_REDIRECT', 'billing'),
+    'billing_redirect' => env('SHOPIFY_BILLING_REDIRECT', 'billing.process'),
 
     /*
     |--------------------------------------------------------------------------
