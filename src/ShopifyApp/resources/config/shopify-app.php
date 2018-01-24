@@ -65,7 +65,7 @@ return [
     |
     */
 
-    'api_redirect' => env('SHOPIFY_API_REDIRECT', 'authenticate'),
+    'api_redirect' => env('SHOPIFY_API_REDIRECT', '/authenticate'),
 
     /*
     |--------------------------------------------------------------------------
@@ -171,7 +171,7 @@ return [
     |
     */
 
-    'billing_redirect' => env('SHOPIFY_BILLING_REDIRECT', 'billing.process'),
+    'billing_redirect' => env('SHOPIFY_BILLING_REDIRECT', '/billing/process'),
 
     /*
     |--------------------------------------------------------------------------
