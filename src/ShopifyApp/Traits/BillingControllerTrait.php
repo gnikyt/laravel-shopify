@@ -68,7 +68,7 @@ trait BillingControllerTrait
             return redirect()->route('home');
         } else {
             // Customer declined the charge, abort
-            return abort(404, 'It seems you have declined the billing charge for this application.');
+            return abort(403, 'It seems you have declined the billing charge for this application.');
         }
     }
 }
