@@ -1,7 +1,7 @@
 <?php namespace OhMyBrew\ShopifyApp\Libraries;
 
 use \Exception;
-use OhMyBrew\Models\Shop;
+use OhMyBrew\ShopifyApp\Models\Shop;
 
 class BillingPlan
 {
@@ -40,7 +40,7 @@ class BillingPlan
      * @param string $charge_type The type of charge for the plan (single or recurring).
      * @return $this
      */
-    public function __constructor(Shop $shop, string $charge_type)
+    public function __construct(Shop $shop, string $charge_type = 'recurring')
     {
         $this->shop = $shop;
         $this->charge_type = $charge_type === 'single' ? 'application_charge' : 'recurring_application_charge';
@@ -88,6 +88,11 @@ class BillingPlan
      */
     public function getCharge()
     {
+        // Check if we have a charge ID to use
+        if (!$this->charge_id) {
+            throw new Exception('Can not get charge information without charge ID.');
+        }
+
         // Run API to grab details
         return $this->shop->api()->request(
             'GET',
@@ -114,7 +119,7 @@ class BillingPlan
         return $this->shop->api()->request(
             'POST',
             "/admin/{$this->charge_type}s/{$this->charge_id}/activate.json"
-        );
+        )->body->{$this->charge_type};
     }
 
     /**
@@ -139,11 +144,11 @@ class BillingPlan
             "/admin/{$this->charge_type}s.json",
             [
                 "{$this->charge_type}" => [
-                    'name'       => $this->plan['name'],
-                    'price'      => $this->plan['price'],
-                    'test'       => $this->plan['test'],
-                    'trial_days' => $this->plan['trial_days'],
-                    'return_url' => $this->plan['return_url'],
+                    'test'       => isset($this->details['test']) ? $this->details['test'] : false,
+                    'trial_days' => isset($this->details['trial_days']) ? $this->details['trial_days'] : 0,
+                    'name'       => $this->details['name'],
+                    'price'      => $this->details['price'],
+                    'return_url' => $this->details['return_url'],
                 ]
             ]
         )->body->{$this->charge_type};
