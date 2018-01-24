@@ -1,7 +1,10 @@
 <?php namespace OhMyBrew\ShopifyApp\Test\Controllers;
 
+use \ReflectionMethod;
 use OhMyBrew\ShopifyApp\Test\TestCase;
 use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
+use OhMyBrew\ShopifyApp\Models\Shop;
+use OhMyBrew\ShopifyApp\Controllers\BillingController;
 
 class BillingControllerTest extends TestCase
 {
@@ -27,6 +30,54 @@ class BillingControllerTest extends TestCase
 
     public function testShopAcceptsBilling()
     {
-        // ...
+        $shop = Shop::where('shopify_domain', 'example.myshopify.com')->first();
+        $this->assertEquals(678298290, $shop->charge_id); // Based on seedDatabase()
+
+        $response = $this->call('get', '/billing/process', ['charge_id' => 1029266947]);
+        $shop = $shop->fresh(); // Reload model
+
+        $response->assertStatus(302);
+        $this->assertEquals(1029266947, $shop->charge_id);
+    }
+
+    public function testShopDeclinesBilling()
+    {
+        $response = $this->call('get', '/billing/process', ['charge_id' => 10292]);
+
+        $response->assertStatus(403);
+        $this->assertEquals(
+            'It seems you have declined the billing charge for this application',
+            $response->exception->getMessage()
+        );
+    }
+
+    public function testReturnsBasePlanDetails()
+    {
+        $controller = new BillingController;
+        $method = new ReflectionMethod(BillingController::class, 'planDetails');
+        $method->setAccessible(true);
+
+        // Based on default config
+        $this->assertEquals(
+            [
+                'name' => config('shopify-app.billing_plan'),
+                'price' => config('shopify-app.billing_price'),
+                'test' => config('shopify-app.billing_test'),
+                'trial_days' => config('shopify-app.billing_trial_days'),
+                'return_url' => url(config('shopify-app.billing_redirect'))
+
+            ],
+            $method->invoke($controller, 'planDetails')
+        );
+    }
+
+    public function testReturnsBaseChargeType()
+    {
+        $controller = new BillingController;
+        $method = new ReflectionMethod(BillingController::class, 'chargeType');
+        $method->setAccessible(true);
+
+        // Based on default config
+        $this->assertEquals(config('shopify-app.billing_type'), $method->invoke($controller, 'chargeType'));
     }
 }

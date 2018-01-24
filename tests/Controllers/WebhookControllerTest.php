@@ -3,6 +3,7 @@
 use \ReflectionMethod;
 use Illuminate\Support\Facades\Queue;
 use OhMyBrew\ShopifyApp\Test\TestCase;
+use OhMyBrew\ShopifyApp\Controllers\WebhookController;
 
 require_once __DIR__.'/../Stubs/OrdersCreateJobStub.php';
 
@@ -55,8 +56,8 @@ class WebhookControllerTest extends TestCase
 
     public function testShouldCaseTypeToClass()
     {
-        $controller = new \OhMyBrew\ShopifyApp\Controllers\WebhookController;
-        $method = new ReflectionMethod(\OhMyBrew\ShopifyApp\Controllers\WebhookController::class, 'getJobClassFromType');
+        $controller = new WebhookController;
+        $method = new ReflectionMethod(WebhookController::class, 'getJobClassFromType');
         $method->setAccessible(true);
 
         $types = [
