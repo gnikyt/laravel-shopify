@@ -31,11 +31,11 @@ trait BillingControllerTrait
     {
         // Setup the shop and get the charge ID passed in
         $shop = ShopifyApp::shop();
-        $charge_id = request('charge_id');
+        $chargeId = request('charge_id');
 
         // Setup the plan and get the charge
         $plan = new BillingPlan($shop, $this->chargeType());
-        $plan->setChargeId($charge_id);
+        $plan->setChargeId($chargeId);
 
         // Check the customer's answer to the billing
         $charge = $plan->getCharge();
@@ -44,7 +44,7 @@ trait BillingControllerTrait
             $plan->activate();
 
             // Save the charge ID to the shop
-            $shop->charge_id = $charge_id;
+            $shop->charge_id = $chargeId;
             $shop->save();
 
             // Go to homepage of app

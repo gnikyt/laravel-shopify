@@ -24,26 +24,26 @@ class BillingPlan
      *
      * @var integer
      */
-    protected $charge_id;
+    protected $chargeId;
 
     /**
      * The charge type
      *
      * @var string
      */
-    protected $charge_type;
+    protected $chargeType;
 
     /**
      * Constructor for billing plan class
      *
      * @param Shop $shop The shop to target for billing.
-     * @param string $charge_type The type of charge for the plan (single or recurring).
+     * @param string $chargeType The type of charge for the plan (single or recurring).
      * @return $this
      */
-    public function __construct(Shop $shop, string $charge_type = 'recurring')
+    public function __construct(Shop $shop, string $chargeType = 'recurring')
     {
         $this->shop = $shop;
-        $this->charge_type = $charge_type === 'single' ? 'application_charge' : 'recurring_application_charge';
+        $this->chargeType = $chargeType === 'single' ? 'application_charge' : 'recurring_application_charge';
 
         return $this;
     }
@@ -71,12 +71,12 @@ class BillingPlan
     /**
      * Sets the charge ID.
      *
-     * @param int $charge_id The charge ID to use
+     * @param int $chargeId The charge ID to use
      * @return $this
      */
-    public function setChargeId(int $charge_id)
+    public function setChargeId(int $chargeId)
     {
-        $this->charge_id = $charge_id;
+        $this->chargeId = $chargeId;
 
         return $this;
     }
@@ -89,15 +89,15 @@ class BillingPlan
     public function getCharge()
     {
         // Check if we have a charge ID to use
-        if (!$this->charge_id) {
+        if (!$this->chargeId) {
             throw new Exception('Can not get charge information without charge ID.');
         }
 
         // Run API to grab details
         return $this->shop->api()->request(
             'GET',
-            "/admin/{$this->charge_type}s/{$this->charge_id}.json"
-        )->body->{$this->charge_type};
+            "/admin/{$this->chargeType}s/{$this->chargeId}.json"
+        )->body->{$this->chargeType};
     }
 
     /**
@@ -111,15 +111,15 @@ class BillingPlan
     public function activate()
     {
         // Check if we have a charge ID to use
-        if (!$this->charge_id) {
+        if (!$this->chargeId) {
             throw new Exception('Can not activate plan without a charge ID.');
         }
 
         // Activate and return the API response
         return $this->shop->api()->request(
             'POST',
-            "/admin/{$this->charge_type}s/{$this->charge_id}/activate.json"
-        )->body->{$this->charge_type};
+            "/admin/{$this->chargeType}s/{$this->chargeId}/activate.json"
+        )->body->{$this->chargeType};
     }
 
     /**
@@ -141,9 +141,9 @@ class BillingPlan
         // Begin the charge request
         $charge = $this->shop->api()->request(
             'POST',
-            "/admin/{$this->charge_type}s.json",
+            "/admin/{$this->chargeType}s.json",
             [
-                "{$this->charge_type}" => [
+                "{$this->chargeType}" => [
                     'test'       => isset($this->details['test']) ? $this->details['test'] : false,
                     'trial_days' => isset($this->details['trial_days']) ? $this->details['trial_days'] : 0,
                     'name'       => $this->details['name'],
@@ -151,7 +151,7 @@ class BillingPlan
                     'return_url' => $this->details['return_url'],
                 ]
             ]
-        )->body->{$this->charge_type};
+        )->body->{$this->chargeType};
 
         return $charge->confirmation_url;
     }
