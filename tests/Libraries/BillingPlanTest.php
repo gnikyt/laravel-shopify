@@ -1,18 +1,20 @@
-<?php namespace OhMyBrew\ShopifyApp\Test\Libraries;
+<?php
+
+namespace OhMyBrew\ShopifyApp\Test\Libraries;
 
 use OhMyBrew\ShopifyApp\Libraries\BillingPlan;
 use OhMyBrew\ShopifyApp\Models\Shop;
-use OhMyBrew\ShopifyApp\Test\TestCase;
 use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
+use OhMyBrew\ShopifyApp\Test\TestCase;
 
 class BillingPlanTest extends TestCase
 {
     public function setUp()
     {
         parent::setUp();
-    
+
         // Stub in our API class
-        config(['shopify-app.api_class' => new ApiStub]);
+        config(['shopify-app.api_class' => new ApiStub()]);
 
         // Base shop and plan
         $this->shop = Shop::find(1);
@@ -20,7 +22,7 @@ class BillingPlanTest extends TestCase
             'name'       => 'Basic Plan',
             'price'      => 3.00,
             'trial_days' => 0,
-            'return_url' => 'http://example.com/'
+            'return_url' => 'http://example.com/',
         ];
     }
 

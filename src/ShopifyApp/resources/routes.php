@@ -49,7 +49,7 @@ Route::group(['middleware' => ['web']], function () {
     | Authenticates a shop.
     |
     */
-    
+
     Route::match(
         ['get', 'post'],
         '/authenticate',
@@ -65,7 +65,7 @@ Route::group(['middleware' => ['web']], function () {
     | Billing handler. Sends to billing screen for Shopify.
     |
     */
-    
+
     Route::get(
         '/billing',
         'OhMyBrew\ShopifyApp\Controllers\BillingController@index'
@@ -80,7 +80,7 @@ Route::group(['middleware' => ['web']], function () {
     | Processes the customer's response to the billing screen.
     |
     */
-    
+
     Route::get(
         '/billing/process',
         'OhMyBrew\ShopifyApp\Controllers\BillingController@process'
@@ -95,7 +95,7 @@ Route::group(['middleware' => ['web']], function () {
     | Handles incoming webhooks.
     |
     */
-    
+
     Route::post(
         '/webhook/{type}',
         'OhMyBrew\ShopifyApp\Controllers\WebhookController@handle'

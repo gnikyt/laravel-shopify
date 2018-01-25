@@ -1,43 +1,46 @@
-<?php namespace OhMyBrew\ShopifyApp\Libraries;
+<?php
 
-use \Exception;
+namespace OhMyBrew\ShopifyApp\Libraries;
+
+use Exception;
 use OhMyBrew\ShopifyApp\Models\Shop;
 
 class BillingPlan
 {
     /**
-     * The shop to target billing
+     * The shop to target billing.
      *
      * @var \OhMyBrew\ShopifyApp\Models\Shop
      */
     protected $shop;
 
     /**
-     * The plan details for Shopify
+     * The plan details for Shopify.
      *
      * @var array
      */
     protected $details;
 
     /**
-     * The charge ID
+     * The charge ID.
      *
-     * @var integer
+     * @var int
      */
     protected $chargeId;
 
     /**
-     * The charge type
+     * The charge type.
      *
      * @var string
      */
     protected $chargeType;
 
     /**
-     * Constructor for billing plan class
+     * Constructor for billing plan class.
      *
-     * @param Shop $shop The shop to target for billing.
+     * @param Shop   $shop       The shop to target for billing.
      * @param string $chargeType The type of charge for the plan (single or recurring).
+     *
      * @return $this
      */
     public function __construct(Shop $shop, string $chargeType = 'recurring')
@@ -52,13 +55,14 @@ class BillingPlan
      * Sets the plan.
      *
      * @param array $plan The plan details.
-     *      $plan = [
-     *          'name'         => (string) Plan name.
-     *          'price'        => (float) Plan price. Required.
-     *          'test'         => (boolean) Test mode or not.
-     *          'trial_days'   => (int) Plan trial period in days.
-     *          'return_url'   => (string) URL to handle response for acceptance or decline or billing. Required.
-     *      ]
+     *                    $plan = [
+     *                    'name'         => (string) Plan name.
+     *                    'price'        => (float) Plan price. Required.
+     *                    'test'         => (boolean) Test mode or not.
+     *                    'trial_days'   => (int) Plan trial period in days.
+     *                    'return_url'   => (string) URL to handle response for acceptance or decline or billing. Required.
+     *                    ]
+     *
      * @return $this
      */
     public function setDetails(array $details)
@@ -72,6 +76,7 @@ class BillingPlan
      * Sets the charge ID.
      *
      * @param int $chargeId The charge ID to use
+     *
      * @return $this
      */
     public function setChargeId(int $chargeId)
@@ -149,7 +154,7 @@ class BillingPlan
                     'name'       => $this->details['name'],
                     'price'      => $this->details['price'],
                     'return_url' => $this->details['return_url'],
-                ]
+                ],
             ]
         )->body->{$this->chargeType};
 

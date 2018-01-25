@@ -1,9 +1,11 @@
-<?php namespace OhMyBrew\ShopifyApp\Traits;
+<?php
+
+namespace OhMyBrew\ShopifyApp\Traits;
 
 trait HomeControllerTrait
 {
     /**
-     * Index route which displays the home page of the app
+     * Index route which displays the home page of the app.
      *
      * @return \Illuminate\Http\Response
      */

@@ -1,4 +1,6 @@
-<?php namespace OhMyBrew\ShopifyApp;
+<?php
+
+namespace OhMyBrew\ShopifyApp;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -19,7 +21,7 @@ class ShopifyAppProvider extends ServiceProvider
 
         // Config publish
         $this->publishes([
-            __DIR__.'/resources/config/shopify-app.php' => config_path('shopify-app.php')
+            __DIR__.'/resources/config/shopify-app.php' => config_path('shopify-app.php'),
         ]);
 
         // Database migrations
