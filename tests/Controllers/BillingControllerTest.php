@@ -1,10 +1,12 @@
-<?php namespace OhMyBrew\ShopifyApp\Test\Controllers;
+<?php
 
-use \ReflectionMethod;
-use OhMyBrew\ShopifyApp\Test\TestCase;
-use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
-use OhMyBrew\ShopifyApp\Models\Shop;
+namespace OhMyBrew\ShopifyApp\Test\Controllers;
+
 use OhMyBrew\ShopifyApp\Controllers\BillingController;
+use OhMyBrew\ShopifyApp\Models\Shop;
+use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
+use OhMyBrew\ShopifyApp\Test\TestCase;
+use ReflectionMethod;
 
 class BillingControllerTest extends TestCase
 {
@@ -13,7 +15,7 @@ class BillingControllerTest extends TestCase
         parent::setUp();
 
         // Stub in our API class
-        config(['shopify-app.api_class' => new ApiStub]);
+        config(['shopify-app.api_class' => new ApiStub()]);
 
         // Base shop for all tests here
         session(['shopify_domain' => 'example.myshopify.com']);
@@ -53,18 +55,18 @@ class BillingControllerTest extends TestCase
 
     public function testReturnsBasePlanDetails()
     {
-        $controller = new BillingController;
+        $controller = new BillingController();
         $method = new ReflectionMethod(BillingController::class, 'planDetails');
         $method->setAccessible(true);
 
         // Based on default config
         $this->assertEquals(
             [
-                'name' => config('shopify-app.billing_plan'),
-                'price' => config('shopify-app.billing_price'),
-                'test' => config('shopify-app.billing_test'),
+                'name'       => config('shopify-app.billing_plan'),
+                'price'      => config('shopify-app.billing_price'),
+                'test'       => config('shopify-app.billing_test'),
                 'trial_days' => config('shopify-app.billing_trial_days'),
-                'return_url' => url(config('shopify-app.billing_redirect'))
+                'return_url' => url(config('shopify-app.billing_redirect')),
 
             ],
             $method->invoke($controller, 'planDetails')
@@ -73,7 +75,7 @@ class BillingControllerTest extends TestCase
 
     public function testReturnsBaseChargeType()
     {
-        $controller = new BillingController;
+        $controller = new BillingController();
         $method = new ReflectionMethod(BillingController::class, 'chargeType');
         $method->setAccessible(true);
 

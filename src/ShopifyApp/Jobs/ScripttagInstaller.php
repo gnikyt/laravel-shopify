@@ -1,26 +1,27 @@
-<?php namespace OhMyBrew\ShopifyApp\Jobs;
+<?php
+
+namespace OhMyBrew\ShopifyApp\Jobs;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use OhMyBrew\ShopifyApp\Models\Shop;
-use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 
 class ScripttagInstaller implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
-     * The shop
+     * The shop.
      *
      * @var \OhMyBrew\ShopifyApp\Models\Shop
      */
     protected $shop;
 
     /**
-     * Scripttag list
+     * Scripttag list.
      *
      * @var array
      */
@@ -76,7 +77,7 @@ class ScripttagInstaller implements ShouldQueue
      * @param array $shopScripttags The scripttags installed on the shop
      * @param array $scripttag      The scripttag
      *
-     * @return boolean
+     * @return bool
      */
     protected function scripttagExists(array $shopScripttags, array $scripttag)
     {

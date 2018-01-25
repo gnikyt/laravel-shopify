@@ -1,7 +1,9 @@
-<?php namespace OhMyBrew\ShopifyApp\Console;
+<?php
 
-use Illuminate\Support\Str;
+namespace OhMyBrew\ShopifyApp\Console;
+
 use Illuminate\Foundation\Console\JobMakeCommand;
+use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputArgument;
 
 class WebhookJobMakeCommand extends JobMakeCommand
@@ -44,7 +46,7 @@ class WebhookJobMakeCommand extends JobMakeCommand
     }
 
     /**
-     * Execute the console command (>=5.5)
+     * Execute the console command (>=5.5).
      *
      * @return void
      */
@@ -67,7 +69,7 @@ class WebhookJobMakeCommand extends JobMakeCommand
     }
 
     /**
-     * Converts the job class name into a URL endpoint
+     * Converts the job class name into a URL endpoint.
      *
      * @param string $name The name of the job
      *

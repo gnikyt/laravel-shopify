@@ -1,4 +1,6 @@
-<?php namespace OhMyBrew\ShopifyApp\Middleware;
+<?php
+
+namespace OhMyBrew\ShopifyApp\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
@@ -6,7 +8,7 @@ use Illuminate\Http\Request;
 class AuthProxy
 {
     /**
-     * Handle an incoming request to ensure it is valid
+     * Handle an incoming request to ensure it is valid.
      *
      * @param \Illuminate\Http\Request $request
      * @param \Closure                 $next
@@ -26,9 +28,9 @@ class AuthProxy
         // Build a query string without query characters
         $queryCompiled = [];
         foreach ($query as $key => $value) {
-            $queryCompiled[] = "{$key}=" . (is_array($value) ? join($value, ',') : $value);
+            $queryCompiled[] = "{$key}=".(is_array($value) ? implode($value, ',') : $value);
         }
-        $queryJoined = join($queryCompiled, '');
+        $queryJoined = implode($queryCompiled, '');
 
         // Build a local signature
         $signatureLocal = hash_hmac('sha256', $queryJoined, config('shopify-app.api_secret'));

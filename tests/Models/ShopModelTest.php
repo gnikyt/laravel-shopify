@@ -1,4 +1,6 @@
-<?php namespace OhMyBrew\ShopifyApp\Test\Models;
+<?php
+
+namespace OhMyBrew\ShopifyApp\Test\Models;
 
 use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\Test\TestCase;
@@ -23,14 +25,14 @@ class ShopModelTest extends TestCase
      */
     public function testShopShouldNotSaveWithoutDomain()
     {
-        $shop = new Shop;
+        $shop = new Shop();
         $shop->shopify_token = '1234';
         $shop->save();
     }
 
     public function testShopShouldSaveAndAllowForMassAssignment()
     {
-        $shop = new Shop;
+        $shop = new Shop();
         $shop->shopify_domain = 'hello.myshopify.com';
         $shop->shopify_token = '1234';
         $shop->save();
