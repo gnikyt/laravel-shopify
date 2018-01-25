@@ -65,7 +65,7 @@ return [
     |
     */
 
-    'api_redirect' => env('SHOPIFY_API_REDIRECT', 'authenticate'),
+    'api_redirect' => env('SHOPIFY_API_REDIRECT', '/authenticate'),
 
     /*
     |--------------------------------------------------------------------------
@@ -80,7 +80,6 @@ return [
 
     'api_class' => env('SHOPIFY_API_CLASS', \OhMyBrew\BasicShopifyAPI::class),
 
-
     /*
     |--------------------------------------------------------------------------
     | Shopify "MyShopify" domain
@@ -92,6 +91,86 @@ return [
     */
 
     'myshopify_domain' => 'myshopify.com',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Enable Billing
+    |--------------------------------------------------------------------------
+    |
+    | Enable billing component to the package.
+    |
+    */
+
+    'billing_enabled' => (bool) env('SHOPIFY_BILLING_ENABLED', false),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Billing Type
+    |--------------------------------------------------------------------------
+    |
+    | Single charge or recurring charge.
+    | Simply use "single" for single, and "recurring" for recurring.
+    |
+    */
+
+    'billing_type' => env('SHOPIFY_BILLING_TYPE', 'recurring'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Billing Plan Name
+    |--------------------------------------------------------------------------
+    |
+    | The name of the plan which shows on the billing.
+    |
+    */
+
+    'billing_plan' => env('SHOPIFY_BILLING_PLAN_NAME', 'Base Plan'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Billing Price
+    |--------------------------------------------------------------------------
+    |
+    | The single or recurring price to charge the customer.
+    |
+    */
+
+    'billing_price' => (float) env('SHOPIFY_BILLING_PRICE', 0.00),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Billing Trial
+    |--------------------------------------------------------------------------
+    |
+    | Trails days for the app. Set to 0 for no trial period.
+    |
+    */
+
+    'billing_trial_days' => (int) env('SHOPIFY_BILLING_TRIAL_DAYS', 7),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Billing Test
+    |--------------------------------------------------------------------------
+    |
+    | Enable or disable test mode for billing.
+    | This is useful for development purposes, see Shopify's documentation.
+    |
+    */
+
+    'billing_test' => (bool) env('SHOPIFY_BILLING_TEST', false),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Billing Redirect
+    |--------------------------------------------------------------------------
+    |
+    | Required redirection URL for billing when
+    | a customer accepts or declines the charge presented.
+    |
+    */
+
+    'billing_redirect' => env('SHOPIFY_BILLING_REDIRECT', '/billing/process'),
 
     /*
     |--------------------------------------------------------------------------

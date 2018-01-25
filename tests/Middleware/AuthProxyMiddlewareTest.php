@@ -1,8 +1,10 @@
-<?php namespace OhMyBrew\ShopifyApp\Test\Middleware;
+<?php
 
+namespace OhMyBrew\ShopifyApp\Test\Middleware;
+
+use Illuminate\Support\Facades\Input;
 use OhMyBrew\ShopifyApp\Middleware\AuthProxy;
 use OhMyBrew\ShopifyApp\Test\TestCase;
-use Illuminate\Support\Facades\Input;
 
 class AuthProxyMiddlewareTest extends TestCase
 {
@@ -12,11 +14,11 @@ class AuthProxyMiddlewareTest extends TestCase
 
         // From Shopify's docs
         $this->queryParams = [
-            'extra' => ['1', '2'],
-            'shop' => 'shop-name.myshopify.com',
+            'extra'       => ['1', '2'],
+            'shop'        => 'shop-name.myshopify.com',
             'path_prefix' => '/apps/awesome_reviews',
-            'timestamp' => '1317327555',
-            'signature' => 'a9718877bea71c2484f91608a7eaea1532bdf71f5c56825065fa4ccabe549ef3'
+            'timestamp'   => '1317327555',
+            'signature'   => 'a9718877bea71c2484f91608a7eaea1532bdf71f5c56825065fa4ccabe549ef3',
         ];
 
         // Set the app secret to match Shopify's docs
@@ -34,7 +36,7 @@ class AuthProxyMiddlewareTest extends TestCase
         Input::merge($query);
 
         $called = false;
-        (new AuthProxy)->handle(request(), function($request) use(&$called) {
+        (new AuthProxy())->handle(request(), function ($request) use (&$called) {
             // Should never be called
             $called = true;
         });
@@ -47,7 +49,7 @@ class AuthProxyMiddlewareTest extends TestCase
         Input::merge($this->queryParams);
 
         $called = false;
-        (new AuthProxy)->handle(request(), function($request) use(&$called) {
+        (new AuthProxy())->handle(request(), function ($request) use (&$called) {
             // Should be called
             $called = true;
         });
@@ -66,7 +68,7 @@ class AuthProxyMiddlewareTest extends TestCase
         Input::merge($query);
 
         $called = false;
-        (new AuthProxy)->handle(request(), function($request) use(&$called) {
+        (new AuthProxy())->handle(request(), function ($request) use (&$called) {
             // Should never be called
             $called = true;
         });

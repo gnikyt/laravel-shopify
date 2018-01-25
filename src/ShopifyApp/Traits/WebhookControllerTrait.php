@@ -1,11 +1,11 @@
-<?php namespace OhMyBrew\ShopifyApp\Traits;
+<?php
 
-use \Exception;
+namespace OhMyBrew\ShopifyApp\Traits;
 
 trait WebhookControllerTrait
 {
     /**
-     * Handles an incoming webhook
+     * Handles an incoming webhook.
      *
      * @param string $type The type of webhook
      *
@@ -28,7 +28,7 @@ trait WebhookControllerTrait
     }
 
     /**
-     * Converts type into a class string
+     * Converts type into a class string.
      *
      * @param string $type The type of webhook
      *
@@ -36,6 +36,6 @@ trait WebhookControllerTrait
      */
     protected function getJobClassFromType($type)
     {
-        return '\\App\\Jobs\\' . str_replace('-', '', ucwords($type, '-')) . 'Job';
+        return '\\App\\Jobs\\'.str_replace('-', '', ucwords($type, '-')).'Job';
     }
 }

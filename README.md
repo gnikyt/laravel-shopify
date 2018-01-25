@@ -2,9 +2,10 @@
 
 [![Build Status](https://secure.travis-ci.org/ohmybrew/laravel-shopify.png?branch=master)](http://travis-ci.org/ohmybrew/laravel-shopify)
 [![Coverage Status](https://coveralls.io/repos/github/ohmybrew/laravel-shopify/badge.svg?branch=master)](https://coveralls.io/github/ohmybrew/laravel-shopify?branch=master)
+[![StyleCI](https://styleci.io/repos/96462257/shield?branch=master)](https://styleci.io/repos/96462257)
 [![License](https://poser.pugx.org/ohmybrew/laravel-shopify/license)](https://packagist.org/packages/ohmybrew/laravel-shopify)
 
-A Laravel package for aiding in Shopify App development, similar to `shopify_app` for Rails. Works for Laravel 5.4-5.5.
+A full-featured Laravel package for aiding in Shopify App development, similar to `shopify_app` for Rails. Works for Laravel 5.4-5.5.
 
 ![Screenshot](https://github.com/ohmybrew/laravel-shopify/raw/master/screenshot.png)
 
@@ -29,6 +30,7 @@ For more information, tutorials, etc., please view the project's [wiki](https://
 - [x] Provide assistance in developing Shopify apps with Laravel
 - [x] Integration with Shopify API
 - [x] Authentication & installation for shops
+- [x] Billing integration built-in for single and recurring application charges
 - [x] Auto install app webhooks and scripttags thorugh background jobs
 - [x] Provide basic ESDK views
 - [x] Handles and processes incoming webhooks
@@ -37,6 +39,8 @@ For more information, tutorials, etc., please view the project's [wiki](https://
 ## Documentation
 
 For full resources on this package, see the [wiki](https://github.com/ohmybrew/laravel-shopify/wiki).
+
+For internal documentation, you may run `phpdoc` (hopefully host this online at somepoint).
 
 ## LICENSE
 

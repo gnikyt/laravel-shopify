@@ -1,13 +1,15 @@
-<?php namespace OhMyBrew\ShopifyApp\Traits;
+<?php
 
-use OhMyBrew\ShopifyApp\Jobs\WebhookInstaller;
-use OhMyBrew\ShopifyApp\Jobs\ScripttagInstaller;
+namespace OhMyBrew\ShopifyApp\Traits;
+
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
+use OhMyBrew\ShopifyApp\Jobs\ScripttagInstaller;
+use OhMyBrew\ShopifyApp\Jobs\WebhookInstaller;
 
 trait AuthControllerTrait
 {
     /**
-     * Index route which displays the login page
+     * Index route which displays the login page.
      *
      * @return \Illuminate\Http\Response
      */
@@ -17,7 +19,7 @@ trait AuthControllerTrait
     }
 
     /**
-     * Authenticating a shop
+     * Authenticating a shop.
      *
      * @return \Illuminate\Http\Response
      */
@@ -44,7 +46,7 @@ trait AuthControllerTrait
     }
 
     /**
-     * Fires when there is no code on authentication
+     * Fires when there is no code on authentication.
      *
      * @return \Illuminate\Http\Response
      */
@@ -63,13 +65,13 @@ trait AuthControllerTrait
 
         // Do a fullpage redirect
         return view('shopify-app::auth.fullpage_redirect', [
-            'authUrl' => $authUrl,
-            'shopDomain' => $shopDomain
+            'authUrl'    => $authUrl,
+            'shopDomain' => $shopDomain,
         ]);
     }
 
     /**
-     * Fires when there is a code on authentication
+     * Fires when there is a code on authentication.
      *
      * @return \Illuminate\Http\Response
      */
@@ -103,14 +105,14 @@ trait AuthControllerTrait
     }
 
     /**
-     * Installs webhooks (if any)
+     * Installs webhooks (if any).
      *
      * @return void
      */
     protected function installWebhooks()
     {
         $webhooks = config('shopify-app.webhooks');
-        if (sizeof($webhooks) > 0) {
+        if (count($webhooks) > 0) {
             dispatch(
                 new WebhookInstaller(ShopifyApp::shop(), $webhooks)
             );
@@ -118,14 +120,14 @@ trait AuthControllerTrait
     }
 
     /**
-     * Installs scripttags (if any)
+     * Installs scripttags (if any).
      *
      * @return void
      */
     protected function installScripttags()
     {
         $scripttags = config('shopify-app.scripttags');
-        if (sizeof($scripttags) > 0) {
+        if (count($scripttags) > 0) {
             dispatch(
                 new ScripttagInstaller(ShopifyApp::shop(), $scripttags)
             );
@@ -133,8 +135,8 @@ trait AuthControllerTrait
     }
 
     /**
-     * Runs a job after authentication if provided
-     * 
+     * Runs a job after authentication if provided.
+     *
      * @return bool
      */
     protected function afterAuthenticateJob()

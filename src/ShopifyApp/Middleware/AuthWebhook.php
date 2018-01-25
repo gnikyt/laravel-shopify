@@ -1,4 +1,6 @@
-<?php namespace OhMyBrew\ShopifyApp\Middleware;
+<?php
+
+namespace OhMyBrew\ShopifyApp\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
@@ -6,7 +8,7 @@ use Illuminate\Http\Request;
 class AuthWebhook
 {
     /**
-     * Handle an incoming request to ensure webhook is valid
+     * Handle an incoming request to ensure webhook is valid.
      *
      * @param \Illuminate\Http\Request $request
      * @param \Closure                 $next

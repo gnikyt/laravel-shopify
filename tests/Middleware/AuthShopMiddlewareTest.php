@@ -1,7 +1,9 @@
-<?php namespace OhMyBrew\ShopifyApp\Test\Middleware;
+<?php
 
-use OhMyBrew\ShopifyApp\Middleware\AuthShop;
+namespace OhMyBrew\ShopifyApp\Test\Middleware;
+
 use Illuminate\Support\Facades\Input;
+use OhMyBrew\ShopifyApp\Middleware\AuthShop;
 use OhMyBrew\ShopifyApp\Test\TestCase;
 
 class AuthShopMiddlewareTest extends TestCase
@@ -9,7 +11,7 @@ class AuthShopMiddlewareTest extends TestCase
     public function testShopHasNoAccessShouldAbort()
     {
         $called = false;
-        $result = (new AuthShop)->handle(request(), function($request) use(&$called) {
+        $result = (new AuthShop())->handle(request(), function ($request) use (&$called) {
             // Should never be called
             $called = true;
         });
@@ -24,7 +26,7 @@ class AuthShopMiddlewareTest extends TestCase
         session(['shopify_domain' => 'example.myshopify.com']);
 
         $called = false;
-        (new AuthShop)->handle(request(), function($request) use(&$called) {
+        (new AuthShop())->handle(request(), function ($request) use (&$called) {
             // Should be called
             $called = true;
         });
@@ -39,7 +41,7 @@ class AuthShopMiddlewareTest extends TestCase
         Input::merge(['shop' => 'example-different-shop.myshopify.com']);
 
         $called = false;
-        (new AuthShop)->handle(request(), function($request) use(&$called) {
+        (new AuthShop())->handle(request(), function ($request) use (&$called) {
             // Should never be called
             $called = true;
         });
