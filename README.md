@@ -38,6 +38,8 @@ __*__ *Wiki pages*
 
 For full resources on this package, see the [wiki](https://github.com/ohmybrew/laravel-shopify/wiki).
 
+For internal documentation, you may run `phpdoc` (hopefully host this online at somepoint).
+
 ## LICENSE
 
 This project is released under the MIT license.
