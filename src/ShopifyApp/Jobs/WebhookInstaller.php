@@ -1,26 +1,27 @@
-<?php namespace OhMyBrew\ShopifyApp\Jobs;
+<?php
+
+namespace OhMyBrew\ShopifyApp\Jobs;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use OhMyBrew\ShopifyApp\Models\Shop;
-use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 
 class WebhookInstaller implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
-     * The shop
+     * The shop.
      *
      * @var \OhMyBrew\ShopifyApp\Models\Shop
      */
     protected $shop;
 
     /**
-     * Webhooks list
+     * Webhooks list.
      *
      * @var array
      */
@@ -74,9 +75,9 @@ class WebhookInstaller implements ShouldQueue
      * Check if webhook is in the list.
      *
      * @param array $shopWebhooks The webhooks installed on the shop
-     * @param array $webhook     The webhook
+     * @param array $webhook      The webhook
      *
-     * @return boolean
+     * @return bool
      */
     protected function webhookExists(array $shopWebhooks, array $webhook)
     {

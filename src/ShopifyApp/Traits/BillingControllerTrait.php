@@ -1,4 +1,6 @@
-<?php namespace OhMyBrew\ShopifyApp\Traits;
+<?php
+
+namespace OhMyBrew\ShopifyApp\Traits;
 
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Libraries\BillingPlan;
@@ -18,7 +20,7 @@ trait BillingControllerTrait
 
         // Do a fullpage redirect
         return view('shopify-app::billing.fullpage_redirect', [
-            'url' => $plan->getConfirmationUrl()
+            'url' => $plan->getConfirmationUrl(),
         ]);
     }
 
@@ -68,7 +70,7 @@ trait BillingControllerTrait
             'price'      => config('shopify-app.billing_price'),
             'test'       => config('shopify-app.billing_test'),
             'trial_days' => config('shopify-app.billing_trial_days'),
-            'return_url' => url(config('shopify-app.billing_redirect'))
+            'return_url' => url(config('shopify-app.billing_redirect')),
         ];
     }
 

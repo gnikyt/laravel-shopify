@@ -1,4 +1,6 @@
-<?php namespace OhMyBrew\ShopifyApp\Models;
+<?php
+
+namespace OhMyBrew\ShopifyApp\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
@@ -13,7 +15,7 @@ class Shop extends Model
     protected $fillable = [
         'shopify_domain',
         'shopify_token',
-        'grandfathered'
+        'grandfathered',
     ];
 
     /**
@@ -45,7 +47,7 @@ class Shop extends Model
     /**
      * Checks if a shop has a charge ID.
      *
-     * @return boolean
+     * @return bool
      */
     public function isPaid()
     {
@@ -55,10 +57,10 @@ class Shop extends Model
     /**
      * Checks is shop is grandfathered in.
      *
-     * @return boolean
+     * @return bool
      */
     public function isGrandfathered()
     {
-        return ((boolean) $this->grandfathered) === true;
+        return ((bool) $this->grandfathered) === true;
     }
 }

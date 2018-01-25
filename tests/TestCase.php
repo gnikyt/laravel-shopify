@@ -1,9 +1,11 @@
-<?php namespace OhMyBrew\ShopifyApp\Test;
+<?php
 
-use Orchestra\Testbench\TestCase as OrchestraTestCase;
-use Orchestra\Database\ConsoleServiceProvider;
-use OhMyBrew\ShopifyApp\ShopifyAppProvider;
+namespace OhMyBrew\ShopifyApp\Test;
+
 use OhMyBrew\ShopifyApp\Models\Shop;
+use OhMyBrew\ShopifyApp\ShopifyAppProvider;
+use Orchestra\Database\ConsoleServiceProvider;
+use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 abstract class TestCase extends OrchestraTestCase
 {
@@ -21,7 +23,7 @@ abstract class TestCase extends OrchestraTestCase
         // ConsoleServiceProvider required to make migrations work
         return [
             ShopifyAppProvider::class,
-            ConsoleServiceProvider::class
+            ConsoleServiceProvider::class,
         ];
     }
 
@@ -46,7 +48,7 @@ abstract class TestCase extends OrchestraTestCase
         $app['config']->set('database.connections.sqlite', [
             'driver'   => 'sqlite',
             'database' => ':memory:',
-            'prefix'   => ''
+            'prefix'   => '',
         ]);
     }
 
@@ -59,21 +61,21 @@ abstract class TestCase extends OrchestraTestCase
     protected function seedDatabase()
     {
         // Paid shop, not grandfathered
-        $shop = new Shop;
+        $shop = new Shop();
         $shop->shopify_domain = 'example.myshopify.com';
         $shop->shopify_token = '1234';
         $shop->charge_id = 678298290;
         $shop->save();
 
         // Non-paid shop, grandfathered
-        $shop = new Shop;
+        $shop = new Shop();
         $shop->shopify_domain = 'grandfathered.myshopify.com';
         $shop->shopify_token = '1234';
         $shop->grandfathered = true;
         $shop->save();
 
         // New shop... non-paid, not grandfathered
-        $shop = new Shop;
+        $shop = new Shop();
         $shop->shopify_domain = 'new-shop.myshopify.com';
         $shop->shopify_token = '1234';
         $shop->save();

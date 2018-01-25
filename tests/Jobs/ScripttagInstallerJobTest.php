@@ -1,12 +1,13 @@
-<?php namespace OhMyBrew\ShopifyApp\Test\Jobs;
+<?php
 
-use \ReflectionObject;
-use \ReflectionMethod;
-use Illuminate\Support\Facades\Queue;
+namespace OhMyBrew\ShopifyApp\Test\Jobs;
+
 use OhMyBrew\ShopifyApp\Jobs\ScripttagInstaller;
 use OhMyBrew\ShopifyApp\Models\Shop;
-use OhMyBrew\ShopifyApp\Test\TestCase;
 use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
+use OhMyBrew\ShopifyApp\Test\TestCase;
+use ReflectionMethod;
+use ReflectionObject;
 
 class ScripttagInstallerJobTest extends TestCase
 {
@@ -18,13 +19,13 @@ class ScripttagInstallerJobTest extends TestCase
         $this->shop = Shop::find(1);
         $this->scripttags = [
             [
-                'src' => 'https://js-aplenty.com/bar.js',
-                'event' => 'onload'
-            ]
+                'src'   => 'https://js-aplenty.com/bar.js',
+                'event' => 'onload',
+            ],
         ];
 
         // Replace with our API
-        config(['shopify-app.api_class' => new ApiStub]);
+        config(['shopify-app.api_class' => new ApiStub()]);
     }
 
     public function testJobAcceptsLoad()
@@ -52,22 +53,22 @@ class ScripttagInstallerJobTest extends TestCase
             $job,
             [
                 // Existing scripttags
-                (object) ['src' => 'https://js-aplenty.com/bar.js']
+                (object) ['src' => 'https://js-aplenty.com/bar.js'],
             ],
             [
                 // Defined scripttag in config
-                'src' => 'https://js-aplenty.com/bar.js'
+                'src' => 'https://js-aplenty.com/bar.js',
             ]
         );
         $result_2 = $method->invoke(
             $job,
             [
                 // Existing scripttags
-                (object) ['src' => 'https://js-aplenty.com/bar.js']
+                (object) ['src' => 'https://js-aplenty.com/bar.js'],
             ],
             [
                 // Defined scripttag in config
-                'src' => 'https://js-aplenty.com/foo.js'
+                'src' => 'https://js-aplenty.com/foo.js',
             ]
         );
 
@@ -82,16 +83,16 @@ class ScripttagInstallerJobTest extends TestCase
 
         // Scripttag JSON comes from fixture JSON which matches $this->scripttags
         // so this should be 0
-        $this->assertEquals(0, sizeof($created));
+        $this->assertEquals(0, count($created));
     }
 
     public function testJobShouldCreateScripttags()
     {
         $scripttags = [
             [
-                'src' => 'https://js-aplenty.com/fooy-dooy.js',
-                'event' => 'onload'
-            ]
+                'src'   => 'https://js-aplenty.com/fooy-dooy.js',
+                'event' => 'onload',
+            ],
         ];
 
         $job = new ScripttagInstaller($this->shop, $scripttags);
@@ -99,7 +100,7 @@ class ScripttagInstallerJobTest extends TestCase
 
         // $scripttags is new scripttags which does not exist in the JSON fixture
         // for scripttags, so it should create it
-        $this->assertEquals(1, sizeof($created));
+        $this->assertEquals(1, count($created));
         $this->assertEquals($scripttags[0], $created[0]);
     }
 }
