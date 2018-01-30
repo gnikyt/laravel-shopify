@@ -8,6 +8,7 @@
 A full-featured Laravel package for aiding in Shopify App development, similar to `shopify_app` for Rails. Works for Laravel 5.4-5.6.
 
 ![Screenshot](https://github.com/ohmybrew/laravel-shopify/raw/master/screenshot.png)
+![Screenshot: Billable](https://github.com/ohmybrew/laravel-shopify/raw/master/screenshot-billable.png)
 
 ## Table of Contents
 
