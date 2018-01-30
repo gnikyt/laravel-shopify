@@ -16,7 +16,7 @@ __*__ *Wiki pages*
 - [Goals](#goals)
 - [Documentation](#documentation)
 - [Requirements](https://github.com/ohmybrew/laravel-shopify/wiki/Requirements)*
-- [Installation](https://github.com/ohmybrew/laravel-shopify/wiki/Installation)*
+- [Installation](https://github.com/ohmybrew/laravel-shopify/wiki/Installation)*  *(Also: [Video of Quick Install](https://www.youtube.com/watch?v=vU8XrJQQPMo))*
 - [Route List](https://github.com/ohmybrew/laravel-shopify/wiki/Route-List)*
 - [Usage](https://github.com/ohmybrew/laravel-shopify/wiki/Usage)*
 - [Changelog](https://github.com/ohmybrew/laravel-shopify/wiki/Changelog)*
