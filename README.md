@@ -17,8 +17,6 @@ The recommended way to install is [through composer](http://packagist.org).
 
 ## Usage
 
-*Warning: This section needs, and will be, expanded on.*
-
 ### Public API
 
 For OAuth applications. The shop domain, API key, API secret, and an access token are required. This assumes you properly have your app setup in the partner's dashboard with the correct keys and redirect URIs.
