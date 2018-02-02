@@ -12,7 +12,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      *
      * Should set API to private mode
      */
-    function itShouldSetApiToPrivateMode() 
+    public function itShouldSetApiToPrivateMode()
     {
         $api = new BasicShopifyAPI(true);
         $reflected = new ReflectionClass($api);
@@ -28,7 +28,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      *
      * Should set API to public mode
      */
-    function itShouldSetApiToPublicMode() 
+    public function itShouldSetApiToPublicMode()
     {
         $api = new BasicShopifyAPI(false);
         $reflected = new ReflectionClass($api);
@@ -44,7 +44,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      *
      * Should set shop
      */
-    function itShouldSetShop() 
+    public function itShouldSetShop()
     {
         $api = new BasicShopifyAPI;
         $api->setShop('example.myshopify.com');
@@ -57,7 +57,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      *
      * Should set access token
      */
-    function itShouldSetAccessToken() 
+    public function itShouldSetAccessToken()
     {
         $api = new BasicShopifyAPI;
         $api->setAccessToken('123');
@@ -70,7 +70,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      *
      * Should set API key and API password and API shared secret
      */
-    function itShouldSetApiKeyAndPassword() 
+    public function itShouldSetApiKeyAndPassword()
     {
         $api = new BasicShopifyAPI;
         $api->setApiKey('123');
@@ -98,7 +98,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      *
      * Checking base URL for API calls on public
      */
-    function itShouldReturnBaseUrl() 
+    public function itShouldReturnBaseUrl()
     {
         $api = new BasicShopifyAPI;
         $api->setShop('example.myshopify.com');
@@ -116,7 +116,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      *
      * Checking base URL for API calls on private
      */
-    function itShouldReturnPrivateBaseUrl() 
+    public function itShouldReturnPrivateBaseUrl()
     {
         $api = new BasicShopifyAPI(true);
         $api->setShop('example.myshopify.com');
@@ -138,7 +138,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      *
      * Ensure Shopify domain is passed to API
      */
-    function itShouldThrowExceptionForMissingShopifyDomain() 
+    public function itShouldThrowExceptionForMissingShopifyDomain()
     {
         $api = new BasicShopifyAPI;
         $api->getAuthUrl(['read_products', 'write_products'], 'https://localapp.local/');
@@ -151,7 +151,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      *
      * Ensure Shopify API details is passsed for private API calls
      */
-    function itShouldThrowExceptionForMissingApiDetails() 
+    public function itShouldThrowExceptionForMissingApiDetails()
     {
         $api = new BasicShopifyAPI(true);
         $api->getAuthUrl(['read_products', 'write_products'], 'https://localapp.local/');
@@ -162,7 +162,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      *
      * Should allow for own client injection
      */
-    function itShouldAllowForOwnClient() 
+    public function itShouldAllowForOwnClient()
     {
         $api = new BasicShopifyAPI;
         $api->setClient(new Client(['handler' => new MockHandler]));
@@ -184,7 +184,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      *
      * Ensure Shopify API secret is there for grabbing the access tokens
      */
-    function itShouldThrowExceptionForMissingApiSecret() 
+    public function itShouldThrowExceptionForMissingApiSecret()
     {
         $api = new BasicShopifyAPI(true);
         $api->requestAccessToken('123');
@@ -195,7 +195,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      *
      * Should get access token from Shopify
      */
-    function itShouldGetAccessTokenFromShopify() 
+    public function itShouldGetAccessTokenFromShopify()
     {
         $response = new Response(
             200,
@@ -227,7 +227,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      *
      * Should get auth URL
      */
-    function itShouldReturnAuthUrl() 
+    public function itShouldReturnAuthUrl()
     {
         $api = new BasicShopifyAPI;
         $api->setShop('example.myshopify.com');
@@ -244,7 +244,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      *
      * Check verify with no params
      */
-    function itShouldFailRequestVerifyWithNoParams() 
+    public function itShouldFailRequestVerifyWithNoParams()
     {
         $api = new BasicShopifyAPI;
         $this->assertEquals(false, $api->verifyRequest([]));
@@ -257,7 +257,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      *
      * Check verify with no params
      */
-    function itShouldFailRequestVerifyWithNoParamsAgain() 
+    public function itShouldFailRequestVerifyWithNoParamsAgain()
     {
         $api = new BasicShopifyAPI;
         $this->assertEquals(false, $api->verifyRequest(null));
@@ -268,7 +268,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      *
      * Check verify with params
      */
-    function itShouldPassRequestVerifyWithParams() 
+    public function itShouldPassRequestVerifyWithParams()
     {
         $hmac = '4712bf92ffc2917d15a2f5a273e39f0116667419aa4b6ac0b3baaf26fa3c4d20';
         $params = [
@@ -288,7 +288,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      *
      * Check verify with bad params
      */
-    function itShouldPassRequestVerifyWithBadParams() 
+    public function itShouldPassRequestVerifyWithBadParams()
     {
         $hmac = '4712bf92ffc2917d15a2f5a273e39f0116667419aa4b6ac0b3baaf26fa3c4d20';
         $params = [
@@ -307,7 +307,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      *
      * Should get Guzzle response and JSON body
      */
-    function itShouldReturnGuzzleResponseAndJsonBody() 
+    public function itShouldReturnGuzzleResponseAndJsonBody()
     {
         $response = new Response(
             200,
@@ -345,7 +345,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      *
      * Ensure we pass a valid key to the API calls
      */
-    function itShouldThrowExceptionForInvalidApiCallsKey() 
+    public function itShouldThrowExceptionForInvalidApiCallsKey()
     {
         $api = new BasicShopifyAPI;
         $api->getApiCalls('oops');
@@ -356,7 +356,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      *
      * Should get API call limits
      */
-    function itShouldReturnApiCallLimits() 
+    public function itShouldReturnApiCallLimits()
     {
         $response = new Response(200, ['http_x_shopify_shop_api_call_limit' => '2/80'], '{}');
         $mock = new MockHandler([$response]);
@@ -380,7 +380,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      *
      * Should set shop and access tokeb via quick method
      */
-    function itShouldSetSession()
+    public function itShouldSetSession()
     {
         $api = new BasicShopifyAPI;
         $api->setSession('example.myshopify.com', '1234');
@@ -394,25 +394,25 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      *
      * Should isolate API session
      */
-    function itShouldWithSession()
+    public function itShouldWithSession()
     {
         $self = $this;
         $api = new BasicShopifyAPI;
 
         // Isolated for a shop
-        $api->withSession('example.myshopify.com', '1234', function() use(&$self) {
+        $api->withSession('example.myshopify.com', '1234', function () use (&$self) {
             $self->assertEquals('example.myshopify.com', $this->getShop());
             $self->assertEquals('1234', $this->getAccessToken());
         });
 
         // Isolated for a shop
-        $api->withSession('example2.myshopify.com', '12345', function() use(&$self) {
+        $api->withSession('example2.myshopify.com', '12345', function () use (&$self) {
             $self->assertEquals('example2.myshopify.com', $this->getShop());
             $self->assertEquals('12345', $this->getAccessToken());
         });
 
         // Isolated for a shop and returns a value
-        $valueReturn = $api->withSession('example2.myshopify.com', '12345', function() use(&$self) {
+        $valueReturn = $api->withSession('example2.myshopify.com', '12345', function () use (&$self) {
             return $this->getAccessToken();
         });
         $this->assertEquals($valueReturn, '12345');
@@ -420,7 +420,6 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
         // Should remain untouched
         $this->assertEquals($api->getShop(), null);
         $this->assertEquals($api->getAccessToken(), null);
-
     }
 
     /**
@@ -429,7 +428,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      *
      * Ensure a closure is passed to withSession
      */
-    function itShouldThrowExceptionForSessionWithNoClosure() 
+    public function itShouldThrowExceptionForSessionWithNoClosure()
     {
         $api = new BasicShopifyAPI;
         $api->withSession('example.myshopify.com', '1234', null);
@@ -440,7 +439,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      *
      * Should use query for GET requests
      */
-    function itShouldUseQueryForGetMethod() 
+    public function itShouldUseQueryForGetMethod()
     {
         $response = new Response(200, ['http_x_shopify_shop_api_call_limit' => '2/80'], '{}');
         $mock = new MockHandler([$response]);
@@ -462,7 +461,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      *
      * Should use JSON for non-GET methods
      */
-    function itShouldUseJsonForNonGetMethods() 
+    public function itShouldUseJsonForNonGetMethods()
     {
         $response = new Response(200, ['http_x_shopify_shop_api_call_limit' => '2/80'], '{}');
         $mock = new MockHandler([$response]);

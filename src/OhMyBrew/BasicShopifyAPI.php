@@ -1,4 +1,6 @@
-<?php namespace OhMyBrew;
+<?php
+
+namespace OhMyBrew;
 
 use GuzzleHttp\Client;
 use \Exception;
