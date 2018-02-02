@@ -1,11 +1,13 @@
-<?php namespace OhMyBrew;
+<?php
 
-use \ReflectionClass;
+namespace OhMyBrew;
+
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
+use ReflectionClass;
 
-class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
+class test extends \PHPUnit\Framework\TestCase
 {
     /**
      * @test
@@ -46,7 +48,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldSetShop()
     {
-        $api = new BasicShopifyAPI;
+        $api = new BasicShopifyAPI();
         $api->setShop('example.myshopify.com');
 
         $this->assertEquals('example.myshopify.com', $api->getShop());
@@ -59,7 +61,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldSetAccessToken()
     {
-        $api = new BasicShopifyAPI;
+        $api = new BasicShopifyAPI();
         $api->setAccessToken('123');
 
         $this->assertEquals('123', $api->getAccessToken());
@@ -72,7 +74,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldSetApiKeyAndPassword()
     {
-        $api = new BasicShopifyAPI;
+        $api = new BasicShopifyAPI();
         $api->setApiKey('123');
         $api->setApiPassword('abc');
         $api->setApiSecret('!@#');
@@ -100,7 +102,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldReturnBaseUrl()
     {
-        $api = new BasicShopifyAPI;
+        $api = new BasicShopifyAPI();
         $api->setShop('example.myshopify.com');
 
         $reflected = new ReflectionClass($api);
@@ -140,7 +142,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldThrowExceptionForMissingShopifyDomain()
     {
-        $api = new BasicShopifyAPI;
+        $api = new BasicShopifyAPI();
         $api->getAuthUrl(['read_products', 'write_products'], 'https://localapp.local/');
     }
 
@@ -164,8 +166,8 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldAllowForOwnClient()
     {
-        $api = new BasicShopifyAPI;
-        $api->setClient(new Client(['handler' => new MockHandler]));
+        $api = new BasicShopifyAPI();
+        $api->setClient(new Client(['handler' => new MockHandler()]));
 
         $reflected = new ReflectionClass($api);
 
@@ -206,7 +208,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
         $mock = new MockHandler([$response]);
         $client = new Client(['handler' => $mock]);
 
-        $api = new BasicShopifyAPI;
+        $api = new BasicShopifyAPI();
         $api->setShop('example.myshopify.com');
         $api->setApiKey('123');
         $api->setApiSecret('abc');
@@ -229,7 +231,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldReturnAuthUrl()
     {
-        $api = new BasicShopifyAPI;
+        $api = new BasicShopifyAPI();
         $api->setShop('example.myshopify.com');
         $api->setApiKey('123');
 
@@ -246,7 +248,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldFailRequestVerifyWithNoParams()
     {
-        $api = new BasicShopifyAPI;
+        $api = new BasicShopifyAPI();
         $this->assertEquals(false, $api->verifyRequest([]));
     }
 
@@ -259,7 +261,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldFailRequestVerifyWithNoParamsAgain()
     {
-        $api = new BasicShopifyAPI;
+        $api = new BasicShopifyAPI();
         $this->assertEquals(false, $api->verifyRequest(null));
     }
 
@@ -272,13 +274,13 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
     {
         $hmac = '4712bf92ffc2917d15a2f5a273e39f0116667419aa4b6ac0b3baaf26fa3c4d20';
         $params = [
-            'code' => '0907a61c0c8d55e99db179b68161bc00',
-            'hmac' => $hmac,
-            'shop' => 'some-shop.myshopify.com',
-            'timestamp' => '1337178173'
+            'code'      => '0907a61c0c8d55e99db179b68161bc00',
+            'hmac'      => $hmac,
+            'shop'      => 'some-shop.myshopify.com',
+            'timestamp' => '1337178173',
         ];
 
-        $api = new BasicShopifyAPI;
+        $api = new BasicShopifyAPI();
         $api->setApiSecret('hush');
         $this->assertEquals(true, $api->verifyRequest($params));
     }
@@ -294,10 +296,10 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
         $params = [
         'code' => '0907a61c0c8d55e99db179b68161bc00-OOPS',
         'hmac' => $hmac,
-        'shop' => 'some-shop.myshopify.com'
+        'shop' => 'some-shop.myshopify.com',
         ];
 
-        $api = new BasicShopifyAPI;
+        $api = new BasicShopifyAPI();
         $api->setApiSecret('hush');
         $this->assertEquals(false, $api->verifyRequest($params));
     }
@@ -318,7 +320,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
         $mock = new MockHandler([$response]);
         $client = new Client(['handler' => $mock]);
 
-        $api = new BasicShopifyAPI;
+        $api = new BasicShopifyAPI();
         $api->setClient($client);
         $api->setShop('example.myshopify.com');
         $api->setApiKey('123');
@@ -347,7 +349,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldThrowExceptionForInvalidApiCallsKey()
     {
-        $api = new BasicShopifyAPI;
+        $api = new BasicShopifyAPI();
         $api->getApiCalls('oops');
     }
 
@@ -362,7 +364,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
         $mock = new MockHandler([$response]);
         $client = new Client(['handler' => $mock]);
 
-        $api = new BasicShopifyAPI;
+        $api = new BasicShopifyAPI();
         $api->setClient($client);
         $api->setShop('example.myshopify.com');
         $api->setApiKey('123');
@@ -382,7 +384,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldSetSession()
     {
-        $api = new BasicShopifyAPI;
+        $api = new BasicShopifyAPI();
         $api->setSession('example.myshopify.com', '1234');
 
         $this->assertEquals('example.myshopify.com', $api->getShop());
@@ -397,7 +399,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
     public function itShouldWithSession()
     {
         $self = $this;
-        $api = new BasicShopifyAPI;
+        $api = new BasicShopifyAPI();
 
         // Isolated for a shop
         $api->withSession('example.myshopify.com', '1234', function () use (&$self) {
@@ -430,7 +432,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldThrowExceptionForSessionWithNoClosure()
     {
-        $api = new BasicShopifyAPI;
+        $api = new BasicShopifyAPI();
         $api->withSession('example.myshopify.com', '1234', null);
     }
 
@@ -445,7 +447,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
         $mock = new MockHandler([$response]);
         $client = new Client(['handler' => $mock]);
 
-        $api = new BasicShopifyAPI;
+        $api = new BasicShopifyAPI();
         $api->setClient($client);
         $api->setShop('example.myshopify.com');
         $api->setApiKey('123');
@@ -467,7 +469,7 @@ class BasicShopifyAPITest extends \PHPUnit\Framework\TestCase
         $mock = new MockHandler([$response]);
         $client = new Client(['handler' => $mock]);
 
-        $api = new BasicShopifyAPI;
+        $api = new BasicShopifyAPI();
         $api->setClient($client);
         $api->setShop('example.myshopify.com');
         $api->setApiKey('123');
