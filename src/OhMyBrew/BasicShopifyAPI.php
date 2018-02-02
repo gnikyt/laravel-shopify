@@ -2,66 +2,66 @@
 
 namespace OhMyBrew;
 
+use Closure;
+use Exception;
 use GuzzleHttp\Client;
-use \Exception;
-use \Closure;
 
 /**
- * BasicShopifyAPI is a simple wrapper for Shopify API
+ * BasicShopifyAPI is a simple wrapper for Shopify API.
  */
 class BasicShopifyAPI
 {
     /**
-     * The Guzzle client
+     * The Guzzle client.
      *
      * @var \GuzzleHttp\Client
      */
     protected $client;
 
     /**
-     * The Shopify domain
+     * The Shopify domain.
      *
      * @var string
      */
     protected $shop;
 
     /**
-     * The Shopify access token
+     * The Shopify access token.
      *
      * @var string
      */
     protected $accessToken;
 
     /**
-     * The Shopify API key
+     * The Shopify API key.
      *
      * @var string
      */
     protected $apiKey;
 
     /**
-     * The Shopify API password
+     * The Shopify API password.
      *
      * @var string
      */
     protected $apiPassword;
 
     /**
-     * The Shopify API secret
+     * The Shopify API secret.
      *
      * @var string
      */
     protected $apiSecret;
 
     /**
-     * If API calls are from a public or private app
+     * If API calls are from a public or private app.
      *
      * @var string
      */
     protected $isPrivate;
 
     /**
-     * The current API call limits from last request
+     * The current API call limits from last request.
      *
      * @var array
      */
@@ -70,7 +70,7 @@ class BasicShopifyAPI
     /**
      * Constructor.
      *
-     * @param boolean $private If this is a private or public app
+     * @param bool $private If this is a private or public app
      *
      * @return self
      */
@@ -80,7 +80,7 @@ class BasicShopifyAPI
         $this->isPrivate = $private;
 
         // Create a default Guzzle client
-        $this->client = new Client;
+        $this->client = new Client();
 
         // Create default placeholders for call limits
         $this->apiCallLimits = ['left' => 0, 'made' => 0, 'limit' => 40];
@@ -98,6 +98,7 @@ class BasicShopifyAPI
     public function setClient(Client $client)
     {
         $this->client = $client;
+
         return $this;
     }
 
@@ -111,6 +112,7 @@ class BasicShopifyAPI
     public function setShop(string $shop)
     {
         $this->shop = $shop;
+
         return $this;
     }
 
@@ -134,6 +136,7 @@ class BasicShopifyAPI
     public function setAccessToken(string $accessToken)
     {
         $this->accessToken = $accessToken;
+
         return $this;
     }
 
@@ -157,6 +160,7 @@ class BasicShopifyAPI
     public function setApiKey(string $apiKey)
     {
         $this->apiKey = $apiKey;
+
         return $this;
     }
 
@@ -170,6 +174,7 @@ class BasicShopifyAPI
     public function setApiSecret(string $apiSecret)
     {
         $this->apiSecret = $apiSecret;
+
         return $this;
     }
 
@@ -183,11 +188,12 @@ class BasicShopifyAPI
     public function setApiPassword(string $apiPassword)
     {
         $this->apiPassword = $apiPassword;
+
         return $this;
     }
 
     /**
-     * Simple quick method to set shop and access token in one shot
+     * Simple quick method to set shop and access token in one shot.
      *
      * @param string $shop        The shop's domain
      * @param string $accessToken The access token for API requests
@@ -203,11 +209,11 @@ class BasicShopifyAPI
     }
 
     /**
-     * Accepts a closure to do isolated API calls for a shop
+     * Accepts a closure to do isolated API calls for a shop.
      *
-     * @param string   $shop        The shop's domain
-     * @param string   $accessToken The access token for API requests
-     * @param Closure  $closure     The closure to run isolated
+     * @param string  $shop        The shop's domain
+     * @param string  $accessToken The access token for API requests
+     * @param Closure $closure     The closure to run isolated
      *
      * @throws \Exception When closure is missing or not callable
      *
@@ -218,6 +224,7 @@ class BasicShopifyAPI
         // Clone the API class and bind it to the closure
         $clonedApi = clone $this;
         $clonedApi->setSession($shop, $accessToken);
+
         return $closure->call($clonedApi);
     }
 
@@ -244,7 +251,7 @@ class BasicShopifyAPI
      *
      * @param array $params The request parameters (ex. $_GET)
      *
-     * @return boolean If the HMAC is validated
+     * @return bool If the HMAC is validated
      */
     public function verifyRequest(array $params)
     {
@@ -271,9 +278,9 @@ class BasicShopifyAPI
      *
      * @param string $code The code from Shopify
      *
-     * @return string The access token
-     *
      * @throws \Exception When API secret is missing
+     *
+     * @return string The access token
      */
     public function requestAccessToken(string $code)
     {
@@ -288,10 +295,10 @@ class BasicShopifyAPI
             "{$this->getBaseUrl()}/admin/oauth/access_token",
             [
                 'json' => [
-                    'client_id' => $this->apiKey,
+                    'client_id'     => $this->apiKey,
                     'client_secret' => $this->apiSecret,
-                    'code' => $code
-                ]
+                    'code'          => $code,
+                ],
             ]
         );
 
@@ -300,7 +307,7 @@ class BasicShopifyAPI
     }
 
     /**
-     * Runs a request to the Shopify API
+     * Runs a request to the Shopify API.
      *
      * @param string     $type   The type of request... GET, POST, PUT, DELETE
      * @param string     $path   The Shopify API path... /admin/xxxx/xxxx.json
@@ -317,7 +324,7 @@ class BasicShopifyAPI
         // Create the request, pass the access token and optional parameters
         $response = $this->client->request(
             $type,
-            $this->getBaseUrl() . $path,
+            $this->getBaseUrl().$path,
             $guzzleParams
         );
 
@@ -328,9 +335,9 @@ class BasicShopifyAPI
 
         // Set it into the class
         $this->apiCallLimits = [
-            'left' => (int) $callsLimit - $callsMade,
-            'made' => (int) $callsMade,
-            'limit' => (int) $callsLimit
+            'left'  => (int) $callsLimit - $callsMade,
+            'made'  => (int) $callsMade,
+            'limit' => (int) $callsLimit,
         ];
 
         // From firebase/php-jwt
@@ -348,36 +355,36 @@ class BasicShopifyAPI
              * Not all servers will support that, however, so for older versions we must
              * manually detect large ints in the JSON string and quote them (thus converting
              * them to strings) before decoding, hence the preg_replace() call.
-             * Currently not sure how to test this so I ignored it for now
+             * Currently not sure how to test this so I ignored it for now.
              */
             $maxIntLength = strlen((string) PHP_INT_MAX) - 1;
-            $jsonWithoutBigints = preg_replace('/:\s*(-?\d{' . $maxIntLength . ',})/', ': "$1"', $body);
+            $jsonWithoutBigints = preg_replace('/:\s*(-?\d{'.$maxIntLength.',})/', ': "$1"', $body);
             $bodyObj = json_decode($jsonWithoutBigints);
             // @codeCoverageIgnoreEnd
         }
 
         // Return Guzzle response and JSON-decoded body
-        return (object)[
+        return (object) [
             'response' => $response,
-            'body' => $bodyObj
+            'body'     => $bodyObj,
         ];
     }
 
     /**
-     * Returns the current API call limits
+     * Returns the current API call limits.
      *
      * @param string|null $key The key to grab (left, made, limit)
      *
-     * @return array An array of the Guzzle response, and JSON-decoded body
-     *
      * @throws \Exception When attempting to grab a key that doesn't exist
+     *
+     * @return array An array of the Guzzle response, and JSON-decoded body
      */
     public function getApiCalls(string $key = null)
     {
         if ($key) {
             if (!in_array($key, ['left', 'made', 'limit'])) {
                 // No key like that in array
-                throw new Exception('Invalid API call limit key. Valid keys are: ' . implode(', ', array_keys($this->apiCallLimits)));
+                throw new Exception('Invalid API call limit key. Valid keys are: '.implode(', ', array_keys($this->apiCallLimits)));
             }
 
             // Return the key value requested
@@ -389,12 +396,12 @@ class BasicShopifyAPI
     }
 
     /**
-     * Gets the base URL to use depending on if its a privte or public app
-     *
-     * @return string The final base URL to use with the API
+     * Gets the base URL to use depending on if its a privte or public app.
      *
      * @throws \Exception When missing API key or API password for private apps
      * @throws \Exception When missing Shopify domain
+     *
+     * @return string The final base URL to use with the API
      */
     protected function getBaseUrl() : string
     {
