@@ -172,6 +172,10 @@ $api->withSession('some-shop-two.myshopify.com', 'token from database?', functio
 });
 ```
 
+## Documentation
+
+For internal documentation, you may install phpdocumentor and run `phpdoc -d ./src -t docs/api`
+
 ## LICENSE
 
 This project is released under the MIT [license](https://github.com/ohmybrew/Basic-Shopify-API/blob/master/LICENSE).
