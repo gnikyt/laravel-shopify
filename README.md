@@ -171,3 +171,7 @@ $api->withSession('some-shop-two.myshopify.com', 'token from database?', functio
   echo $request->body->shop->name; // Some Shop Two
 });
 ```
+
+## LICENSE
+
+This project is released under the MIT [license](https://github.com/ohmybrew/Basic-Shopify-API/blob/master/LICENSE).
