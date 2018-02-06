@@ -174,7 +174,7 @@ $api->withSession('some-shop-two.myshopify.com', 'token from database?', functio
 
 ## Documentation
 
-For internal documentation, you may install phpdocumentor and run `phpdoc -d ./src -t docs/api`
+Code documentation is [available here](https://ohmybrew.com/Basic-Shopify-API) from phpDocumentor.
 
 ## LICENSE
 
