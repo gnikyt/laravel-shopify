@@ -41,7 +41,7 @@ For more information, tutorials, etc., please view the project's [wiki](https://
 
 For full resources on this package, see the [wiki](https://github.com/ohmybrew/laravel-shopify/wiki).
 
-For internal documentation, you may run `phpdoc` (hopefully host this online at somepoint).
+For internal documentation, it is [available here](https://ohmybrew.com/laravel-shopify/) from phpDocumentor.
 
 ## LICENSE
 
