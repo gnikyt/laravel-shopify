@@ -86,7 +86,9 @@ Route::group(['middleware' => ['web']], function () {
         'OhMyBrew\ShopifyApp\Controllers\BillingController@process'
     )
     ->name('billing.process');
+});
 
+Route::group(['middleware' => ['api']], function () {
     /*
     |--------------------------------------------------------------------------
     | Webhook Handler
