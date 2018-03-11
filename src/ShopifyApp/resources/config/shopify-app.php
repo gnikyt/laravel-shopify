@@ -14,6 +14,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | ESDK Mode
+    |--------------------------------------------------------------------------
+    |
+    | ESDK (embedded apps) are enabled by default. Set to false to use legacy
+    | mode and host the app inside your own container.
+    |
+    */
+
+    'esdk_enabled' => (bool) env('SHOPIFY_ESDK_ENABLED', true),
+
+    /*
+    |--------------------------------------------------------------------------
     | Shopify App Name
     |--------------------------------------------------------------------------
     |

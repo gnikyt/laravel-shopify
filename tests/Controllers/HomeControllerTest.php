@@ -36,4 +36,14 @@ class HomeControllerTest extends TestCase
         $this->assertEquals(true, strpos($response->content(), "apiKey: ''") !== false);
         $this->assertEquals(true, strpos($response->content(), "shopOrigin: 'https://example.myshopify.com'") !== false);
     }
+
+    public function testShopWithSessionAndDisabledEsdkShouldLoad()
+    {
+        session(['shopify_domain' => 'example.myshopify.com']);
+        config(['shopify-app.esdk_enabled' => false]);
+
+        $response = $this->get('/');
+        $response->assertStatus(200);
+        $this->assertEquals(false, strpos($response->content(), 'ShopifyApp.init'));
+    }
 }

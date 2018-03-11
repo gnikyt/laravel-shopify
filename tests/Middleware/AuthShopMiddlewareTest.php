@@ -49,4 +49,37 @@ class AuthShopMiddlewareTest extends TestCase
         $this->assertFalse($called);
         $this->assertEquals('example-different-shop.myshopify.com', session('shop'));
     }
+
+    public function testHeadersForEsdkShouldBeAdjusted()
+    {
+        // Set a shop
+        session(['shopify_domain' => 'example.myshopify.com']);
+
+        $response = (new AuthShop())->handle(
+            request(),
+            function ($request) use (&$called) {
+                // Nothing to do here...
+            }
+        );
+
+        $this->assertEquals('CP="Not used"', $response->headers->get('p3p'));
+        $this->assertNull($response->headers->get('x-frame-options'));
+    }
+
+    public function testHeadersForDisabledEsdk()
+    {
+        // Set a shop
+        session(['shopify_domain' => 'example.myshopify.com']);
+        config(['shopify-app.esdk_enabled' => false]);
+
+        $response = (new AuthShop())->handle(
+            request(),
+            function ($request) use (&$called) {
+                // Nothing to do here...
+            }
+        );
+
+        $this->assertNull($response->headers->get('p3p'));
+        $this->assertNull($response->headers->get('x-frame-options'));
+    }
 }
