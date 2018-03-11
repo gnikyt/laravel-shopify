@@ -4,8 +4,8 @@ namespace OhMyBrew\ShopifyApp\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
+use Symfony\Component\HttpFoundation\Response;
 
 class AuthShop
 {

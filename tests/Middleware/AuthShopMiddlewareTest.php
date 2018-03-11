@@ -57,7 +57,9 @@ class AuthShopMiddlewareTest extends TestCase
 
         $response = (new AuthShop())->handle(
             request(),
-            function ($request) use (&$called) { }
+            function ($request) use (&$called) {
+                // Nothing to do here...
+            }
         );
 
         $this->assertEquals('CP="Not used"', $response->headers->get('p3p'));
@@ -72,7 +74,9 @@ class AuthShopMiddlewareTest extends TestCase
 
         $response = (new AuthShop())->handle(
             request(),
-            function ($request) use (&$called) { }
+            function ($request) use (&$called) {
+                // Nothing to do here...
+            }
         );
 
         $this->assertNull($response->headers->get('p3p'));
