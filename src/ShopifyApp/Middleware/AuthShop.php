@@ -4,6 +4,7 @@ namespace OhMyBrew\ShopifyApp\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 
 class AuthShop
@@ -22,14 +23,29 @@ class AuthShop
         $shopParam = ShopifyApp::sanitizeShopDomain(request('shop'));
 
         // Check if shop has a session, also check the shops to ensure a match
-        if ($shop === null || ($shopParam && $shopParam !== $shop->shopify_domain) === true) {
+        if (
+            $shop === null ||
+            ($shopParam && $shopParam !== $shop->shopify_domain) === true
+        ) {
             // Either no shop session or shops do not match
             session()->forget('shopify_domain');
 
             return redirect()->route('authenticate')->with('shop', $shopParam);
         }
 
-        // Move on, authenticated
-        return $next($request);
+        // Shop is OK, move on...
+        $response = $next($request);
+        if (!$response instanceof Response) {
+            // We need a response object to modify headers
+            $response = new Response($response);
+        }
+
+        if (config('shopify-app.esdk_enabled')) {
+            // Headers applicable to ESDK only
+            $response->headers->set('P3P', 'CP="Not used"');
+            $response->headers->remove('X-Frame-Options');
+        }
+
+        return $response;
     }
 }
