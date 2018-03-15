@@ -26,7 +26,7 @@ trait AuthControllerTrait
     public function authenticate()
     {
         // Grab the shop domain (uses session if redirected from middleware)
-        $shopDomain = request('shop') ?: session('shop');
+        $shopDomain = request('shop');
         if (!$shopDomain) {
             // Back to login, no shop
             return redirect()->route('login');
@@ -34,7 +34,6 @@ trait AuthControllerTrait
 
         // Save shop domain to session
         session(['shopify_domain' => ShopifyApp::sanitizeShopDomain($shopDomain)]);
-        session()->forget('shop');
 
         if (!request('code')) {
             // Handle a request without a code
