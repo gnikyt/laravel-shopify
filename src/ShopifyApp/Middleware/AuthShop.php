@@ -30,7 +30,7 @@ class AuthShop
             // Either no shop session or shops do not match
             session()->forget('shopify_domain');
 
-            return redirect()->route('authenticate')->with('shop', $shopParam);
+            return redirect()->route('authenticate', ['shop' => $shopParam]);
         }
 
         // Shop is OK, move on...

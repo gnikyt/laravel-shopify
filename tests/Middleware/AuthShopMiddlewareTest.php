@@ -47,7 +47,7 @@ class AuthShopMiddlewareTest extends TestCase
         });
 
         $this->assertFalse($called);
-        $this->assertEquals('example-different-shop.myshopify.com', session('shop'));
+        $this->assertEquals('example-different-shop.myshopify.com', request('shop'));
     }
 
     public function testHeadersForEsdkShouldBeAdjusted()
