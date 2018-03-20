@@ -21,7 +21,8 @@
       "orchestra/testbench": "~3.5.0",
       "phpunit/phpunit": "~6.0",
       "satooshi/php-coveralls": "~1.0",
-      "squizlabs/php_codesniffer": "^3.0"
+      "squizlabs/php_codesniffer": "^3.0",
+    "codedungeon/phpunit-result-printer": "dev-master"
   },
   "autoload": {
     "psr-4": {

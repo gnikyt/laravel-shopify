@@ -3,12 +3,18 @@
          backupGlobals="false"
          backupStaticAttributes="false"
          colors="true"
-         verbose="true"
+         cacheTokens="false"
+         verbose="false"
+         strict="false"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
          processIsolation="false"
-         stopOnFailure="false">
+         stopOnFailure="false"
+         stopOnError="false"
+         stopOnIncomplete="false"
+         stopOnSkipped="false"
+         printerClass="Codedungeon\PHPUnitPrettyResultPrinter\Printer">
     <testsuites>
         <testsuite name="ShopifyApp Test Suite">
             <directory>tests</directory>
