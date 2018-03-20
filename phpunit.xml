@@ -13,8 +13,7 @@
          stopOnFailure="false"
          stopOnError="false"
          stopOnIncomplete="false"
-         stopOnSkipped="false"
-         printerClass="Codedungeon\PHPUnitPrettyResultPrinter\Printer">
+         stopOnSkipped="false">
     <testsuites>
         <testsuite name="ShopifyApp Test Suite">
             <directory>tests</directory>
