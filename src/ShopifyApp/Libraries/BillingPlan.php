@@ -151,7 +151,7 @@ class BillingPlan
             'trial_days'    => isset($this->details['trial_days']) ? $this->details['trial_days'] : 0,
             'name'          => $this->details['name'],
             'price'         => $this->details['price'],
-            'return_url'    => $this->details['return_url']
+            'return_url'    => $this->details['return_url'],
         ];
 
         // Handle capped amounts for UsageCharge API

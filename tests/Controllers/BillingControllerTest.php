@@ -66,7 +66,7 @@ class BillingControllerTest extends TestCase
                 'price'      => config('shopify-app.billing_price'),
                 'test'       => config('shopify-app.billing_test'),
                 'trial_days' => config('shopify-app.billing_trial_days'),
-                'return_url' => url(config('shopify-app.billing_redirect'))
+                'return_url' => url(config('shopify-app.billing_redirect')),
             ],
             $method->invoke($controller, 'planDetails')
         );
@@ -90,7 +90,7 @@ class BillingControllerTest extends TestCase
                 'trial_days'    => config('shopify-app.billing_trial_days'),
                 'capped_amount' => config('shopify-app.billing_capped_amount'),
                 'terms'         => config('shopify-app.billing_terms'),
-                'return_url'    => url(config('shopify-app.billing_redirect'))
+                'return_url'    => url(config('shopify-app.billing_redirect')),
             ],
             $method->invoke($controller, 'planDetails')
         );
