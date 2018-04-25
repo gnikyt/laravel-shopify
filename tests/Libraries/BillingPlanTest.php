@@ -36,6 +36,20 @@ class BillingPlanTest extends TestCase
         );
     }
 
+    public function testShouldReturnConfirmationUrlWhenUsageIsEnabled()
+    {
+        $plan = array_merge($this->plan, [
+            'capped_amount' => 100.00,
+            'terms' => '$1 for 500 emails',
+        ]);
+        $url = (new BillingPlan($this->shop))->setDetails($plan)->getConfirmationUrl();
+
+        $this->assertEquals(
+            'https://example.myshopify.com/admin/charges/1029266947/confirm_recurring_application_charge?signature=BAhpBANeWT0%3D--64de8739eb1e63a8f848382bb757b20343eb414f',
+            $url
+        );
+    }
+
     /**
      * @expectedException \Exception
      * @expectedExceptionMessage Plan details are missing for confirmation URL request.
