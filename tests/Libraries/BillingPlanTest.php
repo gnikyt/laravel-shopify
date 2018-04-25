@@ -40,7 +40,7 @@ class BillingPlanTest extends TestCase
     {
         $plan = array_merge($this->plan, [
             'capped_amount' => 100.00,
-            'terms' => '$1 for 500 emails',
+            'terms'         => '$1 for 500 emails',
         ]);
         $url = (new BillingPlan($this->shop))->setDetails($plan)->getConfirmationUrl();
 
