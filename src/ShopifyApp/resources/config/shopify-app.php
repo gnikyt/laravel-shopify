@@ -186,6 +186,28 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Billing Capped Amount
+    |--------------------------------------------------------------------------
+    |
+    | The capped price for charging a customer when using the UsageCharge API.
+    |
+    */
+
+    'billing_capped_amount' => env('SHOPIFY_BILLING_CAPPED_AMOUNT'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Billing Terms
+    |--------------------------------------------------------------------------
+    |
+    | Terms for the usage. Required if using capped amount.
+    |
+    */
+
+    'billing_terms' => env('SHOPIFY_BILLING_TERMS'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Shopify Webhooks
     |--------------------------------------------------------------------------
     |
