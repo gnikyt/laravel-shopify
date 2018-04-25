@@ -56,11 +56,13 @@ class BillingPlan
      *
      * @param array $plan The plan details.
      *                    $plan = [
-     *                    'name'         => (string) Plan name.
-     *                    'price'        => (float) Plan price. Required.
-     *                    'test'         => (boolean) Test mode or not.
-     *                    'trial_days'   => (int) Plan trial period in days.
-     *                    'return_url'   => (string) URL to handle response for acceptance or decline or billing. Required.
+     *                    'name'          => (string) Plan name.
+     *                    'price'         => (float) Plan price. Required.
+     *                    'test'          => (boolean) Test mode or not.
+     *                    'trial_days'    => (int) Plan trial period in days.
+     *                    'return_url'    => (string) URL to handle response for acceptance or decline or billing. Required.
+     *                    'capped_amount' => (float) Capped price if using UsageCharge API.
+     *                    'terms'         => (string) Terms for the usage. Required if using capped_amount.
      *                    ]
      *
      * @return $this
@@ -143,19 +145,26 @@ class BillingPlan
             throw new Exception('Plan details are missing for confirmation URL request.');
         }
 
+        // Build the charge array
+        $chargeDetails = [
+            'test'          => isset($this->details['test']) ? $this->details['test'] : false,
+            'trial_days'    => isset($this->details['trial_days']) ? $this->details['trial_days'] : 0,
+            'name'          => $this->details['name'],
+            'price'         => $this->details['price'],
+            'return_url'    => $this->details['return_url'],
+        ];
+
+        // Handle capped amounts for UsageCharge API
+        if (isset($this->details['capped_amount'])) {
+            $chargeDetails['capped_amount'] = $this->details['capped_amount'];
+            $chargeDetails['terms'] = $this->details['terms'];
+        }
+
         // Begin the charge request
         $charge = $this->shop->api()->request(
             'POST',
             "/admin/{$this->chargeType}s.json",
-            [
-                "{$this->chargeType}" => [
-                    'test'       => isset($this->details['test']) ? $this->details['test'] : false,
-                    'trial_days' => isset($this->details['trial_days']) ? $this->details['trial_days'] : 0,
-                    'name'       => $this->details['name'],
-                    'price'      => $this->details['price'],
-                    'return_url' => $this->details['return_url'],
-                ],
-            ]
+            ["{$this->chargeType}" => $chargeDetails]
         )->body->{$this->chargeType};
 
         return $charge->confirmation_url;

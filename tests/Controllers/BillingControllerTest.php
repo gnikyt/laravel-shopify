@@ -67,7 +67,30 @@ class BillingControllerTest extends TestCase
                 'test'       => config('shopify-app.billing_test'),
                 'trial_days' => config('shopify-app.billing_trial_days'),
                 'return_url' => url(config('shopify-app.billing_redirect')),
+            ],
+            $method->invoke($controller, 'planDetails')
+        );
+    }
 
+    public function testReturnsBasePlanDetailsWithUsage()
+    {
+        config(['shopify-app.billing_capped_amount' => 100.00]);
+        config(['shopify-app.billing_terms' => '$1 for 100 emails.']);
+
+        $controller = new BillingController();
+        $method = new ReflectionMethod(BillingController::class, 'planDetails');
+        $method->setAccessible(true);
+
+        // Based on default config
+        $this->assertEquals(
+            [
+                'name'          => config('shopify-app.billing_plan'),
+                'price'         => config('shopify-app.billing_price'),
+                'test'          => config('shopify-app.billing_test'),
+                'trial_days'    => config('shopify-app.billing_trial_days'),
+                'capped_amount' => config('shopify-app.billing_capped_amount'),
+                'terms'         => config('shopify-app.billing_terms'),
+                'return_url'    => url(config('shopify-app.billing_redirect')),
             ],
             $method->invoke($controller, 'planDetails')
         );
