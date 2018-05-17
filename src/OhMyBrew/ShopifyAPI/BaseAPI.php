@@ -306,7 +306,6 @@ abstract class BaseAPI
         return json_decode($request->getBody(), true)['access_token'];
     }
 
-
     /**
      * Returns the current API call limits.
      *
