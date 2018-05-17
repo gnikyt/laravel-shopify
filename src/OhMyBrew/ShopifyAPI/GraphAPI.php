@@ -22,12 +22,12 @@ class GraphAPI extends BaseAPI
 
         // Create default placeholder
         $this->apiCallLimits = [
-            'left' => 0,
-            'made' => 0,
-            'limit' => 1000,
-            'restoreRate' => 50,
+            'left'          => 0,
+            'made'          => 0,
+            'limit'         => 1000,
+            'restoreRate'   => 50,
             'requestedCost' => 0,
-            'actualCost' => 0,
+            'actualCost'    => 0,
         ];
 
         return $this;
@@ -36,7 +36,7 @@ class GraphAPI extends BaseAPI
     /**
      * Runs a request to the Shopify API.
      *
-     * @param string $query  The GraphQL query
+     * @param string $query The GraphQL query
      * 
      * @throws \Exception When missing api password is missing for private apps
      * @throws \Exception When missing access key is missing for public apps
@@ -48,7 +48,7 @@ class GraphAPI extends BaseAPI
         if ($this->isPrivate && $this->apiPassword === null) {
             // Private apps need password for use as access token
             throw new Exception('API password required for Shopify GraphQL calls');
-        } else if (!$this->isPrivate && $this->accessToken === null) {
+        } elseif (!$this->isPrivate && $this->accessToken === null) {
             // Need access token for public calls
             throw new Exception('Access token required for Shopify GraphQL calls');
         }
