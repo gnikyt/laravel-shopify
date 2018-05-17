@@ -2,10 +2,10 @@
 
 namespace OhMyBrew\ShopifyAPI;
 
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
-use Exception;
 
 class GraphApiTest extends \PHPUnit\Framework\TestCase
 {
@@ -19,6 +19,19 @@ class GraphApiTest extends \PHPUnit\Framework\TestCase
         $api = new GraphAPI();
         $api->setShop('example.myshopify.com');
 
+        $this->assertEquals('https://example.myshopify.com', $api->getBaseUrl());
+    }
+
+    /**
+     * @test
+     * @expectedException Exception
+     * @expectedExceptionMessage Shopify domain missing for API calls
+     *
+     * Ensure Shopify domain is there for baseURL
+     */
+    public function itShouldThrowExceptionForMissingDomainOnBaseUrl()
+    {
+        $api = new GraphAPI();
         $this->assertEquals('https://example.myshopify.com', $api->getBaseUrl());
     }
 
@@ -99,7 +112,7 @@ class GraphApiTest extends \PHPUnit\Framework\TestCase
         $api->setShop('example.myshopify.com');
         $api->setAccessToken('!@#');
 
-        $query =<<<QL
+        $query = <<<'QL'
 {
     shop {
         products(first: 2) {

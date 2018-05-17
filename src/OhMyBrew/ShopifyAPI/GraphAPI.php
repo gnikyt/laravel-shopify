@@ -37,7 +37,7 @@ class GraphAPI extends BaseAPI
      * Runs a request to the Shopify API.
      *
      * @param string $query The GraphQL query
-     * 
+     *
      * @throws \Exception When missing api password is missing for private apps
      * @throws \Exception When missing access key is missing for public apps
      *

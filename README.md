@@ -264,7 +264,7 @@ $api->withSession('some-shop-two.myshopify.com', 'token from database?', functio
 
 ## Documentation
 
-Code documentation is [available here](https://ohmybrew.com/Basic-Shopify-API) from phpDocumentor.
+Code documentation is [available here](https://ohmybrew.com/Basic-Shopify-API) from phpDocumentor via `phpdoc -d src -t doc`.
 
 ## LICENSE
 
