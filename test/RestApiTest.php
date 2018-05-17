@@ -23,6 +23,19 @@ class RestApiTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @test
+     * @expectedException Exception
+     * @expectedExceptionMessage Shopify domain missing for API calls
+     *
+     * Ensure Shopify domain is there for baseURL
+     */
+    public function itShouldThrowExceptionForMissingDomainOnBaseUrl()
+    {
+        $api = new RestAPI();
+        $this->assertEquals('https://example.myshopify.com', $api->getBaseUrl());
+    }
+
+    /**
+     * @test
      *
      * Checking base URL for API calls on private
      */
