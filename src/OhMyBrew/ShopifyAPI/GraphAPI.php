@@ -62,6 +62,7 @@ class GraphAPI extends BaseAPI
                     'X-Shopify-Access-Token' => $this->apiPassword ?? $this->accessToken,
                     'Content-Type'           => 'application/graphql',
                 ],
+                'body'    => $query,
             ]
         );
 
