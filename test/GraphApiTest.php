@@ -2,11 +2,6 @@
 
 namespace OhMyBrew\ShopifyAPI;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\Psr7\Response;
-use ReflectionClass;
-
 class GraphApiTest extends \PHPUnit\Framework\TestCase
 {
     /**
