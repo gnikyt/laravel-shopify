@@ -1,0 +1,33 @@
+{
+  "data": {
+    "shop": {
+      "products": {
+        "edges": [
+          {
+            "node": {
+              "id": "gid:\/\/shopify\/Product\/285561393",
+              "handle": "gift-card"
+            }
+          },
+          {
+            "node": {
+              "id": "gid:\/\/shopify\/Product\/434669000",
+              "handle": "bacon"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "extensions": {
+    "cost": {
+      "requestedQueryCost": 5,
+      "actualQueryCost": 5,
+      "throttleStatus": {
+        "maximumAvailable": 1000,
+        "currentlyAvailable": 995,
+        "restoreRate": 50
+      }
+    }
+  }
+}
