@@ -5,6 +5,7 @@ namespace OhMyBrew\ShopifyAPI;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
+use ReflectionClass;
 use Exception;
 
 // Used for testing BaseAPI
