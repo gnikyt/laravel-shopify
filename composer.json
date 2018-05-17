@@ -1,8 +1,8 @@
 {
   "name": "ohmybrew/basic-shopify-api",
   "type": "library",
-  "description": "A basic Shopify API wrapper",
-  "keywords": ["api", "shopify"],
+  "description": "A basic Shopify API wrapper with REST and GraphQL support.",
+  "keywords": ["api", "shopify", "rest", "graphql"],
   "license": "MIT",
   "authors": [
     {
@@ -21,7 +21,7 @@
     "squizlabs/php_codesniffer": "^3.0"
   },
   "autoload": {
-    "files": ["src/OhMyBrew/BasicShopifyAPI.php"]
+    "psr-4": { "OhMyBrew\\ShopifyAPI\\": "src/OhMyBrew/ShopifyAPI/" }
   },
   "config": { "bin-dir": "bin" }
 }

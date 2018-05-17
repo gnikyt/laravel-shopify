@@ -5,7 +5,7 @@
 [![StyleCI](https://styleci.io/repos/61004776/shield?branch=master)](https://styleci.io/repos/61004776)
 [![License](https://poser.pugx.org/ohmybrew/basic-shopify-api/license)](https://packagist.org/packages/ohmybrew/basic-shopify-api)
 
-A simple, tested, API wrapper for Shopify using Guzzle. It contains helpful methods for generating a installation URL, an authorize URL, HMAC signature validation, call limits, and API requests. It works with both OAuth and private API apps.
+A simple, tested, API wrapper for Shopify using Guzzle. It supports both the REST and GraphQL API provided by Shopify. It contains helpful methods for generating a installation URL, an authorize URL, HMAC signature validation, call limits, and API requests. It works with both OAuth and private API apps.
 
 This library required PHP >= 7.
 
@@ -23,10 +23,12 @@ For OAuth applications. The shop domain, API key, API secret, and an access toke
 
 #### Quick run-down
 
-```php
-use OhMyBrew\BasicShopifyAPI;
+##### REST Method
 
-$api = new BasicShopifyAPI;
+```php
+use OhMyBrew\ShopifyAPI;
+
+$api = new RestAPI;
 $api->setApiKey('your key here');
 $api->setApiSecret('your secret here');
 
@@ -44,12 +46,49 @@ echo $request->response->getStatusCode();
 echo $request->body->shop->name;
 ```
 
+##### GraphQL Method
+
+```php
+use OhMyBrew\ShopifyAPI;
+
+$api = new GraphAPI;
+$api->setApiKey('your key here');
+$api->setApiSecret('your secret here');
+
+$api->setShop('example.myshopify.com');
+$api->setAccessToken('a token here');
+// or
+$api->setSession('example.myshopify.com', 'a token here');
+
+/**
+ * $request will return an object with keys of `response` for full Guzzle response
+ * `body` with JSON-decoded result
+ */
+$query =<<<QL
+{
+    shop {
+        products(first: 2) {
+            edges {
+                node {
+                    id
+                    handle
+                }
+            }
+        }
+    }
+}
+QL;
+$request = $api->request($query);
+echo $request->response->getStatusCode();
+echo $request->body->shop->products->edges[0]->node->handle;
+```
+
 #### Getting access token
 
 After obtaining the user's shop domain, to then direct them to the auth screen use `getAuthUrl`, as example (basic PHP):
 
 ```php
-$api = new BasicShopifyAPI;
+$api = new RestAPI; // or GraphAPI
 $api->setShop($_SESSION['shop']);
 $api->setApiKey(env('SHOPIFY_API_KEY'));
 
@@ -90,8 +129,10 @@ For private application calls. The shop domain, API key, and API password are re
 
 #### Quick run-down
 
+##### REST Method
+
 ```php
-$api = new BasicShopifyAPI(true); // true sets it to private
+$api = new RestAPI(true); // true sets it to private
 $api->setShop('example.myshopify.com');
 $api->setApiKey('your key here');
 $api->setApiPassword('your password here');
@@ -105,7 +146,39 @@ echo $request->response->getStatusCode();
 echo $request->body->shop->name;
 ```
 
+##### GraphQL Method
+
+```php
+$api = new GraphAPI(true); // true sets it to private
+$api->setShop('example.myshopify.com');
+$api->setApiPassword('your password here'); // This is used as the access token for GraphQL
+
+/**
+ * $request will return an object with keys of `response` for full Guzzle response
+ * `body` with JSON-decoded result
+ */
+$query =<<<QL
+{
+    shop {
+        products(first: 2) {
+            edges {
+                node {
+                    id
+                    handle
+                }
+            }
+        }
+    }
+}
+QL;
+$request = $api->request($query);
+echo $request->response->getStatusCode();
+echo $request->body->shop->products->edges[0]->node->handle;
+```
+
 ### Making requests
+
+#### REST Method
 
 Requests are made using Guzzle.
 
@@ -122,6 +195,21 @@ The return value for the request will be an object containing:
 + `response` the full Guzzle response object
 + `body` the JSON decoded response body
 
+#### GraphQL Method
+
+Requests are made using Guzzle.
+
+```php
+$api->request(string $query);
+```
+
++ `query` refers to the full GraphQL query
+
+The return value for the request will be an object containing:
+
++ `response` the full Guzzle response object
++ `body` the JSON decoded response body
+
 ### Checking API limits
 
 After each request is made, the API call limits are updated. To access them, simply use:
@@ -131,6 +219,8 @@ After each request is made, the API call limits are updated. To access them, sim
 // Example: ['left' => 79, 'made' => 1, 'limit' => 80]
 $limits = $api->getApiCalls();
 ```
+
+For GraphQL, additionally there will be the following values: `restoreRate`, `requestedCost`, `actualCost`.
 
 To quickly get a value, you may pass an optional parameter to the `getApiCalls` method:
 
@@ -154,10 +244,10 @@ $api->withSession(string $shop, string $accessToken, Closure $closure);
 + `accessToken` refers to the access token for the API calls
 + `closure` refers to the closure to call for the session
 
-`$this` will be binded to `BasicShopifyAPI`.
+`$this` will be binded to the current API. Example:
 
 ```php
-$api = new BasicShopifyAPI(true);
+$api = new RestAPI(true);
 $api->setApiKey('your key here');
 $api->setApiPassword('your password here');
 
@@ -174,7 +264,7 @@ $api->withSession('some-shop-two.myshopify.com', 'token from database?', functio
 
 ## Documentation
 
-Code documentation is [available here](https://ohmybrew.com/Basic-Shopify-API) from phpDocumentor.
+Code documentation is [available here](https://ohmybrew.com/Basic-Shopify-API) from phpDocumentor via `phpdoc -d src -t doc`.
 
 ## LICENSE
 
