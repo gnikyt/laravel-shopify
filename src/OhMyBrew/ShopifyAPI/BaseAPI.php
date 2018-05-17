@@ -305,4 +305,31 @@ abstract class BaseAPI
         // Decode the response body as an array and return access token string
         return json_decode($request->getBody(), true)['access_token'];
     }
+
+
+    /**
+     * Returns the current API call limits.
+     *
+     * @param string|null $key The key to grab (left, made, limit, etc)
+     *
+     * @throws \Exception When attempting to grab a key that doesn't exist
+     *
+     * @return array An array of the Guzzle response, and JSON-decoded body
+     */
+    public function getApiCalls(string $key = null)
+    {
+        if ($key) {
+            $keys = array_keys($this->apiCallLimits);
+            if (!in_array($key, $keys)) {
+                // No key like that in array
+                throw new Exception('Invalid API call limit key. Valid keys are: '.implode(', ', $keys));
+            }
+
+            // Return the key value requested
+            return $this->apiCallLimits[$key];
+        }
+
+        // Return all the values
+        return $this->apiCallLimits;
+    }
 }

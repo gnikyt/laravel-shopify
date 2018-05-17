@@ -91,31 +91,6 @@ class RestAPI extends BaseAPI
     }
 
     /**
-     * Returns the current API call limits.
-     *
-     * @param string|null $key The key to grab (left, made, limit)
-     *
-     * @throws \Exception When attempting to grab a key that doesn't exist
-     *
-     * @return array An array of the Guzzle response, and JSON-decoded body
-     */
-    public function getApiCalls(string $key = null)
-    {
-        if ($key) {
-            if (!in_array($key, ['left', 'made', 'limit'])) {
-                // No key like that in array
-                throw new Exception('Invalid API call limit key. Valid keys are: '.implode(', ', array_keys($this->apiCallLimits)));
-            }
-
-            // Return the key value requested
-            return $this->apiCallLimits[$key];
-        }
-
-        // Return all the values
-        return $this->apiCallLimits;
-    }
-
-    /**
      * Gets the base URL to use depending on if its a privte or public app.
      *
      * @throws \Exception When missing API key or API password for private apps
