@@ -1,6 +1,6 @@
 <?php
 
-namespace OhMyBrew\ShopifyAPI;
+namespace OhMyBrew;
 
 use Exception;
 use GuzzleHttp\Client;
@@ -10,16 +10,54 @@ use GuzzleHttp\Psr7\Response;
 class GraphApiTest extends \PHPUnit\Framework\TestCase
 {
     /**
+     * Setup for phpUnit.
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        $this->query = <<<'QL'
+{
+    shop {
+        products(first: 2) {
+            edges {
+                node {
+                    id
+                    handle
+                }
+            }
+        }
+    }
+}
+QL;
+    }
+
+    /**
      * @test
      *
-     * Checking base URL for API calls
+     * Checking base URL
      */
     public function itShouldReturnBaseUrl()
     {
-        $api = new GraphAPI();
-        $api->setShop('example.myshopify.com');
+        $response = new Response(
+            200,
+            [],
+            file_get_contents(__DIR__.'/fixtures/graphql/shop_products.json')
+        );
+        $mock = new MockHandler([$response]);
+        $client = new Client(['handler' => $mock]);
 
-        $this->assertEquals('https://example.myshopify.com', $api->getBaseUrl());
+        $api = new BasicShopifyAPI(true);
+        $api->setClient($client);
+        $api->setShop('example.myshopify.com');
+        $api->setApiKey('123');
+        $api->setApiPassword('abc');
+        $api->graph($this->query);
+
+        $lastRequest = $mock->getLastRequest()->getUri();
+        $this->assertEquals('https', $lastRequest->getScheme());
+        $this->assertEquals('example.myshopify.com', $lastRequest->getHost());
+        $this->assertEquals('/admin/api/graphql.json', $lastRequest->getPath());
     }
 
     /**
@@ -27,68 +65,40 @@ class GraphApiTest extends \PHPUnit\Framework\TestCase
      * @expectedException Exception
      * @expectedExceptionMessage Shopify domain missing for API calls
      *
-     * Ensure Shopify domain is there for baseURL
+     * Ensure Shopify domain is there for queries
      */
-    public function itShouldThrowExceptionForMissingDomainOnBaseUrl()
+    public function itShouldThrowExceptionForMissingDomainOnQuery()
     {
-        $api = new GraphAPI();
-        $this->assertEquals('https://example.myshopify.com', $api->getBaseUrl());
+        $api = new BasicShopifyAPI();
+        $api->graph($this->query);
     }
 
     /**
      * @test
      * @expectedException Exception
-     * @expectedExceptionMessage API secret is missing
+     * @expectedExceptionMessage API password/access token required for private Shopify GraphQL calls
      *
-     * Ensure Shopify API secret is there for grabbing the access tokens
+     * Ensure API password is there for private queries
      */
-    public function itShouldThrowExceptionForMissingApiSecret()
+    public function itShouldThrowExceptionForMissingApiPasswordOnPrivateQuery()
     {
-        $api = new GraphAPI(true);
-        $api->requestAccessToken('123');
-    }
-
-    /**
-     * @test
-     *
-     * Should get auth URL
-     */
-    public function itShouldReturnAuthUrl()
-    {
-        $api = new GraphAPI();
+        $api = new BasicShopifyAPI(true);
         $api->setShop('example.myshopify.com');
-        $api->setApiKey('123');
-
-        $this->assertEquals(
-            'https://example.myshopify.com/admin/oauth/authorize?client_id=123&scope=read_products,write_products&redirect_uri=https://localapp.local/',
-            $api->getAuthUrl(['read_products', 'write_products'], 'https://localapp.local/')
-        );
+        $api->graph($this->query);
     }
 
     /**
      * @test
      * @expectedException Exception
-     * @expectedExceptionMessage API password required for Shopify GraphQL calls
+     * @expectedExceptionMessage Access token required for public Shopify GraphQL calls
      *
-     * Ensure Shopify API password is there for private calls
+     * Ensure access token is there for public queries
      */
-    public function itShouldThrowExceptionForMissingApiPasswordOnPrivate()
+    public function itShouldThrowExceptionForMissingAccessTokenOnPublicQuery()
     {
-        $api = new GraphAPI(true);
-        $api->request('{}');
-    }
-
-    /**
-     * @test
-     * @expectedException Exception
-     * @expectedExceptionMessage Access token required for Shopify GraphQL calls
-     *
-     * Ensure Shopify API password is there for private calls
-     */
-    public function itShouldThrowExceptionForMissingAccessTokenOnPublic()
-    {
-        $api = new GraphAPI();
-        $api->request('{}');
+        $api = new BasicShopifyAPI();
+        $api->setShop('example.myshopify.com');
+        $api->graph($this->query);
     }
 
     /**
@@ -107,28 +117,13 @@ class GraphApiTest extends \PHPUnit\Framework\TestCase
         $mock = new MockHandler([$response]);
         $client = new Client(['handler' => $mock]);
 
-        $api = new GraphAPI();
+        $api = new BasicShopifyAPI();
         $api->setClient($client);
         $api->setShop('example.myshopify.com');
         $api->setAccessToken('!@#');
 
-        $query = <<<'QL'
-{
-    shop {
-        products(first: 2) {
-            edges {
-                node {
-                    id
-                    handle
-                }
-            }
-        }
-    }
-}
-QL;
-
         // Fake param just to test it receives it
-        $request = $api->request($query);
+        $request = $api->graph($this->query);
         $data = $mock->getLastRequest()->getUri()->getQuery();
         $token_header = $mock->getLastRequest()->getHeader('X-Shopify-Access-Token')[0];
 
@@ -139,10 +134,10 @@ QL;
         $this->assertEquals('gift-card', $request->body->shop->products->edges[0]->node->handle);
         $this->assertEquals('!@#', $token_header);
 
-        $this->assertEquals(5, $api->getApiCalls('made'));
-        $this->assertEquals(1000, $api->getApiCalls('limit'));
-        $this->assertEquals(1000 - 5, $api->getApiCalls('left'));
-        $this->assertEquals(['left' => 1000 - 5, 'made' => 5, 'limit' => 1000, 'requestedCost' => 5, 'actualCost' => 5, 'restoreRate' => 50], $api->getApiCalls());
+        $this->assertEquals(5, $api->getApiCalls('graph', 'made'));
+        $this->assertEquals(1000, $api->getApiCalls('graph', 'limit'));
+        $this->assertEquals(1000 - 5, $api->getApiCalls('graph', 'left'));
+        $this->assertEquals(['left' => 1000 - 5, 'made' => 5, 'limit' => 1000, 'requestedCost' => 5, 'actualCost' => 5, 'restoreRate' => 50], $api->getApiCalls('graph'));
     }
 
     /**
@@ -154,7 +149,7 @@ QL;
      */
     public function itShouldThrowExceptionForInvalidApiCallsKey()
     {
-        $api = new GraphAPI();
-        $api->getApiCalls('oops');
+        $api = new BasicShopifyAPI();
+        $api->getApiCalls('graph', 'oops');
     }
 }

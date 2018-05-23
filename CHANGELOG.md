@@ -1,5 +1,17 @@
 # CHANGELOG
 
+# Version 3.0.0
+
+*Contains breaking changes*
+
+To better the library, it has been reverted back to its original single-class form and backwards compatibile with 1.x.x
+
++ GraphQL and REST are all under one class
++ `getApiCalls()` now takes two arguments, first being rest|graph, second being the key
++ `rest()` is now for REST calls
++ `graph()` is now for GraphQL calls
++ `request()` is aliased to `rest()` for backward compatibility
+
 # Version 2.0.0
 
 *Contains breaking changes*
