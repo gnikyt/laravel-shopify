@@ -10,11 +10,12 @@ use GuzzleHttp\Psr7\Response;
 class GraphApiTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * Setup for phpUnit
+     * Setup for phpUnit.
      *
      * @return void
      */
-    public function setUp() {
+    public function setUp()
+    {
         $this->query = <<<'QL'
 {
     shop {

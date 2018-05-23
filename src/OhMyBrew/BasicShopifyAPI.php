@@ -85,7 +85,7 @@ class BasicShopifyAPI
         // Create default placeholder
         $this->apiCallLimits = [
             'rest'  => [
-                'left'  => 0, 
+                'left'  => 0,
                 'made'  => 0,
                 'limit' => 40,
             ],
@@ -105,7 +105,7 @@ class BasicShopifyAPI
     /**
      * Determines if the calls are private.
      *
-     * @return boolean
+     * @return bool
      */
     public function isPrivate()
     {
@@ -115,7 +115,7 @@ class BasicShopifyAPI
     /**
      * Determines if the calls are public.
      *
-     * @return boolean
+     * @return bool
      */
     public function isPublic()
     {
@@ -509,7 +509,7 @@ class BasicShopifyAPI
      * Decodes the JSON body.
      *
      * @param string $json The JSON body
-     * 
+     *
      * @return object The decoded JSON
      */
     protected function jsonDecode($json)
