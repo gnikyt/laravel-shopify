@@ -17,18 +17,36 @@ The recommended way to install is [through composer](http://packagist.org).
 
 ## Usage
 
+Add `use OhMyBrew\BasicShopifyAPI;` to your imports.
+
 ### Public API
 
-For OAuth applications. The shop domain, API key, API secret, and an access token are required. This assumes you properly have your app setup in the partner's dashboard with the correct keys and redirect URIs.
+This assumes you properly have your app setup in the partner's dashboard with the correct keys and redirect URIs.
+
+#### REST
+
+For REST calls, the shop domain and access token are required.
 
 ```php
-use OhMyBrew\BasicShopifyAPI;
-
 $api = new BasicShopifyAPI();
-$api->setApiKey('your key here');
-$api->setApiSecret('your secret here');
+$api->setShop('your shop here');
+$api->setAccessToken('your token here');
 
 // Now run your requests...
+$api->rest(...);
+```
+
+#### GraphQL
+
+For GraphQL calls, the shop domain and access token are required.
+
+```php
+$api = new BasicShopifyAPI();
+$api->setShop('your shop here');
+$api->setAccessToken('your token here');
+
+// Now run your requests...
+$api->graph(...);
 ```
 
 #### Getting access token
@@ -36,8 +54,6 @@ $api->setApiSecret('your secret here');
 After obtaining the user's shop domain, to then direct them to the auth screen use `getAuthUrl`, as example (basic PHP):
 
 ```php
-use OhMyBrew\BasicShopifyAPI;
-
 $api = new BasicShopifyAPI();
 $api->setShop($_SESSION['shop']);
 $api->setApiKey(env('SHOPIFY_API_KEY'));
@@ -75,7 +91,11 @@ $valid = $api->verifyRequest($_GET);
 
 ### Private API
 
-For private application calls. The shop domain, API key, and API password are required.
+This assumes you properly have your app setup in the partner's dashboard with the correct keys and redirect URIs.
+
+#### REST
+
+For REST calls, shop domain, API key, and API password are request
 
 ```php
 $api = new BasicShopifyAPI(true); // true sets it to private
@@ -84,11 +104,25 @@ $api->setApiKey('your key here');
 $api->setApiPassword('your password here');
 
 // Now run your requests...
+$api->rest(...);
+```
+
+#### GraphQL
+
+For GraphQL calls, shop domain and API password are required.
+
+```php
+$api = new BasicShopifyAPI(true); // true sets it to private
+$api->setShop('example.myshopify.com');
+$api->setApiPassword('your password here');
+
+// Now run your requests...
+$api->graph(...);
 ```
 
 ### Making requests
 
-#### REST Method
+#### REST
 
 Requests are made using Guzzle.
 
@@ -107,12 +141,12 @@ The return value for the request will be an object containing:
 
 *Note*: `request()` will alias to `rest()` as well.
 
-#### GraphQL Method
+#### GraphQL
 
 Requests are made using Guzzle.
 
 ```php
-$api->graphql(string $query);
+$api->graph(string $query);
 ```
 
 + `query` refers to the full GraphQL query
