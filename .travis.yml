@@ -31,6 +31,5 @@ script:
   - bin/phpunit
 
 after_success:
-  after_success:
   - travis_retry composer require php-coveralls/php-coveralls
   - travis_retry bin/php-coveralls --coverage_clover=build/logs/clover.xml -v
