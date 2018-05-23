@@ -140,7 +140,7 @@ class BaseApiTest extends \PHPUnit\Framework\TestCase
      *
      * @expectedException Exception
      * @expectedExceptionMessage API secret is missing
-     * 
+     *
      * Check verify without api secret
      */
     public function itShouldThrowErrorOnVerifyWithoutApiSecret()
