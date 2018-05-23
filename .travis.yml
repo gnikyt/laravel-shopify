@@ -1,14 +1,25 @@
+# @oanhnn on GitHub
+dist: trusty
+sudo: false
 language: php
 
 php:
   - 7.1
   - 7.2
 
-before_script:
-  - composer install
-  - mkdir coverage
+cache:
+  directories:
+    - $HOME/.composer/cache
 
-script: bin/phpunit
+before_install:
+  - travis_retry composer self-update
 
-after_script:
-  - php bin/coveralls -v
+install:
+  - travis_retry composer update --no-interaction --prefer-dist $COMPOSER_ARGS
+
+script:
+  - bin/phpunit
+
+after_success:
+  - travis_retry composer require php-coveralls/php-coveralls
+  - travis_retry bin/php-coveralls --coverage_clover=build/logs/clover.xml -v
