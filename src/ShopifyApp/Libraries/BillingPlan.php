@@ -101,7 +101,7 @@ class BillingPlan
         }
 
         // Run API to grab details
-        return $this->shop->api()->request(
+        return $this->shop->api()->rest(
             'GET',
             "/admin/{$this->chargeType}s/{$this->chargeId}.json"
         )->body->{$this->chargeType};
@@ -123,7 +123,7 @@ class BillingPlan
         }
 
         // Activate and return the API response
-        return $this->shop->api()->request(
+        return $this->shop->api()->rest(
             'POST',
             "/admin/{$this->chargeType}s/{$this->chargeId}/activate.json"
         )->body->{$this->chargeType};
@@ -161,7 +161,7 @@ class BillingPlan
         }
 
         // Begin the charge request
-        $charge = $this->shop->api()->request(
+        $charge = $this->shop->api()->rest(
             'POST',
             "/admin/{$this->chargeType}s.json",
             ["{$this->chargeType}" => $chargeDetails]

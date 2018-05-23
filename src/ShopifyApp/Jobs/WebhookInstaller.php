@@ -53,7 +53,7 @@ class WebhookInstaller implements ShouldQueue
 
         // Get the current webhooks installed on the shop
         $api = $this->shop->api();
-        $shopWebhooks = $api->request(
+        $shopWebhooks = $api->rest(
             'GET',
             '/admin/webhooks.json',
             ['limit' => 250, 'fields' => 'id,address']
@@ -63,7 +63,7 @@ class WebhookInstaller implements ShouldQueue
             // Check if the required webhook exists on the shop
             if (!$this->webhookExists($shopWebhooks, $webhook)) {
                 // It does not... create the webhook
-                $api->request('POST', '/admin/webhooks.json', ['webhook' => $webhook]);
+                $api->rest('POST', '/admin/webhooks.json', ['webhook' => $webhook]);
                 $created[] = $webhook;
             }
         }

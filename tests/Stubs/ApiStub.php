@@ -6,7 +6,7 @@ use OhMyBrew\BasicShopifyAPI;
 
 class ApiStub extends BasicShopifyAPI
 {
-    public function request(string $method, string $path, array $params = null)
+    public function rest(string $method, string $path, array $params = null)
     {
         $filePath = $this->pathToHash($method, $path);
         $responseJSON = null;
