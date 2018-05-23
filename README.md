@@ -17,70 +17,36 @@ The recommended way to install is [through composer](http://packagist.org).
 
 ## Usage
 
+Add `use OhMyBrew\BasicShopifyAPI;` to your imports.
+
 ### Public API
 
-For OAuth applications. The shop domain, API key, API secret, and an access token are required. This assumes you properly have your app setup in the partner's dashboard with the correct keys and redirect URIs.
+This assumes you properly have your app setup in the partner's dashboard with the correct keys and redirect URIs.
 
-#### Quick run-down
+#### REST
 
-##### REST Method
+For REST calls, the shop domain and access token are required.
 
 ```php
-use OhMyBrew\ShopifyAPI;
+$api = new BasicShopifyAPI();
+$api->setShop('your shop here');
+$api->setAccessToken('your token here');
 
-$api = new RestAPI;
-$api->setApiKey('your key here');
-$api->setApiSecret('your secret here');
-
-$api->setShop('example.myshopify.com');
-$api->setAccessToken('a token here');
-// or
-$api->setSession('example.myshopify.com', 'a token here');
-
-/**
- * $request will return an object with keys of `response` for full Guzzle response
- * `body` with JSON-decoded result
- */
-$request = $api->request('GET', '/admin/shop.json');
-echo $request->response->getStatusCode();
-echo $request->body->shop->name;
+// Now run your requests...
+$api->rest(...);
 ```
 
-##### GraphQL Method
+#### GraphQL
+
+For GraphQL calls, the shop domain and access token are required.
 
 ```php
-use OhMyBrew\ShopifyAPI;
+$api = new BasicShopifyAPI();
+$api->setShop('your shop here');
+$api->setAccessToken('your token here');
 
-$api = new GraphAPI;
-$api->setApiKey('your key here');
-$api->setApiSecret('your secret here');
-
-$api->setShop('example.myshopify.com');
-$api->setAccessToken('a token here');
-// or
-$api->setSession('example.myshopify.com', 'a token here');
-
-/**
- * $request will return an object with keys of `response` for full Guzzle response
- * `body` with JSON-decoded result
- */
-$query =<<<QL
-{
-    shop {
-        products(first: 2) {
-            edges {
-                node {
-                    id
-                    handle
-                }
-            }
-        }
-    }
-}
-QL;
-$request = $api->request($query);
-echo $request->response->getStatusCode();
-echo $request->body->shop->products->edges[0]->node->handle;
+// Now run your requests...
+$api->graph(...);
 ```
 
 #### Getting access token
@@ -88,7 +54,7 @@ echo $request->body->shop->products->edges[0]->node->handle;
 After obtaining the user's shop domain, to then direct them to the auth screen use `getAuthUrl`, as example (basic PHP):
 
 ```php
-$api = new RestAPI; // or GraphAPI
+$api = new BasicShopifyAPI();
 $api->setShop($_SESSION['shop']);
 $api->setApiKey(env('SHOPIFY_API_KEY'));
 
@@ -110,7 +76,7 @@ if (!$code) {
   $api->setAccessToken($token);
 
   // You can now make API calls as well once you've set the token to `setAccessToken`
-  $request = $api->request('GET', '/admin/shop.json');
+  $request = $api->rest('GET', '/admin/shop.json'); // or GraphQL
 }
 ```
 
@@ -125,65 +91,43 @@ $valid = $api->verifyRequest($_GET);
 
 ### Private API
 
-For private application calls. The shop domain, API key, and API password are required.
+This assumes you properly have your app setup in the partner's dashboard with the correct keys and redirect URIs.
 
-#### Quick run-down
+#### REST
 
-##### REST Method
+For REST calls, shop domain, API key, and API password are request
 
 ```php
-$api = new RestAPI(true); // true sets it to private
+$api = new BasicShopifyAPI(true); // true sets it to private
 $api->setShop('example.myshopify.com');
 $api->setApiKey('your key here');
 $api->setApiPassword('your password here');
 
-/**
- * $request will return an object with keys of `response` for full Guzzle response
- * `body` with JSON-decoded result
- */
-$request = $api->request('GET', '/admin/shop.json');
-echo $request->response->getStatusCode();
-echo $request->body->shop->name;
+// Now run your requests...
+$api->rest(...);
 ```
 
-##### GraphQL Method
+#### GraphQL
+
+For GraphQL calls, shop domain and API password are required.
 
 ```php
-$api = new GraphAPI(true); // true sets it to private
+$api = new BasicShopifyAPI(true); // true sets it to private
 $api->setShop('example.myshopify.com');
-$api->setApiPassword('your password here'); // This is used as the access token for GraphQL
+$api->setApiPassword('your password here');
 
-/**
- * $request will return an object with keys of `response` for full Guzzle response
- * `body` with JSON-decoded result
- */
-$query =<<<QL
-{
-    shop {
-        products(first: 2) {
-            edges {
-                node {
-                    id
-                    handle
-                }
-            }
-        }
-    }
-}
-QL;
-$request = $api->request($query);
-echo $request->response->getStatusCode();
-echo $request->body->shop->products->edges[0]->node->handle;
+// Now run your requests...
+$api->graph(...);
 ```
 
 ### Making requests
 
-#### REST Method
+#### REST
 
 Requests are made using Guzzle.
 
 ```php
-$api->request(string $type, string $path, array $params = null);
+$api->rest(string $type, string $path, array $params = null);
 ```
 
 + `type` refers to GET, POST, PUT, DELETE, etc
@@ -195,12 +139,14 @@ The return value for the request will be an object containing:
 + `response` the full Guzzle response object
 + `body` the JSON decoded response body
 
-#### GraphQL Method
+*Note*: `request()` will alias to `rest()` as well.
+
+#### GraphQL
 
 Requests are made using Guzzle.
 
 ```php
-$api->request(string $query);
+$api->graph(string $query);
 ```
 
 + `query` refers to the full GraphQL query
@@ -217,7 +163,7 @@ After each request is made, the API call limits are updated. To access them, sim
 ```php
 // Returns an array of left, made, and limit.
 // Example: ['left' => 79, 'made' => 1, 'limit' => 80]
-$limits = $api->getApiCalls();
+$limits = $api->getApiCalls('rest'); // or 'graph'
 ```
 
 For GraphQL, additionally there will be the following values: `restoreRate`, `requestedCost`, `actualCost`.
@@ -227,9 +173,9 @@ To quickly get a value, you may pass an optional parameter to the `getApiCalls` 
 ```php
 // As example, this will return 79
 // You may pass 'left', 'made', or 'limit'
-$left = $api->getApiCalls('left'); // returns 79
+$left = $api->getApiCalls('graph', 'left'); // returns 79
 // or
-$left = $api->getApiCalls()['left']; // returns 79
+$left = $api->getApiCalls('graph')['left']; // returns 79
 ```
 
 ### Isolated API calls
@@ -247,17 +193,17 @@ $api->withSession(string $shop, string $accessToken, Closure $closure);
 `$this` will be binded to the current API. Example:
 
 ```php
-$api = new RestAPI(true);
+$api = new BasicShopifyAPI(true);
 $api->setApiKey('your key here');
 $api->setApiPassword('your password here');
 
 $api->withSession('some-shop.myshopify.com', 'token from database?', function() {
-  $request = $this->request('GET', '/admin/shop.json');
+  $request = $this->rest('GET', '/admin/shop.json');
   echo $request->body->shop->name; // Some Shop
 });
 
 $api->withSession('some-shop-two.myshopify.com', 'token from database?', function() {
-  $request = $this->request('GET', '/admin/shop.json');
+  $request = $this->rest('GET', '/admin/shop.json');
   echo $request->body->shop->name; // Some Shop Two
 });
 ```

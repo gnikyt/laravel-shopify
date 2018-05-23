@@ -1,24 +1,19 @@
 # Upgrading
 
-# v1.x.x -> v2.0.0
+# v1.x.x -> v3.0.0
 
-Library is no longer a single class. It now has a namespace with several classes.
++ `getApiCalls()` now takes two arguments, first being rest|graph, second being the key
 
 Old:
 
 ```php
-use OhMyBrew\BasicShopifyAPI;
-
-$api = new BasicShopifyAPI(...);
+getApiCalls('left');
 ```
 
 New:
 
 ```php
-
-use OhMyBrew\ShopifyAPI;
-
-$api = new RestAPI(...);
+getApiCalls('rest', 'left');
 ```
 
-A GraphQL API class is now also included, use `GraphAPI`.
++ `request()` still exists, and is aliased to `rest()` but encourage you to move all REST calls to the new `rest()` method name

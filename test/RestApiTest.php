@@ -1,6 +1,6 @@
 <?php
 
-namespace OhMyBrew\ShopifyAPI;
+namespace OhMyBrew;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
@@ -11,14 +11,57 @@ class RestApiTest extends \PHPUnit\Framework\TestCase
     /**
      * @test
      *
+     * Checking base URL for API calls on private
+     */
+    public function itShouldReturnPrivateBaseUrl()
+    {
+        $response = new Response(
+            200,
+            ['http_x_shopify_shop_api_call_limit' => '2/80'],
+            file_get_contents(__DIR__.'/fixtures/rest/admin__shop.json')
+        );
+        $mock = new MockHandler([$response]);
+        $client = new Client(['handler' => $mock]);
+
+        $api = new BasicShopifyAPI(true);
+        $api->setClient($client);
+        $api->setShop('example.myshopify.com');
+        $api->setApiKey('123');
+        $api->setApiPassword('abc');
+        $api->rest('GET', '/admin/shop.json');
+
+        $lastRequest = $mock->getLastRequest()->getUri();
+        $this->assertEquals('https', $lastRequest->getScheme());
+        $this->assertEquals('example.myshopify.com', $lastRequest->getHost());
+        $this->assertEquals('123:abc', $lastRequest->getUserInfo());
+        $this->assertEquals('/admin/shop.json', $lastRequest->getPath());
+    }
+
+    /**
+     * @test
+     *
      * Checking base URL for API calls on public
      */
-    public function itShouldReturnBaseUrl()
+    public function itShouldReturnPublicBaseUrl()
     {
-        $api = new RestAPI();
-        $api->setShop('example.myshopify.com');
+        $response = new Response(
+            200,
+            ['http_x_shopify_shop_api_call_limit' => '2/80'],
+            file_get_contents(__DIR__.'/fixtures/rest/admin__shop.json')
+        );
+        $mock = new MockHandler([$response]);
+        $client = new Client(['handler' => $mock]);
 
-        $this->assertEquals('https://example.myshopify.com', $api->getBaseUrl());
+        $api = new BasicShopifyAPI();
+        $api->setClient($client);
+        $api->setShop('example.myshopify.com');
+        $api->rest('GET', '/admin/shop.json');
+
+        $lastRequest = $mock->getLastRequest()->getUri();
+        $this->assertEquals('https', $lastRequest->getScheme());
+        $this->assertEquals('example.myshopify.com', $lastRequest->getHost());
+        $this->assertEquals(null, $lastRequest->getUserInfo());
+        $this->assertEquals('/admin/shop.json', $lastRequest->getPath());
     }
 
     /**
@@ -28,68 +71,24 @@ class RestApiTest extends \PHPUnit\Framework\TestCase
      *
      * Ensure Shopify domain is there for baseURL
      */
-    public function itShouldThrowExceptionForMissingDomainOnBaseUrl()
+    public function itShouldThrowExceptionForMissingDomain()
     {
-        $api = new RestAPI();
-        $this->assertEquals('https://example.myshopify.com', $api->getBaseUrl());
-    }
-
-    /**
-     * @test
-     *
-     * Checking base URL for API calls on private
-     */
-    public function itShouldReturnPrivateBaseUrl()
-    {
-        $api = new RestAPI(true);
-        $api->setShop('example.myshopify.com');
-        $api->setApiKey('123');
-        $api->setApiPassword('abc');
-
-        $this->assertEquals('https://123:abc@example.myshopify.com', $api->getBaseUrl());
+        $api = new BasicShopifyAPI();
+        $api->rest('GET', '/admin/shop.json');
     }
 
     /**
      * @test
      * @expectedException Exception
-     * @expectedExceptionMessage API key and password required for private Shopify API calls
+     * @expectedExceptionMessage API key and password required for private Shopify REST calls
      *
      * Ensure Shopify API details is passsed for private API calls
      */
     public function itShouldThrowExceptionForMissingApiDetails()
     {
-        $api = new RestAPI(true);
-        $api->getAuthUrl(['read_products', 'write_products'], 'https://localapp.local/');
-    }
-
-    /**
-     * @test
-     * @expectedException Exception
-     * @expectedExceptionMessage API secret is missing
-     *
-     * Ensure Shopify API secret is there for grabbing the access tokens
-     */
-    public function itShouldThrowExceptionForMissingApiSecret()
-    {
-        $api = new RestAPI(true);
-        $api->requestAccessToken('123');
-    }
-
-    /**
-     * @test
-     *
-     * Should get auth URL
-     */
-    public function itShouldReturnAuthUrl()
-    {
-        $api = new RestAPI();
+        $api = new BasicShopifyAPI(true);
         $api->setShop('example.myshopify.com');
-        $api->setApiKey('123');
-
-        $this->assertEquals(
-            'https://example.myshopify.com/admin/oauth/authorize?client_id=123&scope=read_products,write_products&redirect_uri=https://localapp.local/',
-            $api->getAuthUrl(['read_products', 'write_products'], 'https://localapp.local/')
-        );
+        $api->rest('GET', '/admin/shop.json');
     }
 
     /**
@@ -108,14 +107,14 @@ class RestApiTest extends \PHPUnit\Framework\TestCase
         $mock = new MockHandler([$response]);
         $client = new Client(['handler' => $mock]);
 
-        $api = new RestAPI();
+        $api = new BasicShopifyAPI();
         $api->setClient($client);
         $api->setShop('example.myshopify.com');
         $api->setApiKey('123');
         $api->setAccessToken('!@#');
 
         // Fake param just to test it receives it
-        $request = $api->request('GET', '/admin/shop.json', ['limit' => 1, 'page' => 1]);
+        $request = $api->rest('GET', '/admin/shop.json', ['limit' => 1, 'page' => 1]);
         $data = $mock->getLastRequest()->getUri()->getQuery();
         $token_header = $mock->getLastRequest()->getHeader('X-Shopify-Access-Token')[0];
 
@@ -137,8 +136,8 @@ class RestApiTest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldThrowExceptionForInvalidApiCallsKey()
     {
-        $api = new RestAPI();
-        $api->getApiCalls('oops');
+        $api = new BasicShopifyAPI();
+        $api->getApiCalls('rest', 'oops');
     }
 
     /**
@@ -152,17 +151,17 @@ class RestApiTest extends \PHPUnit\Framework\TestCase
         $mock = new MockHandler([$response]);
         $client = new Client(['handler' => $mock]);
 
-        $api = new RestAPI();
+        $api = new BasicShopifyAPI();
         $api->setClient($client);
         $api->setShop('example.myshopify.com');
         $api->setApiKey('123');
         $api->setAccessToken('!@#');
-        $api->request('GET', '/admin/shop.json');
+        $api->rest('GET', '/admin/shop.json');
 
-        $this->assertEquals(2, $api->getApiCalls('made'));
-        $this->assertEquals(80, $api->getApiCalls('limit'));
-        $this->assertEquals(80 - 2, $api->getApiCalls('left'));
-        $this->assertEquals(['left' => 80 - 2, 'made' => 2, 'limit' => 80], $api->getApiCalls());
+        $this->assertEquals(2, $api->getApiCalls('rest', 'made'));
+        $this->assertEquals(80, $api->getApiCalls('rest', 'limit'));
+        $this->assertEquals(80 - 2, $api->getApiCalls('rest', 'left'));
+        $this->assertEquals(['left' => 80 - 2, 'made' => 2, 'limit' => 80], $api->getApiCalls('rest'));
     }
 
     /**
@@ -176,12 +175,12 @@ class RestApiTest extends \PHPUnit\Framework\TestCase
         $mock = new MockHandler([$response]);
         $client = new Client(['handler' => $mock]);
 
-        $api = new RestAPI();
+        $api = new BasicShopifyAPI();
         $api->setClient($client);
         $api->setShop('example.myshopify.com');
         $api->setApiKey('123');
         $api->setAccessToken('!@#');
-        $api->request('GET', '/admin/shop.json', ['limit' => 1, 'page' => 1]);
+        $api->rest('GET', '/admin/shop.json', ['limit' => 1, 'page' => 1]);
 
         $this->assertEquals('limit=1&page=1', $mock->getLastRequest()->getUri()->getQuery());
         $this->assertNull(json_decode($mock->getLastRequest()->getBody()));
@@ -198,14 +197,38 @@ class RestApiTest extends \PHPUnit\Framework\TestCase
         $mock = new MockHandler([$response]);
         $client = new Client(['handler' => $mock]);
 
-        $api = new RestAPI();
+        $api = new BasicShopifyAPI();
         $api->setClient($client);
         $api->setShop('example.myshopify.com');
         $api->setApiKey('123');
         $api->setAccessToken('!@#');
-        $api->request('POST', '/admin/gift_cards.json', ['gift_cards' => ['initial_value' => 25.00]]);
+        $api->rest('POST', '/admin/gift_cards.json', ['gift_cards' => ['initial_value' => 25.00]]);
 
         $this->assertEquals('', $mock->getLastRequest()->getUri()->getQuery());
         $this->assertNotNull(json_decode($mock->getLastRequest()->getBody()));
+    }
+
+    /**
+     * @test
+     *
+     * Should alias request to REST method
+     */
+    public function itShouldAliasRequestToRestMethod()
+    {
+        $response = new Response(
+            200,
+            ['http_x_shopify_shop_api_call_limit' => '2/80'],
+            file_get_contents(__DIR__.'/fixtures/rest/admin__shop.json')
+        );
+        $mock = new MockHandler([$response]);
+        $client = new Client(['handler' => $mock]);
+
+        $api = new BasicShopifyAPI();
+        $api->setClient($client);
+        $api->setShop('example.myshopify.com');
+        $request = $api->request('GET', '/admin/shop.json');
+
+        $this->assertEquals(true, is_object($request->body));
+        $this->assertEquals('Apple Computers', $request->body->shop->name);
     }
 }

@@ -1,17 +1,11 @@
 <?php
 
-namespace OhMyBrew\ShopifyAPI;
+namespace OhMyBrew;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
 use ReflectionClass;
-
-// Used for testing BaseAPI
-class TestAPI extends BaseAPI
-{
-    // ...
-}
 
 class BaseApiTest extends \PHPUnit\Framework\TestCase
 {
@@ -22,13 +16,10 @@ class BaseApiTest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldSetApiToPrivateMode()
     {
-        $api = new TestAPI(true);
-        $reflected = new ReflectionClass($api);
+        $api = new BasicShopifyAPI(true);
 
-        $privateProperty = $reflected->getProperty('isPrivate');
-        $privateProperty->setAccessible(true);
-
-        $this->assertEquals(true, $privateProperty->getValue($api));
+        $this->assertEquals(true, $api->isPrivate());
+        $this->assertEquals(false, $api->isPublic());
     }
 
     /**
@@ -38,13 +29,10 @@ class BaseApiTest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldSetApiToPublicMode()
     {
-        $api = new TestAPI(false);
-        $reflected = new ReflectionClass($api);
+        $api = new BasicShopifyAPI();
 
-        $privateProperty = $reflected->getProperty('isPrivate');
-        $privateProperty->setAccessible(true);
-
-        $this->assertEquals(false, $privateProperty->getValue($api));
+        $this->assertEquals(false, $api->isPrivate());
+        $this->assertEquals(true, $api->isPublic());
     }
 
     /**
@@ -54,7 +42,7 @@ class BaseApiTest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldSetShop()
     {
-        $api = new TestAPI();
+        $api = new BasicShopifyAPI();
         $api->setShop('example.myshopify.com');
 
         $this->assertEquals('example.myshopify.com', $api->getShop());
@@ -67,7 +55,7 @@ class BaseApiTest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldSetAccessToken()
     {
-        $api = new TestAPI();
+        $api = new BasicShopifyAPI();
         $api->setAccessToken('123');
 
         $this->assertEquals('123', $api->getAccessToken());
@@ -80,7 +68,7 @@ class BaseApiTest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldSetApiKeyAndPassword()
     {
-        $api = new TestAPI();
+        $api = new BasicShopifyAPI();
         $api->setApiKey('123');
         $api->setApiPassword('abc');
         $api->setApiSecret('!@#');
@@ -108,7 +96,7 @@ class BaseApiTest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldAllowForOwnClient()
     {
-        $api = new TestAPI();
+        $api = new BasicShopifyAPI();
         $api->setClient(new Client(['handler' => new MockHandler()]));
 
         $reflected = new ReflectionClass($api);
@@ -128,7 +116,8 @@ class BaseApiTest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldFailRequestVerifyWithNoParams()
     {
-        $api = new TestAPI();
+        $api = new BasicShopifyAPI();
+        $api->setApiSecret('hush');
         $this->assertEquals(false, $api->verifyRequest([]));
     }
 
@@ -141,8 +130,23 @@ class BaseApiTest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldFailRequestVerifyWithNoParamsAgain()
     {
-        $api = new TestAPI();
+        $api = new BasicShopifyAPI();
+        $api->setApiSecret('hush');
         $this->assertEquals(false, $api->verifyRequest(null));
+    }
+
+    /**
+     * @test
+     *
+     * @expectedException Exception
+     * @expectedExceptionMessage API secret is missing
+     *
+     * Check verify without api secret
+     */
+    public function itShouldThrowErrorOnVerifyWithoutApiSecret()
+    {
+        $api = new BasicShopifyAPI();
+        $api->verifyRequest([]);
     }
 
     /**
@@ -160,7 +164,7 @@ class BaseApiTest extends \PHPUnit\Framework\TestCase
             'timestamp' => '1337178173',
         ];
 
-        $api = new TestAPI();
+        $api = new BasicShopifyAPI();
         $api->setApiSecret('hush');
         $this->assertEquals(true, $api->verifyRequest($params));
     }
@@ -179,7 +183,7 @@ class BaseApiTest extends \PHPUnit\Framework\TestCase
         'shop' => 'some-shop.myshopify.com',
         ];
 
-        $api = new TestAPI();
+        $api = new BasicShopifyAPI();
         $api->setApiSecret('hush');
         $this->assertEquals(false, $api->verifyRequest($params));
     }
@@ -191,7 +195,7 @@ class BaseApiTest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldSetSession()
     {
-        $api = new TestAPI();
+        $api = new BasicShopifyAPI();
         $api->setSession('example.myshopify.com', '1234');
 
         $this->assertEquals('example.myshopify.com', $api->getShop());
@@ -206,18 +210,20 @@ class BaseApiTest extends \PHPUnit\Framework\TestCase
     public function itShouldWithSession()
     {
         $self = $this;
-        $api = new TestAPI();
+        $api = new BasicShopifyAPI();
 
         // Isolated for a shop
         $api->withSession('example.myshopify.com', '1234', function () use (&$self) {
             $self->assertEquals('example.myshopify.com', $this->getShop());
             $self->assertEquals('1234', $this->getAccessToken());
+            $self->assertInstanceOf(BasicShopifyAPI::class, $this);
         });
 
         // Isolated for a shop
         $api->withSession('example2.myshopify.com', '12345', function () use (&$self) {
             $self->assertEquals('example2.myshopify.com', $this->getShop());
             $self->assertEquals('12345', $this->getAccessToken());
+            $self->assertInstanceOf(BasicShopifyAPI::class, $this);
         });
 
         // Isolated for a shop and returns a value
@@ -239,7 +245,7 @@ class BaseApiTest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldThrowExceptionForSessionWithNoClosure()
     {
-        $api = new TestAPI();
+        $api = new BasicShopifyAPI();
         $api->withSession('example.myshopify.com', '1234', null);
     }
 
@@ -259,7 +265,7 @@ class BaseApiTest extends \PHPUnit\Framework\TestCase
         $mock = new MockHandler([$response]);
         $client = new Client(['handler' => $mock]);
 
-        $api = new RestAPI();
+        $api = new BasicShopifyAPI();
         $api->setShop('example.myshopify.com');
         $api->setApiKey('123');
         $api->setApiSecret('abc');
@@ -273,5 +279,78 @@ class BaseApiTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('abc', $data->client_secret);
         $this->assertEquals('123', $data->client_id);
         $this->assertEquals($code, $data->code);
+    }
+
+    /**
+     * @test
+     * @expectedException Exception
+     * @expectedExceptionMessage Shopify domain missing for API calls
+     *
+     * Ensure Shopify domain is there for grabbing the access tokens
+     */
+    public function itShouldThrowExceptionForMissingShopOnAccessTokenRequest()
+    {
+        $api = new BasicShopifyAPI(true);
+        $api->requestAccessToken('123');
+    }
+
+    /**
+     * @test
+     * @expectedException Exception
+     * @expectedExceptionMessage API key or secret is missing
+     *
+     * Ensure Shopify API secret is there for grabbing the access tokens
+     */
+    public function itShouldThrowExceptionForMissingApiSecretOnAccessTokenRequest()
+    {
+        $api = new BasicShopifyAPI(true);
+        $api->setShop('example.myshopify.com');
+        $api->requestAccessToken('123');
+    }
+
+    /**
+     * @test
+     *
+     * Should get auth URL
+     */
+    public function itShouldReturnAuthUrl()
+    {
+        $api = new BasicShopifyAPI();
+        $api->setShop('example.myshopify.com');
+        $api->setApiKey('123');
+
+        $this->assertEquals(
+            'https://example.myshopify.com/admin/oauth/authorize?client_id=123&scope=read_products,write_products&redirect_uri=https://localapp.local/',
+            $api->getAuthUrl(['read_products', 'write_products'], 'https://localapp.local/')
+        );
+    }
+
+    /**
+     * @test
+     *
+     * @expectedException Exception
+     * @expectedExceptionMessage Shopify domain missing for API calls
+     *
+     * Should throw error for missing shop on auth call
+     */
+    public function itShouldThrowErrorForMissingShopDomainOnAuthCall()
+    {
+        $api = new BasicShopifyAPI();
+        $api->getAuthUrl(['read_products', 'write_products'], 'https://localapp.local/');
+    }
+
+    /**
+     * @test
+     *
+     * @expectedException Exception
+     * @expectedExceptionMessage API key is missing
+     *
+     * Should throw error for missing API key on auth call
+     */
+    public function itShouldThrowErrorForMissingApiKeyOnAuthCall()
+    {
+        $api = new BasicShopifyAPI();
+        $api->setShop('example.myshopify.com');
+        $api->getAuthUrl(['read_products', 'write_products'], 'https://localapp.local/');
     }
 }
