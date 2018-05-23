@@ -57,6 +57,7 @@ After obtaining the user's shop domain, to then direct them to the auth screen u
 $api = new BasicShopifyAPI();
 $api->setShop($_SESSION['shop']);
 $api->setApiKey(env('SHOPIFY_API_KEY'));
+$api->setApiSecret(env('SHOPIFY_API_SECRET'));
 
 $code = $_GET['code'];
 if (!$code) {
