@@ -21,7 +21,7 @@
     "squizlabs/php_codesniffer": "^3.0"
   },
   "autoload": {
-    "psr-4": { "OhMyBrew\\ShopifyAPI\\": "src/OhMyBrew/ShopifyAPI/" }
+    "files": ["src/OhMyBrew/BasicShopifyAPI.php"]
   },
   "config": { "bin-dir": "bin" }
 }
