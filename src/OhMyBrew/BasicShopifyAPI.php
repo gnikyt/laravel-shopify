@@ -411,12 +411,12 @@ class BasicShopifyAPI
             throw new Exception('Shopify domain missing for API calls');
         }
 
-        if ($this->private && $this->apiPassword === null) {
+        if ($this->private && ($this->apiPassword === null && $this->accessToken === null)) {
             // Private apps need password for use as access token
-            throw new Exception('API password required for Shopify GraphQL calls');
+            throw new Exception('API password/access token required for private Shopify GraphQL calls');
         } elseif (!$this->private && $this->accessToken === null) {
             // Need access token for public calls
-            throw new Exception('Access token required for Shopify GraphQL calls');
+            throw new Exception('Access token required for public Shopify GraphQL calls');
         }
 
         // Create the request, pass the access token and optional parameters

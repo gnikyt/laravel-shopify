@@ -75,7 +75,7 @@ QL;
     /**
      * @test
      * @expectedException Exception
-     * @expectedExceptionMessage API password required for Shopify GraphQL calls
+     * @expectedExceptionMessage API password/access token required for private Shopify GraphQL calls
      *
      * Ensure API password is there for private queries
      */
@@ -89,7 +89,7 @@ QL;
     /**
      * @test
      * @expectedException Exception
-     * @expectedExceptionMessage Access token required for Shopify GraphQL calls
+     * @expectedExceptionMessage Access token required for public Shopify GraphQL calls
      *
      * Ensure access token is there for public queries
      */
