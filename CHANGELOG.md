@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# Vesion 3.0.1
+
++ Fix to obtaining access token
+
 # Version 3.0.0
 
 *Contains breaking changes*
