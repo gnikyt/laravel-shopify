@@ -344,7 +344,7 @@ class BasicShopifyAPI
         // Do a JSON POST request to grab the access token
         $request = $this->client->request(
             'POST',
-            "{$this->shop}/admin/oauth/access_token",
+            "https://{$this->shop}/admin/oauth/access_token",
             [
                 'json' => [
                     'client_id'     => $this->apiKey,
