@@ -34,6 +34,21 @@ class AuthShopMiddlewareTest extends TestCase
         $this->assertEquals(true, $called);
     }
 
+    public function testShopWithNoTokenShouldNotPassMiddleware()
+    {
+        // Set a shop
+        session(['shopify_domain' => 'no-token.myshopify.com']);
+
+        $called = false;
+        $result = (new AuthShop())->handle(request(), function ($request) use (&$called) {
+            // Shouldn never be called
+            $called = true;
+        });
+
+        $this->assertFalse($called);
+        $this->assertEquals(true, strpos($result, 'Redirecting to http://localhost/authenticate') !== false);
+    }
+
     public function testShopsWhichDoNotMatchShouldKillSessionAndDirectToReAuthenticate()
     {
         // Set a shop

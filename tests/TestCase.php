@@ -79,5 +79,10 @@ abstract class TestCase extends OrchestraTestCase
         $shop->shopify_domain = 'new-shop.myshopify.com';
         $shop->shopify_token = '1234';
         $shop->save();
+
+        // New shop... no token, not grandfathered
+        $shop = new Shop();
+        $shop->shopify_domain = 'no-token-shop.myshopify.com';
+        $shop->save();
     }
 }

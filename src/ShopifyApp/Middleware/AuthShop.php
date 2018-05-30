@@ -25,7 +25,8 @@ class AuthShop
         // Check if shop has a session, also check the shops to ensure a match
         if (
             $shop === null ||
-            ($shopParam && $shopParam !== $shop->shopify_domain) === true
+            ($shopParam && $shopParam !== $shop->shopify_domain) === true ||
+            $shop->shopify_token === null
         ) {
             // Either no shop session or shops do not match
             session()->forget('shopify_domain');
