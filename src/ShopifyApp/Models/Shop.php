@@ -3,10 +3,13 @@
 namespace OhMyBrew\ShopifyApp\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 
 class Shop extends Model
 {
+    use SoftDeletes;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -17,6 +20,13 @@ class Shop extends Model
         'shopify_token',
         'grandfathered',
     ];
+
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['deleted_at'];
 
     /**
      * The API instance.

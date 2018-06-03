@@ -61,4 +61,23 @@ class ShopModelTest extends TestCase
         $this->assertEquals(false, $shop->isPaid());
         $this->assertEquals(true, $shop_2->isPaid());
     }
+
+    public function testShopCanSoftDeleteAndBeRestored()
+    {
+        $shop = new Shop();
+        $shop->shopify_domain = 'hello.myshopify.com';
+        $shop->save();
+        $shop->delete();
+
+        // Test soft delete
+        $this->assertTrue($shop->trashed());
+        $this->assertSoftDeleted('shops', [
+            'id' => $shop->id,
+            'shopify_domain' => $shop->shopify_domain,
+        ]);
+
+        // Test restore
+        $shop->restore();
+        $this->assertFalse($shop->trashed());
+    }
 }
