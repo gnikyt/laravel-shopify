@@ -53,15 +53,6 @@ class ShopModelTest extends TestCase
         $this->assertEquals(false, $shop_2->isGrandfathered());
     }
 
-    public function testShopShouldConfirmPaidState()
-    {
-        $shop = Shop::where('shopify_domain', 'grandfathered.myshopify.com')->first();
-        $shop_2 = Shop::where('shopify_domain', 'example.myshopify.com')->first();
-
-        $this->assertEquals(false, $shop->isPaid());
-        $this->assertEquals(true, $shop_2->isPaid());
-    }
-
     public function testShopCanSoftDeleteAndBeRestored()
     {
         $shop = new Shop();

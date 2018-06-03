@@ -64,7 +64,6 @@ abstract class TestCase extends OrchestraTestCase
         $shop = new Shop();
         $shop->shopify_domain = 'example.myshopify.com';
         $shop->shopify_token = '1234';
-        $shop->charge_id = 678298290;
         $shop->save();
 
         // Non-paid shop, grandfathered
