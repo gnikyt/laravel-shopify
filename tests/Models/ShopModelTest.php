@@ -71,4 +71,13 @@ class ShopModelTest extends TestCase
         $shop->restore();
         $this->assertFalse($shop->trashed());
     }
+
+    public function testShouldReturnBoolForChargesApplied()
+    {
+        $shop = Shop::where('shopify_domain', 'grandfathered.myshopify.com')->first();
+        $shop_2 = Shop::where('shopify_domain', 'example.myshopify.com')->first();
+
+        $this->assertEquals(false, $shop->hasCharges());
+        $this->assertEquals(true, $shop_2->hasCharges());
+    }
 }

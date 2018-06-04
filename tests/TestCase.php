@@ -3,9 +3,11 @@
 namespace OhMyBrew\ShopifyApp\Test;
 
 use OhMyBrew\ShopifyApp\Models\Shop;
+use OhMyBrew\ShopifyApp\Models\Charge;
 use OhMyBrew\ShopifyApp\ShopifyAppProvider;
 use Orchestra\Database\ConsoleServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
+use Carbon\Carbon;
 
 abstract class TestCase extends OrchestraTestCase
 {
@@ -60,6 +62,13 @@ abstract class TestCase extends OrchestraTestCase
 
     protected function seedDatabase()
     {
+        $this->createShops();
+        $this->createCharges();
+    }
+
+    protected function createShops()
+    {
+
         // Paid shop, not grandfathered
         $shop = new Shop();
         $shop->shopify_domain = 'example.myshopify.com';
@@ -83,5 +92,19 @@ abstract class TestCase extends OrchestraTestCase
         $shop = new Shop();
         $shop->shopify_domain = 'no-token-shop.myshopify.com';
         $shop->save();
+    }
+
+    public function createCharges()
+    {;
+        $charge = new Charge();
+        $charge->charge_id = 98298298;
+        $charge->test = true;
+        $charge->name = 'Test Plan';
+        $charge->type = 1;
+        $charge->price = 15.00;
+        $charge->trial_days = 7;
+        $charge->trial_ends_on = Carbon::createFromDate(2018, 6, 3, 'UTC')->addWeeks(1);
+        $charge->shop_id = Shop::where('shopify_domain', 'example.myshopify.com')->first()->id;
+        $charge->save();
     }
 }

@@ -41,7 +41,7 @@ class CreateChargesTable extends Migration
             $table->decimal('price', 8, 2);
 
             // Store the amount of the charge, this helps if you are experimenting with pricing
-            $table->decimal('capped_amount', 8, 2);
+            $table->decimal('capped_amount', 8, 2)->nullable();
 
             // Nullable in case of 0 trial days
             $table->integer('trial_days')->nullable();

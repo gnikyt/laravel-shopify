@@ -55,16 +55,6 @@ class Shop extends Model
     }
 
     /**
-     * Checks if a shop has a charge ID.
-     *
-     * @return bool
-     */
-    public function isPaid()
-    {
-        return !is_null($this->charge_id);
-    }
-
-    /**
      * Checks is shop is grandfathered in.
      *
      * @return bool
@@ -72,5 +62,25 @@ class Shop extends Model
     public function isGrandfathered()
     {
         return ((bool) $this->grandfathered) === true;
+    }
+
+    /**
+     * Get charges.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function charges()
+    {
+        return $this->hasMany('OhMyBrew\ShopifyApp\Models\Charge');
+    }
+
+    /**
+     * Checks if charges have been applied to the shop.
+     *
+     * @return bool
+     */
+    public function hasCharges()
+    {
+        return $this->charges->isNotEmpty();
     }
 }
