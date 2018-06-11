@@ -11,7 +11,7 @@
     }
   ],
   "require": {
-    "php": ">=7.0.0",
+    "php": ">=7.1.0",
     "laravel/framework": "~5.5",
     "ohmybrew/basic-shopify-api": "~3.0",
     "doctrine/dbal": "~2.5"
