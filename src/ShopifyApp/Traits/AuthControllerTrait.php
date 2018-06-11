@@ -87,8 +87,14 @@ trait AuthControllerTrait
             return redirect()->route('login')->with('error', 'Invalid signature');
         }
 
-        // Save token to shop
+        // Grab the shop; restore if need-be
         $shop = ShopifyApp::shop();
+        if ($shop->trashed()) {
+            $shop->restore();
+            $shop->charges()->restore();
+        }
+
+        // Save the token to the shop
         $shop->shopify_token = $api->requestAccessToken(request('code'));
         $shop->save();
 

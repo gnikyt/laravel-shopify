@@ -49,6 +49,21 @@ class AuthShopMiddlewareTest extends TestCase
         $this->assertEquals(true, strpos($result, 'Redirecting to http://localhost/authenticate') !== false);
     }
 
+    public function testShopTrashedShouldNotPassMiddleware()
+    {
+        // Set a shop
+        session(['shopify_domain' => 'trashed-shop.myshopify.com']);
+
+        $called = false;
+        $result = (new AuthShop())->handle(request(), function ($request) use (&$called) {
+            // Shouldn never be called
+            $called = true;
+        });
+
+        $this->assertFalse($called);
+        $this->assertEquals(true, strpos($result, 'Redirecting to http://localhost/authenticate') !== false);
+    }
+
     public function testShopsWhichDoNotMatchShouldKillSessionAndDirectToReAuthenticate()
     {
         // Set a shop

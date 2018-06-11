@@ -68,7 +68,6 @@ abstract class TestCase extends OrchestraTestCase
 
     protected function createShops()
     {
-
         // Paid shop, not grandfathered
         $shop = new Shop();
         $shop->shopify_domain = 'example.myshopify.com';
@@ -92,6 +91,12 @@ abstract class TestCase extends OrchestraTestCase
         $shop = new Shop();
         $shop->shopify_domain = 'no-token-shop.myshopify.com';
         $shop->save();
+
+        // Trashed shop
+        $shop = new Shop();
+        $shop->shopify_domain = 'trashed-shop.myshopify.com';
+        $shop->save();
+        $shop->delete();
     }
 
     public function createCharges()
@@ -100,10 +105,46 @@ abstract class TestCase extends OrchestraTestCase
         $charge->charge_id = 98298298;
         $charge->test = true;
         $charge->name = 'Test Plan';
+        $charge->status = 'accepted';
         $charge->type = 1;
         $charge->price = 15.00;
         $charge->trial_days = 7;
         $charge->trial_ends_on = Carbon::createFromDate(2018, 6, 3, 'UTC')->addWeeks(1);
+        $charge->shop_id = Shop::where('shopify_domain', 'example.myshopify.com')->first()->id;
+        $charge->save();
+
+        $charge = new Charge();
+        $charge->charge_id = 67298298;
+        $charge->test = false;
+        $charge->name = 'Base Plan';
+        $charge->status = 'accepted';
+        $charge->type = 1;
+        $charge->price = 25.00;
+        $charge->trial_days = 7;
+        $charge->trial_ends_on = Carbon::now()->addDays(2);
+        $charge->shop_id = Shop::where('shopify_domain', 'example.myshopify.com')->first()->id;
+        $charge->save();
+
+        $charge = new Charge();
+        $charge->charge_id = 78378873;
+        $charge->test = false;
+        $charge->name = 'Base Plan Old';
+        $charge->status = 'accepted';
+        $charge->type = 1;
+        $charge->price = 25.00;
+        $charge->trial_days = 7;
+        $charge->trial_ends_on = Carbon::now()->subWeeks(4);
+        $charge->shop_id = Shop::where('shopify_domain', 'example.myshopify.com')->first()->id;
+        $charge->save();
+
+        $charge = new Charge();
+        $charge->charge_id = 89389389;
+        $charge->test = false;
+        $charge->name = 'Base Plan Old Non-Trial';
+        $charge->status = 'accepted';
+        $charge->type = 1;
+        $charge->price = 25.00;
+        $charge->trial_days = 0;
         $charge->shop_id = Shop::where('shopify_domain', 'example.myshopify.com')->first()->id;
         $charge->save();
     }

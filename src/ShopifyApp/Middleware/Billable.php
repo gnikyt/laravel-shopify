@@ -5,6 +5,7 @@ namespace OhMyBrew\ShopifyApp\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
+use OhMyBrew\ShopifyApp\Models\Charge;
 
 class Billable
 {
@@ -19,9 +20,17 @@ class Billable
     public function handle(Request $request, Closure $next)
     {
         if (config('shopify-app.billing_enabled') === true) {
+            // Grab the shop and last recurring or one-time charge
             $shop = ShopifyApp::shop();
-            if (!$shop->isPaid() && !$shop->isGrandfathered()) {
-                // No charge in database and they're not grandfathered in, redirect to billing
+            $lastCharge = $shop->charges()
+                ->where(function ($query) {
+                    $query->latestByType(Charge::CHARGE_RECURRING);
+                })->orWhere(function ($query) {
+                    $query->latestByType(Charge::CHARGE_ONETIME);
+                })->latest()->first();
+
+            if (!$shop->isGrandfathered() && (is_null($lastCharge) || $lastCharge->wasDeclined())) {
+                // They're not grandfathered in, and there is no charge or charge was declined... redirect to billing
                 return redirect()->route('billing');
             }
         }

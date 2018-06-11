@@ -19,12 +19,21 @@ class AuthControllerTest extends TestCase
     {
         parent::setUp();
 
-        // HMAC
+        // HMAC for regular tests
         $this->hmac = 'a7448f7c42c9bc025b077ac8b73e7600b6f8012719d21cbeb88db66e5dbbd163';
         $this->hmacParams = [
             'hmac'      => $this->hmac,
             'shop'      => 'example.myshopify.com',
             'code'      => '1234678',
+            'timestamp' => '1337178173',
+        ];
+
+        // HMAC for trashed shop testing
+        $this->hmacTrashed = '77ec82b8dca7ea606e8b69d3cc50beced069b03631fd6a2f367993eb793f4c45';
+        $this->hmacTrashedParams = [
+            'hmac'      => $this->hmacTrashed,
+            'shop'      => 'trashed-shop.myshopify.com',
+            'code'      => '1234678910',
             'timestamp' => '1337178173',
         ];
 
@@ -63,6 +72,17 @@ class AuthControllerTest extends TestCase
 
         $shop = Shop::where('shopify_domain', 'example.myshopify.com')->first();
         $this->assertEquals('12345678', $shop->shopify_token); // Previous token was 1234
+    }
+
+    public function testAuthRestoresTrashedShop()
+    {
+        $shop = Shop::withTrashed()->where('shopify_domain', 'trashed-shop.myshopify.com')->first();
+        $this->assertTrue($shop->trashed());
+
+        $this->call('get', '/authenticate', $this->hmacTrashedParams);
+
+        $shop = $shop->fresh();
+        $this->assertFalse($shop->trashed());
     }
 
     public function testAuthAcceptsShopWithCodeAndRedirectsToHome()
