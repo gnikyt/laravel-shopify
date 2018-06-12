@@ -1,4 +1,5 @@
 <?php
+
 namespace OhMyBrew\ShopifyApp\Test\Controllers;
 
 use OhMyBrew\ShopifyApp\Controllers\BillingController;
