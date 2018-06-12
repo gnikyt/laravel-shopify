@@ -2,10 +2,10 @@
 
 namespace OhMyBrew\ShopifyApp\Traits;
 
+use Carbon\Carbon;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Libraries\BillingPlan;
 use OhMyBrew\ShopifyApp\Models\Charge;
-use Carbon\Carbon;
 
 trait BillingControllerTrait
 {

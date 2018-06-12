@@ -2,12 +2,12 @@
 
 namespace OhMyBrew\ShopifyApp\Test;
 
-use OhMyBrew\ShopifyApp\Models\Shop;
+use Carbon\Carbon;
 use OhMyBrew\ShopifyApp\Models\Charge;
+use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\ShopifyAppProvider;
 use Orchestra\Database\ConsoleServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
-use Carbon\Carbon;
 
 abstract class TestCase extends OrchestraTestCase
 {

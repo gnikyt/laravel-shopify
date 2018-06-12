@@ -63,7 +63,7 @@ class ShopModelTest extends TestCase
         // Test soft delete
         $this->assertTrue($shop->trashed());
         $this->assertSoftDeleted('shops', [
-            'id' => $shop->id,
+            'id'             => $shop->id,
             'shopify_domain' => $shop->shopify_domain,
         ]);
 

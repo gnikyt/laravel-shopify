@@ -2,10 +2,9 @@
 
 namespace OhMyBrew\ShopifyApp\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
-use Carbon\Carbon;
 
 class Charge extends Model
 {
@@ -28,6 +27,7 @@ class Charge extends Model
      * Scope for latest charge for a shop.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query The query builder
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeLatest($query)
@@ -39,7 +39,8 @@ class Charge extends Model
      * Scope for latest charge by type for a shop.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query The query builder
-     * @param integer                               $type The type of charge
+     * @param int                                   $type  The type of charge
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeLatestByType($query, int $type)
@@ -70,7 +71,7 @@ class Charge extends Model
     /**
      * Checks if the charge is a type.
      *
-     * @param integer $type The charge type. 
+     * @param int $type The charge type.
      *
      * @return bool
      */
@@ -102,12 +103,12 @@ class Charge extends Model
     /**
      * Returns the remaining trial days.
      *
-     * @return integer
+     * @return int
      */
     public function remainingTrialDays()
     {
         if (!$this->isTrial()) {
-            return null;
+            return;
         }
 
         return $this->isActiveTrial() ? Carbon::today()->diffInDays($this->trial_ends_on) : 0;
@@ -116,12 +117,12 @@ class Charge extends Model
     /**
      * Returns the used trial days.
      *
-     * @return integer|null
+     * @return int|null
      */
     public function usedTrialDays()
     {
         if (!$this->isTrial()) {
-            return null;
+            return;
         }
 
         return $this->trial_days - $this->remainingTrialDays();

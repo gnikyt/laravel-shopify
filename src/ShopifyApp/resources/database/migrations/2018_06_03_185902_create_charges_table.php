@@ -50,7 +50,7 @@ class CreateChargesTable extends Migration
             $table->timestamp('billing_on')->nullable();
 
             // When activation happened
-            $table->timestamp('activated_on')->nullable(); 
+            $table->timestamp('activated_on')->nullable();
 
             // Date the trial period ends
             $table->timestamp('trial_ends_on')->nullable();
