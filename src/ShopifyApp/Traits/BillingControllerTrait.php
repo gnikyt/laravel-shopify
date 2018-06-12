@@ -4,6 +4,8 @@ namespace OhMyBrew\ShopifyApp\Traits;
 
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Libraries\BillingPlan;
+use OhMyBrew\ShopifyApp\Models\Charge;
+use Carbon\Carbon;
 
 trait BillingControllerTrait
 {
@@ -38,23 +40,46 @@ trait BillingControllerTrait
         // Setup the plan and get the charge
         $plan = new BillingPlan($shop, $this->chargeType());
         $plan->setChargeId($chargeId);
+        $status = $plan->getCharge()->status;
+
+        // Grab the plan detailed used
+        $planDetails = $this->planDetails();
+        unset($planDetails['return_url']);
+
+        // Create a charge (regardless of the status)
+        $charge = new Charge();
+        $charge->type = $this->chargeType() === 'recurring' ? Charge::CHARGE_RECURRING : Charge::CHARGE_ONETIME;
+        $charge->charge_id = $chargeId;
+        $charge->status = $status;
 
         // Check the customer's answer to the billing
-        $charge = $plan->getCharge();
-        if ($charge->status == 'accepted') {
-            // Customer accepted, activate the charge
-            $plan->activate();
-
-            // Save the charge ID to the shop
-            $shop->charge_id = $chargeId;
-            $shop->save();
-
-            // Go to homepage of app
-            return redirect()->route('home');
+        if ($status === 'accepted') {
+            // Activate and add details to our charge
+            $response = $plan->activate();
+            $charge->status = $response->status;
+            $charge->billing_on = $response->billing_on;
+            $charge->trial_ends_on = $response->trial_ends_on;
+            $charge->activated_on = $response->activated_on;
         } else {
-            // Customer declined the charge, abort
+            // Customer declined the charge
+            $charge->cancelled_on = Carbon::today()->format('Y-m-d');
+        }
+
+        // Merge in the plan details since the fields match the database columns
+        foreach ($planDetails as $key => $value) {
+            $charge->{$key} = $value;
+        }
+
+        // Save and link to the shop
+        $shop->charges()->save($charge);
+
+        if ($status === 'declined') {
+            // Show the error... don't allow access
             return abort(403, 'It seems you have declined the billing charge for this application');
         }
+
+        // All good... go to homepage of app
+        return redirect()->route('home');
     }
 
     /**

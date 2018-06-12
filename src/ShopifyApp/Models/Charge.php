@@ -96,7 +96,7 @@ class Charge extends Model
      */
     public function isActiveTrial()
     {
-        return $this->isTrial() && Carbon::now()->lte(Carbon::parse($this->trial_ends_on));
+        return $this->isTrial() && Carbon::today()->lte(Carbon::parse($this->trial_ends_on));
     }
 
     /**
@@ -110,7 +110,7 @@ class Charge extends Model
             return null;
         }
 
-        return $this->isActiveTrial() ? Carbon::now()->diffInDays($this->trial_ends_on) : 0;
+        return $this->isActiveTrial() ? Carbon::today()->diffInDays($this->trial_ends_on) : 0;
     }
 
     /**
@@ -128,11 +128,21 @@ class Charge extends Model
     }
 
     /**
+     * Checks if the charge is active.
+     *
+     * @return bool
+     */
+    public function isActive()
+    {
+        return $this->status === 'active';
+    }
+
+    /**
      * Checks if the charge was accepted (for one-time and reccuring).
      *
      * @return bool
      */
-    public function wasAccepted()
+    public function isAccepted()
     {
         return $this->status === 'accepted';
     }
@@ -142,7 +152,7 @@ class Charge extends Model
      *
      * @return bool
      */
-    public function wasDeclined()
+    public function isDeclined()
     {
         return $this->status === 'declined';
     }

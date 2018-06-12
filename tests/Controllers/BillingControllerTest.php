@@ -1,5 +1,4 @@
 <?php
-
 namespace OhMyBrew\ShopifyApp\Test\Controllers;
 
 use OhMyBrew\ShopifyApp\Controllers\BillingController;
@@ -33,20 +32,21 @@ class BillingControllerTest extends TestCase
     public function testShopAcceptsBilling()
     {
         $shop = Shop::where('shopify_domain', 'example.myshopify.com')->first();
-        $this->assertEquals(678298290, $shop->charge_id); // Based on seedDatabase()
-
         $response = $this->call('get', '/billing/process', ['charge_id' => 1029266947]);
-        $shop = $shop->fresh(); // Reload model
 
         $response->assertStatus(302);
-        $this->assertEquals(1029266947, $shop->charge_id);
+        $this->assertEquals(1029266947, $shop->charges()->get()->last()->charge_id);
     }
 
     public function testShopDeclinesBilling()
     {
+        $shop = Shop::where('shopify_domain', 'example.myshopify.com')->first();
         $response = $this->call('get', '/billing/process', ['charge_id' => 10292]);
+        $lastCharge = $shop->charges()->get()->last();
 
         $response->assertStatus(403);
+        $this->assertEquals(10292, $lastCharge->charge_id);
+        $this->assertEquals('declined', $lastCharge->status);
         $this->assertEquals(
             'It seems you have declined the billing charge for this application',
             $response->exception->getMessage()

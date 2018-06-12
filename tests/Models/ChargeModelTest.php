@@ -80,7 +80,13 @@ class ChargeModelTest extends TestCase
 
     public function testAcceptedAndDeclined()
     {
-        $this->assertTrue(Charge::find(1)->wasAccepted());
-        $this->assertTrue(!Charge::find(1)->wasDeclined());
+        $this->assertTrue(Charge::find(1)->isAccepted());
+        $this->assertFalse(Charge::find(1)->isDeclined());
+    }
+
+    public function testActive()
+    {
+        $this->assertFalse(Charge::find(1)->isActive());
+        $this->assertTrue(Charge::find(4)->isActive());
     }
 }

@@ -29,7 +29,7 @@ class Billable
                     $query->latestByType(Charge::CHARGE_ONETIME);
                 })->latest()->first();
 
-            if (!$shop->isGrandfathered() && (is_null($lastCharge) || $lastCharge->wasDeclined())) {
+            if (!$shop->isGrandfathered() && (is_null($lastCharge) || $lastCharge->isDeclined())) {
                 // They're not grandfathered in, and there is no charge or charge was declined... redirect to billing
                 return redirect()->route('billing');
             }

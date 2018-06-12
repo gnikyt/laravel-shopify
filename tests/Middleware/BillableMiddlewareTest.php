@@ -23,6 +23,22 @@ class BillableMiddlewareTest extends TestCase
         $this->assertEquals(true, strpos($result, 'Redirecting to http://localhost/billing') !== false);
     }
 
+    public function testEnabledBillingWithShopWhoDeclinedCharges()
+    {
+        // Enable billing and set a shop
+        config(['shopify-app.billing_enabled' => true]);
+        session(['shopify_domain' => 'trashed-shop.myshopify.com']);
+
+        $called = false;
+        $result = (new Billable())->handle(request(), function ($request) use (&$called) {
+            // Should never be called
+            $called = true;
+        });
+
+        $this->assertFalse($called);
+        $this->assertEquals(true, strpos($result, 'Redirecting to http://localhost/billing') !== false);
+    }
+
     public function testEnabledBillingWithPaidShop()
     {
         // Enable billing and set a shop
