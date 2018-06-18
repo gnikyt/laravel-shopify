@@ -162,5 +162,17 @@ abstract class TestCase extends OrchestraTestCase
         $charge->price = 25.00;
         $charge->shop_id = Shop::where('shopify_domain', 'no-token-shop.myshopify.com')->first()->id;
         $charge->save();
+
+        // Test = false, status = cancelled
+        $charge = new Charge();
+        $charge->charge_id = 783873873;
+        $charge->test = false;
+        $charge->name = 'Base Plan Cancelled';
+        $charge->status = 'active';
+        $charge->type = 1;
+        $charge->price = 25.00;
+        $charge->shop_id = Shop::where('shopify_domain', 'example.myshopify.com')->first()->id;
+        $charge->cancelled_on = Carbon::today()->format('Y-m-d');
+        $charge->save();
     }
 }

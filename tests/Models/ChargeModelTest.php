@@ -89,4 +89,18 @@ class ChargeModelTest extends TestCase
         $this->assertFalse(Charge::find(1)->isActive());
         $this->assertTrue(Charge::find(4)->isActive());
     }
+
+    public function testOngoing()
+    {
+        $this->assertFalse(Charge::find(1)->isOngoing());
+        $this->assertFalse(Charge::find(6)->isOngoing());
+        $this->assertTrue(Charge::find(4)->isOngoing());
+    }
+
+    public function testCancelled()
+    {
+        $this->assertFalse(Charge::find(1)->isCancelled());
+        $this->assertFalse(Charge::find(4)->isCancelled());
+        $this->assertTrue(Charge::find(6)->isCancelled());
+    }
 }

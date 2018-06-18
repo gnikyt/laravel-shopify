@@ -157,4 +157,24 @@ class Charge extends Model
     {
         return $this->status === 'declined';
     }
+
+    /**
+     * Checks if the charge was cancelled.
+     *
+     * @return bool
+     */
+    public function isCancelled()
+    {
+        return !is_null($this->cancelled_on) || $this->status === 'cancelled';
+    }
+
+    /**
+     * Checks if the charge is "active" (non-API check).
+     *
+     * @return boolean
+     */
+    public function isOngoing()
+    {
+        return $this->isActive() && !$this->isCancelled();
+    }
 }
