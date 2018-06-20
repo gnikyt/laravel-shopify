@@ -27,7 +27,7 @@ class Billable
                     $query->latestByType(Charge::CHARGE_RECURRING);
                 })->orWhere(function ($query) {
                     $query->latestByType(Charge::CHARGE_ONETIME);
-                })->latest()->first();
+                })->latest();
 
             if (
                 !$shop->isGrandfathered() &&

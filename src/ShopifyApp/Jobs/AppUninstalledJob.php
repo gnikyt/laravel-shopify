@@ -1,6 +1,6 @@
 <?php
 
-namespace OhMyBrew\Jobs;
+namespace OhMyBrew\ShopifyApp\Jobs;
 
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
@@ -20,46 +20,52 @@ class AppUninstalledJob implements ShouldQueue
      *
      * @var string
      */
-    public $shop;
+    protected $shop;
 
     /**
      * Shop's myshopify domain.
      *
      * @var string
      */
-    public $shopDomain;
+    protected $shopDomain;
 
     /**
      * The webhook data.
      *
      * @var object
      */
-    public $data;
+    protected $data;
 
     /**
      * Create a new job instance.
      *
      * @param string $shopDomain The shop's myshopify domain
-     * @param object $webhook    The webhook data (JSON decoded)
+     * @param object $data       The webhook data (JSON decoded)
      *
      * @return void
      */
     public function __construct($shopDomain, $data)
     {
-        $this->shopDomain = $shopDomain;
         $this->data = $data;
+        $this->shopDomain = $shopDomain;
         $this->shop = $this->findShop();
     }
 
     /**
      * Execute the job.
      *
-     * @return void
+     * @return bool
      */
     public function handle()
     {
+        if (!$this->shop) {
+            return false;
+        }
+
         $this->softDeleteShop();
         $this->cancelCharge();
+
+        return true;
     }
 
     /**
@@ -69,10 +75,8 @@ class AppUninstalledJob implements ShouldQueue
      */
     protected function softDeleteShop()
     {
-        if ($this->shop) {
-            $this->shop->delete();
-            $this->shop->charges()->delete();
-        }
+        $this->shop->delete();
+        $this->shop->charges()->delete();
     }
 
     /**
@@ -82,14 +86,15 @@ class AppUninstalledJob implements ShouldQueue
      */
     protected function cancelCharge()
     {
-        $lastCharge = $shop->charges()
+        $lastCharge = $this->shop->charges()
+            ->withTrashed()
             ->where(function ($query) {
                 $query->latestByType(Charge::CHARGE_RECURRING);
             })->orWhere(function ($query) {
                 $query->latestByType(Charge::CHARGE_ONETIME);
-            })->latest()->first();
+            })->latest();
 
-        if ($lastCharge && (!$lastCharge->isDeclined() && !$lastCharge->isCancelled())) {
+        if ($lastCharge && !$lastCharge->isDeclined() && !$lastCharge->isCancelled()) {
             $lastCharge->status = 'cancelled';
             $lastCharge->cancelled_on = Carbon::today()->format('Y-m-d');
             $lastCharge->save();
