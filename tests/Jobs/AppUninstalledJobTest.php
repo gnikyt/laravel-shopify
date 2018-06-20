@@ -66,11 +66,9 @@ class AppUninstalledJobJobTest extends TestCase
         $this->shop->refresh();
         $lastCharge = $this->shop->charges()
             ->withTrashed()
-            ->where(function ($query) {
-                $query->latestByType(Charge::CHARGE_RECURRING);
-            })->orWhere(function ($query) {
-                $query->latestByType(Charge::CHARGE_ONETIME);
-            })->latest();
+            ->whereIn('type', [Charge::CHARGE_RECURRING, Charge::CHARGE_ONETIME])
+            ->orderBy('created_at', 'desc')
+            ->first();
 
         // Confirm job worked...
         $this->assertEquals(true, $result);

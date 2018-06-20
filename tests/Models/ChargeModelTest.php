@@ -24,22 +24,6 @@ class ChargeModelTest extends TestCase
         );
     }
 
-    public function testScopeLatest()
-    {
-        $this->assertEquals(
-            get_class(Charge::latest()),
-            Charge::class
-        );
-    }
-
-    public function testScopeLatestByType()
-    {
-        $this->assertEquals(
-            get_class(Charge::latestByType(Charge::CHARGE_RECURRING)),
-            Charge::class
-        );
-    }
-
     public function testIsTest()
     {
         $this->assertEquals(true, Charge::find(1)->isTest());

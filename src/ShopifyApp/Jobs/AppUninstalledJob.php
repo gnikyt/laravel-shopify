@@ -88,11 +88,9 @@ class AppUninstalledJob implements ShouldQueue
     {
         $lastCharge = $this->shop->charges()
             ->withTrashed()
-            ->where(function ($query) {
-                $query->latestByType(Charge::CHARGE_RECURRING);
-            })->orWhere(function ($query) {
-                $query->latestByType(Charge::CHARGE_ONETIME);
-            })->latest();
+            ->whereIn('type', [Charge::CHARGE_RECURRING, Charge::CHARGE_ONETIME])
+            ->orderBy('created_at', 'desc')
+            ->first();
 
         if ($lastCharge && !$lastCharge->isDeclined() && !$lastCharge->isCancelled()) {
             $lastCharge->status = 'cancelled';

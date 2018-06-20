@@ -23,11 +23,9 @@ class Billable
             // Grab the shop and last recurring or one-time charge
             $shop = ShopifyApp::shop();
             $lastCharge = $shop->charges()
-                ->where(function ($query) {
-                    $query->latestByType(Charge::CHARGE_RECURRING);
-                })->orWhere(function ($query) {
-                    $query->latestByType(Charge::CHARGE_ONETIME);
-                })->latest();
+                ->whereIn('type', [Charge::CHARGE_RECURRING, Charge::CHARGE_ONETIME])
+                ->orderBy('created_at', 'desc')
+                ->first();
 
             if (
                 !$shop->isGrandfathered() &&

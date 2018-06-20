@@ -24,31 +24,6 @@ class Charge extends Model
     protected $dates = ['deleted_at'];
 
     /**
-     * Scope for latest charge for a shop.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query The query builder
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeLatest($query)
-    {
-        return $query->orderBy('created_at', 'desc')->first();
-    }
-
-    /**
-     * Scope for latest charge by type for a shop.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query The query builder
-     * @param int                                   $type  The type of charge
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeLatestByType($query, int $type)
-    {
-        return $query->where('type', $type)->orderBy('created_at', 'desc')->first();
-    }
-
-    /**
      * Gets the shop for the charge.
      *
      * @return OhMyBrew\ShopifyApp\Models\Shop
