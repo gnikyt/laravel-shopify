@@ -16,8 +16,11 @@ class AppUninstalledJobJobTest extends TestCase
     {
         parent::setup();
 
-        // Re-used variables
-        $this->shop = Shop::find(1);
+        // Isolated shop
+        $this->shop = new Shop();
+        $this->shop->shopify_domain = 'example-isolated.myshopify.com';
+        $this->shop->save();
+
         $this->data = json_decode(file_get_contents(__DIR__.'/../fixtures/app_uninstalled.json'));
     }
 
@@ -38,9 +41,6 @@ class AppUninstalledJobJobTest extends TestCase
         $this->assertEquals($this->shop->shopify_domain, $refShop->getValue($job)->shopify_domain);
     }
 
-   /**
-    * @runInSeparateProcess
-    */
     public function testJobSoftDeletesShopAndCharges()
     {
         // Create a new charge to test against
