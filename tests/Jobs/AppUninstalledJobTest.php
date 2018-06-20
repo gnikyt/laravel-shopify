@@ -38,6 +38,9 @@ class AppUninstalledJobJobTest extends TestCase
         $this->assertEquals($this->shop->shopify_domain, $refShop->getValue($job)->shopify_domain);
     }
 
+   /**
+    * @runInSeparateProcess
+    */
     public function testJobSoftDeletesShopAndCharges()
     {
         // Create a new charge to test against
