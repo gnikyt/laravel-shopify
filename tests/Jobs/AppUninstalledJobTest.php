@@ -4,13 +4,12 @@ namespace OhMyBrew\ShopifyApp\Test\Jobs;
 
 use Carbon\Carbon;
 use OhMyBrew\ShopifyApp\Jobs\AppUninstalledJob;
-use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\Models\Charge;
+use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\Test\TestCase;
-use ReflectionMethod;
 use ReflectionObject;
 
-class AppUninstalledJobJobTest extends TestCase
+class AppUninstalledJobTest extends TestCase
 {
     public function setup()
     {
