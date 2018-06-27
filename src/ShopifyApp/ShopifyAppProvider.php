@@ -28,6 +28,11 @@ class ShopifyAppProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/resources/database/migrations' => database_path('migrations'),
         ], 'migrations');
+
+        // Job publish
+        $this->publishes([
+            __DIR__.'/resources/jobs/AppUninstalledJob.php' => app_path().'/Jobs/AppUninstalledJob.php',
+        ], 'jobs');
     }
 
     /**
