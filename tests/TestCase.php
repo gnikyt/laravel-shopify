@@ -186,7 +186,7 @@ abstract class TestCase extends OrchestraTestCase
         $charge->trial_days = 7;
         $charge->trial_ends_on = Carbon::today()->addWeeks(1)->format('Y-m-d');
         $charge->cancelled_on = Carbon::today()->addDays(2)->format('Y-m-d');
-        $charge->shop_id = Shop::where('shopify_domain', 'example.myshopify.com')->first()->id;
+        $charge->shop_id = Shop::withTrashed()->where('shopify_domain', 'trashed-shop.myshopify.com')->first()->id;
         $charge->save();
     }
 }

@@ -5,6 +5,7 @@ namespace OhMyBrew\ShopifyApp\Traits;
 use Carbon\Carbon;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Libraries\BillingPlan;
+use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\Models\Charge;
 
 trait BillingControllerTrait
@@ -17,8 +18,9 @@ trait BillingControllerTrait
     public function index()
     {
         // Get the confirmation URL
-        $plan = new BillingPlan(ShopifyApp::shop(), $this->chargeType());
-        $plan->setDetails($this->planDetails());
+        $shop = ShopifyApp::shop();
+        $plan = new BillingPlan($shop, $this->chargeType());
+        $plan->setDetails($this->planDetails($shop));
 
         // Do a fullpage redirect
         return view('shopify-app::billing.fullpage_redirect', [
@@ -43,7 +45,7 @@ trait BillingControllerTrait
         $status = $plan->getCharge()->status;
 
         // Grab the plan detailed used
-        $planDetails = $this->planDetails();
+        $planDetails = $this->planDetails($shop);
         unset($planDetails['return_url']);
 
         // Create a charge (regardless of the status)
@@ -83,18 +85,22 @@ trait BillingControllerTrait
     }
 
     /**
-     * Base plan to use for billing.
-     * Setup as a function so its patchable.
+     * Base plan to use for billing. Setup as a function so its patchable.
+     * Checks for cancelled charge within trial day limit, and issues
+     * a new trial days number depending on the result for shops who
+     * resinstall the app.
+     *
+     * @param object $shop The shop object.
      *
      * @return array
      */
-    protected function planDetails()
+    protected function planDetails(Shop $shop)
     {
+        // Initial plan details
         $plan = [
             'name'       => config('shopify-app.billing_plan'),
             'price'      => config('shopify-app.billing_price'),
             'test'       => config('shopify-app.billing_test'),
-            'trial_days' => config('shopify-app.billing_trial_days'),
             'return_url' => url(config('shopify-app.billing_redirect')),
         ];
 
@@ -102,6 +108,20 @@ trait BillingControllerTrait
         if (config('shopify-app.billing_capped_amount')) {
             $plan['capped_amount'] = config('shopify-app.billing_capped_amount');
             $plan['terms'] = config('shopify-app.billing_terms');
+        }
+
+        // Grab the last charge for the shop (if any) to determine if this shop
+        // reinstalled the app so we can issue new trial days based on result
+        $lastCharge = $shop->charges()
+            ->whereIn('type', [Charge::CHARGE_RECURRING, Charge::CHARGE_ONETIME])
+            ->orderBy('created_at', 'desc')
+            ->first();
+        if ($lastCharge && $lastCharge->isCancelled()) {
+            // Return the new trial days, could result in 0
+            $plan['trial_days'] = $lastCharge->remainingTrialDaysFromCancel();
+        } else {
+            // Set initial trial days fromc config
+            $plan['trial_days'] = config('shopify-app.billing_trial_days');
         }
 
         return $plan;
