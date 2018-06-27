@@ -85,6 +85,13 @@ class ChargeModelTest extends TestCase
     {
         $this->assertFalse(Charge::find(1)->isCancelled());
         $this->assertFalse(Charge::find(4)->isCancelled());
-        $this->assertTrue(Charge::find(6)->isCancelled());
+        $this->assertTrue(Charge::find(6)->isCancelled());;
+    }
+
+    public function testRemainingTrialDaysFromCancel()
+    {
+        $this->assertEquals(5, Charge::find(7)->remainingTrialDaysFromCancel());
+        $this->assertEquals(0, Charge::find(1)->remainingTrialDaysFromCancel());
+        $this->assertEquals(0, Charge::find(5)->remainingTrialDaysFromCancel());
     }
 }

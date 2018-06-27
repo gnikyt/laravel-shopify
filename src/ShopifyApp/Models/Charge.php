@@ -90,6 +90,29 @@ class Charge extends Model
     }
 
     /**
+     * Returns the remaining trial days from cancellation date.
+     *
+     * @return int
+     */
+    public function remainingTrialDaysFromCancel()
+    {
+        if (!$this->isTrial()) {
+            return;
+        }
+
+        $cancelledDate = Carbon::parse($this->cancelled_on);
+        $trialEndsDate = Carbon::parse($this->trial_ends_on);
+
+        // Ensure cancelled date happened before the trial was supposed to end
+        if ($this->isCancelled() && $cancelledDate->lte($trialEndsDate)) {
+            // Diffeence the two dates and subtract from the total trial days to get whats remaining
+            return $this->trial_days - ($this->trial_days - $cancelledDate->diffInDays($trialEndsDate));
+        }
+
+        return 0;
+    }
+
+    /**
      * Returns the used trial days.
      *
      * @return int|null
