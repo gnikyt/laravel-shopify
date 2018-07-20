@@ -64,7 +64,7 @@ class BillingPlanTest extends TestCase
         $response = (new BillingPlan($this->shop))->setChargeId(1029266947)->activate();
 
         $this->assertEquals(true, is_object($response));
-        $this->assertEquals('accepted', $response->status);
+        $this->assertEquals('active', $response->status);
     }
 
     /**

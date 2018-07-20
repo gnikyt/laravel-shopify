@@ -3,10 +3,13 @@
 namespace OhMyBrew\ShopifyApp\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 
 class Shop extends Model
 {
+    use SoftDeletes;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -17,6 +20,13 @@ class Shop extends Model
         'shopify_token',
         'grandfathered',
     ];
+
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['deleted_at'];
 
     /**
      * The API instance.
@@ -45,16 +55,6 @@ class Shop extends Model
     }
 
     /**
-     * Checks if a shop has a charge ID.
-     *
-     * @return bool
-     */
-    public function isPaid()
-    {
-        return !is_null($this->charge_id);
-    }
-
-    /**
      * Checks is shop is grandfathered in.
      *
      * @return bool
@@ -62,5 +62,25 @@ class Shop extends Model
     public function isGrandfathered()
     {
         return ((bool) $this->grandfathered) === true;
+    }
+
+    /**
+     * Get charges.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function charges()
+    {
+        return $this->hasMany('OhMyBrew\ShopifyApp\Models\Charge');
+    }
+
+    /**
+     * Checks if charges have been applied to the shop.
+     *
+     * @return bool
+     */
+    public function hasCharges()
+    {
+        return $this->charges->isNotEmpty();
     }
 }

@@ -32,6 +32,7 @@ For more information, tutorials, etc., please view the project's [wiki](https://
 - [x] Integration with Shopify API
 - [x] Authentication & installation for shops
 - [x] Billing integration built-in for single and recurring application charges
+- [x] Tracking charges to a shop (recurring, single, usage, etc) with trial support
 - [x] Auto install app webhooks and scripttags thorugh background jobs
 - [x] Provide basic ESDK views
 - [x] Handles and processes incoming webhooks

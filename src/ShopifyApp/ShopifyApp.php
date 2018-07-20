@@ -44,7 +44,7 @@ class ShopifyApp
         if (!$this->shop && $shopifyDomain) {
             // Grab shop from database here
             $shopModel = config('shopify-app.shop_model');
-            $shop = $shopModel::firstOrCreate(['shopify_domain' => $shopifyDomain]);
+            $shop = $shopModel::withTrashed()->firstOrCreate(['shopify_domain' => $shopifyDomain]);
 
             // Update shop instance
             $this->shop = $shop;

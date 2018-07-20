@@ -13,7 +13,6 @@ Well, you can:
 
 You don't have to be a superstar, or someone with experience, you can just dive in and help if you feel you can.
 
-
 ## Adding a new feature?
 
 Its best to:
@@ -60,6 +59,8 @@ You can then update by simply running:
 We use PHPUnit to run tests. Simply run `composer install` and a symlink `phpunit` should be located in the `bin` directory.
 
 Next, run `bin/phpunit` and the rest will be taken care of. Upon any pull requests and merges, TravisCI will check the code to ensure all test suites pass.
+
+For quicker tests, be sure to disable coverage with `bin/php --no-coverage`.
 
 -----
 
