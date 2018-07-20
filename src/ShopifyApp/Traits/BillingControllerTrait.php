@@ -5,8 +5,8 @@ namespace OhMyBrew\ShopifyApp\Traits;
 use Carbon\Carbon;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Libraries\BillingPlan;
-use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\Models\Charge;
+use OhMyBrew\ShopifyApp\Models\Shop;
 
 trait BillingControllerTrait
 {
