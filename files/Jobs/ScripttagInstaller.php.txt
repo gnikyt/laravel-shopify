@@ -53,7 +53,7 @@ class ScripttagInstaller implements ShouldQueue
 
         // Get the current scripttags installed on the shop
         $api = $this->shop->api();
-        $shopScripttags = $api->request(
+        $shopScripttags = $api->rest(
             'GET',
             '/admin/script_tags.json',
             ['limit' => 250, 'fields' => 'id,src']
@@ -63,7 +63,7 @@ class ScripttagInstaller implements ShouldQueue
             // Check if the required scripttag exists on the shop
             if (!$this->scripttagExists($shopScripttags, $scripttag)) {
                 // It does not... create the scripttag
-                $api->request('POST', '/admin/script_tags.json', ['script_tag' => $scripttag]);
+                $api->rest('POST', '/admin/script_tags.json', ['script_tag' => $scripttag]);
                 $created[] = $scripttag;
             }
         }
