@@ -4,8 +4,8 @@ namespace OhMyBrew\ShopifyApp\Test\Controllers;
 
 use Carbon\Carbon;
 use OhMyBrew\ShopifyApp\Controllers\BillingController;
-use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\Models\Charge;
+use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
 use OhMyBrew\ShopifyApp\Test\TestCase;
 use ReflectionMethod;
@@ -122,7 +122,7 @@ class BillingControllerTest extends TestCase
         $controller = new BillingController();
         $method = new ReflectionMethod(BillingController::class, 'planDetails');
         $method->setAccessible(true);
-    
+
         // Based on default config
         $this->assertEquals(
             [
