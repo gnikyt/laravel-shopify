@@ -3,9 +3,9 @@
 namespace OhMyBrew\ShopifyApp\Test\Middleware;
 
 use Illuminate\Support\Facades\Input;
+use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Middleware\AuthProxy;
 use OhMyBrew\ShopifyApp\Test\TestCase;
-use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 
 class AuthProxyMiddlewareTest extends TestCase
 {
