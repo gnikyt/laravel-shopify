@@ -3,6 +3,7 @@
 namespace OhMyBrew\ShopifyApp\Test\Middleware;
 
 use Illuminate\Support\Facades\Input;
+use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Middleware\AuthProxy;
 use OhMyBrew\ShopifyApp\Test\TestCase;
 
@@ -48,12 +49,23 @@ class AuthProxyMiddlewareTest extends TestCase
     {
         Input::merge($this->queryParams);
 
+        // Confirm no shop
+        $this->assertEquals(null, session('shopify_domain'));
+
         $called = false;
         (new AuthProxy())->handle(request(), function ($request) use (&$called) {
             // Should be called
             $called = true;
+
+            // Session should be set by now
+            $this->assertEquals($this->queryParams['shop'], session('shopify_domain'));
+
+            // Shop should be callable
+            $shop = ShopifyApp::shop();
+            $this->assertEquals($this->queryParams['shop'], $shop->shopify_domain);
         });
 
+        // Confirm full run
         $this->assertEquals(true, $called);
     }
 
