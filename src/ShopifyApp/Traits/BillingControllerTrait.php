@@ -64,6 +64,7 @@ trait BillingControllerTrait
             $charge->activated_on = $response->activated_on;
         } else {
             // Customer declined the charge
+            $charge->status = 'declined';
             $charge->cancelled_on = Carbon::today()->format('Y-m-d');
         }
 

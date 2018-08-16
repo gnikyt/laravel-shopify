@@ -5,6 +5,7 @@ vendor/
 build/
 bin/
 tests/tmp/
+.phpunit.result*
 
 # IDE and editor specific files #
 #################################
