@@ -57,6 +57,8 @@ class AuthControllerTest extends TestCase
 
     public function testAuthRedirectsUserToAuthScreenWhenNoCode()
     {
+        $this->assertEquals(false, config('session.expire_on_close')); // Default for Laravel
+
         $response = $this->post('/authenticate', ['shop' => 'example.myshopify.com']);
         $response->assertSessionHas('shopify_domain');
         $response->assertViewHas('shopDomain', 'example.myshopify.com');
@@ -64,6 +66,8 @@ class AuthControllerTest extends TestCase
             'authUrl',
             'https://example.myshopify.com/admin/oauth/authorize?client_id=&scope=read_products,write_products&redirect_uri=http://localhost/authenticate'
         );
+
+        $this->assertEquals(true, config('session.expire_on_close')); // Override in auth for a single request
     }
 
     public function testAuthAcceptsShopWithCodeAndUpdatesTokenForShop()

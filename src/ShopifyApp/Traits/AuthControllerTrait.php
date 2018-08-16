@@ -33,6 +33,7 @@ trait AuthControllerTrait
         }
 
         // Save shop domain to session
+        config(['session.expire_on_close' => true]);
         session(['shopify_domain' => ShopifyApp::sanitizeShopDomain($shopDomain)]);
 
         if (!request('code')) {
