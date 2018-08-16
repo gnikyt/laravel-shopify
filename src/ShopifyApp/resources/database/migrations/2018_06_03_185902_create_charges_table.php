@@ -18,7 +18,7 @@ class CreateChargesTable extends Migration
             $table->increments('id');
 
             // Filled in when the charge is created, provided by shopify, unique makes it indexed
-            $table->integer('charge_id')->unique();
+            $table->bigInteger('charge_id')->unique();
 
             // Test mode or real
             $table->boolean('test');
