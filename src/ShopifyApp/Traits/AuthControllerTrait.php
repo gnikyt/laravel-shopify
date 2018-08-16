@@ -60,7 +60,7 @@ trait AuthControllerTrait
         // Grab the authentication URL
         $authUrl = $api->getAuthUrl(
             config('shopify-app.api_scopes'),
-            url(config('shopify-app.api_redirect'))
+            secure_url(config('shopify-app.api_redirect'))
         );
 
         // Do a fullpage redirect
