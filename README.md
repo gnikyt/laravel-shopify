@@ -21,6 +21,7 @@ __*__ *Wiki pages*
 - [Route List](https://github.com/ohmybrew/laravel-shopify/wiki/Route-List)*
 - [Usage](https://github.com/ohmybrew/laravel-shopify/wiki/Usage)*
 - [Changelog](https://github.com/ohmybrew/laravel-shopify/wiki/Changelog)*
+- [Roadmap](https://github.com/ohmybrew/laravel-shopify/wiki/Roadmap)*
 - [Contributing Guide](https://github.com/ohmybrew/laravel-shopify/blob/master/CONTRIBUTING.md)
 - [LICENSE](#license)
 
