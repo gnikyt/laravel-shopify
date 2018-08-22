@@ -35,11 +35,23 @@ class BillingControllerTest extends TestCase
 
     public function testShopAcceptsBilling()
     {
+        // Use the base shop
         $shop = Shop::where('shopify_domain', 'example.myshopify.com')->first();
-        $response = $this->call('get', '/billing/process', ['charge_id' => 1029266947]);
+        $chargeId = 1029266947;
+
+        // example.myshopify.com has previous charge defined in TestCase setup
+        $oldCharge = $shop->charges()->whereIn('type', [Charge::CHARGE_RECURRING, Charge::CHARGE_ONETIME])->orderBy('created_at', 'desc')->first();
+
+        // Run with a new charge
+        $response = $this->call('get', '/billing/process', ['charge_id' => $chargeId]);
+
+        // Get the new charge and refresh the old one
+        $newCharge = $shop->charges()->get()->last();
+        $oldCharge->refresh();
 
         $response->assertStatus(302);
-        $this->assertEquals(1029266947, $shop->charges()->get()->last()->charge_id);
+        $this->assertEquals($chargeId, $newCharge->charge_id);
+        $this->assertEquals('cancelled', $oldCharge->status);
     }
 
     public function testShopDeclinesBilling()
@@ -144,5 +156,15 @@ class BillingControllerTest extends TestCase
 
         // Based on default config
         $this->assertEquals(config('shopify-app.billing_type'), $method->invoke($controller));
+    }
+
+    public function testReturnsLastChargeForShop()
+    {
+        $controller = new BillingController();
+        $method = new ReflectionMethod(BillingController::class, 'getLastCharge');
+        $method->setAccessible(true);
+
+        // Based on default config
+        $this->assertInstanceOf(Charge::class, $method->invoke($controller, $this->shop));
     }
 }

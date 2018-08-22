@@ -62,6 +62,13 @@ trait BillingControllerTrait
             $charge->billing_on = $response->billing_on;
             $charge->trial_ends_on = $response->trial_ends_on;
             $charge->activated_on = $response->activated_on;
+
+            // Set old charge as cancelled, if one
+            $lastCharge = $this->getLastCharge($shop);
+            if ($lastCharge) {
+                $lastCharge->status = 'cancelled';
+                $lastCharge->save();
+            }
         } else {
             // Customer declined the charge
             $charge->status = 'declined';
@@ -113,10 +120,7 @@ trait BillingControllerTrait
 
         // Grab the last charge for the shop (if any) to determine if this shop
         // reinstalled the app so we can issue new trial days based on result
-        $lastCharge = $shop->charges()
-            ->whereIn('type', [Charge::CHARGE_RECURRING, Charge::CHARGE_ONETIME])
-            ->orderBy('created_at', 'desc')
-            ->first();
+        $lastCharge = $this->getLastCharge($shop);
         if ($lastCharge && $lastCharge->isCancelled()) {
             // Return the new trial days, could result in 0
             $plan['trial_days'] = $lastCharge->remainingTrialDaysFromCancel();
@@ -137,5 +141,20 @@ trait BillingControllerTrait
     protected function chargeType()
     {
         return config('shopify-app.billing_type');
+    }
+
+    /**
+     * Gets the last single or recurring charge for the shop.
+     *
+     * @param object $shop The shop object.
+     *
+     * @return null|Charge
+     */
+    protected function getLastCharge(Shop $shop)
+    {
+        return $shop->charges()
+            ->whereIn('type', [Charge::CHARGE_RECURRING, Charge::CHARGE_ONETIME])
+            ->orderBy('created_at', 'desc')
+            ->first();
     }
 }
