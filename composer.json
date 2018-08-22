@@ -32,5 +32,15 @@
       "OhMyBrew\\ShopifyApp\\Test\\": "tests"
     }
   },
-  "config": { "bin-dir": "bin" }
+  "config": { "bin-dir": "bin" },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "OhMyBrew\\ShopifyApp\\ShopifyAppProvider"
+      ],
+      "aliases": {
+        "ShopifyApp": "OhMyBrew\\ShopifyApp\\Facades\\ShopifyApp"
+      }
+    }
+  }
 }
