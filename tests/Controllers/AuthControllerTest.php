@@ -191,4 +191,15 @@ class AuthControllerTest extends TestCase
         $this->assertEquals(false, $result);
         Queue::assertNotPushed($jobClass);
     }
+
+    public function testAuthPassesAndRedirectsToReturnUrl()
+    {
+        // Set in AuthShop middleware
+        session(['return_to' => 'http://localhost/orders']);
+
+        $response = $this->call('get', '/authenticate', $this->hmacParams);
+
+        $response->assertStatus(302);
+        $this->assertEquals('http://localhost/orders', $response->headers->get('location'));
+    }
 }

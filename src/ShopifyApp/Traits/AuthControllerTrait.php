@@ -106,8 +106,11 @@ trait AuthControllerTrait
         // Run after authenticate job
         $this->afterAuthenticateJob();
 
-        // Go to homepage of app
-        return redirect()->route('home');
+        // Go to homepage of app or the return_to
+        $return_to = session('return_to') ? redirect(session('return_to')) : redirect()->route('home');
+        session()->forget('return_to');
+
+        return $return_to;
     }
 
     /**

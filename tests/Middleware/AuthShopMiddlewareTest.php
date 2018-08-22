@@ -112,4 +112,23 @@ class AuthShopMiddlewareTest extends TestCase
         $this->assertNull($response->headers->get('p3p'));
         $this->assertNull($response->headers->get('x-frame-options'));
     }
+
+    public function testShouldSaveReturnUrl()
+    {
+        // Set a shop
+        session(['shopify_domain' => 'no-token.myshopify.com']);
+
+        // Duplicate the request so we can mod the request URI
+        $request = request()->duplicate(null, null, null, null, null, array_merge(request()->server->all(), ['REQUEST_URI' => '/orders']));
+
+        $called = false;
+        $result = (new AuthShop())->handle($request, function ($request) use (&$called) {
+            // Shouldn never be called
+            $called = true;
+        });
+
+        $this->assertFalse($called);
+        $this->assertEquals('http://localhost/orders', session('return_to'));
+        $this->assertEquals(true, strpos($result, 'Redirecting to http://localhost/authenticate') !== false);
+    }
 }
