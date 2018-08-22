@@ -107,10 +107,7 @@ trait AuthControllerTrait
         $this->afterAuthenticateJob();
 
         // Go to homepage of app or the return_to
-        $return_to = session('return_to') ? redirect(session('return_to')) : redirect()->route('home');
-        session()->forget('return_to');
-
-        return $return_to;
+        return $this->returnTo();
     }
 
     /**
@@ -167,5 +164,24 @@ trait AuthControllerTrait
         }
 
         return true;
+    }
+
+    /**
+     * Determines where to redirect after successfull auth.
+     *
+     * @return string
+     */
+    protected function returnTo()
+    {
+        // Set in AuthShop middleware
+        $return_to = session('return_to');
+        if ($return_to) {
+            session()->forget('return_to');
+
+            return redirect($return_to);
+        }
+
+        // No return_to, go to home route
+        return redirect()->route('home');
     }
 }

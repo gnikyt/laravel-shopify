@@ -202,4 +202,20 @@ class AuthControllerTest extends TestCase
         $response->assertStatus(302);
         $this->assertEquals('http://localhost/orders', $response->headers->get('location'));
     }
+
+    public function testReturnToMethod()
+    {
+        session(['return_to' => 'http://localhost/orders']);
+
+        $method = new ReflectionMethod(AuthController::class, 'returnTo');
+        $method->setAccessible(true);
+
+        // Test with session
+        $result = $method->invoke(new AuthController());
+        $this->assertEquals('http://localhost/orders', $result->headers->get('location'));
+
+        // Re-test should have no return_to session
+        $result = $method->invoke(new AuthController());
+        $this->assertEquals('http://localhost', $result->headers->get('location'));
+    }
 }
