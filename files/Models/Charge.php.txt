@@ -34,6 +34,29 @@ class Charge extends Model
     }
 
     /**
+     * Gets the charge's data from Shopify.
+     *
+     * @return object
+     */
+    public function retrieve()
+    {
+        $path = null;
+        switch ($this->type) {
+            case self::CHARGE_CREDIT:
+                $path = 'application_credits';
+                break;
+            case self::CHARGE_ONETIME:
+                $path = 'application_charges';
+                break;
+            default:
+                $path = 'recurring_application_charges';
+                break;
+        }
+
+        return $this->shop->api()->rest('GET', "/admin/{$path}/{$this->charge_id}.json")->body->{substr($path, 0, -1)};
+    }
+
+    /**
      * Checks if the charge is a test.
      *
      * @return bool

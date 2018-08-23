@@ -4,6 +4,7 @@ namespace OhMyBrew\ShopifyApp\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 
 class AuthProxy
 {
@@ -38,6 +39,9 @@ class AuthProxy
             // Issue with HMAC or missing shop header
             abort(401, 'Invalid proxy signature');
         }
+
+        // Save shop domain to session
+        session(['shopify_domain' => ShopifyApp::sanitizeShopDomain(request('shop'))]);
 
         // All good, process proxy request
         return $next($request);
