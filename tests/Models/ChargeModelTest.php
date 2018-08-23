@@ -5,6 +5,7 @@ namespace OhMyBrew\ShopifyApp\Test\Models;
 use OhMyBrew\ShopifyApp\Models\Charge;
 use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\Test\TestCase;
+use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
 
 class ChargeModelTest extends TestCase
 {
@@ -93,5 +94,29 @@ class ChargeModelTest extends TestCase
         $this->assertEquals(5, Charge::find(7)->remainingTrialDaysFromCancel());
         $this->assertEquals(0, Charge::find(1)->remainingTrialDaysFromCancel());
         $this->assertEquals(0, Charge::find(5)->remainingTrialDaysFromCancel());
+    }
+
+    public function testRetreieve()
+    {
+        // Stub the API
+        config(['shopify-app.api_class' => new ApiStub()]);
+
+        $mapping = [
+            675931192 => Charge::CHARGE_ONETIME,
+            445365009 => Charge::CHARGE_CREDIT,
+            455696195 => Charge::CHARGE_RECURRING
+        ];
+        foreach ($mapping as $chargeId => $chargeType) {
+            // Setup a fake charge which matches the fixture
+            $charge = new Charge();
+            $charge->shop = Shop::find(1);
+            $charge->type = $chargeType;
+            $charge->charge_id = $chargeId;
+            $result = $charge->retrieve();
+
+            // Assert we get an object back and the data matches
+            $this->assertTrue(is_object($result));
+            $this->assertEquals($chargeId, $result->id);
+        }
     }
 }
