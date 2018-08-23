@@ -4,8 +4,8 @@ namespace OhMyBrew\ShopifyApp\Test\Models;
 
 use OhMyBrew\ShopifyApp\Models\Charge;
 use OhMyBrew\ShopifyApp\Models\Shop;
-use OhMyBrew\ShopifyApp\Test\TestCase;
 use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
+use OhMyBrew\ShopifyApp\Test\TestCase;
 
 class ChargeModelTest extends TestCase
 {
@@ -104,7 +104,7 @@ class ChargeModelTest extends TestCase
         $mapping = [
             675931192 => Charge::CHARGE_ONETIME,
             445365009 => Charge::CHARGE_CREDIT,
-            455696195 => Charge::CHARGE_RECURRING
+            455696195 => Charge::CHARGE_RECURRING,
         ];
         foreach ($mapping as $chargeId => $chargeType) {
             // Setup a fake charge which matches the fixture

@@ -17,7 +17,7 @@ __*__ *Wiki pages*
 - [Goals](#goals)
 - [Documentation](#documentation)
 - [Requirements](https://github.com/ohmybrew/laravel-shopify/wiki/Requirements)*
-- [Installation](https://github.com/ohmybrew/laravel-shopify/wiki/Installation)*  *(Also: [Video of Quick Install](https://www.youtube.com/watch?v=vU8XrJQQPMo))*
+- [Installation](https://github.com/ohmybrew/laravel-shopify/wiki/Installation)*  *(New video guide to come soon)*
 - [Route List](https://github.com/ohmybrew/laravel-shopify/wiki/Route-List)*
 - [Usage](https://github.com/ohmybrew/laravel-shopify/wiki/Usage)*
 - [Changelog](https://github.com/ohmybrew/laravel-shopify/wiki/Changelog)*
@@ -48,3 +48,7 @@ For internal documentation, it is [available here](https://ohmybrew.com/laravel-
 ## LICENSE
 
 This project is released under the MIT [license](https://github.com/ohmybrew/laravel-shopify/blob/master/LICENSE).
+
+## Misc
+
+I develop this package in my spare time, with a busy family/work life like many of you! So, I would like to thank everyone who's helped me out from submitting PRs, to assisting on issues, and plain using the package (I hope its useful). Cheers.
