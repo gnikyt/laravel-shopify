@@ -398,13 +398,14 @@ class BasicShopifyAPI
      * Runs a request to the Shopify API.
      *
      * @param string $query The GraphQL query
+     * @param array $variables The optional variables for the query
      *
      * @throws \Exception When missing api password is missing for private apps
      * @throws \Exception When missing access key is missing for public apps
      *
      * @return array An array of the Guzzle response, and JSON-decoded body
      */
-    public function graph(string $query)
+    public function graph(string $query, array $variables = [])
     {
         if ($this->shop === null) {
             // Shop is requiured
@@ -419,6 +420,12 @@ class BasicShopifyAPI
             throw new Exception('Access token required for public Shopify GraphQL calls');
         }
 
+        // Build the request
+        $request = ['query' => $query];
+        if (sizeof($variables) > 0) {
+            $request['variables'] = $variables;
+        }
+
         // Create the request, pass the access token and optional parameters
         $response = $this->client->request(
             'POST',
@@ -426,25 +433,26 @@ class BasicShopifyAPI
             [
                 'headers' => [
                     'X-Shopify-Access-Token' => $this->apiPassword ?? $this->accessToken,
-                    'Content-Type'           => 'application/graphql',
+                    'Content-Type'           => 'application/json',
                 ],
-                'body'    => $query,
+                'body'    => json_encode($request),
             ]
         );
 
         // Grab the data result and extensions
         $body = $this->jsonDecode($response->getBody());
-        $calls = $body->extensions->cost;
-
-        // Update the API call information
-        $this->apiCallLimits['graph'] = [
-            'left'          => (int) $calls->throttleStatus->currentlyAvailable,
-            'made'          => (int) ($calls->throttleStatus->maximumAvailable - $calls->throttleStatus->currentlyAvailable),
-            'limit'         => (int) $calls->throttleStatus->maximumAvailable,
-            'restoreRate'   => (int) $calls->throttleStatus->restoreRate,
-            'requestedCost' => (int) $calls->requestedQueryCost,
-            'actualCost'    => (int) $calls->actualQueryCost,
-        ];
+        if (property_exists($body, 'extensions') && property_exists($body->extensions, 'cost')) {
+            // Update the API call information
+            $calls = $body->extensions->cost;
+            $this->apiCallLimits['graph'] = [
+                'left'          => (int) $calls->throttleStatus->currentlyAvailable,
+                'made'          => (int) ($calls->throttleStatus->maximumAvailable - $calls->throttleStatus->currentlyAvailable),
+                'limit'         => (int) $calls->throttleStatus->maximumAvailable,
+                'restoreRate'   => (int) $calls->throttleStatus->restoreRate,
+                'requestedCost' => (int) $calls->requestedQueryCost,
+                'actualCost'    => (int) $calls->actualQueryCost,
+            ];
+        }
 
         // Return Guzzle response and JSON-decoded body
         return (object) [
