@@ -1,0 +1,23 @@
+{
+  "data": {
+    "collectionCreate": {
+      "userErrors": [
+        
+      ],
+      "collection": {
+        "id": "gid:\/\/shopify\/Collection\/63171592234"
+      }
+    }
+  },
+  "extensions": {
+    "cost": {
+      "requestedQueryCost": 11,
+      "actualQueryCost": 11,
+      "throttleStatus": {
+        "maximumAvailable": 1000,
+        "currentlyAvailable": 989,
+        "restoreRate": 50
+      }
+    }
+  }
+}

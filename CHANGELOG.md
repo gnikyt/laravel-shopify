@@ -1,5 +1,10 @@
 # CHANGELOG
 
+# 3.0.2
+
++ Adjusted API to work better with Shopify's implementation of GraphQL (#10)
++ `graph()` call now accepts two arguments, `graph(string $query, array $variables = [])`
+
 # Vesion 3.0.1
 
 + Fix to obtaining access token

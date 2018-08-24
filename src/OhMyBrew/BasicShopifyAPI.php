@@ -457,7 +457,8 @@ class BasicShopifyAPI
         // Return Guzzle response and JSON-decoded body
         return (object) [
             'response' => $response,
-            'body'     => $body->data,
+            'body'     => property_exists($body, 'data') ? $body->data : $body->errors,
+            'errors'   => property_exists($body, 'errors'),
         ];
     }
 
