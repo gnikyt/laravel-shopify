@@ -422,7 +422,7 @@ class BasicShopifyAPI
 
         // Build the request
         $request = ['query' => $query];
-        if (sizeof($variables) > 0) {
+        if (count($variables) > 0) {
             $request['variables'] = $variables;
         }
 
