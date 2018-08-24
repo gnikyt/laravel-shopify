@@ -147,15 +147,34 @@ The return value for the request will be an object containing:
 Requests are made using Guzzle.
 
 ```php
-$api->graph(string $query);
+$api->graph(string $query, array $variables = []);
 ```
 
 + `query` refers to the full GraphQL query
++ `variables` refers to the variables used for the query (if any)
 
 The return value for the request will be an object containing:
 
 + `response` the full Guzzle response object
 + `body` the JSON decoded response body
++ `errors` if there was errors or not
+
+Example query:
+
+```php
+$result = $api->graph('{ shop { productz(first: 1) { edges { node { handle, id } } } } }');
+echo $result->body->shop->products->edges[0]->node->handle; // test-product
+```
+
+Example mutation:
+
+```php
+$result = $api->graph(
+    'mutation collectionCreate($input: CollectionInput!) { collectionCreate(input: $input) { userErrors { field message } collection { id } } }',
+    ['input' => ['title' => 'Test Collection']]
+);
+echo $result->body->collectionCreate->collection->id; // gid://shopify/Collection/63171592234
+```
 
 ### Checking API limits
 
