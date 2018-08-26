@@ -1,0 +1,18 @@
+{
+  "errors": [
+    {
+      "message": "Field 'productz' doesn't exist on type 'Shop'",
+      "locations": [
+        {
+          "line": 1,
+          "column": 10
+        }
+      ],
+      "fields": [
+        "query",
+        "shop",
+        "productz"
+      ]
+    }
+  ]
+}
