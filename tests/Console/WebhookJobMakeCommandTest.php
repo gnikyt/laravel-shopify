@@ -12,26 +12,43 @@ class WebhookJobMakeCommandTest extends TestCase
 {
     public function testItShouldRun()
     {
-        $application = new ConsoleApplication();
+        $version = $this->app::VERSION;
+        $versionParts = explode('.', explode('-', $version)[0]);
 
-        $testedCommand = $this->app->make(WebhookJobMakeCommand::class);
-        $testedCommand->setLaravel($this->app);
-        $application->add($testedCommand);
+        if (intval($versionParts[0]) === 5 && intval($versionParts[1]) < 7) {
+            // For 5.5-5.6
+            $application = new ConsoleApplication();
 
-        $command = $application->find('shopify-app:make:webhook');
-        $commandTester = new CommandTester($command);
+            $testedCommand = $this->app->make(WebhookJobMakeCommand::class);
+            $testedCommand->setLaravel($this->app);
+            $application->add($testedCommand);
 
-        $commandTester->execute([
-            'command' => $command->getName(),
-            'name'    => 'OrdersCreateJob',
-            'topic'   => 'orders/create',
-        ]);
+            $command = $application->find('shopify-app:make:webhook');
+            $commandTester = new CommandTester($command);
 
-        $output = $commandTester->getDisplay();
+            $commandTester->execute([
+                'command' => $command->getName(),
+                'name'    => 'OrdersCreateJob',
+                'topic'   => 'orders/create',
+            ]);
 
-        $this->assertContains("Don't forget to register the webhook in config/shopify-app.php", $output);
-        $this->assertContains("'address' => 'https://your-domain.com/webhook/orders-create'", $output);
-        $this->assertContains("'topic' => 'orders/create',", $output);
+            $output = $commandTester->getDisplay();
+
+            $this->assertContains("For non-GDPR webhooks, don't forget to register the webhook in config/shopify-app.php", $output);
+            $this->assertContains("'address' => 'https://your-domain.com/webhook/orders-create'", $output);
+            $this->assertContains("'topic' => 'orders/create',", $output);
+        } else {
+            // For 5.7 up
+            $this->artisan(
+                'shopify-app:make:webhook',
+                [
+                    'name'  => 'OrdersCreateJob',
+                    'topic' => 'orders/create',
+                ]
+            )
+            ->expectsOutput('For non-GDPR webhooks, don\'t forget to register the webhook in config/shopify-app.php. Example:')
+            ->assertExitCode(0);
+        }
     }
 
     public function testShouldMakeUrlFromName()
