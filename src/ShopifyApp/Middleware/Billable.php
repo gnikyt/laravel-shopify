@@ -28,6 +28,7 @@ class Billable
                 ->first();
 
             if (
+                !$shop->isFreemium() &&
                 !$shop->isGrandfathered() &&
                 (is_null($lastCharge) || $lastCharge->isDeclined() || $lastCharge->isCancelled())
             ) {

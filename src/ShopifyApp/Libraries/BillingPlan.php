@@ -100,6 +100,25 @@ class BillingPlan
     }
 
     /**
+     * Returns the charge params sent with the post request.
+     *
+     * @return array
+     */
+    public function getChargeParams()
+    {
+        // Build the charge array
+        $chargeDetails = [
+            'test'          => $this->plan->isTest(),
+            'trial_days'    => $this->plan->hasTrial() ? $this->plan->trial_days : 0,
+            'name'          => $this->plan->name,
+            'price'         => $this->plan->price,
+            'return_url'    => secure_url(config('shopify-app.billing_redirect'), ['plan_id' => $this->plan->id]),
+        ];
+
+        return $chargeDetails;
+    }
+
+    /**
      * Gets the confirmation URL to redirect the customer to.
      * This URL sends them to Shopify's billing page.
      *
@@ -110,20 +129,11 @@ class BillingPlan
      */
     public function getConfirmationUrl()
     {
-        // Build the charge array
-        $chargeDetails = [
-            'test'          => $this->plan->isTest(),
-            'trial_days'    => $this->plan->hasTrial() ? $this->plan->trial_days : 0,
-            'name'          => $this->plan->name,
-            'price'         => $this->plan->price,
-            'return_url'    => config('shopify-app.billing_redirect'),
-        ];
-
         // Begin the charge request
         $charge = $this->shop->api()->rest(
             'POST',
             "/admin/{$this->plan->typeAsString(true)}.json",
-            ["{$this->plan->typeAsString()}" => $chargeDetails]
+            ["{$this->plan->typeAsString()}" => $this->getChargeParams()]
         )->body->{$this->plan->typeAsString()};
 
         return $charge->confirmation_url;

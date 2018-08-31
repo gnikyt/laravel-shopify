@@ -7,6 +7,7 @@ use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Libraries\BillingPlan;
 use OhMyBrew\ShopifyApp\Models\Charge;
 use OhMyBrew\ShopifyApp\Models\Shop;
+use OhMyBrew\ShopifyApp\Models\Plan;
 
 trait BillingControllerTrait
 {
@@ -19,12 +20,11 @@ trait BillingControllerTrait
     {
         // Get the confirmation URL
         $shop = ShopifyApp::shop();
-        $plan = new BillingPlan($shop, $this->chargeType());
-        $plan->setDetails($this->planDetails($shop));
+        $billingPlan = new BillingPlan($shop, $this->getPlan());
 
         // Do a fullpage redirect
         return view('shopify-app::billing.fullpage_redirect', [
-            'url' => $plan->getConfirmationUrl(),
+            'url' => $billingPlan->getConfirmationUrl(),
         ]);
     }
 
@@ -40,12 +40,13 @@ trait BillingControllerTrait
         $chargeId = request('charge_id');
 
         // Setup the plan and get the charge
-        $plan = new BillingPlan($shop, $this->chargeType());
-        $plan->setChargeId($chargeId);
-        $status = $plan->getCharge()->status;
+        $plan = $this->getPlan();
+        $billingPlan = new BillingPlan($shop, $plan);
+        $billingPlan->setChargeId($chargeId);
+        $status = $billingPlan->getCharge()->status;
 
         // Grab the plan detailed used
-        $planDetails = $this->planDetails($shop);
+        $planDetails = $this->plan->getChargeParams();
         unset($planDetails['return_url']);
 
         // Create a charge (regardless of the status)
@@ -53,11 +54,12 @@ trait BillingControllerTrait
         $charge->type = $this->chargeType() === 'recurring' ? Charge::CHARGE_RECURRING : Charge::CHARGE_ONETIME;
         $charge->charge_id = $chargeId;
         $charge->status = $status;
+        $charge->plan_id = $plan->id;
 
         // Check the customer's answer to the billing
         if ($status === 'accepted') {
             // Activate and add details to our charge
-            $response = $plan->activate();
+            $response = $billingPlan->activate();
             $charge->status = $response->status;
             $charge->billing_on = $response->billing_on;
             $charge->trial_ends_on = $response->trial_ends_on;
@@ -88,59 +90,25 @@ trait BillingControllerTrait
             return abort(403, 'It seems you have declined the billing charge for this application');
         }
 
-        // All good... go to homepage of app
+        // All good, update the shop's plan and take them off freeium (if applicable)
+        $shop->freemium = false;
+        $shop->plan_id = $plan->id;
+        $shop->save();
+
+        // Go to homepage of app
         return redirect()->route('home');
     }
 
     /**
-     * Base plan to use for billing. Setup as a function so its patchable.
-     * Checks for cancelled charge within trial day limit, and issues
-     * a new trial days number depending on the result for shops who
-     * resinstall the app.
+     * Get the plan to use.
      *
-     * @param object $shop The shop object.
-     *
-     * @return array
+     * @return Plan
      */
-    protected function planDetails(Shop $shop)
+    protected function getPlan()
     {
-        // Initial plan details
-        $plan = [
-            'name'       => config('shopify-app.billing_plan'),
-            'price'      => config('shopify-app.billing_price'),
-            'test'       => config('shopify-app.billing_test'),
-            'return_url' => url(config('shopify-app.billing_redirect')),
-        ];
-
-        // Handle capped amounts for UsageCharge API
-        if (config('shopify-app.billing_capped_amount')) {
-            $plan['capped_amount'] = config('shopify-app.billing_capped_amount');
-            $plan['terms'] = config('shopify-app.billing_terms');
-        }
-
-        // Grab the last charge for the shop (if any) to determine if this shop
-        // reinstalled the app so we can issue new trial days based on result
-        $lastCharge = $this->getLastCharge($shop);
-        if ($lastCharge && $lastCharge->isCancelled()) {
-            // Return the new trial days, could result in 0
-            $plan['trial_days'] = $lastCharge->remainingTrialDaysFromCancel();
-        } else {
-            // Set initial trial days fromc config
-            $plan['trial_days'] = config('shopify-app.billing_trial_days');
-        }
-
-        return $plan;
-    }
-
-    /**
-     * Base charge type (single or recurring).
-     * Setup as a function so its patchable.
-     *
-     * @return string
-     */
-    protected function chargeType()
-    {
-        return config('shopify-app.billing_type');
+        return Plan::where(function ($q) {
+            $q->where('plan_id', request('plan_id'))->orWhere('on_install', true);
+        })->first();
     }
 
     /**
