@@ -11,6 +11,29 @@ class Plan extends Model
     const PLAN_ONETIME = 2;
 
     /**
+     * Returns the plan type as a string (for API).
+     *
+     * @param bool $plural Return the plural form or not.
+     *
+     * @return string
+     */
+    public function typeAsString($plural = false)
+    {
+        $type = null;
+        switch ($this->type) {
+            case self::PLAN_ONETIME:
+                $type = 'application_charge';
+                break;
+            default:
+            case self:PLAN_RECURRING:
+                $type = 'recurring_application_charge';
+                break;
+        }
+
+        return $plural ? "{$type}s" : $type;
+    }
+
+    /**
      * Checks if this plan has a trial.
      *
      * @return boolean

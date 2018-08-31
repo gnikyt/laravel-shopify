@@ -2,8 +2,8 @@
 
 namespace OhMyBrew\ShopifyApp\Libraries;
 
-use Exception;
 use OhMyBrew\ShopifyApp\Models\Shop;
+use OhMyBrew\ShopifyApp\Models\Plan;
 
 class BillingPlan
 {
@@ -15,11 +15,11 @@ class BillingPlan
     protected $shop;
 
     /**
-     * The plan details for Shopify.
+     * The plan to use.
      *
-     * @var array
+     * @var \OhMyBrew\ShopifyApp\Models\Plan
      */
-    protected $details;
+    protected $plan;
 
     /**
      * The charge ID.
@@ -29,47 +29,17 @@ class BillingPlan
     protected $chargeId;
 
     /**
-     * The charge type.
-     *
-     * @var string
-     */
-    protected $chargeType;
-
-    /**
      * Constructor for billing plan class.
      *
-     * @param Shop   $shop       The shop to target for billing.
-     * @param string $chargeType The type of charge for the plan (single or recurring).
+     * @param Shop $shop The shop to target for billing.
+     * @param Plan $plan The plan from the database.
      *
      * @return $this
      */
-    public function __construct(Shop $shop, string $chargeType = 'recurring')
+    public function __construct(Shop $shop, Plan $plan)
     {
         $this->shop = $shop;
-        $this->chargeType = $chargeType === 'single' ? 'application_charge' : 'recurring_application_charge';
-
-        return $this;
-    }
-
-    /**
-     * Sets the plan.
-     *
-     * @param array $plan The plan details.
-     *                    $plan = [
-     *                    'name'          => (string) Plan name.
-     *                    'price'         => (float) Plan price. Required.
-     *                    'test'          => (boolean) Test mode or not.
-     *                    'trial_days'    => (int) Plan trial period in days.
-     *                    'return_url'    => (string) URL to handle response for acceptance or decline or billing. Required.
-     *                    'capped_amount' => (float) Capped price if using UsageCharge API.
-     *                    'terms'         => (string) Terms for the usage. Required if using capped_amount.
-     *                    ]
-     *
-     * @return $this
-     */
-    public function setDetails(array $details)
-    {
-        $this->details = $details;
+        $this->plan = $plan;
 
         return $this;
     }
@@ -103,15 +73,15 @@ class BillingPlan
         // Run API to grab details
         return $this->shop->api()->rest(
             'GET',
-            "/admin/{$this->chargeType}s/{$this->chargeId}.json"
-        )->body->{$this->chargeType};
+            "/admin/{$this->plan->typeAsString(true)}/{$this->chargeId}.json"
+        )->body->{$this->plan->typeAsString()};
     }
 
     /**
      * Activates a plan to the shop.
      *
      * Example usage:
-     * (new BillingPlan([shop], 'recurring'))->setChargeId(request('charge_id'))->activate();
+     * (new BillingPlan([shop], [plan]))->setChargeId(request('charge_id'))->activate();
      *
      * @return object
      */
@@ -125,8 +95,8 @@ class BillingPlan
         // Activate and return the API response
         return $this->shop->api()->rest(
             'POST',
-            "/admin/{$this->chargeType}s/{$this->chargeId}/activate.json"
-        )->body->{$this->chargeType};
+            "/admin/{$this->plan->typeAsString(true)}/{$this->chargeId}/activate.json"
+        )->body->{$this->plan->typeAsString()};
     }
 
     /**
@@ -134,38 +104,27 @@ class BillingPlan
      * This URL sends them to Shopify's billing page.
      *
      * Example usage:
-     * (new BillingPlan([shop], 'recurring'))->setDetails($plan)->getConfirmationUrl();
+     * (new BillingPlan([shop], [plan]))->setDetails($plan)->getConfirmationUrl();
      *
      * @return string
      */
     public function getConfirmationUrl()
     {
-        // Check if we have plan details
-        if (!is_array($this->details)) {
-            throw new Exception('Plan details are missing for confirmation URL request.');
-        }
-
         // Build the charge array
         $chargeDetails = [
-            'test'          => isset($this->details['test']) ? $this->details['test'] : false,
-            'trial_days'    => isset($this->details['trial_days']) ? $this->details['trial_days'] : 0,
-            'name'          => $this->details['name'],
-            'price'         => $this->details['price'],
-            'return_url'    => $this->details['return_url'],
+            'test'          => $this->plan->isTest(),
+            'trial_days'    => $this->plan->hasTrial() ? $this->plan->trial_days : 0,
+            'name'          => $this->plan->name,
+            'price'         => $this->plan->price,
+            'return_url'    => config('shopify-app.billing_redirect'),
         ];
-
-        // Handle capped amounts for UsageCharge API
-        if (isset($this->details['capped_amount'])) {
-            $chargeDetails['capped_amount'] = $this->details['capped_amount'];
-            $chargeDetails['terms'] = $this->details['terms'];
-        }
 
         // Begin the charge request
         $charge = $this->shop->api()->rest(
             'POST',
-            "/admin/{$this->chargeType}s.json",
-            ["{$this->chargeType}" => $chargeDetails]
-        )->body->{$this->chargeType};
+            "/admin/{$this->plan->typeAsString(true)}.json",
+            ["{$this->plan->typeAsString()}" => $chargeDetails]
+        )->body->{$this->plan->typeAsString()};
 
         return $charge->confirmation_url;
     }
