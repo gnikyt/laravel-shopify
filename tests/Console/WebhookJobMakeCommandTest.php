@@ -22,19 +22,19 @@ class WebhookJobMakeCommandTest extends TestCase
             $testedCommand = $this->app->make(WebhookJobMakeCommand::class);
             $testedCommand->setLaravel($this->app);
             $application->add($testedCommand);
-    
+
             $command = $application->find('shopify-app:make:webhook');
             $commandTester = new CommandTester($command);
-    
+
             $commandTester->execute([
                 'command' => $command->getName(),
                 'name'    => 'OrdersCreateJob',
                 'topic'   => 'orders/create',
             ]);
-    
+
             $output = $commandTester->getDisplay();
-    
-            $this->assertContains("Don't forget to register the webhook in config/shopify-app.php", $output);
+
+            $this->assertContains("For non-GDPR webhooks, don't forget to register the webhook in config/shopify-app.php", $output);
             $this->assertContains("'address' => 'https://your-domain.com/webhook/orders-create'", $output);
             $this->assertContains("'topic' => 'orders/create',", $output);
         } else {
@@ -42,8 +42,8 @@ class WebhookJobMakeCommandTest extends TestCase
             $this->artisan(
                 'shopify-app:make:webhook',
                 [
-                    'name'    => 'OrdersCreateJob',
-                    'topic'   => 'orders/create'
+                    'name'  => 'OrdersCreateJob',
+                    'topic' => 'orders/create',
                 ]
             )
             ->expectsOutput('For non-GDPR webhooks, don\'t forget to register the webhook in config/shopify-app.php. Example:')

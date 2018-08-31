@@ -39,8 +39,7 @@ class NamespaceScopeTest extends TestCase
             ->select('shopify_domain', 'namespace')
             ->where('shopify_domain', 'namespace.myshopify.com')
             ->orderBy('id', 'asc')
-            ->get()
-        ;
+            ->get();
         $this->assertEquals('shopify-test', $shopEntries[0]->namespace);
         $this->assertEquals('shopify-test-2', $shopEntries[1]->namespace);
 

@@ -46,7 +46,7 @@ class Shop extends Model
     {
         parent::boot();
 
-        static::addGlobalScope(new NamespaceScope);
+        static::addGlobalScope(new NamespaceScope());
     }
 
     /**
