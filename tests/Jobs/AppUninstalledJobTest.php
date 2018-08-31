@@ -78,6 +78,7 @@ class AppUninstalledJobTest extends TestCase
         $this->assertFalse($this->shop->hasCharges());
         $this->assertEquals($charge->charge_id, $lastCharge->charge_id);
         $this->assertEquals('cancelled', $lastCharge->status);
+        $this->assertEquals(null, $this->shop->shopify_token);
     }
 
     public function testJobDoesNothingForUnknownShop()

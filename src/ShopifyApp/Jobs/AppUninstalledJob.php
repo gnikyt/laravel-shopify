@@ -62,10 +62,22 @@ class AppUninstalledJob implements ShouldQueue
             return false;
         }
 
+        $this->cleanShop();
         $this->softDeleteShop();
         $this->cancelCharge();
 
         return true;
+    }
+
+    /**
+     * Clean the shop data on uninstall.
+     *
+     * @return void
+     */
+    protected function cleanShop()
+    {
+        $this->shop->shopify_token = null;
+        $this->shop->save();
     }
 
     /**
