@@ -3,6 +3,8 @@
 namespace OhMyBrew\ShopifyApp;
 
 use Illuminate\Support\ServiceProvider;
+use OhMyBrew\ShopifyApp\Models\Shop;
+use OhMyBrew\ShopifyApp\Observers\ShopObserver;
 
 class ShopifyAppProvider extends ServiceProvider
 {
@@ -33,6 +35,9 @@ class ShopifyAppProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/resources/jobs/AppUninstalledJob.php' => app_path().'/Jobs/AppUninstalledJob.php',
         ], 'jobs');
+
+        // Shop observer
+        Shop::observe(ShopObserver::class);
     }
 
     /**

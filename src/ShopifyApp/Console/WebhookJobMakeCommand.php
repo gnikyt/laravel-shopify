@@ -57,7 +57,7 @@ class WebhookJobMakeCommand extends JobMakeCommand
         parent::$method();
 
         // Remind user to enter job into config
-        $this->info("Don't forget to register the webhook in config/shopify-app.php. Example:");
+        $this->info("For non-GDPR webhooks, don't forget to register the webhook in config/shopify-app.php. Example:");
         $this->info("
     'webhooks' => [
         [
