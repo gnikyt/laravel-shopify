@@ -3,8 +3,8 @@
 namespace OhMyBrew\ShopifyApp\Test\Models;
 
 use OhMyBrew\ShopifyApp\Models\Shop;
-use OhMyBrew\ShopifyApp\Test\TestCase;
 use OhMyBrew\ShopifyApp\Scopes\NamespaceScope;
+use OhMyBrew\ShopifyApp\Test\TestCase;
 
 class NamespaceScopeTest extends TestCase
 {
