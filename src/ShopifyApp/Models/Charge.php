@@ -34,6 +34,16 @@ class Charge extends Model
     }
 
     /**
+     * Gets the plan.
+     *
+     * @return \OhMyBrew\ShopifyApp\Models\Plan
+     */
+    public function plan()
+    {
+        return $this->hasOne('OhMyBrew\ShopifyApp\Models\Plan');
+    }
+
+    /**
      * Gets the charge's data from Shopify.
      *
      * @return object

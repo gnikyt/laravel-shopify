@@ -16,7 +16,7 @@ class CreatePlansTable extends Migration
         Schema::create('plan', function (Blueprint $table) {
             $table->increments('id');
 
-            // The type of plan, either Charge::CHARGE_RECURRING (1) or Charge::CHARGE_ONETIME (2)
+            // The type of plan, either Plan::CHARGE_RECURRING (1) or Plan::CHARGE_ONETIME (2)
             $table->integer('type');
 
             // Name of the plan

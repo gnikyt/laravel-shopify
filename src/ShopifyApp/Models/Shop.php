@@ -97,4 +97,24 @@ class Shop extends Model
     {
         return $this->charges->isNotEmpty();
     }
+
+    /**
+     * Gets the plan.
+     *
+     * @return \OhMyBrew\ShopifyApp\Models\Plan
+     */
+    public function plan()
+    {
+        return $this->hasOne('OhMyBrew\ShopifyApp\Models\Plan');
+    }
+
+    /**
+     * Checks if the shop is freemium.
+     *
+     * @return bool
+     */
+    public function isFreemium()
+    {
+        return ((bool) $this->freemium) === true;
+    }
 }
