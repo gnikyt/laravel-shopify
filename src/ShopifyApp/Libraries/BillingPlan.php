@@ -2,6 +2,7 @@
 
 namespace OhMyBrew\ShopifyApp\Libraries;
 
+use Exception;
 use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\Models\Plan;
 
@@ -114,6 +115,12 @@ class BillingPlan
             'price'         => $this->plan->price,
             'return_url'    => secure_url(config('shopify-app.billing_redirect'), ['plan_id' => $this->plan->id]),
         ];
+
+        // Handle capped amounts for UsageCharge API
+        if (isset($this->plan->capped_amount)) {
+            $chargeDetails['capped_amount'] = $this->plan->capped_amount;
+            $chargeDetails['terms'] = $this->plan->terms;
+        }
 
         return $chargeDetails;
     }

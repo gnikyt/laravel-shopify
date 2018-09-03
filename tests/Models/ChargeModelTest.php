@@ -3,6 +3,7 @@
 namespace OhMyBrew\ShopifyApp\Test\Models;
 
 use OhMyBrew\ShopifyApp\Models\Charge;
+use OhMyBrew\ShopifyApp\Models\Plan;
 use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
 use OhMyBrew\ShopifyApp\Test\TestCase;
@@ -22,6 +23,14 @@ class ChargeModelTest extends TestCase
         $this->assertEquals(
             Charge::CHARGE_RECURRING,
             Charge::find(1)->type
+        );
+    }
+
+    public function testBelongsToPlan()
+    {
+        $this->assertInstanceOf(
+            Plan::class,
+            Charge::find(1)->plan
         );
     }
 

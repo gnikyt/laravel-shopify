@@ -69,6 +69,21 @@ class BillableMiddlewareTest extends TestCase
         $this->assertTrue($called);
     }
 
+    public function testEnabledBillingWithFreemiumShop()
+    {
+        // Enable billing and set a shop
+        config(['shopify-app.billing_enabled' => true]);
+        session(['shopify_domain' => 'freemium-shop.myshopify.com']);
+
+        $called = false;
+        $result = (new Billable())->handle(request(), function ($request) use (&$called) {
+            // Should be called
+            $called = true;
+        });
+
+        $this->assertTrue($called);
+    }
+
     public function testDisabledBillingShouldPassOn()
     {
         // Ensure billing is disabled and set a shop

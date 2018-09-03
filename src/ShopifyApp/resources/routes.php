@@ -67,7 +67,7 @@ Route::group(['middleware' => ['web']], function () {
     */
 
     Route::get(
-        '/billing',
+        '/billing/{planId?}',
         'OhMyBrew\ShopifyApp\Controllers\BillingController@index'
     )
     ->name('billing');
@@ -82,7 +82,7 @@ Route::group(['middleware' => ['web']], function () {
     */
 
     Route::get(
-        '/billing/process',
+        '/billing/process/{planId?}',
         'OhMyBrew\ShopifyApp\Controllers\BillingController@process'
     )
     ->name('billing.process');

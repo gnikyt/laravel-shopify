@@ -3,6 +3,7 @@
 namespace OhMyBrew\ShopifyApp\Test\Models;
 
 use OhMyBrew\ShopifyApp\Models\Shop;
+use OhMyBrew\ShopifyApp\Models\Plan;
 use OhMyBrew\ShopifyApp\Test\TestCase;
 
 class ShopModelTest extends TestCase
@@ -79,5 +80,27 @@ class ShopModelTest extends TestCase
 
         $this->assertEquals(false, $shop->hasCharges());
         $this->assertEquals(true, $shop_2->hasCharges());
+    }
+
+    public function testShopReturnsPlan()
+    {
+        $this->assertInstanceOf(
+            Plan::class,
+            Shop::find(1)->plan
+        );
+    }
+
+    public function testShopReturnsNoPlan()
+    {
+        $this->assertEquals(
+            null,
+            Shop::find(5)->plan
+        );
+    }
+
+    public function testShopIsFreemiumAndNotFreemium()
+    {
+        $this->assertEquals(true, Shop::find(5)->isFreemium());
+        $this->assertEquals(false, Shop::find(1)->isFreemium());
     }
 }

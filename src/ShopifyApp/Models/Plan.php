@@ -11,6 +11,16 @@ class Plan extends Model
     const PLAN_ONETIME = 2;
 
     /**
+     * Get charges.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function charges()
+    {
+        return $this->hasMany('OhMyBrew\ShopifyApp\Models\Charge');
+    }
+
+    /**
      * Returns the plan type as a string (for API).
      *
      * @param bool $plural Return the plural form or not.
@@ -25,7 +35,7 @@ class Plan extends Model
                 $type = 'application_charge';
                 break;
             default:
-            case self:PLAN_RECURRING:
+            case self::PLAN_RECURRING:
                 $type = 'recurring_application_charge';
                 break;
         }

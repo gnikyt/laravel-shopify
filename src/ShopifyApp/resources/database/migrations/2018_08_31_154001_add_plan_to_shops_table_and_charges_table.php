@@ -13,15 +13,15 @@ class AddPlanToShopsTableAndChargesTable extends Migration
      */
     public function up()
     {
-        Schema::create('charges', function (Blueprint $table) {
+        Schema::table('charges', function (Blueprint $table) {
             // Linking
-            $table->integer('plan_id')->unsigned();
+            $table->integer('plan_id')->unsigned()->nullable();
             $table->foreign('plan_id')->references('id')->on('plans');
         });
 
-        Schema::create('shops', function (Blueprint $table) {
+        Schema::table('shops', function (Blueprint $table) {
             // Linking
-            $table->integer('plan_id')->unsigned();
+            $table->integer('plan_id')->unsigned()->nullable();
             $table->foreign('plan_id')->references('id')->on('plans');
         });
     }
@@ -34,11 +34,11 @@ class AddPlanToShopsTableAndChargesTable extends Migration
     public function down()
     {
         Schema::table('charges', function (Blueprint $table) {
-            $table->dropForeign(['plan_id']);
+            $table->dropColumn(['plan_id']);
         });
 
         Schema::table('shops', function (Blueprint $table) {
-            $table->dropForeign(['plan_id']);
+            $table->dropColumn(['plan_id']);
         });
     }
 }

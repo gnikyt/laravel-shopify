@@ -14,13 +14,15 @@ trait BillingControllerTrait
     /**
      * Redirects to billing screen for Shopify.
      *
+     * @param int|null $planId The plan's ID.
+     *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($planId = null)
     {
         // Get the confirmation URL
         $shop = ShopifyApp::shop();
-        $billingPlan = new BillingPlan($shop, $this->getPlan());
+        $billingPlan = new BillingPlan($shop, $this->getPlan($planId));
 
         // Do a fullpage redirect
         return view('shopify-app::billing.fullpage_redirect', [
@@ -31,30 +33,32 @@ trait BillingControllerTrait
     /**
      * Processes the response from the customer.
      *
+     * @param int|null $planId The plan's ID.
+     *
      * @return void
      */
-    public function process()
+    public function process($planId = null)
     {
         // Setup the shop and get the charge ID passed in
         $shop = ShopifyApp::shop();
         $chargeId = request('charge_id');
 
         // Setup the plan and get the charge
-        $plan = $this->getPlan();
+        $plan = $this->getPlan($planId);
         $billingPlan = new BillingPlan($shop, $plan);
         $billingPlan->setChargeId($chargeId);
         $status = $billingPlan->getCharge()->status;
 
         // Grab the plan detailed used
-        $planDetails = $this->plan->getChargeParams();
+        $planDetails = $billingPlan->getChargeParams();
         unset($planDetails['return_url']);
 
         // Create a charge (regardless of the status)
         $charge = new Charge();
-        $charge->type = $this->chargeType() === 'recurring' ? Charge::CHARGE_RECURRING : Charge::CHARGE_ONETIME;
+        $charge->plan_id = $plan->id;
+        $charge->type = $plan->type;
         $charge->charge_id = $chargeId;
         $charge->status = $status;
-        $charge->plan_id = $plan->id;
 
         // Check the customer's answer to the billing
         if ($status === 'accepted') {
@@ -102,13 +106,19 @@ trait BillingControllerTrait
     /**
      * Get the plan to use.
      *
+     * @param int|null $planId The plan's ID.
+     *
      * @return Plan
      */
-    protected function getPlan()
+    protected function getPlan($planId = null)
     {
-        return Plan::where(function ($q) {
-            $q->where('plan_id', request('plan_id'))->orWhere('on_install', true);
-        })->first();
+        if ($planId === null) {
+            // Find the on-install plan
+            return Plan::where('on_install', true)->first();
+        }
+
+        // Find the plan passed to the method
+        return Plan::where('id', $planId)->first();
     }
 
     /**

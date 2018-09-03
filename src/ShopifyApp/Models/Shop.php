@@ -105,7 +105,7 @@ class Shop extends Model
      */
     public function plan()
     {
-        return $this->hasOne('OhMyBrew\ShopifyApp\Models\Plan');
+        return $this->belongsTo('OhMyBrew\ShopifyApp\Models\Plan');
     }
 
     /**

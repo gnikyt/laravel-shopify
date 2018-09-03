@@ -1,0 +1,16 @@
+{
+    "application_charge": {
+        "id": 1017262355,
+        "name": "Basic Plan",
+        "api_client_id": 755357713,
+        "price": "5.00",
+        "status": "pending",
+        "return_url": "http://super-duper.shopifyapps.com/",
+        "test": null,
+        "created_at": "2018-07-05T13:11:28-04:00",
+        "updated_at": "2018-07-05T13:11:28-04:00",
+        "charge_type": null,
+        "decorated_return_url": "http://example.shopifyapps.com/?charge_id=1017262355",
+        "confirmation_url": "https://example.myshopify.com/admin/charges/1017262355/confirm_application_charge?signature=BAhpBBMxojw%3D--1139a82a3433b1a6771786e03f02300440e11883"
+    }
+}

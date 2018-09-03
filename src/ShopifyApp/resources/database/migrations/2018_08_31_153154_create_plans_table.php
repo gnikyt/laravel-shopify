@@ -13,7 +13,7 @@ class CreatePlansTable extends Migration
      */
     public function up()
     {
-        Schema::create('plan', function (Blueprint $table) {
+        Schema::create('plans', function (Blueprint $table) {
             $table->increments('id');
 
             // The type of plan, either Plan::CHARGE_RECURRING (1) or Plan::CHARGE_ONETIME (2)
@@ -24,6 +24,12 @@ class CreatePlansTable extends Migration
 
             // Price of the plan
             $table->decimal('price', 8, 2);
+
+            // Store the amount of the charge, this helps if you are experimenting with pricing
+            $table->decimal('capped_amount', 8, 2)->nullable();
+
+            // Terms for the usage charges
+            $table->string('terms')->nullable();
 
             // Nullable in case of 0 trial days
             $table->integer('trial_days')->nullable();
