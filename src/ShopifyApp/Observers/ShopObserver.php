@@ -20,7 +20,7 @@ class ShopObserver
             $shop->namespace = config('shopify-app.namespace');
         }
 
-        if (config('shopify-app.billing_freemium_enabled') === true) {
+        if (config('shopify-app.billing_freemium_enabled') === true && !isset($shop->freemium)) {
             // Add the freemium flag to the shop
             $shop->freemium = true;
         }
