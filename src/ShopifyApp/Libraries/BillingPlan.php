@@ -3,8 +3,8 @@
 namespace OhMyBrew\ShopifyApp\Libraries;
 
 use Exception;
-use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\Models\Plan;
+use OhMyBrew\ShopifyApp\Models\Shop;
 
 class BillingPlan
 {

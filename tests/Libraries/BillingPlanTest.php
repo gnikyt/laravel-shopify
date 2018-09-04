@@ -3,8 +3,8 @@
 namespace OhMyBrew\ShopifyApp\Test\Libraries;
 
 use OhMyBrew\ShopifyApp\Libraries\BillingPlan;
-use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\Models\Plan;
+use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
 use OhMyBrew\ShopifyApp\Test\TestCase;
 
