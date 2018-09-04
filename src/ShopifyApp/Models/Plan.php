@@ -46,7 +46,7 @@ class Plan extends Model
     /**
      * Checks if this plan has a trial.
      *
-     * @return boolean
+     * @return bool
      */
     public function hasTrial()
     {
@@ -56,7 +56,7 @@ class Plan extends Model
     /**
      * Checks if this plan should be presented on install.
      *
-     * @return boolean
+     * @return bool
      */
     public function isOnInstall()
     {

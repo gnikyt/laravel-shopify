@@ -2,10 +2,9 @@
 
 namespace OhMyBrew\ShopifyApp\Test\Models;
 
-use OhMyBrew\ShopifyApp\Models\Shop;
+use Illuminate\Database\Eloquent\Collection;
 use OhMyBrew\ShopifyApp\Models\Plan;
 use OhMyBrew\ShopifyApp\Test\TestCase;
-use \Illuminate\Database\Eloquent\Collection;
 
 class PlanModelTest extends TestCase
 {
@@ -14,7 +13,7 @@ class PlanModelTest extends TestCase
         $charges = Plan::find(1)->charges;
 
         $this->assertInstanceOf(Collection::class, $charges);
-        $this->assertTrue(sizeOf($charges) > 0);
+        $this->assertTrue(count($charges) > 0);
     }
 
     public function testReturnsTypeAsString()

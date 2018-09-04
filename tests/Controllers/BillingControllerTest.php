@@ -2,7 +2,6 @@
 
 namespace OhMyBrew\ShopifyApp\Test\Controllers;
 
-use Carbon\Carbon;
 use OhMyBrew\ShopifyApp\Controllers\BillingController;
 use OhMyBrew\ShopifyApp\Models\Charge;
 use OhMyBrew\ShopifyApp\Models\Plan;

@@ -75,7 +75,7 @@ abstract class TestCase extends OrchestraTestCase
             [
                 'shopify_domain' => 'example.myshopify.com',
                 'shopify_token'  => '1234',
-                'plan_id' => 1,
+                'plan_id'        => 1,
             ],
 
             // Non-paid shop, grandfathered
@@ -233,42 +233,42 @@ abstract class TestCase extends OrchestraTestCase
         $plans = [
             // Basic Plan with Trial
             [
-                'type' => 1,
-                'name' => 'Basic Plan with Trial',
-                'price' => 5.00,
+                'type'       => 1,
+                'name'       => 'Basic Plan with Trial',
+                'price'      => 5.00,
                 'trial_days' => 7,
-                'test' => false,
+                'test'       => false,
                 'on_install' => true,
             ],
 
             // Basic Plan with No Trial
             [
-                'type' => 1,
-                'name' => 'Basic Plan with No Trial',
-                'price' => 5.00,
+                'type'       => 1,
+                'name'       => 'Basic Plan with No Trial',
+                'price'      => 5.00,
                 'trial_days' => 0,
-                'test' => false,
+                'test'       => false,
                 'on_install' => false,
             ],
 
             // Test Plan
             [
-                'type' => 2,
-                'name' => 'Test Plan',
-                'price' => 5.00,
+                'type'       => 2,
+                'name'       => 'Test Plan',
+                'price'      => 5.00,
                 'trial_days' => 7,
-                'test' => true,
+                'test'       => true,
                 'on_install' => false,
             ],
 
             // Test Plan
             [
-                'type' => 1,
-                'name' => 'Capped Plan',
-                'price' => 5.00,
-                'trial_days' => 7,
-                'test' => false,
-                'on_install' => false,
+                'type'          => 1,
+                'name'          => 'Capped Plan',
+                'price'         => 5.00,
+                'trial_days'    => 7,
+                'test'          => false,
+                'on_install'    => false,
                 'capped_amount' => 100.00,
                 'terms'         => '$1 for 500 emails',
             ],
