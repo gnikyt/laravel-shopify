@@ -19,4 +19,15 @@ class ShopObserverTest extends TestCase
 
         $this->assertEquals('shopify-test-namespace', $shop->namespace);
     }
+
+    public function testObserverSetsFreemiumFlag()
+    {
+        config(['shopify-app.billing_freemium_enabled' => true]);
+
+        $shop = new Shop();
+        $shop->shopify_domain = 'observer-freemium.myshopify.com';
+        $shop->save();
+
+        $this->assertTrue($shop->isFreemium());
+    }
 }
