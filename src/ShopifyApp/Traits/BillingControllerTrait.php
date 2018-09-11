@@ -121,7 +121,7 @@ trait BillingControllerTrait
         }
 
         // Get the input values needed
-        $data = request()->only(['price', 'description', 'signature']);
+        $data = request()->only(['price', 'description', 'redirect', 'signature']);
         $signature = $data['signature'];
         unset($data['signature']);
         ksort($data);
@@ -162,7 +162,7 @@ trait BillingControllerTrait
         $charge->save();
 
         // All done, return with success
-        return redirect()->back()->with('succes', true);
+        return isset($data['redirect']) ? redirect($data['redirect']) : redirect()->back()->with('success', true);
     }
 
     /**
