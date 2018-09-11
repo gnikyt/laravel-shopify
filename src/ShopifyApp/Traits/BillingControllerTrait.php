@@ -35,7 +35,7 @@ trait BillingControllerTrait
      *
      * @param int|null $planId The plan's ID.
      *
-     * @return void
+     * @return \Illuminate\Http\Response
      */
     public function process($planId = null)
     {
@@ -54,11 +54,13 @@ trait BillingControllerTrait
         unset($planDetails['return_url']);
 
         // Create a charge (regardless of the status)
-        $charge = new Charge();
-        $charge->plan_id = $plan->id;
-        $charge->type = $plan->type;
-        $charge->charge_id = $chargeId;
-        $charge->status = $status;
+        $charge = Charge::firstOrCreate([
+            'type'      => $plan->type,
+            'plan_id'   => $plan->id,
+            'charge_id' => $chargeId,
+            'status'    => $status,
+            'shop_id'   => $shop->id,
+        ]);
 
         // Check the customer's answer to the billing
         if ($status === 'accepted') {
@@ -85,13 +87,13 @@ trait BillingControllerTrait
         foreach ($planDetails as $key => $value) {
             $charge->{$key} = $value;
         }
-
-        // Save and link to the shop
-        $shop->charges()->save($charge);
+        $charges->save();
 
         if ($status === 'declined') {
             // Show the error... don't allow access
-            return abort(403, 'It seems you have declined the billing charge for this application');
+            return view('shopify-app::billing.error', [
+                'message' => 'It seems you have declined the billing charge for this application'
+            ]);
         }
 
         // All good, update the shop's plan and take them off freeium (if applicable)
@@ -101,6 +103,66 @@ trait BillingControllerTrait
 
         // Go to homepage of app
         return redirect()->route('home');
+    }
+
+    /**
+     * Allows for setting a usage charge.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function usageCharge()
+    {
+        $shop = ShopifyApp::shop();
+        $lastCharge = $this->getLastCharge($shop);
+
+        if ($lastCharge->type !== Charge::CHARGE_RECURRING) {
+            // Charge is not recurring
+            return view('shopify-app::billing.error', ['message' => 'Can only create usage charges for recurring charge']);
+        }
+
+        // Get the input values needed
+        $data = request()->only(['price', 'description', 'signature']);
+        $signature = $data['signature'];
+        unset($data['signature']);
+        ksort($data);
+
+        // Build a query string without query characters
+        $queryCompiled = [];
+        foreach ($query as $key => $value) {
+            $queryCompiled[] = "{$key}={$value}";
+        }
+        $queryJoined = implode($queryCompiled, '');
+
+        // Confirm the charge hasn't been tampered with
+        $signatureLocal = base64_encode(hash_hmac('sha256', $queryJoined, config('shopify-app.api_secret')));
+        if ($signature !== $signatureLocal) {
+            // Possible tampering
+            return view('shopify-app::billing.error', ['message' => 'Issue in creating usgae charge']);
+        }
+
+        // Create the charge via API
+        $usageCharge = $shop->api()->rest(
+            'POST',
+            "/admin/recurring_application_charges/{$lastCharge->charge_id}/usage_charges.json",
+            [
+                'price'       => $data['price'],
+                'description' => $data['description'],
+            ]
+        )->body->usage_charge;
+
+        // Create the charge in the database referencing the recurring charge
+        $charge = new Charge();
+        $charge->type = Charge::CHARGE_USAGE;
+        $charge->shop_id = $shop->id;
+        $charge->reference_charge = $lastCharge->charge_id;
+        $charge->charge_id = $usageCharge->id;
+        $charge->price = $usageCharge->price;
+        $charge->description = $usageCharge->description;
+        $charge->billing_on = $usageCharge->billing_on;
+        $charge->save();
+
+        // All done, return with success
+        return redirect()->back()->with('succes', true);
     }
 
     /**

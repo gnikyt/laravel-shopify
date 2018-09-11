@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Oops! | 403</title>
+        <title>Oops!</title>
 
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
 
@@ -56,12 +56,7 @@
         <div class="app-wrapper">
             <div class="app-content">
                 <main role="main">
-                    <div class="flex-center position-ref full-height">
-                        <div class="content">
-                            <div class="title m-b-md">Oops!</div>
-                            <p>{{ $exception->getMessage() }}</p>
-                        </div>
-                    </div>
+                    @yield('content')
                 </main>
             </div>
         </div>
