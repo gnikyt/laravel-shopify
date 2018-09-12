@@ -4,6 +4,7 @@ namespace OhMyBrew\ShopifyApp\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 
 class AuthWebhook
 {

@@ -20,6 +20,7 @@ class AppUninstalledJobTest extends TestCase
         $this->shop->shopify_domain = 'example-isolated.myshopify.com';
         $this->shop->save();
 
+        // Get the data
         $this->data = json_decode(file_get_contents(__DIR__.'/../fixtures/app_uninstalled.json'));
     }
 
@@ -84,6 +85,6 @@ class AppUninstalledJobTest extends TestCase
     public function testJobDoesNothingForUnknownShop()
     {
         $job = new AppUninstalledJob('unknown-shop.myshopify.com', null);
-        $this->assertEquals(false, $job->handle());
+        $this->assertFalse($job->handle());
     }
 }

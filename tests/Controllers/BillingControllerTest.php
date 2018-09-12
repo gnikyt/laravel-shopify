@@ -21,12 +21,12 @@ class BillingControllerTest extends TestCase
         // Stub in our API class
         config(['shopify-app.api_class' => new ApiStub()]);
 
+        // Create the main class
+        $this->shopifyApp = new ShopifyApp($this->app);
+
         // Base shop for all tests here
         $this->shop = Shop::where('shopify_domain', 'example.myshopify.com')->first();
         session(['shopify_domain' => $this->shop->shopify_domain]); 
-        
-        // Create the main class
-        $this->shopifyApp = new ShopifyApp($this->app);
     }
 
     public function testSendsShopToBillingScreen()
@@ -61,10 +61,11 @@ class BillingControllerTest extends TestCase
 
     public function testShopDeclinesBilling()
     {
-        $shop = Shop::where('shopify_domain', 'example.myshopify.com')->first();
+        // Make the call and grab the last charge
         $response = $this->call('get', '/billing/process/1', ['charge_id' => 10292]);
-        $lastCharge = $shop->charges()->get()->last();
+        $lastCharge = $this->shop->charges()->get()->last();
 
+        // Should now match
         $this->assertEquals(10292, $lastCharge->charge_id);
         $this->assertEquals('declined', $lastCharge->status);
         $response->assertViewHas('message', 'It seems you have declined the billing charge for this application');
@@ -77,10 +78,7 @@ class BillingControllerTest extends TestCase
         $method->setAccessible(true);
 
         // Based on default config
-        $this->assertEquals(
-            Plan::find(1),
-            $method->invoke($controller, null)
-        );
+        $this->assertEquals(Plan::find(1), $method->invoke($controller, null));
     }
 
     public function testReturnPlanPassedToController()
@@ -103,7 +101,7 @@ class BillingControllerTest extends TestCase
         $this->assertInstanceOf(Charge::class, $method->invoke($controller, $this->shop));
     }
 
-    public function testUsageChargeSuccess()
+    public function testUsageChargeSuccessWithRedirect()
     {
         // Create a new charge for the shop to make a usage charge against
         $charge = new Charge();
@@ -116,6 +114,7 @@ class BillingControllerTest extends TestCase
         $charge->created_at = Carbon::now()->addMinutes(5);
         $charge->save();
 
+        // Setup the data for the usage charge and the signature for it
         $data = ['description' => 'One email', 'price' => 1.00, 'redirect' => 'https://localhost/usage-success'];
         $signature = $this->shopifyApp->createHmac(['data' => $data, 'buildQuery' => true]);
 
@@ -123,7 +122,35 @@ class BillingControllerTest extends TestCase
         $lastCharge = $this->shop->charges()->get()->last();
 
         $response->assertStatus(302);
-        $response->assertRedirect('https://localhost/usage-success');
+        $response->assertRedirect($data['redirect']);
+        $this->assertEquals(Charge::CHARGE_USAGE, $lastCharge->type);
+        $this->assertEquals($data['description'], $lastCharge->description);
+        $this->assertEquals($data['price'], $lastCharge->price);
+    }
+
+    public function testUsageChargeSuccessWithNoRedirect()
+    {
+        // Create a new charge for the shop to make a usage charge against
+        $charge = new Charge();
+        $charge->charge_id = 21828118;
+        $charge->name = 'Base Plan';
+        $charge->type = Charge::CHARGE_RECURRING;
+        $charge->price = 25.00;
+        $charge->shop_id = $this->shop->id;
+        $charge->plan_id = Plan::find(1)->id;
+        $charge->created_at = Carbon::now()->addMinutes(5);
+        $charge->save();
+
+        // Setup the data for the usage charge and the signature for it
+        $data = ['description' => 'One email', 'price' => 1.00];
+        $signature = $this->shopifyApp->createHmac(['data' => $data, 'buildQuery' => true]);
+
+        $response = $this->call('post', '/billing/usage-charge', array_merge($data, ['signature' => $signature]));
+        $lastCharge = $this->shop->charges()->get()->last();
+
+        $response->assertStatus(302);
+        $response->assertRedirect('http://localhost');
+        $response->assertSessionHas('success');
         $this->assertEquals(Charge::CHARGE_USAGE, $lastCharge->type);
         $this->assertEquals($data['description'], $lastCharge->description);
         $this->assertEquals($data['price'], $lastCharge->price);

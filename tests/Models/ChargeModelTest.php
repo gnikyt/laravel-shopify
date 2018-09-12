@@ -12,31 +12,22 @@ class ChargeModelTest extends TestCase
 {
     public function testBelongsToShop()
     {
-        $this->assertInstanceOf(
-            Shop::class,
-            Charge::find(1)->shop
-        );
+        $this->assertInstanceOf(Shop::class, Charge::find(1)->shop);
     }
 
     public function testChargeImplementsType()
     {
-        $this->assertEquals(
-            Charge::CHARGE_RECURRING,
-            Charge::find(1)->type
-        );
+        $this->assertEquals(Charge::CHARGE_RECURRING, Charge::find(1)->type);
     }
 
     public function testBelongsToPlan()
     {
-        $this->assertInstanceOf(
-            Plan::class,
-            Charge::find(1)->plan
-        );
+        $this->assertInstanceOf(Plan::class, Charge::find(1)->plan);
     }
 
     public function testIsTest()
     {
-        $this->assertEquals(true, Charge::find(1)->isTest());
+        $this->assertTrue(Charge::find(1)->isTest());
     }
 
     public function testIsType()

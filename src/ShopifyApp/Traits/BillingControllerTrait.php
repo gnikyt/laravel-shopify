@@ -185,6 +185,7 @@ trait BillingControllerTrait
     {
         return $shop->charges()
             ->whereIn('type', [Charge::CHARGE_RECURRING, Charge::CHARGE_ONETIME])
+            ->where('plan_id', $shop->plan_id)
             ->orderBy('created_at', 'desc')
             ->first();
     }

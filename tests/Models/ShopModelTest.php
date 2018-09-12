@@ -50,8 +50,8 @@ class ShopModelTest extends TestCase
         $shop = Shop::where('shopify_domain', 'grandfathered.myshopify.com')->first();
         $shop_2 = Shop::where('shopify_domain', 'example.myshopify.com')->first();
 
-        $this->assertEquals(true, $shop->isGrandfathered());
-        $this->assertEquals(false, $shop_2->isGrandfathered());
+        $this->assertTrue($shop->isGrandfathered());
+        $this->assertFalse($shop_2->isGrandfathered());
     }
 
     public function testShopCanSoftDeleteAndBeRestored()
@@ -78,29 +78,23 @@ class ShopModelTest extends TestCase
         $shop = Shop::where('shopify_domain', 'grandfathered.myshopify.com')->first();
         $shop_2 = Shop::where('shopify_domain', 'example.myshopify.com')->first();
 
-        $this->assertEquals(false, $shop->hasCharges());
-        $this->assertEquals(true, $shop_2->hasCharges());
+        $this->assertFalse($shop->hasCharges());
+        $this->assertTrue($shop_2->hasCharges());
     }
 
     public function testShopReturnsPlan()
     {
-        $this->assertInstanceOf(
-            Plan::class,
-            Shop::find(1)->plan
-        );
+        $this->assertInstanceOf(Plan::class, Shop::find(1)->plan);
     }
 
     public function testShopReturnsNoPlan()
     {
-        $this->assertEquals(
-            null,
-            Shop::find(5)->plan
-        );
+        $this->assertEquals(null, Shop::find(5)->plan);
     }
 
     public function testShopIsFreemiumAndNotFreemium()
     {
-        $this->assertEquals(true, Shop::find(5)->isFreemium());
-        $this->assertEquals(false, Shop::find(1)->isFreemium());
+        $this->assertTrue(Shop::find(5)->isFreemium());
+        $this->assertFalse(Shop::find(1)->isFreemium());
     }
 }

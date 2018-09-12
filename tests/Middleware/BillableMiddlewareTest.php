@@ -20,7 +20,7 @@ class BillableMiddlewareTest extends TestCase
         });
 
         $this->assertFalse($called);
-        $this->assertEquals(true, strpos($result, 'Redirecting to http://localhost/billing') !== false);
+        $this->assertTrue(strpos($result, 'Redirecting to http://localhost/billing') !== false);
     }
 
     public function testEnabledBillingWithShopWhoDeclinedCharges()
@@ -36,7 +36,7 @@ class BillableMiddlewareTest extends TestCase
         });
 
         $this->assertFalse($called);
-        $this->assertEquals(true, strpos($result, 'Redirecting to http://localhost/billing') !== false);
+        $this->assertTrue(strpos($result, 'Redirecting to http://localhost/billing') !== false);
     }
 
     public function testEnabledBillingWithPaidShop()

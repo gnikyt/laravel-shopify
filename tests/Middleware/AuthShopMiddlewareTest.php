@@ -17,7 +17,7 @@ class AuthShopMiddlewareTest extends TestCase
         });
 
         $this->assertFalse($called);
-        $this->assertEquals(true, strpos($result, 'Redirecting to http://localhost/authenticate') !== false);
+        $this->assertTrue(strpos($result, 'Redirecting to http://localhost/authenticate') !== false);
     }
 
     public function testShopHasWithAccessShouldPassMiddleware()
@@ -31,7 +31,7 @@ class AuthShopMiddlewareTest extends TestCase
             $called = true;
         });
 
-        $this->assertEquals(true, $called);
+        $this->assertTrue($called);
     }
 
     public function testShopWithNoTokenShouldNotPassMiddleware()
@@ -46,7 +46,7 @@ class AuthShopMiddlewareTest extends TestCase
         });
 
         $this->assertFalse($called);
-        $this->assertEquals(true, strpos($result, 'Redirecting to http://localhost/authenticate') !== false);
+        $this->assertTrue(strpos($result, 'Redirecting to http://localhost/authenticate') !== false);
     }
 
     public function testShopTrashedShouldNotPassMiddleware()
@@ -61,7 +61,7 @@ class AuthShopMiddlewareTest extends TestCase
         });
 
         $this->assertFalse($called);
-        $this->assertEquals(true, strpos($result, 'Redirecting to http://localhost/authenticate') !== false);
+        $this->assertTrue(strpos($result, 'Redirecting to http://localhost/authenticate') !== false);
     }
 
     public function testShopsWhichDoNotMatchShouldKillSessionAndDirectToReAuthenticate()
@@ -129,6 +129,6 @@ class AuthShopMiddlewareTest extends TestCase
 
         $this->assertFalse($called);
         $this->assertEquals('http://localhost/orders', session('return_to'));
-        $this->assertEquals(true, strpos($result, 'Redirecting to http://localhost/authenticate') !== false);
+        $this->assertTrue(strpos($result, 'Redirecting to http://localhost/authenticate') !== false);
     }
 }

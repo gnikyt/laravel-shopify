@@ -65,7 +65,7 @@ class BillingPlanTest extends TestCase
     {
         $response = (new BillingPlan($this->shop, Plan::find(1)))->setChargeId(1029266947)->activate();
 
-        $this->assertEquals(true, is_object($response));
+        $this->assertTrue(is_object($response));
         $this->assertEquals('active', $response->status);
     }
 
@@ -82,7 +82,7 @@ class BillingPlanTest extends TestCase
     {
         $response = (new BillingPlan($this->shop, Plan::find(1)))->setChargeId(1029266947)->getCharge();
 
-        $this->assertEquals(true, is_object($response));
+        $this->assertTrue(is_object($response));
         $this->assertEquals('accepted', $response->status);
     }
 
