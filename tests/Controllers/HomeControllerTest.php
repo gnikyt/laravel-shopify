@@ -35,7 +35,6 @@ class HomeControllerTest extends TestCase
 
     public function testShopWithSessionShouldLoad()
     {
-
         $response = $this->get('/');
 
         $response->assertStatus(200);
