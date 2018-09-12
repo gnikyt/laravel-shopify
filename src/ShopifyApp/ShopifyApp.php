@@ -97,6 +97,7 @@ class ShopifyApp
      * HMAC creation helper.
      *
      * @param array $opts
+     *
      * @return string
      */
     public function createHmac(array $opts)

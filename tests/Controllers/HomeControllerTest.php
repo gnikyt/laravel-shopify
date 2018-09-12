@@ -20,8 +20,8 @@ class HomeControllerTest extends TestCase
 
     public function testNoShopSessionShouldRedirectToAuthenticate()
     {
-       // Kill the session
-       session()->forget('shopify_domain');
+        // Kill the session
+        session()->forget('shopify_domain');
 
         $response = $this->call('get', '/', ['shop' => 'example.myshopify.com']);
         $this->assertTrue(strpos($response->content(), 'Redirecting to http://localhost/authenticate') !== false);

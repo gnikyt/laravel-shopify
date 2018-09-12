@@ -90,9 +90,7 @@ trait BillingControllerTrait
 
         if ($status === 'declined') {
             // Show the error... don't allow access
-            return view('shopify-app::billing.error', [
-                'message' => 'It seems you have declined the billing charge for this application'
-            ]);
+            return view('shopify-app::billing.error', ['message' => 'It seems you have declined the billing charge for this application']);
         }
 
         // All good, update the shop's plan and take them off freeium (if applicable)

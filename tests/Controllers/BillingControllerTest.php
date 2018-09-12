@@ -2,14 +2,14 @@
 
 namespace OhMyBrew\ShopifyApp\Test\Controllers;
 
+use Carbon\Carbon;
 use OhMyBrew\ShopifyApp\Controllers\BillingController;
 use OhMyBrew\ShopifyApp\Models\Charge;
 use OhMyBrew\ShopifyApp\Models\Plan;
 use OhMyBrew\ShopifyApp\Models\Shop;
+use OhMyBrew\ShopifyApp\ShopifyApp;
 use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
 use OhMyBrew\ShopifyApp\Test\TestCase;
-use Carbon\Carbon;
-use OhMyBrew\ShopifyApp\ShopifyApp;
 use ReflectionMethod;
 
 class BillingControllerTest extends TestCase
@@ -26,7 +26,7 @@ class BillingControllerTest extends TestCase
 
         // Base shop for all tests here
         $this->shop = Shop::where('shopify_domain', 'example.myshopify.com')->first();
-        session(['shopify_domain' => $this->shop->shopify_domain]); 
+        session(['shopify_domain' => $this->shop->shopify_domain]);
     }
 
     public function testSendsShopToBillingScreen()
