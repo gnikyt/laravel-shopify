@@ -54,12 +54,11 @@ trait BillingControllerTrait
         unset($planDetails['return_url']);
 
         // Create a charge (regardless of the status)
-        $charge = Charge::firstOrCreate([
+        $charge = Charge::firstOrNew([
             'type'      => $plan->type,
+            'shop_id'   => $shop->id,
             'plan_id'   => $plan->id,
             'charge_id' => $chargeId,
-            'status'    => $status,
-            'shop_id'   => $shop->id,
         ]);
 
         // Check the customer's answer to the billing
@@ -87,7 +86,7 @@ trait BillingControllerTrait
         foreach ($planDetails as $key => $value) {
             $charge->{$key} = $value;
         }
-        $charges->save();
+        $charge->save();
 
         if ($status === 'declined') {
             // Show the error... don't allow access
@@ -124,18 +123,10 @@ trait BillingControllerTrait
         $data = request()->only(['price', 'description', 'redirect', 'signature']);
         $signature = $data['signature'];
         unset($data['signature']);
-        ksort($data);
-
-        // Build a query string without query characters
-        $queryCompiled = [];
-        foreach ($query as $key => $value) {
-            $queryCompiled[] = "{$key}={$value}";
-        }
-        $queryJoined = implode($queryCompiled, '');
 
         // Confirm the charge hasn't been tampered with
-        $signatureLocal = base64_encode(hash_hmac('sha256', $queryJoined, config('shopify-app.api_secret')));
-        if ($signature !== $signatureLocal) {
+        $signatureLocal = ShopifyApp::createHmac(['data' => $data, 'buildQuery' => true]);
+        if (!hash_equals($signature, $signatureLocal)) {
             // Possible tampering
             return view('shopify-app::billing.error', ['message' => 'Issue in creating usgae charge']);
         }

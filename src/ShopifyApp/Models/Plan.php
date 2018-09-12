@@ -11,6 +11,19 @@ class Plan extends Model
     const PLAN_ONETIME = 2;
 
     /**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'type'          => 'int',
+        'test'          => 'bool',
+        'on_install'    => 'bool',
+        'capped_amount' => 'float',
+        'price'         => 'float',
+    ];
+
+    /**
      * Get charges.
      *
      * @return \Illuminate\Database\Eloquent\Collection

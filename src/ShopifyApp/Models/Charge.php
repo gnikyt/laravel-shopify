@@ -17,6 +17,32 @@ class Charge extends Model
     const CHARGE_CREDIT = 4;
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'type',
+        'shop_id',
+        'charge_id',
+        'plan_id',
+    ];
+
+    /**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'type'          => 'int',
+        'test'          => 'bool',
+        'charge_id'     => 'int',
+        'shop_id'       => 'int',
+        'capped_amount' => 'float',
+        'price'         => 'float',
+    ];
+
+    /**
      * The attributes that should be mutated to dates.
      *
      * @var array
