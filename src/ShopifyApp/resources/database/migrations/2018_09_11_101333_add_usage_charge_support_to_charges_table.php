@@ -17,8 +17,12 @@ class AddUsageChargeSupportToChargesTable extends Migration
             // Description support
             $table->string('description')->nullable();
 
-            // Linking
-            $table->integer('reference_charge')->unsigned()->nullable();
+            // Linking to charge_id
+            $table->bigInteger('reference_charge')->nullable();
+        });
+
+        Schema::table('charges', function (Blueprint $table) {
+            // Linking to charge_id, seperate schema block due to contraint issue
             $table->foreign('reference_charge')->references('charge_id')->on('charges')->onDelete('cascade');
         });
     }

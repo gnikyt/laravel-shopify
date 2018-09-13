@@ -70,6 +70,7 @@ Route::group(['middleware' => ['web']], function () {
         '/billing/{planId?}',
         'OhMyBrew\ShopifyApp\Controllers\BillingController@index'
     )
+    ->where('planId', '^([0-9]+|)$')
     ->name('billing');
 
     /*
@@ -85,6 +86,7 @@ Route::group(['middleware' => ['web']], function () {
         '/billing/process/{planId?}',
         'OhMyBrew\ShopifyApp\Controllers\BillingController@process'
     )
+    ->where('planId', '^([0-9]+|)$')
     ->name('billing.process');
 
     /*

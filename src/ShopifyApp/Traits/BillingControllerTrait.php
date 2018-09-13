@@ -134,8 +134,10 @@ trait BillingControllerTrait
             'POST',
             "/admin/recurring_application_charges/{$lastCharge->charge_id}/usage_charges.json",
             [
-                'price'       => $data['price'],
-                'description' => $data['description'],
+                'usage_charge' => [
+                    'price'       => $data['price'],
+                    'description' => $data['description'],
+                ],
             ]
         )->body->usage_charge;
 
