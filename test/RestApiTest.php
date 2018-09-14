@@ -173,20 +173,20 @@ class RestApiTest extends \PHPUnit\Framework\TestCase
     public function itShouldContinueWithoutApiCallLimitHeader()
     {
         $response = new Response(200, [], '{}');
-            $mock = new MockHandler([$response]);
-            $client = new Client(['handler' => $mock]);
-    
-            $api = new BasicShopifyAPI();
-            $api->setClient($client);
-            $api->setShop('example.myshopify.com');
-            $api->setApiKey('123');
-            $api->setAccessToken('!@#');
-            $api->rest('GET', '/admin/shop.json');
-    
-            $this->assertEquals(0, $api->getApiCalls('rest', 'made'));
-            $this->assertEquals(40, $api->getApiCalls('rest', 'limit'));
-            $this->assertEquals(0, $api->getApiCalls('rest', 'left'));
-            $this->assertEquals(['left' => 0, 'made' => 0, 'limit' => 40], $api->getApiCalls('rest'));
+        $mock = new MockHandler([$response]);
+        $client = new Client(['handler' => $mock]);
+
+        $api = new BasicShopifyAPI();
+        $api->setClient($client);
+        $api->setShop('example.myshopify.com');
+        $api->setApiKey('123');
+        $api->setAccessToken('!@#');
+        $api->rest('GET', '/admin/shop.json');
+
+        $this->assertEquals(0, $api->getApiCalls('rest', 'made'));
+        $this->assertEquals(40, $api->getApiCalls('rest', 'limit'));
+        $this->assertEquals(0, $api->getApiCalls('rest', 'left'));
+        $this->assertEquals(['left' => 0, 'made' => 0, 'limit' => 40], $api->getApiCalls('rest'));
     }
 
     /**
