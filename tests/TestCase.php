@@ -4,6 +4,7 @@ namespace OhMyBrew\ShopifyApp\Test;
 
 use Carbon\Carbon;
 use OhMyBrew\ShopifyApp\Models\Charge;
+use OhMyBrew\ShopifyApp\Models\Plan;
 use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\ShopifyAppProvider;
 use Orchestra\Database\ConsoleServiceProvider;
@@ -62,6 +63,7 @@ abstract class TestCase extends OrchestraTestCase
 
     protected function seedDatabase()
     {
+        $this->createPlans();
         $this->createShops();
         $this->createCharges();
     }
@@ -73,6 +75,7 @@ abstract class TestCase extends OrchestraTestCase
             [
                 'shopify_domain' => 'example.myshopify.com',
                 'shopify_token'  => '1234',
+                'plan_id'        => 1,
             ],
 
             // Non-paid shop, grandfathered
@@ -91,6 +94,12 @@ abstract class TestCase extends OrchestraTestCase
             // New shop... no token, not grandfathered
             [
                 'shopify_domain' => 'no-token-shop.myshopify.com',
+            ],
+
+            // Shop on freemium
+            [
+                'shopify_domain' => 'freemium-shop.myshopify.com',
+                'freemium'       => true,
             ],
         ];
 
@@ -124,6 +133,7 @@ abstract class TestCase extends OrchestraTestCase
                 'trial_days'    => 7,
                 'trial_ends_on' => Carbon::createFromDate(2018, 6, 3, 'UTC')->addWeeks(1)->format('Y-m-d'),
                 'shop_id'       => Shop::where('shopify_domain', 'example.myshopify.com')->first()->id,
+                'plan_id'       => 1,
             ],
 
             // Test = false, status = active, trial = 7, active trial = yes
@@ -137,6 +147,7 @@ abstract class TestCase extends OrchestraTestCase
                 'trial_days'    => 7,
                 'trial_ends_on' => Carbon::today()->addDays(2)->format('Y-m-d'),
                 'shop_id'       => Shop::where('shopify_domain', 'example.myshopify.com')->first()->id,
+                'plan_id'       => 1,
             ],
 
             // Test = false, status = active, trial = 7, active trial = no
@@ -150,6 +161,7 @@ abstract class TestCase extends OrchestraTestCase
                 'trial_days'    => 7,
                 'trial_ends_on' => Carbon::today()->subWeeks(4)->format('Y-m-d'),
                 'shop_id'       => Shop::where('shopify_domain', 'example.myshopify.com')->first()->id,
+                'plan_id'       => 1,
             ],
 
             // Test = false, status = active, trial = 0
@@ -162,6 +174,7 @@ abstract class TestCase extends OrchestraTestCase
                 'price'      => 25.00,
                 'trial_days' => 0,
                 'shop_id'    => Shop::where('shopify_domain', 'example.myshopify.com')->first()->id,
+                'plan_id'    => 2,
             ],
 
             // Test = false, status = declined, trial = 7, active trial = true
@@ -173,6 +186,7 @@ abstract class TestCase extends OrchestraTestCase
                 'type'      => 1,
                 'price'     => 25.00,
                 'shop_id'   => Shop::where('shopify_domain', 'no-token-shop.myshopify.com')->first()->id,
+                'plan_id'   => 1,
             ],
 
             // Test = false, status = cancelled
@@ -185,6 +199,7 @@ abstract class TestCase extends OrchestraTestCase
                 'price'        => 25.00,
                 'shop_id'      => Shop::where('shopify_domain', 'example.myshopify.com')->first()->id,
                 'cancelled_on' => Carbon::today()->format('Y-m-d'),
+                'plan_id'      => 1,
             ],
 
             // Test = false, status = cancelled, trial = 7
@@ -199,6 +214,7 @@ abstract class TestCase extends OrchestraTestCase
                 'trial_ends_on' => Carbon::today()->addWeeks(1)->format('Y-m-d'),
                 'cancelled_on'  => Carbon::today()->addDays(2)->format('Y-m-d'),
                 'shop_id'       => Shop::withTrashed()->where('shopify_domain', 'trashed-shop.myshopify.com')->first()->id,
+                'plan_id'       => 1,
             ],
         ];
 
@@ -209,6 +225,62 @@ abstract class TestCase extends OrchestraTestCase
                 $charge->{$key} = $value;
             }
             $charge->save();
+        }
+    }
+
+    public function createPlans()
+    {
+        $plans = [
+            // Basic Plan with Trial
+            [
+                'type'       => 1,
+                'name'       => 'Basic Plan with Trial',
+                'price'      => 5.00,
+                'trial_days' => 7,
+                'test'       => false,
+                'on_install' => true,
+            ],
+
+            // Basic Plan with No Trial
+            [
+                'type'       => 1,
+                'name'       => 'Basic Plan with No Trial',
+                'price'      => 5.00,
+                'trial_days' => 0,
+                'test'       => false,
+                'on_install' => false,
+            ],
+
+            // Test Plan
+            [
+                'type'       => 2,
+                'name'       => 'Test Plan',
+                'price'      => 5.00,
+                'trial_days' => 7,
+                'test'       => true,
+                'on_install' => false,
+            ],
+
+            // Test Plan
+            [
+                'type'          => 1,
+                'name'          => 'Capped Plan',
+                'price'         => 5.00,
+                'trial_days'    => 7,
+                'test'          => false,
+                'on_install'    => false,
+                'capped_amount' => 100.00,
+                'terms'         => '$1 for 500 emails',
+            ],
+        ];
+
+        // Build the plans
+        foreach ($plans as $planData) {
+            $plan = new Plan();
+            foreach ($planData as $key => $value) {
+                $plan->{$key} = $value;
+            }
+            $plan->save();
         }
     }
 }

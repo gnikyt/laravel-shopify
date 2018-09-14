@@ -32,6 +32,7 @@ class AuthProxyMiddlewareTest extends TestCase
      */
     public function testDenysForMissingShop()
     {
+        // Remove shop from params
         $query = $this->queryParams;
         unset($query['shop']);
         Input::merge($query);
@@ -42,7 +43,7 @@ class AuthProxyMiddlewareTest extends TestCase
             $called = true;
         });
 
-        $this->assertEquals(false, $called);
+        $this->assertFalse($called);
     }
 
     public function testRuns()
@@ -50,7 +51,7 @@ class AuthProxyMiddlewareTest extends TestCase
         Input::merge($this->queryParams);
 
         // Confirm no shop
-        $this->assertEquals(null, session('shopify_domain'));
+        $this->assertNull(session('shopify_domain'));
 
         $called = false;
         (new AuthProxy())->handle(request(), function ($request) use (&$called) {
@@ -66,7 +67,7 @@ class AuthProxyMiddlewareTest extends TestCase
         });
 
         // Confirm full run
-        $this->assertEquals(true, $called);
+        $this->assertTrue($called);
     }
 
     /**
@@ -75,6 +76,7 @@ class AuthProxyMiddlewareTest extends TestCase
      */
     public function testDoesNotRunForInvalidSignature()
     {
+        // Make the signature invalid
         $query = $this->queryParams;
         $query['oops'] = 'i-did-it-again';
         Input::merge($query);
@@ -85,6 +87,6 @@ class AuthProxyMiddlewareTest extends TestCase
             $called = true;
         });
 
-        $this->assertEquals(false, $called);
+        $this->assertFalse($called);
     }
 }

@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Libraries\BillingPlan;
 use OhMyBrew\ShopifyApp\Models\Charge;
+use OhMyBrew\ShopifyApp\Models\Plan;
 use OhMyBrew\ShopifyApp\Models\Shop;
 
 trait BillingControllerTrait
@@ -13,51 +14,57 @@ trait BillingControllerTrait
     /**
      * Redirects to billing screen for Shopify.
      *
+     * @param int|null $planId The plan's ID.
+     *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($planId = null)
     {
         // Get the confirmation URL
         $shop = ShopifyApp::shop();
-        $plan = new BillingPlan($shop, $this->chargeType());
-        $plan->setDetails($this->planDetails($shop));
+        $billingPlan = new BillingPlan($shop, $this->getPlan($planId));
 
         // Do a fullpage redirect
         return view('shopify-app::billing.fullpage_redirect', [
-            'url' => $plan->getConfirmationUrl(),
+            'url' => $billingPlan->getConfirmationUrl(),
         ]);
     }
 
     /**
      * Processes the response from the customer.
      *
-     * @return void
+     * @param int|null $planId The plan's ID.
+     *
+     * @return \Illuminate\Http\Response
      */
-    public function process()
+    public function process($planId = null)
     {
         // Setup the shop and get the charge ID passed in
         $shop = ShopifyApp::shop();
         $chargeId = request('charge_id');
 
         // Setup the plan and get the charge
-        $plan = new BillingPlan($shop, $this->chargeType());
-        $plan->setChargeId($chargeId);
-        $status = $plan->getCharge()->status;
+        $plan = $this->getPlan($planId);
+        $billingPlan = new BillingPlan($shop, $plan);
+        $billingPlan->setChargeId($chargeId);
+        $status = $billingPlan->getCharge()->status;
 
         // Grab the plan detailed used
-        $planDetails = $this->planDetails($shop);
+        $planDetails = $billingPlan->getChargeParams();
         unset($planDetails['return_url']);
 
         // Create a charge (regardless of the status)
-        $charge = new Charge();
-        $charge->type = $this->chargeType() === 'recurring' ? Charge::CHARGE_RECURRING : Charge::CHARGE_ONETIME;
-        $charge->charge_id = $chargeId;
-        $charge->status = $status;
+        $charge = Charge::firstOrNew([
+            'type'      => $plan->type,
+            'shop_id'   => $shop->id,
+            'plan_id'   => $plan->id,
+            'charge_id' => $chargeId,
+        ]);
 
         // Check the customer's answer to the billing
         if ($status === 'accepted') {
             // Activate and add details to our charge
-            $response = $plan->activate();
+            $response = $billingPlan->activate();
             $charge->status = $response->status;
             $charge->billing_on = $response->billing_on;
             $charge->trial_ends_on = $response->trial_ends_on;
@@ -79,68 +86,92 @@ trait BillingControllerTrait
         foreach ($planDetails as $key => $value) {
             $charge->{$key} = $value;
         }
-
-        // Save and link to the shop
-        $shop->charges()->save($charge);
+        $charge->save();
 
         if ($status === 'declined') {
             // Show the error... don't allow access
-            return abort(403, 'It seems you have declined the billing charge for this application');
+            return view('shopify-app::billing.error', ['message' => 'It seems you have declined the billing charge for this application']);
         }
 
-        // All good... go to homepage of app
+        // All good, update the shop's plan and take them off freeium (if applicable)
+        $shop->freemium = false;
+        $shop->plan_id = $plan->id;
+        $shop->save();
+
+        // Go to homepage of app
         return redirect()->route('home');
     }
 
     /**
-     * Base plan to use for billing. Setup as a function so its patchable.
-     * Checks for cancelled charge within trial day limit, and issues
-     * a new trial days number depending on the result for shops who
-     * resinstall the app.
+     * Allows for setting a usage charge.
      *
-     * @param object $shop The shop object.
-     *
-     * @return array
+     * @return \Illuminate\Http\Response
      */
-    protected function planDetails(Shop $shop)
+    public function usageCharge()
     {
-        // Initial plan details
-        $plan = [
-            'name'       => config('shopify-app.billing_plan'),
-            'price'      => config('shopify-app.billing_price'),
-            'test'       => config('shopify-app.billing_test'),
-            'return_url' => url(config('shopify-app.billing_redirect')),
-        ];
-
-        // Handle capped amounts for UsageCharge API
-        if (config('shopify-app.billing_capped_amount')) {
-            $plan['capped_amount'] = config('shopify-app.billing_capped_amount');
-            $plan['terms'] = config('shopify-app.billing_terms');
-        }
-
-        // Grab the last charge for the shop (if any) to determine if this shop
-        // reinstalled the app so we can issue new trial days based on result
+        $shop = ShopifyApp::shop();
         $lastCharge = $this->getLastCharge($shop);
-        if ($lastCharge && $lastCharge->isCancelled()) {
-            // Return the new trial days, could result in 0
-            $plan['trial_days'] = $lastCharge->remainingTrialDaysFromCancel();
-        } else {
-            // Set initial trial days fromc config
-            $plan['trial_days'] = config('shopify-app.billing_trial_days');
+
+        if ($lastCharge->type !== Charge::CHARGE_RECURRING) {
+            // Charge is not recurring
+            return view('shopify-app::billing.error', ['message' => 'Can only create usage charges for recurring charge']);
         }
 
-        return $plan;
+        // Get the input values needed
+        $data = request()->only(['price', 'description', 'redirect', 'signature']);
+        $signature = $data['signature'];
+        unset($data['signature']);
+
+        // Confirm the charge hasn't been tampered with
+        $signatureLocal = ShopifyApp::createHmac(['data' => $data, 'buildQuery' => true]);
+        if (!hash_equals($signature, $signatureLocal)) {
+            // Possible tampering
+            return view('shopify-app::billing.error', ['message' => 'Issue in creating usgae charge']);
+        }
+
+        // Create the charge via API
+        $usageCharge = $shop->api()->rest(
+            'POST',
+            "/admin/recurring_application_charges/{$lastCharge->charge_id}/usage_charges.json",
+            [
+                'usage_charge' => [
+                    'price'       => $data['price'],
+                    'description' => $data['description'],
+                ],
+            ]
+        )->body->usage_charge;
+
+        // Create the charge in the database referencing the recurring charge
+        $charge = new Charge();
+        $charge->type = Charge::CHARGE_USAGE;
+        $charge->shop_id = $shop->id;
+        $charge->reference_charge = $lastCharge->charge_id;
+        $charge->charge_id = $usageCharge->id;
+        $charge->price = $usageCharge->price;
+        $charge->description = $usageCharge->description;
+        $charge->billing_on = $usageCharge->billing_on;
+        $charge->save();
+
+        // All done, return with success
+        return isset($data['redirect']) ? redirect($data['redirect']) : redirect()->back()->with('success', true);
     }
 
     /**
-     * Base charge type (single or recurring).
-     * Setup as a function so its patchable.
+     * Get the plan to use.
      *
-     * @return string
+     * @param int|null $planId The plan's ID.
+     *
+     * @return Plan
      */
-    protected function chargeType()
+    protected function getPlan($planId = null)
     {
-        return config('shopify-app.billing_type');
+        if ($planId === null) {
+            // Find the on-install plan
+            return Plan::where('on_install', true)->first();
+        }
+
+        // Find the plan passed to the method
+        return Plan::where('id', $planId)->first();
     }
 
     /**
@@ -154,6 +185,7 @@ trait BillingControllerTrait
     {
         return $shop->charges()
             ->whereIn('type', [Charge::CHARGE_RECURRING, Charge::CHARGE_ONETIME])
+            ->where('plan_id', $shop->plan_id)
             ->orderBy('created_at', 'desc')
             ->first();
     }

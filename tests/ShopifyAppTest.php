@@ -36,7 +36,8 @@ class ShopifyAppTest extends TestCase
     public function testCreatesNewShopWithSessionIfItDoesNotExist()
     {
         session(['shopify_domain' => 'example-nonexistant.myshopify.com']);
-        $this->assertEquals(null, Shop::where('shopify_domain', 'example-nonexistant.myshopify.com')->first());
+
+        $this->assertNull(Shop::where('shopify_domain', 'example-nonexistant.myshopify.com')->first());
 
         $this->shopifyApp->shop();
 
@@ -67,7 +68,7 @@ class ShopifyAppTest extends TestCase
 
         // Test for empty shops
         foreach ($domains_3 as $domain) {
-            $this->assertEquals(null, $this->shopifyApp->sanitizeShopDomain($domain));
+            $this->assertNull($this->shopifyApp->sanitizeShopDomain($domain));
         }
     }
 
@@ -76,7 +77,8 @@ class ShopifyAppTest extends TestCase
         session(['shopify_domain' => 'example.myshopify.com']);
 
         $shop = $this->shopifyApp->shop();
-        $this->assertEquals('OhMyBrew\ShopifyApp\Models\Shop', get_class($shop));
+
+        $this->assertEquals(\OhMyBrew\ShopifyApp\Models\Shop::class, get_class($shop));
     }
 
     public function testShouldAllowForModelOverride()
@@ -85,7 +87,36 @@ class ShopifyAppTest extends TestCase
         config(['shopify-app.shop_model' => 'OhMyBrew\ShopifyApp\Test\Stubs\ShopModelStub']);
 
         $shop = $this->shopifyApp->shop();
-        $this->assertEquals('OhMyBrew\ShopifyApp\Test\Stubs\ShopModelStub', get_class($shop));
+
+        $this->assertEquals(\OhMyBrew\ShopifyApp\Test\Stubs\ShopModelStub::class, get_class($shop));
         $this->assertEquals('hello', $shop->hello());
+    }
+
+    public function testHmacCreator()
+    {
+        // Set the secret to use for HMAC creations
+        $secret = 'hello';
+        config(['shopify-app.api_secret' => $secret]);
+
+        // Raw data
+        $data = 'one-two-three';
+        $this->assertEquals(
+            hash_hmac('sha256', $data, $secret, true),
+            $this->shopifyApp->createHmac(['data' => $data, 'raw' => true])
+        );
+
+        // Raw data encoded
+        $data = 'one-two-three';
+        $this->assertEquals(
+            base64_encode(hash_hmac('sha256', $data, $secret, true)),
+            $this->shopifyApp->createHmac(['data' => $data, 'raw' => true, 'encode' => true])
+        );
+
+        // Query build (sorts array and builds query string)
+        $data = ['one' => 1, 'two' => 2, 'three' => 3];
+        $this->assertEquals(
+            hash_hmac('sha256', 'one=1three=3two=2', $secret, false),
+            $this->shopifyApp->createHmac(['data' => $data, 'buildQuery' => true])
+        );
     }
 }

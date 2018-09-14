@@ -92,4 +92,37 @@ class ShopifyApp
         // Return the host after cleaned up
         return parse_url("http://{$domain}", PHP_URL_HOST);
     }
+
+    /**
+     * HMAC creation helper.
+     *
+     * @param array $opts
+     *
+     * @return string
+     */
+    public function createHmac(array $opts)
+    {
+        // Setup defaults
+        $data = $opts['data'];
+        $raw = $opts['raw'] ?? false;
+        $buildQuery = $opts['buildQuery'] ?? false;
+        $encode = $opts['encode'] ?? false;
+        $secret = $opts['secret'] ?? config('shopify-app.api_secret');
+
+        if ($buildQuery) {
+            //Query params must be sorted and compiled
+            ksort($data);
+            $queryCompiled = [];
+            foreach ($data as $key => $value) {
+                $queryCompiled[] = "{$key}=".(is_array($value) ? implode($value, ',') : $value);
+            }
+            $data = implode($queryCompiled, '');
+        }
+
+        // Create the hmac all based on the secret
+        $hmac = hash_hmac('sha256', $data, $secret, $raw);
+
+        // Return based on options
+        return $encode ? base64_encode($hmac) : $hmac;
+    }
 }

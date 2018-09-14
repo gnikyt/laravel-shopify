@@ -130,60 +130,15 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Billing Type
+    | Enable Freemium Mode
     |--------------------------------------------------------------------------
     |
-    | Single charge or recurring charge.
-    | Simply use "single" for single, and "recurring" for recurring.
+    | Allow a shop use the app in "freemium" mode.
+    | Shop will get a `freemium` flag on their record in the table.
     |
     */
 
-    'billing_type' => env('SHOPIFY_BILLING_TYPE', 'recurring'),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Billing Plan Name
-    |--------------------------------------------------------------------------
-    |
-    | The name of the plan which shows on the billing.
-    |
-    */
-
-    'billing_plan' => env('SHOPIFY_BILLING_PLAN_NAME', 'Base Plan'),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Billing Price
-    |--------------------------------------------------------------------------
-    |
-    | The single or recurring price to charge the customer.
-    |
-    */
-
-    'billing_price' => (float) env('SHOPIFY_BILLING_PRICE', 0.00),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Billing Trial
-    |--------------------------------------------------------------------------
-    |
-    | Trails days for the app. Set to 0 for no trial period.
-    |
-    */
-
-    'billing_trial_days' => (int) env('SHOPIFY_BILLING_TRIAL_DAYS', 7),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Billing Test
-    |--------------------------------------------------------------------------
-    |
-    | Enable or disable test mode for billing.
-    | This is useful for development purposes, see Shopify's documentation.
-    |
-    */
-
-    'billing_test' => (bool) env('SHOPIFY_BILLING_TEST', false),
+    'billing_freemium_enabled' => (bool) env('SHOPIFY_BILLING_FREEMIUM_ENABLED', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -196,28 +151,6 @@ return [
     */
 
     'billing_redirect' => env('SHOPIFY_BILLING_REDIRECT', '/billing/process'),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Billing Capped Amount
-    |--------------------------------------------------------------------------
-    |
-    | The capped price for charging a customer when using the UsageCharge API.
-    |
-    */
-
-    'billing_capped_amount' => env('SHOPIFY_BILLING_CAPPED_AMOUNT'),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Billing Terms
-    |--------------------------------------------------------------------------
-    |
-    | Terms for the usage. Required if using capped amount.
-    |
-    */
-
-    'billing_terms' => env('SHOPIFY_BILLING_TERMS'),
 
     /*
     |--------------------------------------------------------------------------

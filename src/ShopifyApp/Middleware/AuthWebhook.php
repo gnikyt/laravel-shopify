@@ -4,6 +4,7 @@ namespace OhMyBrew\ShopifyApp\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 
 class AuthWebhook
 {
@@ -21,8 +22,7 @@ class AuthWebhook
         $shop = request()->header('x-shopify-shop-domain');
         $data = request()->getContent();
 
-        // From https://help.shopify.com/api/getting-started/webhooks#verify-webhook
-        $hmacLocal = base64_encode(hash_hmac('sha256', $data, config('shopify-app.api_secret'), true));
+        $hmacLocal = ShopifyApp::createHmac(['data' => $data, 'raw' => true, 'encode' => true]);
         if (!hash_equals($hmac, $hmacLocal) || empty($shop)) {
             // Issue with HMAC or missing shop header
             abort(401, 'Invalid webhook signature');

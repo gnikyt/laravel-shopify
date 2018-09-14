@@ -32,12 +32,13 @@ For more information, tutorials, etc., please view the project's [wiki](https://
 - [x] Provide assistance in developing Shopify apps with Laravel
 - [x] Integration with Shopify API
 - [x] Authentication & installation for shops
-- [x] Billing integration built-in for single and recurring application charges
+- [x] Plan & billing integration for single, recurring, and usage-types
 - [x] Tracking charges to a shop (recurring, single, usage, etc) with trial support
 - [x] Auto install app webhooks and scripttags thorugh background jobs
 - [x] Provide basic ESDK views
 - [x] Handles and processes incoming webhooks
 - [x] Handles and verifies incoming app proxy requests
+- [x] Namespacing abilities to run multiple apps on the same database
 
 ## Documentation
 

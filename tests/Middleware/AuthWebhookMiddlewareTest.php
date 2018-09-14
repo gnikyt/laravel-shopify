@@ -30,13 +30,16 @@ class AuthWebhookMiddlewareTest extends TestCase
     {
         request()->header('x-shopify-shop-domain', 'example.myshopify.com');
         (new AuthWebhook())->handle(request(), function ($request) {
+            // ...
         });
     }
 
     public function testRuns()
     {
+        // Fake the queue
         Queue::fake();
 
+        // Run the call with our owm mocked Shopify headers and data
         $response = $this->call(
             'post',
             '/webhook/orders-create',
@@ -50,13 +53,16 @@ class AuthWebhookMiddlewareTest extends TestCase
             ],
             file_get_contents(__DIR__.'/../fixtures/webhook.json')
         );
+
         $response->assertStatus(201);
     }
 
     public function testInvalidHmacWontRun()
     {
+        // Fake the data
         Queue::fake();
 
+        // Run the call with our owm mocked Shopify headers and data
         $response = $this->call(
             'post',
             '/webhook/orders-create',
@@ -70,6 +76,7 @@ class AuthWebhookMiddlewareTest extends TestCase
             ],
             file_get_contents(__DIR__.'/../fixtures/webhook.json').'invalid'
         );
+
         $response->assertStatus(401);
     }
 }

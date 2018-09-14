@@ -19,6 +19,9 @@ class AuthControllerTest extends TestCase
     {
         parent::setUp();
 
+        // Stub in our API class
+        config(['shopify-app.api_class' => new ApiStub()]);
+
         // HMAC for regular tests
         $this->hmac = 'a7448f7c42c9bc025b077ac8b73e7600b6f8012719d21cbeb88db66e5dbbd163';
         $this->hmacParams = [
@@ -36,9 +39,6 @@ class AuthControllerTest extends TestCase
             'code'      => '1234678910',
             'timestamp' => '1337178173',
         ];
-
-        // Stub in our API class
-        config(['shopify-app.api_class' => new ApiStub()]);
     }
 
     public function testLoginTest()
@@ -52,14 +52,18 @@ class AuthControllerTest extends TestCase
         $response = $this->post('/authenticate');
 
         $response->assertStatus(302);
-        $this->assertEquals('http://localhost/login', $response->headers->get('location'));
+        $response->assertRedirect('http://localhost/login');
     }
 
     public function testAuthRedirectsUserToAuthScreenWhenNoCode()
     {
-        $this->assertEquals(false, config('session.expire_on_close')); // Default for Laravel
+        // Default for Laravel
+        $this->assertNull(config('session.expire_on_close'));
 
+        // Run the request
         $response = $this->post('/authenticate', ['shop' => 'example.myshopify.com']);
+
+        // Check the view
         $response->assertSessionHas('shopify_domain');
         $response->assertViewHas('shopDomain', 'example.myshopify.com');
         $response->assertViewHas(
@@ -67,24 +71,31 @@ class AuthControllerTest extends TestCase
             'https://example.myshopify.com/admin/oauth/authorize?client_id=&scope=read_products,write_products&redirect_uri=https://localhost/authenticate'
         );
 
-        $this->assertEquals(true, config('session.expire_on_close')); // Override in auth for a single request
+        // Override in auth for a single request
+        $this->assertTrue(config('session.expire_on_close'));
     }
 
     public function testAuthAcceptsShopWithCodeAndUpdatesTokenForShop()
     {
         $response = $this->call('get', '/authenticate', $this->hmacParams);
 
-        $shop = Shop::where('shopify_domain', 'example.myshopify.com')->first();
-        $this->assertEquals('12345678', $shop->shopify_token); // Previous token was 1234
+        // Previous token was 1234
+        $this->assertEquals(
+            '12345678',
+            Shop::where('shopify_domain', 'example.myshopify.com')->first()->shopify_token
+        );
     }
 
     public function testAuthRestoresTrashedShop()
     {
+        // Get the shop, confirm its trashed
         $shop = Shop::withTrashed()->where('shopify_domain', 'trashed-shop.myshopify.com')->first();
         $this->assertTrue($shop->trashed());
 
+        // Do an auth call
         $this->call('get', '/authenticate', $this->hmacTrashedParams);
 
+        // Shop should now be restored
         $shop = $shop->fresh();
         $this->assertFalse($shop->trashed());
     }
@@ -94,11 +105,12 @@ class AuthControllerTest extends TestCase
         $response = $this->call('get', '/authenticate', $this->hmacParams);
 
         $response->assertStatus(302);
-        $this->assertEquals('http://localhost', $response->headers->get('location'));
+        $response->assertRedirect('http://localhost');
     }
 
     public function testAuthAcceptsShopWithCodeAndRedirectsToLoginIfRequestIsInvalid()
     {
+        // Make the HMAC invalid
         $params = $this->hmacParams;
         $params['hmac'] = 'MakeMeInvalid';
 
@@ -106,23 +118,27 @@ class AuthControllerTest extends TestCase
 
         $response->assertSessionHas('error');
         $response->assertStatus(302);
-        $this->assertEquals('http://localhost/login', $response->headers->get('location'));
+        $response->assertRedirect('http://localhost/login');
     }
 
     public function testAuthenticateDoesNotFiresJobsWhenNoConfigForThem()
     {
+        // Fake the queue
         Queue::fake();
 
         $this->call('get', '/authenticate', $this->hmacParams);
 
+        // No jobs should be pushed when theres no config for them
         Queue::assertNotPushed(WebhookInstaller::class);
         Queue::assertNotPushed(ScripttagInstaller::class);
     }
 
     public function testAuthenticateDoesFiresJobs()
     {
+        // Fake the queue
         Queue::fake();
 
+        // Create jobs
         config(['shopify-app.webhooks' => [
             [
                 'topic'   => 'orders/create',
@@ -137,14 +153,17 @@ class AuthControllerTest extends TestCase
 
         $this->call('get', '/authenticate', $this->hmacParams);
 
+        // Jobs should be called
         Queue::assertPushed(WebhookInstaller::class);
         Queue::assertPushed(ScripttagInstaller::class);
     }
 
     public function testAfterAuthenticateFiresInline()
     {
+        // Fake the queue
         Queue::fake();
 
+        // Create the jobs
         $jobClass = \App\Jobs\AfterAuthenticateJob::class;
         config(['shopify-app.after_authenticate_job' => [
             'job'    => $jobClass,
@@ -155,14 +174,17 @@ class AuthControllerTest extends TestCase
         $method->setAccessible(true);
         $result = $method->invoke(new AuthController());
 
-        $this->assertEquals(true, $result);
+        // Confirm ran, but not pushed
+        $this->assertTrue($result);
         Queue::assertNotPushed($jobClass); // since inline == true
     }
 
     public function testAfterAuthenticateFiresDispatched()
     {
+        // Fake the queue
         Queue::fake();
 
+        // Create the job
         $jobClass = \App\Jobs\AfterAuthenticateJob::class;
         config(['shopify-app.after_authenticate_job' => [
             'job'    => $jobClass,
@@ -173,14 +195,17 @@ class AuthControllerTest extends TestCase
         $method->setAccessible(true);
         $result = $method->invoke(new AuthController());
 
-        $this->assertEquals(true, $result);
+        // Confirm ran, and pushed
+        $this->assertTrue($result);
         Queue::assertPushed($jobClass); // since inline == false
     }
 
     public function testAfterAuthenticateDoesNotFireForNoConfig()
     {
+        // Fake the queue
         Queue::fake();
 
+        // Create the jobs... blank
         $jobClass = \App\Jobs\AfterAuthenticateJob::class;
         config(['shopify-app.after_authenticate_job' => []]);
 
@@ -188,7 +213,8 @@ class AuthControllerTest extends TestCase
         $method->setAccessible(true);
         $result = $method->invoke(new AuthController());
 
-        $this->assertEquals(false, $result);
+        // Confirm no run, and not pushed
+        $this->assertFalse($result);
         Queue::assertNotPushed($jobClass);
     }
 
@@ -200,11 +226,12 @@ class AuthControllerTest extends TestCase
         $response = $this->call('get', '/authenticate', $this->hmacParams);
 
         $response->assertStatus(302);
-        $this->assertEquals('http://localhost/orders', $response->headers->get('location'));
+        $response->assertRedirect('http://localhost/orders');
     }
 
     public function testReturnToMethod()
     {
+        // Set in AuthShop middleware
         session(['return_to' => 'http://localhost/orders']);
 
         $method = new ReflectionMethod(AuthController::class, 'returnTo');

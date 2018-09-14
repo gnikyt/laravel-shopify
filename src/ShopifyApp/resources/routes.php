@@ -67,9 +67,10 @@ Route::group(['middleware' => ['web']], function () {
     */
 
     Route::get(
-        '/billing',
+        '/billing/{planId?}',
         'OhMyBrew\ShopifyApp\Controllers\BillingController@index'
     )
+    ->where('planId', '^([0-9]+|)$')
     ->name('billing');
 
     /*
@@ -82,10 +83,27 @@ Route::group(['middleware' => ['web']], function () {
     */
 
     Route::get(
-        '/billing/process',
+        '/billing/process/{planId?}',
         'OhMyBrew\ShopifyApp\Controllers\BillingController@process'
     )
+    ->where('planId', '^([0-9]+|)$')
     ->name('billing.process');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Billing Processor for Usage Charges
+    |--------------------------------------------------------------------------
+    |
+    | Creates a usage charge on a recurring charge.
+    |
+    */
+
+    Route::match(
+        ['get', 'post'],
+        '/billing/usage-charge',
+        'OhMyBrew\ShopifyApp\Controllers\BillingController@usageCharge'
+    )
+    ->name('billing.usage_charge');
 });
 
 Route::group(['middleware' => ['api']], function () {

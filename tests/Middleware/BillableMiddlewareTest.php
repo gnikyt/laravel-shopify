@@ -20,23 +20,7 @@ class BillableMiddlewareTest extends TestCase
         });
 
         $this->assertFalse($called);
-        $this->assertEquals(true, strpos($result, 'Redirecting to http://localhost/billing') !== false);
-    }
-
-    public function testEnabledBillingWithShopWhoDeclinedCharges()
-    {
-        // Enable billing and set a shop
-        config(['shopify-app.billing_enabled' => true]);
-        session(['shopify_domain' => 'trashed-shop.myshopify.com']);
-
-        $called = false;
-        $result = (new Billable())->handle(request(), function ($request) use (&$called) {
-            // Should never be called
-            $called = true;
-        });
-
-        $this->assertFalse($called);
-        $this->assertEquals(true, strpos($result, 'Redirecting to http://localhost/billing') !== false);
+        $this->assertTrue(strpos($result, 'Redirecting to http://localhost/billing') !== false);
     }
 
     public function testEnabledBillingWithPaidShop()
@@ -59,6 +43,21 @@ class BillableMiddlewareTest extends TestCase
         // Enable billing and set a shop
         config(['shopify-app.billing_enabled' => true]);
         session(['shopify_domain' => 'grandfathered.myshopify.com']);
+
+        $called = false;
+        $result = (new Billable())->handle(request(), function ($request) use (&$called) {
+            // Should be called
+            $called = true;
+        });
+
+        $this->assertTrue($called);
+    }
+
+    public function testEnabledBillingWithFreemiumShop()
+    {
+        // Enable billing and set a shop
+        config(['shopify-app.billing_enabled' => true]);
+        session(['shopify_domain' => 'freemium-shop.myshopify.com']);
 
         $called = false;
         $result = (new Billable())->handle(request(), function ($request) use (&$called) {

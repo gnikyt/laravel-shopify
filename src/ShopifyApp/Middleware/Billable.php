@@ -20,17 +20,8 @@ class Billable
     public function handle(Request $request, Closure $next)
     {
         if (config('shopify-app.billing_enabled') === true) {
-            // Grab the shop and last recurring or one-time charge
             $shop = ShopifyApp::shop();
-            $lastCharge = $shop->charges()
-                ->whereIn('type', [Charge::CHARGE_RECURRING, Charge::CHARGE_ONETIME])
-                ->orderBy('created_at', 'desc')
-                ->first();
-
-            if (
-                !$shop->isGrandfathered() &&
-                (is_null($lastCharge) || $lastCharge->isDeclined() || $lastCharge->isCancelled())
-            ) {
+            if (!$shop->isFreemium() && !$shop->isGrandfathered() && !$shop->plan) {
                 // They're not grandfathered in, and there is no charge or charge was declined... redirect to billing
                 return redirect()->route('billing');
             }

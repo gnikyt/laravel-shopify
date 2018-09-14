@@ -24,6 +24,16 @@ class Shop extends Model
     ];
 
     /**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'grandfathered' => 'bool',
+        'freemium'      => 'bool',
+    ];
+
+    /**
      * The attributes that should be mutated to dates.
      *
      * @var array
@@ -96,5 +106,25 @@ class Shop extends Model
     public function hasCharges()
     {
         return $this->charges->isNotEmpty();
+    }
+
+    /**
+     * Gets the plan.
+     *
+     * @return \OhMyBrew\ShopifyApp\Models\Plan
+     */
+    public function plan()
+    {
+        return $this->belongsTo('OhMyBrew\ShopifyApp\Models\Plan');
+    }
+
+    /**
+     * Checks if the shop is freemium.
+     *
+     * @return bool
+     */
+    public function isFreemium()
+    {
+        return ((bool) $this->freemium) === true;
     }
 }

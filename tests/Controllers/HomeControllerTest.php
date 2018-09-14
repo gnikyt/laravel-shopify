@@ -13,37 +13,43 @@ class HomeControllerTest extends TestCase
 
         // Stub in our API class
         config(['shopify-app.api_class' => new ApiStub()]);
+
+        // Shop for all tests
+        session(['shopify_domain' => 'example.myshopify.com']);
     }
 
     public function testNoShopSessionShouldRedirectToAuthenticate()
     {
+        // Kill the session
+        session()->forget('shopify_domain');
+
         $response = $this->call('get', '/', ['shop' => 'example.myshopify.com']);
-        $this->assertEquals(true, strpos($response->content(), 'Redirecting to http://localhost/authenticate') !== false);
+        $this->assertTrue(strpos($response->content(), 'Redirecting to http://localhost/authenticate') !== false);
     }
 
     public function testWithMismatchedShopsShouldRedirectToAuthenticate()
     {
-        session(['shopify_domain' => 'example.myshopify.com']);
         $response = $this->call('get', '/', ['shop' => 'example-different-shop.myshopify.com']);
-        $this->assertEquals(true, strpos($response->content(), 'Redirecting to http://localhost/authenticate') !== false);
+        $this->assertTrue(strpos($response->content(), 'Redirecting to http://localhost/authenticate') !== false);
     }
 
     public function testShopWithSessionShouldLoad()
     {
-        session(['shopify_domain' => 'example.myshopify.com']);
         $response = $this->get('/');
+
         $response->assertStatus(200);
-        $this->assertEquals(true, strpos($response->content(), "apiKey: ''") !== false);
-        $this->assertEquals(true, strpos($response->content(), "shopOrigin: 'https://example.myshopify.com'") !== false);
+        $this->assertTrue(strpos($response->content(), "apiKey: ''") !== false);
+        $this->assertTrue(strpos($response->content(), "shopOrigin: 'https://example.myshopify.com'") !== false);
     }
 
     public function testShopWithSessionAndDisabledEsdkShouldLoad()
     {
-        session(['shopify_domain' => 'example.myshopify.com']);
+        // Tuen off ESDK
         config(['shopify-app.esdk_enabled' => false]);
 
         $response = $this->get('/');
+
         $response->assertStatus(200);
-        $this->assertEquals(false, strpos($response->content(), 'ShopifyApp.init'));
+        $this->assertFalse(strpos($response->content(), 'ShopifyApp.init'));
     }
 }

@@ -15,6 +15,7 @@ class WebhookControllerTest extends TestCase
     {
         parent::setUp();
 
+        // Mock headers that match Shopify
         $this->headers = [
             'HTTP_CONTENT_TYPE'          => 'application/json',
             'HTTP_X_SHOPIFY_SHOP_DOMAIN' => 'example.myshopify.com',
@@ -24,8 +25,10 @@ class WebhookControllerTest extends TestCase
 
     public function testShouldReturn201ResponseOnSuccess()
     {
+        // Fake the queue
         Queue::fake();
 
+        // Create a webhook call and pass in our own headers and data
         $response = $this->call(
             'post',
             '/webhook/orders-create',
@@ -35,13 +38,15 @@ class WebhookControllerTest extends TestCase
             $this->headers,
             file_get_contents(__DIR__.'/../fixtures/webhook.json')
         );
-        $response->assertStatus(201);
 
+        // Check it was created and job was pushed
+        $response->assertStatus(201);
         Queue::assertPushed(\App\Jobs\OrdersCreateJob::class);
     }
 
     public function testShouldReturnErrorResponseOnFailure()
     {
+        // Create a webhook call and pass in our own headers and data
         $response = $this->call(
             'post',
             '/webhook/products-create',
@@ -51,6 +56,8 @@ class WebhookControllerTest extends TestCase
             $this->headers,
             file_get_contents(__DIR__.'/../fixtures/webhook.json')
         );
+
+        // Check it contains error and exception matches
         $response->assertStatus(500);
         $this->assertEquals('Missing webhook job: \App\Jobs\ProductsCreateJob', $response->exception->getMessage());
     }
@@ -61,12 +68,14 @@ class WebhookControllerTest extends TestCase
         $method = new ReflectionMethod(WebhookController::class, 'getJobClassFromType');
         $method->setAccessible(true);
 
+        // Map URL path to job
         $types = [
             'orders-create'     => 'OrdersCreateJob',
             'super-duper-order' => 'SuperDuperOrderJob',
             'order'             => 'OrderJob',
         ];
 
+        // Confirm mapping
         foreach ($types as $type => $className) {
             $this->assertEquals("\\App\\Jobs\\$className", $method->invoke($controller, $type));
         }
@@ -74,8 +83,10 @@ class WebhookControllerTest extends TestCase
 
     public function testWebhookShouldRecieveData()
     {
+        // Fake the queue
         Queue::fake();
 
+        // Create a webhook call and pass in our own headers and data
         $response = $this->call(
             'post',
             '/webhook/orders-create',
@@ -85,8 +96,9 @@ class WebhookControllerTest extends TestCase
             $this->headers,
             file_get_contents(__DIR__.'/../fixtures/webhook.json')
         );
-        $response->assertStatus(201);
 
+        // Check it was created, and job was ushed with matching data from fixture
+        $response->assertStatus(201);
         Queue::assertPushed(\App\Jobs\OrdersCreateJob::class, function ($job) {
             return $job->shopDomain === 'example.myshopify.com'
                    && $job->data instanceof \stdClass

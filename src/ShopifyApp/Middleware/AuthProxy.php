@@ -18,23 +18,13 @@ class AuthProxy
      */
     public function handle(Request $request, Closure $next)
     {
-        // Grab the data we need
+        // Grab the data we need, remove signature since its not part of the signature calculation
         $query = request()->all();
         $signature = $query['signature'];
-
-        // Remove signature since its not part of the signature calculation, sort it
         unset($query['signature']);
-        ksort($query);
-
-        // Build a query string without query characters
-        $queryCompiled = [];
-        foreach ($query as $key => $value) {
-            $queryCompiled[] = "{$key}=".(is_array($value) ? implode($value, ',') : $value);
-        }
-        $queryJoined = implode($queryCompiled, '');
 
         // Build a local signature
-        $signatureLocal = hash_hmac('sha256', $queryJoined, config('shopify-app.api_secret'));
+        $signatureLocal = ShopifyApp::createHmac(['data' => $query, 'buildQuery' => true]);
         if ($signature !== $signatureLocal || !isset($query['shop'])) {
             // Issue with HMAC or missing shop header
             abort(401, 'Invalid proxy signature');
