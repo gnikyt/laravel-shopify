@@ -500,12 +500,15 @@ class BasicShopifyAPI
         $response = $this->client->request($type, $uri, $guzzleParams);
 
         // Grab the API call limit header returned from Shopify
-        $calls = explode('/', $response->getHeader('http_x_shopify_shop_api_call_limit')[0]);
-        $this->apiCallLimits['rest'] = [
-            'left'  => (int) $calls[1] - $calls[0],
-            'made'  => (int) $calls[0],
-            'limit' => (int) $calls[1],
-        ];
+        $callLimitHeader = $response->getHeader('http_x_shopify_shop_api_call_limit');
+        if ($callLimitHeader) {
+            $calls = explode('/', $callLimitHeader[0]);
+            $this->apiCallLimits['rest'] = [
+                'left'  => (int) $calls[1] - $calls[0],
+                'made'  => (int) $calls[0],
+                'limit' => (int) $calls[1],
+            ];
+        }
 
         // Return Guzzle response and JSON-decoded body
         return (object) [
