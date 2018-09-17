@@ -3,7 +3,6 @@
 namespace OhMyBrew\ShopifyApp;
 
 use Illuminate\Support\ServiceProvider;
-use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\Observers\ShopObserver;
 
 class ShopifyAppProvider extends ServiceProvider
@@ -37,7 +36,8 @@ class ShopifyAppProvider extends ServiceProvider
         ], 'jobs');
 
         // Shop observer
-        Shop::observe(ShopObserver::class);
+        $shopModel = config('shopify-app.shop_model');
+        $shopModel::observe(ShopObserver::class);
     }
 
     /**
