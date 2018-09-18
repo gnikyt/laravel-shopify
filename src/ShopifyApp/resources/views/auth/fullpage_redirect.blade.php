@@ -6,15 +6,24 @@
 
         <title>Redirecting...</title>
 
-        <script type="text/javascript" src="https://cdn.shopify.com/s/assets/external/app.js"></script>
         <script type="text/javascript">
-            // If the current window is the 'parent', change the URL by setting location.href
-            var redirectUrl = "{!! $authUrl !!}";
-            if (window.top == window.self) {
-                window.location.assign(redirectUrl);
-            } else {
-                ShopifyApp.redirect(redirectUrl);
-            }
+            document.addEventListener('DOMContentLoaded', function () {
+                var redirectUrl = "{!! $authUrl !!}";
+                if (window.top == window.self) {
+                    // If the current window is the 'parent', change the URL by setting location.href
+                    window.top.location.href = redirectUrl;
+                } else {
+                    // If the current window is the 'child', change the parent's URL with postMessage
+                    normalizedLink = document.createElement('a');
+                    normalizedLink.href = redirectUrl;
+
+                    data = JSON.stringify({
+                        message: 'Shopify.API.remoteRedirect',
+                        data: { location: redirectUrl },
+                    });
+                    window.parent.postMessage(data, "https://{{ $shopDomain }}");
+                }
+            });
         </script>
     </head>
     <body>

@@ -15,7 +15,7 @@ trait AuthControllerTrait
      */
     public function index()
     {
-        return view('shopify-app::auth.index');
+        return view('shopify-app::auth.index', ['shopDomain' => request()->query('shop')]);
     }
 
     /**
