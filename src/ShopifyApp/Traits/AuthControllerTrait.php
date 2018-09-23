@@ -148,7 +148,7 @@ trait AuthControllerTrait
     protected function afterAuthenticateJob()
     {
         $jobsConfig = config('shopify-app.after_authenticate_job');
-        
+
         if (isset($afterAuthJobConfig['job'])) {
             // We have a single job, pass the shop object to the contructor
             $job = new $jobConfig['job'](ShopifyApp::shop());
