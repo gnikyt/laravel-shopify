@@ -148,7 +148,7 @@ trait AuthControllerTrait
     protected function afterAuthenticateJob()
     {
         $jobsConfig = config('shopify-app.after_authenticate_job');
-        foreach($jobsConfig as $jobConfig) {
+        foreach ($jobsConfig as $jobConfig) {
             if (empty($jobConfig) || !isset($jobConfig['job'])) {
                 // Empty config or no job assigned
                 return false;
