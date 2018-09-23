@@ -159,6 +159,7 @@ trait AuthControllerTrait
                 // Run later
                 dispatch($job);
             }
+
             return true;
         }
 
