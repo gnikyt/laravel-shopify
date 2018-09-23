@@ -207,7 +207,7 @@ class AuthControllerTest extends TestCase
 
         // Create the jobs... blank
         $jobClass = \App\Jobs\AfterAuthenticateJob::class;
-        config(['shopify-app.after_authenticate_job' => [[]]]);
+        config(['shopify-app.after_authenticate_job' => []]);
 
         $method = new ReflectionMethod(AuthController::class, 'afterAuthenticateJob');
         $method->setAccessible(true);
