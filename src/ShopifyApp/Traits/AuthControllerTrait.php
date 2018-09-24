@@ -158,7 +158,7 @@ trait AuthControllerTrait
          *
          * @return bool
          */
-        $fireJob = function ($config) use($shop) {
+        $fireJob = function ($config) use ($shop) {
             $job = new $config['job']($shop);
             if (isset($config['inline']) && $config['inline'] === true) {
                 // Run this job immediately
