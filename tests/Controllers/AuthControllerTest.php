@@ -200,12 +200,33 @@ class AuthControllerTest extends TestCase
         Queue::assertPushed($jobClass); // since inline == false
     }
 
-    public function testAfterAuthenticateDoesNotFireForNoConfig()
+    public function testAfterAuthenticateFiresDispatchedSingle()
     {
         // Fake the queue
         Queue::fake();
 
-        // Create the jobs... blank
+        // Create the job
+        $jobClass = \App\Jobs\AfterAuthenticateJob::class;
+        config(['shopify-app.after_authenticate_job' => [
+            'job'    => $jobClass,
+            'inline' => false,
+        ]]);
+
+        $method = new ReflectionMethod(AuthController::class, 'afterAuthenticateJob');
+        $method->setAccessible(true);
+        $result = $method->invoke(new AuthController());
+
+        // Confirm ran, and pushed
+        $this->assertTrue($result);
+        Queue::assertPushed($jobClass); // since inline == false
+    }
+
+    public function testAfterAuthenticateDoesNotFireForMissingValues()
+    {
+        // Fake the queue
+        Queue::fake();
+
+        // Create the job
         $jobClass = \App\Jobs\AfterAuthenticateJob::class;
         config(['shopify-app.after_authenticate_job' => []]);
 
@@ -213,7 +234,7 @@ class AuthControllerTest extends TestCase
         $method->setAccessible(true);
         $result = $method->invoke(new AuthController());
 
-        // Confirm no run, and not pushed
+        // Confirm ran, and pushed
         $this->assertFalse($result);
         Queue::assertNotPushed($jobClass);
     }

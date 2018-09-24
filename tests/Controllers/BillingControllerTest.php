@@ -155,4 +155,51 @@ class BillingControllerTest extends TestCase
         $this->assertEquals($data['description'], $lastCharge->description);
         $this->assertEquals($data['price'], $lastCharge->price);
     }
+
+    public function testUsageChargeFailureWithNonRecurringCharge()
+    {
+        // Create a new charge for the shop to make a usage charge against
+        $charge = new Charge();
+        $charge->charge_id = 25630290;
+        $charge->name = 'Base Plan';
+        $charge->type = Charge::CHARGE_ONETIME;
+        $charge->price = 25.00;
+        $charge->shop_id = $this->shop->id;
+        $charge->plan_id = Plan::find(1)->id;
+        $charge->created_at = Carbon::now()->addMinutes(5);
+        $charge->save();
+
+        // Setup the data for the usage charge and the signature for it
+        $data = ['description' => 'One email', 'price' => 1.00];
+        $signature = $this->shopifyApp->createHmac(['data' => $data, 'buildQuery' => true]);
+
+        $response = $this->call('post', '/billing/usage-charge', array_merge($data, ['signature' => $signature]));
+
+        $response->assertStatus(200);
+        $response->assertViewHas('message');
+    }
+
+    public function testUsageChargeFailureWithSignatureError()
+    {
+        // Create a new charge for the shop to make a usage charge against
+        $charge = new Charge();
+        $charge->charge_id = 78398939;
+        $charge->name = 'Base Plan';
+        $charge->type = Charge::CHARGE_RECURRING;
+        $charge->price = 25.00;
+        $charge->shop_id = $this->shop->id;
+        $charge->plan_id = Plan::find(1)->id;
+        $charge->created_at = Carbon::now()->addMinutes(5);
+        $charge->save();
+
+        // Setup the data for the usage charge and the signature for it
+        $data = ['description' => 'One email', 'price' => 1.00];
+        $signature = $this->shopifyApp->createHmac(['data' => $data, 'buildQuery' => true]);
+        $data['price'] = 0.00;
+
+        $response = $this->call('post', '/billing/usage-charge', array_merge($data, ['signature' => $signature]));
+
+        $response->assertStatus(200);
+        $response->assertViewHas('message');
+    }
 }

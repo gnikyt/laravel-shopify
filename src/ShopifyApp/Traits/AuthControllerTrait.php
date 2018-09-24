@@ -141,18 +141,26 @@ trait AuthControllerTrait
     }
 
     /**
-     * Runs a job after authentication if provided.
+     * Runs a job after authentication, if provided.
      *
      * @return bool
      */
     protected function afterAuthenticateJob()
     {
+        // Grab the shop to use in the job and the jobs config
+        $shop = ShopifyApp::shop();
         $jobsConfig = config('shopify-app.after_authenticate_job');
 
-        if (isset($afterAuthJobConfig['job'])) {
-            // We have a single job, pass the shop object to the contructor
-            $job = new $jobConfig['job'](ShopifyApp::shop());
-            if (isset($jobConfig['inline']) && $jobConfig['inline'] == true) {
+        /**
+         * Fires the job.
+         *
+         * @param array $config The job's configuration
+         *
+         * @return bool
+         */
+        $fireJob = function ($config) use($shop) {
+            $job = new $config['job']($shop);
+            if (isset($config['inline']) && $config['inline'] === true) {
                 // Run this job immediately
                 $job->handle();
             } else {
@@ -161,26 +169,24 @@ trait AuthControllerTrait
             }
 
             return true;
-        }
+        };
 
-        foreach ($jobsConfig as $jobConfig) {
-            if (empty($jobConfig) || !isset($jobConfig['job'])) {
-                // Empty config or no job assigned
-                continue;
+        // We have multi-jobs
+        if (isset($jobsConfig[0])) {
+            foreach ($jobsConfig as $jobConfig) {
+                // We have a job, pass the shop object to the contructor
+                $fireJob($jobConfig);
             }
 
-            // We have a job, pass the shop object to the contructor
-            $job = new $jobConfig['job'](ShopifyApp::shop());
-            if (isset($jobConfig['inline']) && $jobConfig['inline'] == true) {
-                // Run this job immediately
-                $job->handle();
-            } else {
-                // Run later
-                dispatch($job);
-            }
+            return true;
         }
 
-        return true;
+        // We have a single job
+        if (isset($jobsConfig['job'])) {
+            return $fireJob($jobsConfig);
+        }
+
+        return false;
     }
 
     /**
