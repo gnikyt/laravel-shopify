@@ -147,20 +147,37 @@ trait AuthControllerTrait
      */
     protected function afterAuthenticateJob()
     {
-        $jobConfig = config('shopify-app.after_authenticate_job');
-        if (empty($jobConfig) || !isset($jobConfig['job'])) {
-            // Empty config or no job assigned
-            return false;
+        $jobsConfig = config('shopify-app.after_authenticate_job');
+
+        if (isset($afterAuthJobConfig['job'])) {
+            // We have a single job, pass the shop object to the contructor
+            $job = new $jobConfig['job'](ShopifyApp::shop());
+            if (isset($jobConfig['inline']) && $jobConfig['inline'] == true) {
+                // Run this job immediately
+                $job->handle();
+            } else {
+                // Run later
+                dispatch($job);
+            }
+
+            return true;
         }
 
-        // We have a job, pass the shop object to the contructor
-        $job = new $jobConfig['job'](ShopifyApp::shop());
-        if (isset($jobConfig['inline']) && $jobConfig['inline'] == true) {
-            // Run this job immediately
-            $job->handle();
-        } else {
-            // Run later
-            dispatch($job);
+        foreach ($jobsConfig as $jobConfig) {
+            if (empty($jobConfig) || !isset($jobConfig['job'])) {
+                // Empty config or no job assigned
+                continue;
+            }
+
+            // We have a job, pass the shop object to the contructor
+            $job = new $jobConfig['job'](ShopifyApp::shop());
+            if (isset($jobConfig['inline']) && $jobConfig['inline'] == true) {
+                // Run this job immediately
+                $job->handle();
+            } else {
+                // Run later
+                dispatch($job);
+            }
         }
 
         return true;
