@@ -193,7 +193,7 @@ trait AuthControllerTrait
      *
      * @return bool
      */
-    protected function fireJob ($job)
+    protected function fireJob($job)
     {
         // Grab the shop to use in the job and the jobs config
         $shop = ShopifyApp::shop();
