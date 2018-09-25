@@ -147,35 +147,13 @@ trait AuthControllerTrait
      */
     protected function afterAuthenticateJob()
     {
-        // Grab the shop to use in the job and the jobs config
-        $shop = ShopifyApp::shop();
         $jobsConfig = config('shopify-app.after_authenticate_job');
-
-        /**
-         * Fires the job.
-         *
-         * @param array $config The job's configuration
-         *
-         * @return bool
-         */
-        $fireJob = function ($config) use ($shop) {
-            $job = new $config['job']($shop);
-            if (isset($config['inline']) && $config['inline'] === true) {
-                // Run this job immediately
-                $job->handle();
-            } else {
-                // Run later
-                dispatch($job);
-            }
-
-            return true;
-        };
 
         // We have multi-jobs
         if (isset($jobsConfig[0])) {
             foreach ($jobsConfig as $jobConfig) {
                 // We have a job, pass the shop object to the contructor
-                $fireJob($jobConfig);
+                $this->fireJob($jobConfig);
             }
 
             return true;
@@ -183,7 +161,7 @@ trait AuthControllerTrait
 
         // We have a single job
         if (isset($jobsConfig['job'])) {
-            return $fireJob($jobsConfig);
+            return $this->fireJob($jobsConfig);
         }
 
         return false;
@@ -207,4 +185,28 @@ trait AuthControllerTrait
         // No return_to, go to home route
         return redirect()->route('home');
     }
+    
+    /**
+     * Fires ש job.
+     *
+     * @param array $config The job's configuration
+     *
+     * @return bool
+     */
+    protected function fireJob ($job) {
+        // Grab the shop to use in the job and the jobs config
+        $shop = ShopifyApp::shop();
+        
+        $job = new $job['job']($shop);
+        if (isset($config['inline']) && $config['inline'] === true) {
+            // Run this job immediately
+            $job->handle();
+        } else {
+            // Run later
+            dispatch($job);
+        }
+
+        return true;
+    };
+
 }
