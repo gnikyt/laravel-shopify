@@ -207,6 +207,6 @@ trait AuthControllerTrait
         }
 
         return true;
-    };
+    }
 
 }
