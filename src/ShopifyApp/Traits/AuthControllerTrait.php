@@ -185,7 +185,7 @@ trait AuthControllerTrait
         // No return_to, go to home route
         return redirect()->route('home');
     }
-    
+
     /**
      * Fires ש job.
      *
@@ -193,10 +193,11 @@ trait AuthControllerTrait
      *
      * @return bool
      */
-    protected function fireJob ($job) {
+    protected function fireJob ($job)
+    {
         // Grab the shop to use in the job and the jobs config
         $shop = ShopifyApp::shop();
-        
+
         $job = new $job['job']($shop);
         if (isset($config['inline']) && $config['inline'] === true) {
             // Run this job immediately
@@ -208,5 +209,4 @@ trait AuthControllerTrait
 
         return true;
     }
-
 }
