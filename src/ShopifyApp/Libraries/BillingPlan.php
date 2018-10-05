@@ -82,7 +82,7 @@ class BillingPlan
      * Activates a plan to the shop.
      *
      * Example usage:
-     * (new BillingPlan([shop], [plan]))->setChargeId(request('charge_id'))->activate();
+     * (new BillingPlan([shop], [plan]))->setChargeId((int) request('charge_id'))->activate();
      *
      * @return object
      */
