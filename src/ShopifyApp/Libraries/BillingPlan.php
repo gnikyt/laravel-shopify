@@ -25,7 +25,7 @@ class BillingPlan
     /**
      * The charge ID.
      *
-     * @var int
+     * @var int|string
      */
     protected $chargeId;
 
@@ -48,11 +48,11 @@ class BillingPlan
     /**
      * Sets the charge ID.
      *
-     * @param int $chargeId The charge ID to use
+     * @param int|string $chargeId The charge ID to use
      *
      * @return $this
      */
-    public function setChargeId(int $chargeId)
+    public function setChargeId($chargeId)
     {
         $this->chargeId = $chargeId;
 

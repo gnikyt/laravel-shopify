@@ -41,7 +41,7 @@ trait BillingControllerTrait
     {
         // Setup the shop and get the charge ID passed in
         $shop = ShopifyApp::shop();
-        $chargeId = (int) request('charge_id');
+        $chargeId = request('charge_id');
 
         // Setup the plan and get the charge
         $plan = $this->getPlan($planId);
