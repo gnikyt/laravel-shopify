@@ -82,4 +82,20 @@ class BillableMiddlewareTest extends TestCase
 
         $this->assertTrue($called);
     }
+
+    public function testShopWithNoPlanShouldRedirect()
+    {
+        // Ensure billing is disabled and set a shop
+        config(['shopify-app.billing_enabled' => true]);
+        session(['shopify_domain' => 'planless-shop.myshopify.com']);
+
+        $called = false;
+        $result = (new Billable())->handle(request(), function ($request) use (&$called) {
+            // Should not be called
+            $called = true;
+        });
+
+        $this->assertFalse($called);
+        $this->assertTrue(strpos($result, '/billing') !== false);
+    }
 }

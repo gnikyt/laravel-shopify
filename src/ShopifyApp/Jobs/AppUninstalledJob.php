@@ -77,6 +77,7 @@ class AppUninstalledJob implements ShouldQueue
     protected function cleanShop()
     {
         $this->shop->shopify_token = null;
+        $this->shop->plan_id = null;
         $this->shop->save();
     }
 

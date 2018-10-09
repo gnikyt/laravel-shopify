@@ -101,6 +101,12 @@ abstract class TestCase extends OrchestraTestCase
                 'shopify_domain' => 'freemium-shop.myshopify.com',
                 'freemium'       => true,
             ],
+
+            // Shop without ever having a plan assigned
+            [
+                'shopify_domain' => 'planless-shop.myshopify.com',
+                'shopify_token'  => '1234',
+            ],
         ];
 
         // Build the shops
