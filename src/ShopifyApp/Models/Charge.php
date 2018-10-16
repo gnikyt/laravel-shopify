@@ -36,7 +36,7 @@ class Charge extends Model
     protected $casts = [
         'type'          => 'int',
         'test'          => 'bool',
-        'charge_id'     => 'int',
+        'charge_id'     => 'string',
         'shop_id'       => 'int',
         'capped_amount' => 'float',
         'price'         => 'float',
