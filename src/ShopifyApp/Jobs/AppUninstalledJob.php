@@ -119,6 +119,7 @@ class AppUninstalledJob implements ShouldQueue
     protected function findShop()
     {
         $shopModel = config('shopify-app.shop_model');
+        
         return $shopModel::where(['shopify_domain' => $this->shopDomain])->first();
     }
 }
