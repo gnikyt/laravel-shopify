@@ -49,6 +49,13 @@ class ShopifyAppTest extends TestCase
         $this->assertEquals(\OhMyBrew\BasicShopifyAPI::class, get_class($this->shopifyApp->api()));
     }
 
+    public function testReturnsApiInstanceWithRateLimiting()
+    {
+        config(['shopify-app.api_rate_limiting_enabled' => true]);
+
+        $this->assertTrue($this->shopifyApp->api()->isRateLimitingEnabled());
+    }
+
     public function testShopSanitize()
     {
         $domains = ['my-shop', 'my-shop.myshopify.com', 'https://my-shop.myshopify.com', 'http://my-shop.myshopify.com'];

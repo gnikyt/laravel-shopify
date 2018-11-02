@@ -65,6 +65,13 @@ class ShopifyApp
         $api->setApiKey(config('shopify-app.api_key'));
         $api->setApiSecret(config('shopify-app.api_secret'));
 
+        if (config('shopify-app.api_rate_limiting_enabled') === true) {
+            $api->enableRateLimiting(
+                config('shopify-app.api_rate_limit_cycle'),
+                config('shopify-app.api_rate_limit_cycle_buffer')
+            );
+        }
+
         return $api;
     }
 

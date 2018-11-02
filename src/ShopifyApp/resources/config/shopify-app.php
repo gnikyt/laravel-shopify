@@ -107,6 +107,48 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Shopify API Rate Limiting
+    |--------------------------------------------------------------------------
+    |
+    | This option option allows you to enable basic rate limiting
+    | for API calls using the default BasicShopifyAPI library.
+    | Default is off.
+    |
+    */
+
+    'api_rate_limiting_enabled' => env('SHOPIFY_API_RATE_LIMITING_ENABLED', false),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Shopify API Rate Limit Cycle
+    |--------------------------------------------------------------------------
+    |
+    | This option option allows you to set the millisecond cycle for
+    | API calls using the default BasicShopifyAPI library.
+    | Default is 500ms per API call.
+    | Example: 0.5 * 1000
+    |
+    */
+
+    'api_rate_limit_cycle' => env('SHOPIFY_API_RATE_LIMIT_CYCLE', null),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Shopify API Rate Limit Cycle Buffer
+    |--------------------------------------------------------------------------
+    |
+    | This option option allows you to set the millisecond buffer for
+    | API calls using the default BasicShopifyAPI library which gets
+    | appended to the `api_rate_limit_cycle` value for a safety net.
+    | Default is 100ms per API call.
+    | Example: 0.1 * 1000
+    |
+    */
+
+    'api_rate_limit_cycle_buffer' => env('SHOPIFY_API_RATE_LIMIT_CYCLE_BUFFER', null),
+
+    /*
+    |--------------------------------------------------------------------------
     | Shopify "MyShopify" domain
     |--------------------------------------------------------------------------
     |
