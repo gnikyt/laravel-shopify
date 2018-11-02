@@ -1,5 +1,13 @@
 # CHANGELOG
 
+# 4.0.0
+
++ Added rate limiting abilities (basic)
+
+# 3.0.3
+
++ Fix for #13 for requests where call limit header is not always supplied
+
 # 3.0.2
 
 + Adjusted API to work better with Shopify's implementation of GraphQL (#10)

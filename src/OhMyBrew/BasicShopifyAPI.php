@@ -65,7 +65,50 @@ class BasicShopifyAPI
      *
      * @var array
      */
-    protected $apiCallLimits;
+    protected $apiCallLimits = [
+        'rest'  => [
+            'left'  => 0,
+            'made'  => 0,
+            'limit' => 40,
+        ],
+        'graph' => [
+            'left'          => 0,
+            'made'          => 0,
+            'limit'         => 1000,
+            'restoreRate'   => 50,
+            'requestedCost' => 0,
+            'actualCost'    => 0,
+        ],
+    ];
+
+    /**
+     * If rate limiting is enabled
+     *
+     * @var bool
+     */
+    protected $rateLimitingEnabled = false;
+
+    /**
+     * The rate limiting cycle (in ms).
+     *
+     * @var int
+     */
+    protected $rateLimitCycle = 0.5 * 1000;
+
+    /**
+     * The rate limiting cycle buffer (in ms).
+     *
+     * @var int
+     */
+    protected $rateLimitCycleBuffer = 0.1 * 1000;
+
+    /**
+     * Request timestamp for every new call.
+     * Used for rate limiting.
+     *
+     * @var int
+     */
+    protected $requestTimestamp;
 
     /**
      * Constructor.
@@ -81,23 +124,6 @@ class BasicShopifyAPI
 
         // Create a default Guzzle client
         $this->client = new Client();
-
-        // Create default placeholder
-        $this->apiCallLimits = [
-            'rest'  => [
-                'left'  => 0,
-                'made'  => 0,
-                'limit' => 40,
-            ],
-            'graph' => [
-                'left'          => 0,
-                'made'          => 0,
-                'limit'         => 1000,
-                'restoreRate'   => 50,
-                'requestedCost' => 0,
-                'actualCost'    => 0,
-            ],
-        ];
 
         return $this;
     }
@@ -224,6 +250,51 @@ class BasicShopifyAPI
         $this->apiPassword = $apiPassword;
 
         return $this;
+    }
+
+    /**
+     * Set the rate limiting state to enabled.
+     *
+     * @param int|null $cycle The rate limiting cycle (in ms, default 500ms).
+     * @param int|null $buffer The rate limiting cycle buffer (in ms, default 100ms).
+     *
+     * @return self
+     */
+    public function enableRateLimiting(int $cycle = null, int $buffer = null)
+    {
+        $this->rateLimitingEnabled = true;
+
+        if (!is_null($cycle)) {
+            $this->rateLimitCycle = $cycle;
+        }
+
+        if (!is_null($cycle)) {
+            $this->rateLimitCycleBuffer = $buffer;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set the rate limiting state to disabled.
+     *
+     * @return self
+     */
+    public function disableRateLimiting()
+    {
+        $this->rateLimitingEnabled = false;
+
+        return $this;
+    }
+
+    /**
+     * Determines if rate limiting is enabled.
+     *
+     * @return bool
+     */
+    public function isRateLimitingEnabled()
+    {
+        return $this->rateLimitingEnabled === true;
     }
 
     /**
@@ -439,6 +510,10 @@ class BasicShopifyAPI
             ]
         );
 
+        // Update the timestamp of the request
+        $tmpTimestamp = $this->requestTimestamp;
+        $this->requestTimestamp = microtime(true);
+
         // Grab the data result and extensions
         $body = $this->jsonDecode($response->getBody());
         if (property_exists($body, 'extensions') && property_exists($body->extensions, 'cost')) {
@@ -459,6 +534,7 @@ class BasicShopifyAPI
             'response' => $response,
             'body'     => property_exists($body, 'data') ? $body->data : $body->errors,
             'errors'   => property_exists($body, 'errors'),
+            'timestamps' => [$tmpTimestamp, $this->requestTimestamp],
         ];
     }
 
@@ -497,7 +573,23 @@ class BasicShopifyAPI
             $uri = "https://{$this->shop}{$path}";
         }
 
+        // Check the rate limit before firing the request
+        if ($this->isRateLimitingEnabled() && $this->requestTimestamp) {
+            // Calculate in milliseconds the duration the API call took
+            $duration = round(microtime(true) - $this->requestTimestamp, 3) * 1000;
+            $waitTime = ($this->rateLimitCycle - $duration) + $this->rateLimitCycleBuffer;
+
+            if ($waitTime > 0) {
+                // Do the sleep for X mircoseconds (convert from milliseconds)
+                usleep($waitTime * 1000);
+            }
+        }
+
         $response = $this->client->request($type, $uri, $guzzleParams);
+
+        // Update the timestamp of the request
+        $tmpTimestamp = $this->requestTimestamp;
+        $this->requestTimestamp = microtime(true);
 
         // Grab the API call limit header returned from Shopify
         $callLimitHeader = $response->getHeader('http_x_shopify_shop_api_call_limit');
@@ -512,8 +604,9 @@ class BasicShopifyAPI
 
         // Return Guzzle response and JSON-decoded body
         return (object) [
-            'response' => $response,
-            'body'     => $this->jsonDecode($response->getBody()),
+            'response'   => $response,
+            'body'       => $this->jsonDecode($response->getBody()),
+            'timestamps' => [$tmpTimestamp, $this->requestTimestamp],
         ];
     }
 

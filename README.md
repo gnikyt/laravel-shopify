@@ -5,7 +5,7 @@
 [![StyleCI](https://styleci.io/repos/61004776/shield?branch=master)](https://styleci.io/repos/61004776)
 [![License](https://poser.pugx.org/ohmybrew/basic-shopify-api/license)](https://packagist.org/packages/ohmybrew/basic-shopify-api)
 
-A simple, tested, API wrapper for Shopify using Guzzle. It supports both the REST and GraphQL API provided by Shopify. It contains helpful methods for generating a installation URL, an authorize URL, HMAC signature validation, call limits, and API requests. It works with both OAuth and private API apps.
+A simple, tested, API wrapper for Shopify using Guzzle. It supports both the REST and GraphQL API provided by Shopify, and basic rate limiting abilities. It contains helpful methods for generating a installation URL, an authorize URL, HMAC signature validation, call limits, and API requests. It works with both OAuth and private API apps.
 
 This library required PHP >= 7.
 
@@ -196,6 +196,54 @@ To quickly get a value, you may pass an optional parameter to the `getApiCalls` 
 $left = $api->getApiCalls('graph', 'left'); // returns 79
 // or
 $left = $api->getApiCalls('graph')['left']; // returns 79
+```
+
+### Rate Limiting
+
+This library comes with a built-in basic rate limiter, disabled by default. It will sleep for *x* microseconds to ensure you do not go over the limit for calls with Shopify. On non-Plus plans, you get 1 call every 500ms (2 calls a second), for Plus plans you get 2 calls every 500ms (4 calls a second).
+
+By default the cycle is set to 500ms, with a buffer for safety of 100ms added on.
+
+#### Enable Rate Limiting
+
+Setup your API instance as normal, with an added:
+
+```php
+$api->enableRateLimiting();
+```
+
+This will turn on rate limiting with the default 500ms cycle and 100ms buffer. To change this, do the following:
+
+```php
+$api->enableRateLimiting(0.25 * 1000, 0);
+```
+
+This will set the cycle to 250ms and 0ms buffer.
+
+#### Disabiling Rate Limiting
+
+If you've previously enabled it, you simply need to run:
+
+```php
+$api->disableRateLimiting();
+```
+
+#### Checking Rate Limiting Status
+
+```php
+$api->isRateLimitingEnabled();
+```
+
+#### Getting Timestamps
+
+The library will track timestamps from the previous and current (last) call. To see information on this:
+
+```php
+$response = $api->rest('POST', '/admin/gift_cards.json', ['gift_cards' => ['initial_value' => 25.00]]);
+print_r($response->timestamps);
+
+/* Above will return an array of [previous call, current (last) call], example:
+ * [1541119962.965, 1541119963.3121] */
 ```
 
 ### Isolated API calls

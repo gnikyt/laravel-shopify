@@ -353,4 +353,46 @@ class BaseApiTest extends \PHPUnit\Framework\TestCase
         $api->setShop('example.myshopify.com');
         $api->getAuthUrl(['read_products', 'write_products'], 'https://localapp.local/');
     }
+
+    /**
+     * @test
+     *
+     * Should set rate limiting to enabled
+     */
+    public function itShouldSetRateLimitingToEnabled()
+    {
+        $api = new BasicShopifyAPI();
+
+        $this->assertFalse($api->isRateLimitingEnabled());
+
+        $api->enableRateLimiting(0.25 * 1000, 0);
+
+        $reflected = new ReflectionClass($api);
+
+        $rateLimitCycleProperty = $reflected->getProperty('rateLimitCycle');
+        $rateLimitCycleProperty->setAccessible(true);
+
+        $rateLimitCycleBufferProperty = $reflected->getProperty('rateLimitCycleBuffer');
+        $rateLimitCycleBufferProperty->setAccessible(true);
+
+        $this->assertEquals(0.25 * 1000, $rateLimitCycleProperty->getValue($api));
+        $this->assertEquals(0, $rateLimitCycleBufferProperty->getValue($api));
+        $this->assertTrue($api->isRateLimitingEnabled());
+    }
+
+    /**
+     * @test
+     *
+     * Should set rate limiting to disabled
+     */
+    public function itShouldSetRateLimitingToDisabled()
+    {
+        $api = new BasicShopifyAPI();
+
+        $api->enableRateLimiting();
+        $this->assertTrue($api->isRateLimitingEnabled());
+
+        $api->disableRateLimiting();
+        $this->assertFalse($api->isRateLimitingEnabled());
+    }
 }

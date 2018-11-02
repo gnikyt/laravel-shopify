@@ -5,6 +5,7 @@ namespace OhMyBrew;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
+use ReflectionClass;
 
 class RestApiTest extends \PHPUnit\Framework\TestCase
 {
@@ -255,5 +256,68 @@ class RestApiTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(true, is_object($request->body));
         $this->assertEquals('Apple Computers', $request->body->shop->name);
+    }
+
+
+    /**
+     * @test
+     *
+     * Should track request timestamps.
+     */
+    public function itShouldTrackRequestTimestamps()
+    {
+        $response = new Response(
+            200,
+            ['http_x_shopify_shop_api_call_limit' => '2/80'],
+            file_get_contents(__DIR__.'/fixtures/rest/admin__shop.json')
+        );
+        $mock = new MockHandler([$response]);
+        $client = new Client(['handler' => $mock]);
+
+        $api = new BasicShopifyAPI();
+        $api->setClient($client);
+        $api->setShop('example.myshopify.com');
+
+        $reflected = new ReflectionClass($api);
+        $requestTimestampProperty = $reflected->getProperty('requestTimestamp');
+        $requestTimestampProperty->setAccessible(true);
+
+        $this->assertNull($requestTimestampProperty->getValue($api));
+
+        $request = $api->request('GET', '/admin/shop.json');
+
+        $this->assertNotNull($requestTimestampProperty->getValue($api));
+    }
+
+    /**
+     * @test
+     *
+     * Should rate limit requests
+     */
+    public function itShouldRateLimitRequests()
+    {
+        $response = new Response(
+            200,
+            ['http_x_shopify_shop_api_call_limit' => '2/80'],
+            file_get_contents(__DIR__.'/fixtures/rest/admin__shop.json')
+        );
+        $mock = new MockHandler([$response, $response]);
+        $client = new Client(['handler' => $mock]);
+
+        $api = new BasicShopifyAPI();
+        $api->setClient($client);
+        $api->setShop('example.myshopify.com');
+        $api->enableRateLimiting();
+
+        $timestamps = $api->request('GET', '/admin/shop.json')->timestamps;
+        $timestamps2 = $api->request('GET', '/admin/shop.json')->timestamps;
+
+        // First call should be null for initial, and greater than 0 for current
+        $this->assertEquals(null, $timestamps[0]);
+        $this->assertTrue($timestamps[1] > 0);
+
+        // This call should have the last call's time for initial, and greater than 0 for current
+        $this->assertEquals($timestamps[1], $timestamps2[0]);
+        $this->assertTrue($timestamps2[1] > 0);
     }
 }
