@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# 4.0.1
+
++ Update for more accurate timing
+
 # 4.0.0
 
 + Added rate limiting abilities (basic)

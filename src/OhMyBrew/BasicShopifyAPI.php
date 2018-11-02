@@ -497,6 +497,10 @@ class BasicShopifyAPI
             $request['variables'] = $variables;
         }
 
+        // Update the timestamp of the request
+        $tmpTimestamp = $this->requestTimestamp;
+        $this->requestTimestamp = microtime(true);
+
         // Create the request, pass the access token and optional parameters
         $response = $this->client->request(
             'POST',
@@ -509,10 +513,6 @@ class BasicShopifyAPI
                 'body'    => json_encode($request),
             ]
         );
-
-        // Update the timestamp of the request
-        $tmpTimestamp = $this->requestTimestamp;
-        $this->requestTimestamp = microtime(true);
 
         // Grab the data result and extensions
         $body = $this->jsonDecode($response->getBody());
@@ -585,11 +585,11 @@ class BasicShopifyAPI
             }
         }
 
-        $response = $this->client->request($type, $uri, $guzzleParams);
-
         // Update the timestamp of the request
         $tmpTimestamp = $this->requestTimestamp;
         $this->requestTimestamp = microtime(true);
+
+        $response = $this->client->request($type, $uri, $guzzleParams);
 
         // Grab the API call limit header returned from Shopify
         $callLimitHeader = $response->getHeader('http_x_shopify_shop_api_call_limit');
