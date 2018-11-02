@@ -82,7 +82,7 @@ class BasicShopifyAPI
     ];
 
     /**
-     * If rate limiting is enabled
+     * If rate limiting is enabled.
      *
      * @var bool
      */
@@ -255,7 +255,7 @@ class BasicShopifyAPI
     /**
      * Set the rate limiting state to enabled.
      *
-     * @param int|null $cycle The rate limiting cycle (in ms, default 500ms).
+     * @param int|null $cycle  The rate limiting cycle (in ms, default 500ms).
      * @param int|null $buffer The rate limiting cycle buffer (in ms, default 100ms).
      *
      * @return self
@@ -531,9 +531,9 @@ class BasicShopifyAPI
 
         // Return Guzzle response and JSON-decoded body
         return (object) [
-            'response' => $response,
-            'body'     => property_exists($body, 'data') ? $body->data : $body->errors,
-            'errors'   => property_exists($body, 'errors'),
+            'response'   => $response,
+            'body'       => property_exists($body, 'data') ? $body->data : $body->errors,
+            'errors'     => property_exists($body, 'errors'),
             'timestamps' => [$tmpTimestamp, $this->requestTimestamp],
         ];
     }

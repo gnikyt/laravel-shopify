@@ -258,7 +258,6 @@ class RestApiTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('Apple Computers', $request->body->shop->name);
     }
 
-
     /**
      * @test
      *
