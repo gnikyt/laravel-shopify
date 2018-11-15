@@ -7,7 +7,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use OhMyBrew\ShopifyApp\Models\Shop;
 
 class ScripttagInstaller implements ShouldQueue
 {
@@ -35,7 +34,7 @@ class ScripttagInstaller implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(Shop $shop, array $scripttags)
+    public function __construct($shop, array $scripttags)
     {
         $this->shop = $shop;
         $this->scripttags = $scripttags;
