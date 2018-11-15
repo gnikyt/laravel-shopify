@@ -24,7 +24,7 @@ trait ShopModelTrait
      *
      * @reutrn self
      */
-    public function __construct(array $attributes = array())
+    public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
     }
