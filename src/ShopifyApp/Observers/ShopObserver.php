@@ -11,7 +11,7 @@ class ShopObserver
      *
      * @return void
      */
-    public function creating(object $shop)
+    public function creating($shop)
     {
         if (!isset($shop->namespace)) {
             // Automatically add the current namespace to new records
