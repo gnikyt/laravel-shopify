@@ -2,18 +2,16 @@
 
 namespace OhMyBrew\ShopifyApp\Observers;
 
-use OhMyBrew\ShopifyApp\Models\Shop;
-
 class ShopObserver
 {
     /**
      * Listen to the shop creating event.
      *
-     * @param Shop $shop
+     * @param object $shop An instance of a shop.
      *
      * @return void
      */
-    public function creating(Shop $shop)
+    public function creating($shop)
     {
         if (!isset($shop->namespace)) {
             // Automatically add the current namespace to new records
