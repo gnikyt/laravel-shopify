@@ -7,7 +7,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use OhMyBrew\ShopifyApp\Models\Shop;
 
 class WebhookInstaller implements ShouldQueue
 {
@@ -35,7 +34,7 @@ class WebhookInstaller implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(Shop $shop, array $webhooks)
+    public function __construct($shop, array $webhooks)
     {
         $this->shop = $shop;
         $this->webhooks = $webhooks;
