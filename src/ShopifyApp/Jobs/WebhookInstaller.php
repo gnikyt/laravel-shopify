@@ -13,9 +13,9 @@ class WebhookInstaller implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
-     * The shop.
+     * The shop object.
      *
-     * @var \OhMyBrew\ShopifyApp\Models\Shop
+     * @var object
      */
     protected $shop;
 
@@ -29,8 +29,8 @@ class WebhookInstaller implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param \OhMyBrew\ShopifyApp\Models\Shop $shop     The shop object
-     * @param array                            $webhooks The webhook list
+     * @param object $shop     The shop object
+     * @param array  $webhooks The webhook list
      *
      * @return void
      */
