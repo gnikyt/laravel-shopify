@@ -66,9 +66,16 @@ trait BillingControllerTrait
             // Activate and add details to our charge
             $response = $billingPlan->activate();
             $charge->status = $response->status;
-            $charge->billing_on = $response->billing_on;
-            $charge->trial_ends_on = $response->trial_ends_on;
-            $charge->activated_on = $response->activated_on;
+
+            if ($plan->type === Charge::CHARGE_RECURRING) {
+                // Recurring
+                $charge->billing_on = $response->billing_on;
+                $charge->trial_ends_on = $response->trial_ends_on;
+                $charge->activated_on = $response->activated_on;
+            } else {
+                // One time
+                $charge->activated_on = Carbon::today()->format('Y-m-d');
+            }
 
             // Set old charge as cancelled, if one
             $lastCharge = $this->getLastCharge($shop);

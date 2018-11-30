@@ -38,7 +38,7 @@ class BillingControllerTest extends TestCase
         );
     }
 
-    public function testShopAcceptsBilling()
+    public function testShopAcceptsBillingRecurring()
     {
         // Use the base shop
         $shop = Shop::where('shopify_domain', 'example.myshopify.com')->first();
@@ -69,6 +69,27 @@ class BillingControllerTest extends TestCase
         $this->assertEquals(10292, $lastCharge->charge_id);
         $this->assertEquals('declined', $lastCharge->status);
         $response->assertViewHas('message', 'It seems you have declined the billing charge for this application');
+    }
+
+    public function testShopAcceptsBillingOneTime()
+    {
+        // Use the base shop
+        $shop = Shop::where('shopify_domain', 'example.myshopify.com')->first();
+        $chargeId = 675931192;
+
+        // example.myshopify.com has previous charge defined in TestCase setup
+        $oldCharge = $shop->charges()->whereIn('type', [Charge::CHARGE_RECURRING, Charge::CHARGE_ONETIME])->orderBy('created_at', 'desc')->first();
+
+        // Run with a new charge
+        $response = $this->call('get', '/billing/process/3', ['charge_id' => $chargeId]);
+
+        // Get the new charge and refresh the old one
+        $newCharge = $shop->charges()->get()->last();
+        $oldCharge->refresh();
+
+        $response->assertStatus(302);
+        $this->assertEquals($chargeId, $newCharge->charge_id);
+        $this->assertEquals('cancelled', $oldCharge->status);
     }
 
     public function testReturnOnInstallFlaggedPlan()
