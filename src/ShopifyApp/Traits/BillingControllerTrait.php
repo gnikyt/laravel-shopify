@@ -43,64 +43,50 @@ trait BillingControllerTrait
         $shop = ShopifyApp::shop();
         $chargeId = request('charge_id');
 
-        // Setup the plan and get the charge
+        // Setup the plan and activate
         $plan = $this->getPlan($planId);
         $billingPlan = new BillingPlan($shop, $plan);
         $billingPlan->setChargeId($chargeId);
-        $status = $billingPlan->getCharge()->status;
+        $response = $billingPlan->activate();
 
-        // Grab the plan detailed used
-        $planDetails = $billingPlan->getChargeParams();
-        unset($planDetails['return_url']);
-
-        // Create a charge (regardless of the status)
+        // Create a charge
         $charge = Charge::firstOrNew([
             'type'      => $plan->type,
-            'shop_id'   => $shop->id,
             'plan_id'   => $plan->id,
+            'shop_id'   => $shop->id,
             'charge_id' => $chargeId,
+            'status'    => $response->status,
         ]);
 
-        // Check the customer's answer to the billing
-        if ($status === 'accepted') {
-            // Activate and add details to our charge
-            $response = $billingPlan->activate();
-            $charge->status = $response->status;
-
-            if ($plan->type === Charge::CHARGE_RECURRING) {
-                // Recurring
-                $charge->billing_on = $response->billing_on;
-                $charge->trial_ends_on = $response->trial_ends_on;
-                $charge->activated_on = $response->activated_on;
-            } else {
-                // One time
-                $charge->activated_on = Carbon::today()->format('Y-m-d');
-            }
-
-            // Set old charge as cancelled, if one
-            $lastCharge = $this->getLastCharge($shop);
-            if ($lastCharge) {
-                $lastCharge->status = 'cancelled';
-                $lastCharge->save();
-            }
+        if ($plan->type === Charge::CHARGE_RECURRING) {
+            // Recurring
+            $charge->billing_on = $response->billing_on;
+            $charge->trial_ends_on = $response->trial_ends_on;
+            $charge->activated_on = $response->activated_on;
         } else {
-            // Customer declined the charge
-            $charge->status = 'declined';
-            $charge->cancelled_on = Carbon::today()->format('Y-m-d');
+            // One time
+            $charge->activated_on = Carbon::today()->format('Y-m-d');
         }
 
         // Merge in the plan details since the fields match the database columns
+        $planDetails = $billingPlan->getChargeParams();
+        unset($planDetails['return_url']);
         foreach ($planDetails as $key => $value) {
             $charge->{$key} = $value;
         }
+
+        // Finally, save the charge
         $charge->save();
 
-        if ($status === 'declined') {
-            // Show the error... don't allow access
-            return view('shopify-app::billing.error', ['message' => 'It seems you have declined the billing charge for this application']);
+        // Set old charge as cancelled, if one
+        $lastCharge = $this->getLastCharge($shop);
+        if ($lastCharge) {
+            $lastCharge->status = 'cancelled';
+            $lastCharge->cancelled_on = Carbon::today()->format('Y-m-d');
+            $lastCharge->save();
         }
 
-        // All good, update the shop's plan and take them off freeium (if applicable)
+        // All good, update the shop's plan and take them off freemium (if applicable)
         $shop->freemium = false;
         $shop->plan_id = $plan->id;
         $shop->save();

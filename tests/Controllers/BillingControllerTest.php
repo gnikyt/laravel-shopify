@@ -59,18 +59,6 @@ class BillingControllerTest extends TestCase
         $this->assertEquals('cancelled', $oldCharge->status);
     }
 
-    public function testShopDeclinesBilling()
-    {
-        // Make the call and grab the last charge
-        $response = $this->call('get', '/billing/process/1', ['charge_id' => 10292]);
-        $lastCharge = $this->shop->charges()->get()->last();
-
-        // Should now match
-        $this->assertEquals(10292, $lastCharge->charge_id);
-        $this->assertEquals('declined', $lastCharge->status);
-        $response->assertViewHas('message', 'It seems you have declined the billing charge for this application');
-    }
-
     public function testShopAcceptsBillingOneTime()
     {
         // Use the base shop
