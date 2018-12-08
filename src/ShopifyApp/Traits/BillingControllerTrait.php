@@ -49,6 +49,14 @@ trait BillingControllerTrait
         $billingPlan->setChargeId($chargeId);
         $response = $billingPlan->activate();
 
+        // Set old charge as cancelled, if one
+        $lastCharge = $this->getLastCharge($shop);
+        if ($lastCharge) {
+            $lastCharge->status = 'cancelled';
+            $lastCharge->cancelled_on = Carbon::today()->format('Y-m-d');
+            $lastCharge->save();
+        }
+
         // Create a charge
         $charge = Charge::firstOrNew([
             'type'      => $plan->type,
@@ -77,14 +85,6 @@ trait BillingControllerTrait
 
         // Finally, save the charge
         $charge->save();
-
-        // Set old charge as cancelled, if one
-        $lastCharge = $this->getLastCharge($shop);
-        if ($lastCharge) {
-            $lastCharge->status = 'cancelled';
-            $lastCharge->cancelled_on = Carbon::today()->format('Y-m-d');
-            $lastCharge->save();
-        }
 
         // All good, update the shop's plan and take them off freemium (if applicable)
         $shop->freemium = false;
