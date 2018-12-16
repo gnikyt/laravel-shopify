@@ -41,7 +41,7 @@ trait BillingControllerTrait
      */
     public function process(Plan $billingPlan)
     {
-        // Setup the plan and activate
+        // Activate the plan and save
         $shop = ShopifyApp::shop();
         $bp = new BillingPlan($shop, $billingPlan);
         $bp->setChargeId(Request::query('charge_id'));
@@ -65,41 +65,13 @@ trait BillingControllerTrait
      */
     public function usageCharge(StoreUsageCharge $request)
     {
-        $uc = new UsageCharge(ShopifyApp::shop(), $request->validated());
+        // Activate and save the usage charge
+        $validated = $request->validated();
+        $uc = new UsageCharge(ShopifyApp::shop(), $validated);
         $uc->activate();
-
-/*        $shop = ShopifyApp::shop();
-        $lastCharge = $this->getLastCharge($shop);
-
-        if ($lastCharge->type !== Charge::CHARGE_RECURRING) {
-            // Charge is not recurring
-            return view('shopify-app::billing.error', ['message' => 'Can only create usage charges for recurring charge']);
-        }
-
-        // Create the charge via API
-        $usageCharge = $shop->api()->rest(
-            'POST',
-            "/admin/recurring_application_charges/{$lastCharge->charge_id}/usage_charges.json",
-            [
-                'usage_charge' => [
-                    'price'       => $data['price'],
-                    'description' => $data['description'],
-                ],
-            ]
-        )->body->usage_charge;
-
-        // Create the charge in the database referencing the recurring charge
-        $charge = new Charge();
-        $charge->type = Charge::CHARGE_USAGE;
-        $charge->shop_id = $shop->id;
-        $charge->reference_charge = $lastCharge->charge_id;
-        $charge->charge_id = $usageCharge->id;
-        $charge->price = $usageCharge->price;
-        $charge->description = $usageCharge->description;
-        $charge->billing_on = $usageCharge->billing_on;
-        $charge->save();
+        $uc->save();
 
         // All done, return with success
-        return isset($data['redirect']) ? redirect($data['redirect']) : redirect()->back()->with('success', true);*/
+        return $validated->redirect ? Redirect::to($data['redirect']) : Redirect::back()->with('success', true);
     }
 }

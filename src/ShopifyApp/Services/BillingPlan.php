@@ -104,11 +104,11 @@ class BillingPlan
      * This URL sends them to Shopify's billing page.
      *
      * Example usage:
-     * (new BillingPlan([shop], [plan]))->setDetails($plan)->getConfirmationUrl();
+     * (new BillingPlan([shop], [plan]))->setDetails($plan)->confirmationUrl();
      *
      * @return string
      */
-    public function getConfirmationUrl()
+    public function confirmationUrl()
     {
         // Begin the charge request
         $charge = $this->api->rest(

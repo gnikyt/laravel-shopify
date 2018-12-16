@@ -5,8 +5,6 @@ namespace OhMyBrew\ShopifyApp\Services;
 use Exception;
 use OhMyBrew\ShopifyApp\Models\Charge;
 use OhMyBrew\ShopifyApp\Models\Shop;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\URL;
 
 /**
  * Responsible for creating usage charges.
@@ -83,5 +81,32 @@ class UsageCharge
         )->body->usage_charge;
 
         return $this->response;
+    }
+
+    /**
+     * Saves the usage charge to the database.
+     *
+     * @return \OhMyBrew\ShopifyApp\Models\Charge
+     */
+    public function save()
+    {
+        if (!$this->response) {
+            throw Exception('No activation response was recieved.');
+        }
+
+        // Get the plan charge
+        $planCharge = $this->shop->planCharge();
+
+        // Create the charge
+        $charge = new Charge();
+        $charge->type = Charge::CHARGE_USAGE;
+        $charge->reference_charge = $planCharge->charge_id;
+        $charge->shop_id = $this->shop->id;
+        $charge->charge_id = $this->response->id;
+        $charge->price = $this->response->price;
+        $charge->description = $this->response->description;
+        $charge->billing_on = $this->response->usageCharge->billing_on;
+
+        return $charge->save();
     }
 }
