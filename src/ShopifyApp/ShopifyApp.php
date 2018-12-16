@@ -4,6 +4,8 @@ namespace OhMyBrew\ShopifyApp;
 
 use Illuminate\Foundation\Application;
 use OhMyBrew\ShopifyApp\Models\Shop;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Session;
 
 class ShopifyApp
 {
@@ -36,14 +38,14 @@ class ShopifyApp
     /**
      * Gets/sets the current shop.
      *
-     * @return \OhMyBrew\Models\Shop
+     * @return \OhMyBrew\ShopifyApp\Models\Shop
      */
     public function shop()
     {
-        $shopifyDomain = session('shopify_domain');
+        $shopifyDomain = Session::get('shopify_domain');
         if (!$this->shop && $shopifyDomain) {
             // Grab shop from database here
-            $shopModel = config('shopify-app.shop_model');
+            $shopModel = Config::get('shopify-app.shop_model');
             $shop = $shopModel::withTrashed()->firstOrCreate(['shopify_domain' => $shopifyDomain]);
 
             // Update shop instance
@@ -56,19 +58,19 @@ class ShopifyApp
     /**
      * Gets an API instance.
      *
-     * @return object
+     * @return \OhMyBrew\BasicShopifyAPI
      */
     public function api()
     {
-        $apiClass = config('shopify-app.api_class');
+        $apiClass = Config::get('shopify-app.api_class');
         $api = new $apiClass();
-        $api->setApiKey(config('shopify-app.api_key'));
-        $api->setApiSecret(config('shopify-app.api_secret'));
+        $api->setApiKey(Config::get('shopify-app.api_key'));
+        $api->setApiSecret(Config::get('shopify-app.api_secret'));
 
-        if (config('shopify-app.api_rate_limiting_enabled') === true) {
+        if (Config::get('shopify-app.api_rate_limiting_enabled') === true) {
             $api->enableRateLimiting(
-                config('shopify-app.api_rate_limit_cycle'),
-                config('shopify-app.api_rate_limit_cycle_buffer')
+                Config::get('shopify-app.api_rate_limit_cycle'),
+                Config::get('shopify-app.api_rate_limit_cycle_buffer')
             );
         }
 
@@ -88,7 +90,7 @@ class ShopifyApp
             return;
         }
 
-        $configEndDomain = config('shopify-app.myshopify_domain');
+        $configEndDomain = Config::get('shopify-app.myshopify_domain');
         $domain = preg_replace('/https?:\/\//i', '', trim($domain));
 
         if (strpos($domain, $configEndDomain) === false && strpos($domain, '.') === false) {
@@ -114,7 +116,7 @@ class ShopifyApp
         $raw = $opts['raw'] ?? false;
         $buildQuery = $opts['buildQuery'] ?? false;
         $encode = $opts['encode'] ?? false;
-        $secret = $opts['secret'] ?? config('shopify-app.api_secret');
+        $secret = $opts['secret'] ?? Config::get('shopify-app.api_secret');
 
         if ($buildQuery) {
             //Query params must be sorted and compiled

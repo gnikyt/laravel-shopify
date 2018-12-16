@@ -19,7 +19,7 @@ class AuthProxy
     public function handle(Request $request, Closure $next)
     {
         // Grab the query parameters we need, remove signature since its not part of the signature calculation
-        $query = request()->query->all();
+        $query = $request->query->all();
         $signature = $query['signature'];
         unset($query['signature']);
 

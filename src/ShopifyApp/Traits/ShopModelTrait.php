@@ -5,6 +5,8 @@ namespace OhMyBrew\ShopifyApp\Traits;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Scopes\NamespaceScope;
+use OhMyBrew\ShopifyApp\Models\Plan;
+use OhMyBrew\ShopifyApp\Models\Charge;
 
 trait ShopModelTrait
 {
@@ -77,7 +79,7 @@ trait ShopModelTrait
      */
     public function charges()
     {
-        return $this->hasMany('OhMyBrew\ShopifyApp\Models\Charge');
+        return $this->hasMany(Charge::class);
     }
 
     /**
@@ -97,7 +99,7 @@ trait ShopModelTrait
      */
     public function plan()
     {
-        return $this->belongsTo('OhMyBrew\ShopifyApp\Models\Plan');
+        return $this->belongsTo(Plan::class);
     }
 
     /**

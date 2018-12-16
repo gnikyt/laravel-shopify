@@ -4,6 +4,8 @@ namespace OhMyBrew\ShopifyApp;
 
 use Illuminate\Support\ServiceProvider;
 use OhMyBrew\ShopifyApp\Observers\ShopObserver;
+use OhMyBrew\ShopifyApp\Console\WebhookJobMakeCommand;
+use Illuminate\Support\Facades\Config;
 
 class ShopifyAppProvider extends ServiceProvider
 {
@@ -22,21 +24,21 @@ class ShopifyAppProvider extends ServiceProvider
 
         // Config publish
         $this->publishes([
-            __DIR__.'/resources/config/shopify-app.php' => config_path('shopify-app.php'),
+            __DIR__.'/resources/config/shopify-app.php' => $this->app->configPath('shopify-app.php'),
         ], 'config');
 
         // Database migrations
         $this->publishes([
-            __DIR__.'/resources/database/migrations' => database_path('migrations'),
+            __DIR__.'/resources/database/migrations' => $this->app->databasePath('migrations'),
         ], 'migrations');
 
         // Job publish
         $this->publishes([
-            __DIR__.'/resources/jobs/AppUninstalledJob.php' => app_path().'/Jobs/AppUninstalledJob.php',
+            __DIR__.'/resources/jobs/AppUninstalledJob.php' => "{$this->app->basePath}/Jobs/AppUninstalledJob.php",
         ], 'jobs');
 
         // Shop observer
-        $shopModel = config('shopify-app.shop_model');
+        $shopModel = Config::get('shopify-app.shop_model');
         $shopModel::observe(ShopObserver::class);
     }
 
@@ -57,7 +59,7 @@ class ShopifyAppProvider extends ServiceProvider
 
         // Commands
         $this->commands([
-            \OhMyBrew\ShopifyApp\Console\WebhookJobMakeCommand::class,
+            WebhookJobMakeCommand::class,
         ]);
     }
 }
