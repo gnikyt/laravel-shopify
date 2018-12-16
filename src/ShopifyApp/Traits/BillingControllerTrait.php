@@ -26,7 +26,7 @@ trait BillingControllerTrait
     {
         // Get the confirmation URL
         $bp = new BillingPlan(ShopifyApp::shop(), $billingPlan);
-        $url = $bp->getConfirmationUrl();
+        $url = $bp->confirmationUrl();
 
         // Do a fullpage redirect
         return View::make('shopify-app::billing.fullpage_redirect', compact('url'));
@@ -65,7 +65,9 @@ trait BillingControllerTrait
      */
     public function usageCharge(StoreUsageCharge $request)
     {
-        $uc = new UsageCharge(ShopifyApp::shop(), $request);
+        $uc = new UsageCharge(ShopifyApp::shop(), $request->validated());
+        $uc->activate();
+
 /*        $shop = ShopifyApp::shop();
         $lastCharge = $this->getLastCharge($shop);
 
