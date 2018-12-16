@@ -34,6 +34,18 @@ class Plan extends Model
     }
 
     /**
+     * Checks the plan type.
+     *
+     * @param int $type The plan type.
+     *
+     * @return bool
+     */
+    public function isType(int $type)
+    {
+        return (int) $this->type === $type;
+    }
+
+    /**
      * Returns the plan type as a string (for API).
      *
      * @param bool $plural Return the plural form or not.

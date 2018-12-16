@@ -18,6 +18,8 @@ class Shop extends Model
         'shopify_domain',
         'shopify_token',
         'grandfathered',
+        'freemium',
+        'plan_id',
         'namespace',
     ];
 

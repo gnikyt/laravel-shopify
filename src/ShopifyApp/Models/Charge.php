@@ -2,7 +2,8 @@
 
 namespace OhMyBrew\ShopifyApp\Models;
 
-use Carbon\Carbon;
+use Exception;
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -26,6 +27,7 @@ class Charge extends Model
         'shop_id',
         'charge_id',
         'plan_id',
+        'status',
     ];
 
     /**
@@ -56,7 +58,7 @@ class Charge extends Model
      */
     public function shop()
     {
-        return $this->belongsTo('OhMyBrew\ShopifyApp\Models\Shop');
+        return $this->belongsTo(\OhMyBrew\ShopifyApp\Models\Shop::class);
     }
 
     /**
@@ -66,7 +68,7 @@ class Charge extends Model
      */
     public function plan()
     {
-        return $this->belongsTo('OhMyBrew\ShopifyApp\Models\Plan');
+        return $this->belongsTo(\OhMyBrew\ShopifyApp\Models\Plan::class);
     }
 
     /**
@@ -233,5 +235,22 @@ class Charge extends Model
     public function isOngoing()
     {
         return $this->isActive() && !$this->isCancelled();
+    }
+
+    /**
+     * Cancels this charge.
+     *
+     * @return self
+     */
+    public function cancel()
+    {
+        if (!$this->isType(self::CHARGE_ONETIME) || !$this->isType(self::CHARGE_RECURRING)) {
+            throw new Exception('Cancel may only be called for single and recurring charges.');
+        }
+
+        $this->status = 'cancelled';
+        $this->cancelled_on = Carbon::today()->format('Y-m-d');
+
+        return $this->save();
     }
 }

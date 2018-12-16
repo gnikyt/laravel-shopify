@@ -22,7 +22,7 @@ trait ShopModelTrait
      *
      * @param array $attributes The model attribues to pass in.
      *
-     * @reutrn self
+     * @return self
      */
     public function __construct(array $attributes = [])
     {
@@ -108,5 +108,20 @@ trait ShopModelTrait
     public function isFreemium()
     {
         return ((bool) $this->freemium) === true;
+    }
+
+    /**
+     * Gets the last single or recurring charge for the shop.
+     *
+     * @return null|\OhMyBrew\ShopifyApp\Models\Charge
+     */
+    public function planCharge()
+    {
+        return $this->charges()
+            ->whereIn('type', [Charge::CHARGE_RECURRING, Charge::CHARGE_ONETIME])
+            ->where('plan_id', $this->plan_id)
+            ->orderBy('created_at', 'desc')
+            ->first()
+        ;
     }
 }
