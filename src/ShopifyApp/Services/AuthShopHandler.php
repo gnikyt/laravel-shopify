@@ -58,7 +58,7 @@ class AuthShopHandler
     /**
      * Start the auth setup by storing the domaion to the session.
      */
-    public function startSession(string $shopDomain)
+    public function storeSession()
     {
         // Save shop domain to session, set no expiry on close because Laravel defaults to it
         Config::set('session.expire_on_close', true);

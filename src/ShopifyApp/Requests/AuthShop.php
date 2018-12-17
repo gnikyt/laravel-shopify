@@ -14,16 +14,6 @@ use OhMyBrew\ShopifyApp\Services\AuthShopHandler;
 class AuthShop extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
-    {
-        return true;
-    }
-
-    /**
      * Configure the validator instance.
      *
      * @param  \Illuminate\Validation\Validator $validator
@@ -55,8 +45,10 @@ class AuthShop extends FormRequest
     public function rules()
     {
         return [
-            'shop' => 'required|string',
-            'code' => 'nullable|string',
+            'shop'      => 'required|string',
+            'code'      => 'nullable|string',
+            'hmac'      => 'nullable|string',
+            'timestamp' => 'nullable|numeric',
         ];
     }
 

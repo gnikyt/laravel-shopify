@@ -18,7 +18,7 @@ class AuthControllerTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-
+        $this->withoutExceptionHandling();
         // Stub in our API class
         config(['shopify-app.api_class' => new ApiStub()]);
 

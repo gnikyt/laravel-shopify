@@ -43,7 +43,7 @@ trait AuthControllerTrait
 
         // Start the process
         $authHandler = new AuthShopHandler($shopDomain);
-        $authHandler->startSession();
+        $authHandler->storeSession();
 
         if (!isset($request['code'])) {
             // Handle a request without a code, do a fullpage redirect
