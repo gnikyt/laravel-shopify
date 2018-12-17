@@ -47,12 +47,12 @@ class AuthControllerTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testAuthRedirectsBackToLoginWhenNoShop()
+    /**
+     * @expectedException \Illuminate\Validation\ValidationException
+     */
+    public function testAuthFailsWhenNoShop()
     {
-        $response = $this->post('/authenticate');
-
-        $response->assertStatus(302);
-        $response->assertRedirect('http://localhost/login');
+        $this->post('/authenticate');
     }
 
     public function testAuthRedirectsUserToAuthScreenWhenNoCode()
@@ -108,17 +108,16 @@ class AuthControllerTest extends TestCase
         $response->assertRedirect('http://localhost');
     }
 
+    /**
+     * @expectedException \Illuminate\Validation\ValidationException
+     */
     public function testAuthAcceptsShopWithCodeAndRedirectsToLoginIfRequestIsInvalid()
     {
         // Make the HMAC invalid
         $params = $this->hmacParams;
         $params['hmac'] = 'MakeMeInvalid';
 
-        $response = $this->call('get', '/authenticate', $params);
-
-        $response->assertSessionHas('error');
-        $response->assertStatus(302);
-        $response->assertRedirect('http://localhost/login');
+        $this->call('get', '/authenticate', $params);
     }
 
     public function testAuthenticateDoesNotFiresJobsWhenNoConfigForThem()

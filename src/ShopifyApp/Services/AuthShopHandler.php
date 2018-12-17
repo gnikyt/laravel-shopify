@@ -3,7 +3,6 @@
 namespace OhMyBrew\ShopifyApp\Services;
 
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
 use OhMyBrew\ShopifyApp\Models\Shop;
 use Illuminate\Support\Facades\Config;
@@ -82,13 +81,13 @@ class AuthShopHandler
     /**
      * Determines if the request HMAC is veridied.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param array $request The request parameters.
      *
      * @return boolean
      */
-    public function verifyRequest(Request $request)
+    public function verifyRequest(array $request)
     {
-        return $this->api->verifyRequest($request->all());
+        return $this->api->verifyRequest($request);
     }
 
     /**

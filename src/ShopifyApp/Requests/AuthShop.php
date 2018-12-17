@@ -30,8 +30,8 @@ class AuthShop extends FormRequest
             }
 
             // Determine if the HMAC is correct
-            $authHandler = new AuthShopHandler($shopDomain);
-            if (!$authHandler->verifyRequest()) {
+            $authHandler = new AuthShopHandler($this->request->get('shop'));
+            if (!$authHandler->verifyRequest($this->request->all())) {
                 $validator->errors()->add('signature', 'Not a valid signature.');
             }
         });
