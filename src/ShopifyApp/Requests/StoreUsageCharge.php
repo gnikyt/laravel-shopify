@@ -4,6 +4,7 @@ namespace OhMyBrew\ShopifyApp\Requests;
 
 use Illuminate\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Collection;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 
 /**
@@ -33,7 +34,15 @@ class StoreUsageCharge extends FormRequest
         // Determine if the HMAC is correct
         $validator->after(function (Validator $validator) {
             // Get the input values needed
-            $data = $this->request->only(['price', 'description', 'redirect', 'signature']);
+            $data = [
+                'price'       => $this->request->get('price'),
+                'description' => $this->request->get('description'),
+                'signature'   => $this->request->get('signature'),
+            ];
+            if ($this->request->has('redirect')) {
+                $data['redirect'] = $this->request->get('redirect');
+            }
+
             $signature = $data['signature'];
             unset($data['signature']);
 

@@ -8,6 +8,7 @@ use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\Models\Charge;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Carbon;
 
 /**
  * Responsible for creating a confirmation URL for a billing plan,

@@ -74,8 +74,8 @@ class UsageCharge
             "/admin/recurring_application_charges/{$currentCharge->charge_id}/usage_charges.json",
             [
                 'usage_charge' => [
-                    'price'       => $data['price'],
-                    'description' => $data['description'],
+                    'price'       => $this->data['price'],
+                    'description' => $this->data['description'],
                 ],
             ]
         )->body->usage_charge;
@@ -105,7 +105,7 @@ class UsageCharge
         $charge->charge_id = $this->response->id;
         $charge->price = $this->response->price;
         $charge->description = $this->response->description;
-        $charge->billing_on = $this->response->usageCharge->billing_on;
+        $charge->billing_on = $this->response->billing_on;
 
         return $charge->save();
     }

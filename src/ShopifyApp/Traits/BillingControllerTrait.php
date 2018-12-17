@@ -9,6 +9,7 @@ use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\Models\Charge;
 use OhMyBrew\ShopifyApp\Requests\StoreUsageCharge;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Request;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Services\BillingPlan;
 use OhMyBrew\ShopifyApp\Services\UsageCharge;
@@ -51,7 +52,7 @@ trait BillingControllerTrait
         // All good, update the shop's plan and take them off freemium (if applicable)
         $shop->update([
             'freemium' => false,
-            'plan_id'  => $plan->id,
+            'plan_id'  => $billingPlan->id,
         ]);
 
         // Go to homepage of app
@@ -72,6 +73,6 @@ trait BillingControllerTrait
         $uc->save();
 
         // All done, return with success
-        return $validated->redirect ? Redirect::to($data['redirect']) : Redirect::back()->with('success', true);
+        return isset($validated['redirect']) ? Redirect::to($validated['redirect']) : Redirect::back()->with('success', true);
     }
 }
