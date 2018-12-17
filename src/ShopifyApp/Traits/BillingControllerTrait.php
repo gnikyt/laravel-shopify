@@ -65,6 +65,8 @@ trait BillingControllerTrait
     /**
      * Allows for setting a usage charge.
      *
+     * @param \OhMyBrew\ShopifyApp\Requests\StoreUsageCharge $request
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function usageCharge(StoreUsageCharge $request)

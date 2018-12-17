@@ -41,11 +41,13 @@ class ShopifyApp
     /**
      * Gets/sets the current shop.
      *
+     * @param string $shopDomain
+     *
      * @return \OhMyBrew\ShopifyApp\Models\Shop
      */
-    public function shop()
+    public function shop(string $shopDomain = null)
     {
-        $shopifyDomain = Session::get('shopify_domain');
+        $shopifyDomain = $shopDomain ? $this->sanitizeShopDomain($shopDomain) : Session::get('shopify_domain');
         if (!$this->shop && $shopifyDomain) {
             // Grab shop from database here
             $shopModel = Config::get('shopify-app.shop_model');
