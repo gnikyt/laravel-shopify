@@ -244,7 +244,7 @@ class Charge extends Model
      */
     public function cancel()
     {
-        if (!$this->isType(self::CHARGE_ONETIME) || !$this->isType(self::CHARGE_RECURRING)) {
+        if (!$this->isType(self::CHARGE_ONETIME) && !$this->isType(self::CHARGE_RECURRING)) {
             throw new Exception('Cancel may only be called for single and recurring charges.');
         }
 

@@ -2,12 +2,14 @@
 
 namespace OhMyBrew\ShopifyApp\Test\Services;
 
-use OhMyBrew\ShopifyApp\Libraries\BillingPlan;
+use Illuminate\Support\Facades\URL;
 use OhMyBrew\ShopifyApp\Models\Plan;
 use OhMyBrew\ShopifyApp\Models\Shop;
-use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
-use OhMyBrew\ShopifyApp\Test\TestCase;
 use Illuminate\Support\Facades\Config;
+use OhMyBrew\ShopifyApp\Models\Charge;
+use OhMyBrew\ShopifyApp\Test\TestCase;
+use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
+use OhMyBrew\ShopifyApp\Services\BillingPlan;
 
 class BillingPlanTest extends TestCase
 {
@@ -20,51 +22,52 @@ class BillingPlanTest extends TestCase
 
         // Base shop to use
         $this->shop = Shop::find(1);
+
+        // Charge ID we're using that matches the fixtures
+        $this->recurringChargeId = 1029266947;
+        $this->singleChargeId = 1017262355;
     }
 
     public function testShouldReturnConfirmationUrl()
     {
         $this->assertEquals(
-            'https://example.myshopify.com/admin/charges/1029266947/confirm_recurring_application_charge?signature=BAhpBANeWT0%3D--64de8739eb1e63a8f848382bb757b20343eb414f',
-            (new BillingPlan($this->shop, Plan::find(1)))->getConfirmationUrl()
+            "https://example.myshopify.com/admin/charges/{$this->recurringChargeId}/confirm_recurring_application_charge?signature=BAhpBANeWT0%3D--64de8739eb1e63a8f848382bb757b20343eb414f",
+            (new BillingPlan($this->shop, Plan::find(1)))->confirmationUrl()
         );
     }
 
     public function testShouldReturnConfirmationUrlWhenUsageIsEnabled()
     {
         $this->assertEquals(
-            'https://example.myshopify.com/admin/charges/1017262355/confirm_application_charge?signature=BAhpBBMxojw%3D--1139a82a3433b1a6771786e03f02300440e11883',
-            (new BillingPlan($this->shop, Plan::find(3)))->getConfirmationUrl()
+            "https://example.myshopify.com/admin/charges/{$this->singleChargeId}/confirm_application_charge?signature=BAhpBBMxojw%3D--1139a82a3433b1a6771786e03f02300440e11883",
+            (new BillingPlan($this->shop, Plan::find(3)))->confirmationUrl()
         );
-    }
-
-    /**
-     * @expectedException \ArgumentCountError
-     */
-    public function testShouldThrowExceptionForMissingPlan()
-    {
-        new BillingPlan($this->shop);
     }
 
     public function testShouldReturnChargeParams()
     {
+        $bp = new BillingPlan($this->shop, Plan::find(4));
+
+        // Input should match output
         $this->assertEquals(
             [
                 'test'          => false,
                 'trial_days'    => '7',
                 'name'          => 'Capped Plan',
                 'price'         => '5',
-                'return_url'    => secure_url(config('shopify-app.billing_redirect'), ['plan_id' => 4]),
+                'return_url'    => URL::Secure(Config::get('shopify-app.billing_redirect'), ['plan_id' => 4]),
                 'capped_amount' => '100',
                 'terms'         => '$1 for 500 emails',
             ],
-            (new BillingPlan($this->shop, Plan::find(4)))->getChargeParams()
+            $bp->chargeParams()
         );
     }
 
     public function testShouldActivatePlan()
     {
-        $response = (new BillingPlan($this->shop, Plan::find(1)))->setChargeId(1029266947)->activate();
+        // Activate the charge via API
+        $bp = new BillingPlan($this->shop, Plan::find(1));
+        $response = $bp->setChargeId($this->recurringChargeId)->activate();
 
         $this->assertTrue(is_object($response));
         $this->assertEquals('active', $response->status);
@@ -74,14 +77,18 @@ class BillingPlanTest extends TestCase
      * @expectedException \Exception
      * @expectedExceptionMessage Can not activate plan without a charge ID.
      */
-    public function testShouldNotActivatePlanAndThrowException()
+    public function testShouldNotActivatePlanAndThrowExceptionForMissingChargeId()
     {
-        (new BillingPlan($this->shop, Plan::find(1)))->activate();
+        // We're missing the charge ID
+        $bp = new BillingPlan($this->shop, Plan::find(1));
+        $bp->activate();
     }
 
     public function testShouldGetChargeDetails()
     {
-        $response = (new BillingPlan($this->shop, Plan::find(1)))->setChargeId(1029266947)->getCharge();
+        // Should get the charge details from the API
+        $bp = new BillingPlan($this->shop, Plan::find(1));
+        $response = $bp->setChargeId($this->recurringChargeId)->getCharge();
 
         $this->assertTrue(is_object($response));
         $this->assertEquals('accepted', $response->status);
@@ -93,6 +100,36 @@ class BillingPlanTest extends TestCase
      */
     public function testShouldNotGetChargeDetailsAndThrowException()
     {
-        (new BillingPlan($this->shop, Plan::find(1)))->getCharge();
+        $bp = new BillingPlan($this->shop, Plan::find(1));
+        $bp->getCharge();
+    }
+
+    /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage No activation response was recieved.
+     */
+    public function testShouldNotSaveDueToMissingActivation()
+    {
+        $bp = new BillingPlan($this->shop, Plan::find(1));
+        $bp->save();
+    }
+
+    public function testShouldSave()
+    {
+        // Get the shop's plan charge, this should change to cancelled
+        $planCharge = $this->shop->planCharge();
+        $status = $planCharge->status;
+
+        // Should get a new charge
+        $bp = new BillingPlan($this->shop, Plan::find(1));
+        $bp->setChargeId($this->recurringChargeId);
+        $bp->activate();
+        $charge = $bp->save();
+
+        // Reload the old charge
+        $planCharge->refresh();
+
+        $this->assertTrue($charge);
+        $this->assertEquals('cancelled', $planCharge->status);
     }
 }

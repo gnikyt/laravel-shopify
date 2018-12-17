@@ -86,7 +86,7 @@ class UsageCharge
     /**
      * Saves the usage charge to the database.
      *
-     * @return \OhMyBrew\ShopifyApp\Models\Charge
+     * @return boolean
      */
     public function save()
     {

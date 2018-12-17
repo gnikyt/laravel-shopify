@@ -24,17 +24,17 @@ class ShopifyAppProvider extends ServiceProvider
 
         // Config publish
         $this->publishes([
-            __DIR__.'/resources/config/shopify-app.php' => $this->app->configPath('shopify-app.php'),
+            __DIR__.'/resources/config/shopify-app.php' => "{$this->app->configPath()}/shopify-app.php",
         ], 'config');
 
         // Database migrations
         $this->publishes([
-            __DIR__.'/resources/database/migrations' => $this->app->databasePath('migrations'),
+            __DIR__.'/resources/database/migrations' => "{$this->app->databasePath()}/migrations",
         ], 'migrations');
 
         // Job publish
         $this->publishes([
-            __DIR__.'/resources/jobs/AppUninstalledJob.php' => "{$this->app->basePath}/Jobs/AppUninstalledJob.php",
+            __DIR__.'/resources/jobs/AppUninstalledJob.php' => "{$this->app->path()}/Jobs/AppUninstalledJob.php",
         ], 'jobs');
 
         // Shop observer

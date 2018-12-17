@@ -5,6 +5,7 @@ namespace OhMyBrew\ShopifyApp\Services;
 use Exception;
 use OhMyBrew\ShopifyApp\Models\Plan;
 use OhMyBrew\ShopifyApp\Models\Shop;
+use OhMyBrew\ShopifyApp\Models\Charge;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\URL;
 
@@ -172,12 +173,12 @@ class BillingPlan
     /**
      * Cancels the current charge for the shop, saves the new charge.
      *
-     * @return \OhMyBrew\ShopifyApp\Models\Charge
+     * @return boolean
      */
     public function save()
     {
         if (!$this->response) {
-            throw Exception('No activation response was recieved.');
+            throw new Exception('No activation response was recieved.');
         }
 
         // Cancel the last charge
@@ -196,14 +197,13 @@ class BillingPlan
         ]);
 
         if ($this->plan->isType(Plan::PLAN_RECURRING)) {
-            // Recurring plan (charge)
-            $charge->billing_on = $response->billing_on;
-            $charge->trial_ends_on = $response->trial_ends_on;
-            $charge->activated_on = $response->activated_on;
-        } else {
-            // One time plan (charge)
-            $charge->activated_on = Carbon::today()->format('Y-m-d');
+            // Recurring plan specifics
+            $charge->billing_on = $this->response->billing_on;
+            $charge->trial_ends_on = $this->response->trial_ends_on;
         }
+
+        // Set the activated on, try for the API, fallback to today
+        $charge->activated_on = $this->response->activated_on ?? Carbon::today()->format('Y-m-d');
 
         // Merge in the plan details since the fields match the database columns
         $planDetails = $this->chargeParams();
