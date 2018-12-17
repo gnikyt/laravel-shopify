@@ -8,6 +8,9 @@ use OhMyBrew\ShopifyApp\Scopes\NamespaceScope;
 use OhMyBrew\ShopifyApp\Models\Plan;
 use OhMyBrew\ShopifyApp\Models\Charge;
 
+/**
+ * Responsible for reprecenting a shop record.
+ */
 trait ShopModelTrait
 {
     use SoftDeletes;

@@ -14,6 +14,9 @@ use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Services\BillingPlan;
 use OhMyBrew\ShopifyApp\Services\UsageCharge;
 
+/**
+ * Responsible for billing a shop for plans and usage charges.
+ */
 trait BillingControllerTrait
 {
     /**

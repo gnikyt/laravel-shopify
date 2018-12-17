@@ -7,6 +7,9 @@ use OhMyBrew\ShopifyApp\Observers\ShopObserver;
 use OhMyBrew\ShopifyApp\Console\WebhookJobMakeCommand;
 use Illuminate\Support\Facades\Config;
 
+/**
+ * This package's provider for Laravel.
+ */
 class ShopifyAppProvider extends ServiceProvider
 {
     /**

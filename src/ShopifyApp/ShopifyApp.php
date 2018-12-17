@@ -7,6 +7,9 @@ use OhMyBrew\ShopifyApp\Models\Shop;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
 
+/**
+ * The base "helper" class for this package.
+ */
 class ShopifyApp
 {
     /**
@@ -67,6 +70,7 @@ class ShopifyApp
         $api->setApiKey(Config::get('shopify-app.api_key'));
         $api->setApiSecret(Config::get('shopify-app.api_secret'));
 
+        // Enable basic rate limiting?
         if (Config::get('shopify-app.api_rate_limiting_enabled') === true) {
             $api->enableRateLimiting(
                 Config::get('shopify-app.api_rate_limit_cycle'),

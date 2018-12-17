@@ -5,7 +5,11 @@ namespace OhMyBrew\ShopifyApp\Scopes;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
+use Illuminate\Support\Facades\Config;
 
+/**
+ * Responsible for scoping to the current namesapce.
+ */
 class NamespaceScope implements Scope
 {
     /**
@@ -18,6 +22,6 @@ class NamespaceScope implements Scope
      */
     public function apply(Builder $builder, Model $model)
     {
-        $builder->where('namespace', config('shopify-app.namespace'));
+        $builder->where('namespace', Config::get('shopify-app.namespace'));
     }
 }

@@ -183,9 +183,9 @@ class BillingPlan
         }
 
         // Cancel the last charge
-        $currentCharge = $this->shop->planCharge();
-        if ($currentCharge) {
-            $currentCharge->cancel();
+        $planCharge = $this->shop->planCharge();
+        if ($planCharge && !$planCharge->isDeclined() && !$planCharge->isCancelled()) {
+            $planCharge->cancel();
         }
 
         // Create a charge

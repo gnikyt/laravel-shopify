@@ -28,7 +28,7 @@ class DummyClass implements ShouldQueue
      * Create a new job instance.
      *
      * @param string $shopDomain The shop's myshopify domain
-     * @param object $webhook The webhook data (JSON decoded)
+     * @param object $webhook    The webhook data (JSON decoded)
      *
      * @return void
      */

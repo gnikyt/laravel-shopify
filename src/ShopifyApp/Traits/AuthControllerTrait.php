@@ -6,6 +6,9 @@ use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Jobs\ScripttagInstaller;
 use OhMyBrew\ShopifyApp\Jobs\WebhookInstaller;
 
+/**
+ * Responsible for authenticating the shop.
+ */
 trait AuthControllerTrait
 {
     /**

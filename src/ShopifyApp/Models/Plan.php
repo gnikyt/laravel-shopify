@@ -3,7 +3,11 @@
 namespace OhMyBrew\ShopifyApp\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use OhMyBrew\ShopifyApp\Models\Charge;
 
+/**
+ * Responsible for reprecenting a plan record.
+ */
 class Plan extends Model
 {
     // Types of plans
@@ -30,7 +34,7 @@ class Plan extends Model
      */
     public function charges()
     {
-        return $this->hasMany('OhMyBrew\ShopifyApp\Models\Charge');
+        return $this->hasMany(Charge::class);
     }
 
     /**
@@ -42,7 +46,7 @@ class Plan extends Model
      */
     public function isType(int $type)
     {
-        return (int) $this->type === $type;
+        return $this->type === $type;
     }
 
     /**

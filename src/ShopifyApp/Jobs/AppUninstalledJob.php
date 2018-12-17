@@ -2,7 +2,6 @@
 
 namespace OhMyBrew\ShopifyApp\Jobs;
 
-use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -11,6 +10,9 @@ use Illuminate\Queue\SerializesModels;
 use OhMyBrew\ShopifyApp\Models\Charge;
 use OhMyBrew\ShopifyApp\Models\Shop;
 
+/**
+ * Webhook job responsible for handling when the app is uninstalled.
+ */
 class AppUninstalledJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -99,16 +101,9 @@ class AppUninstalledJob implements ShouldQueue
      */
     protected function cancelCharge()
     {
-        $lastCharge = $this->shop->charges()
-            ->withTrashed()
-            ->whereIn('type', [Charge::CHARGE_RECURRING, Charge::CHARGE_ONETIME])
-            ->orderBy('created_at', 'desc')
-            ->first();
-
-        if ($lastCharge && !$lastCharge->isDeclined() && !$lastCharge->isCancelled()) {
-            $lastCharge->status = 'cancelled';
-            $lastCharge->cancelled_on = Carbon::today()->format('Y-m-d');
-            $lastCharge->save();
+        $planCharge = $this->shop->planCharge();
+        if ($planCharge && !$planCharge->isDeclined() && !$planCharge->isCancelled()) {
+            $planCharge->cancel();
         }
     }
 

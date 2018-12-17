@@ -4,6 +4,9 @@ namespace OhMyBrew\ShopifyApp\Traits;
 
 use Illuminate\Support\Facades\View;
 
+/**
+ * Responsible for showing the main homescreen for the app.
+ */
 trait HomeControllerTrait
 {
     /**

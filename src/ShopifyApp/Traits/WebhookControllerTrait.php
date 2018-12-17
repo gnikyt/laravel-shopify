@@ -2,6 +2,9 @@
 
 namespace OhMyBrew\ShopifyApp\Traits;
 
+/**
+ * Responsible for handling incoming webhook requests.
+ */
 trait WebhookControllerTrait
 {
     /**

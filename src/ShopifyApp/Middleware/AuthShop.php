@@ -4,9 +4,15 @@ namespace OhMyBrew\ShopifyApp\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Config;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
-use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Response for ensuring an authenticated shop.
+ */
 class AuthShop
 {
     /**
@@ -20,7 +26,7 @@ class AuthShop
     public function handle(Request $request, Closure $next)
     {
         $shop = ShopifyApp::shop();
-        $shopParam = ShopifyApp::sanitizeShopDomain(request('shop'));
+        $shopParam = ShopifyApp::sanitizeShopDomain($request->get('shop'));
 
         // Check if shop has a session, also check the shops to ensure a match
         if (
@@ -30,12 +36,12 @@ class AuthShop
             $shop->trashed()
         ) {
             // Either no shop session or shops do not match
-            session()->forget('shopify_domain');
+            Session::forget('shopify_domain');
 
             // Set the return-to path so we can redirect after successful authentication
-            session(['return_to' => $request->fullUrl()]);
+            Session::put('return_to', $request->fullUrl());
 
-            return redirect()->route('authenticate', ['shop' => $shopParam]);
+            return Redirect::route('authenticate', ['shop' => $shopParam]);
         }
 
         // Shop is OK, move on...
@@ -45,7 +51,7 @@ class AuthShop
             $response = new Response($response);
         }
 
-        if (config('shopify-app.esdk_enabled')) {
+        if (Config::get('shopify-app.esdk_enabled')) {
             // Headers applicable to ESDK only
             $response->headers->set('P3P', 'CP="Not used"');
             $response->headers->remove('X-Frame-Options');

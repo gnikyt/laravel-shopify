@@ -8,6 +8,9 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
+/**
+ * Webhook job responsible for handling installing scripttag.
+ */
 class ScripttagInstaller implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -55,7 +58,10 @@ class ScripttagInstaller implements ShouldQueue
         $shopScripttags = $api->rest(
             'GET',
             '/admin/script_tags.json',
-            ['limit' => 250, 'fields' => 'id,src']
+            [
+                'limit'  => 250,
+                'fields' => 'id,src',
+            ]
         )->body->script_tags;
 
         foreach ($this->scripttags as $scripttag) {
