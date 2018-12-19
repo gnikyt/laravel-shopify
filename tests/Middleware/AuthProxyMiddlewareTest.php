@@ -9,6 +9,7 @@ use OhMyBrew\ShopifyApp\Middleware\AuthProxy;
 use OhMyBrew\ShopifyApp\Test\TestCase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Request;
 
 class AuthProxyMiddlewareTest extends TestCase
 {
@@ -83,7 +84,7 @@ class AuthProxyMiddlewareTest extends TestCase
     private function runAuthProxy(Closure $cb = null)
     {
         $called = false;
-        $response = (new AuthProxy())->handle(request(), function ($request) use (&$called, $cb) {
+        $response = (new AuthProxy())->handle(Request::instance(), function ($request) use (&$called, $cb) {
             $called = true;
 
             if ($cb) {

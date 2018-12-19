@@ -37,7 +37,7 @@ class AuthShop
         ) {
             // Either no shop session or shops do not match
             Session::forget('shopify_domain');
-
+print_r($request->fullUrl());
             // Set the return-to path so we can redirect after successful authentication
             Session::put('return_to', $request->fullUrl());
 
