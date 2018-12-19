@@ -6,6 +6,7 @@ use OhMyBrew\ShopifyApp\Jobs\ScripttagInstaller;
 use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
 use OhMyBrew\ShopifyApp\Test\TestCase;
+use Illuminate\Support\Facades\Config;
 use ReflectionMethod;
 use ReflectionObject;
 
@@ -25,7 +26,7 @@ class ScripttagInstallerJobTest extends TestCase
         ];
 
         // Replace with our API
-        config(['shopify-app.api_class' => new ApiStub()]);
+        Config::set('shopify-app.api_class', new ApiStub());
     }
 
     public function testJobAcceptsLoad()
@@ -78,6 +79,11 @@ class ScripttagInstallerJobTest extends TestCase
 
     public function testJobShouldNotRecreateScripttags()
     {
+        // Stub the responses
+        ApiStub::stubResponses([
+            'get_script_tags',
+        ]);
+
         $job = new ScripttagInstaller($this->shop, $this->scripttags);
         $created = $job->handle();
 
@@ -88,6 +94,12 @@ class ScripttagInstallerJobTest extends TestCase
 
     public function testJobShouldCreateScripttags()
     {
+        // Stub the responses
+        ApiStub::stubResponses([
+            'get_script_tags',
+            'get_script_tags',
+        ]);
+
         $scripttags = [
             [
                 'src'   => 'https://js-aplenty.com/fooy-dooy.js',

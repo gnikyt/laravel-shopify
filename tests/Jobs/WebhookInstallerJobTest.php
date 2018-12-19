@@ -6,6 +6,7 @@ use OhMyBrew\ShopifyApp\Jobs\WebhookInstaller;
 use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
 use OhMyBrew\ShopifyApp\Test\TestCase;
+use Illuminate\Support\Facades\Config;
 use ReflectionMethod;
 use ReflectionObject;
 
@@ -25,7 +26,7 @@ class WebhookInstallerJobTest extends TestCase
         ];
 
         // Stub with our API
-        config(['shopify-app.api_class' => new ApiStub()]);
+        Config::set('shopify-app.api_class', new ApiStub());
     }
 
     public function testJobAcceptsLoad()
@@ -78,6 +79,11 @@ class WebhookInstallerJobTest extends TestCase
 
     public function testJobShouldNotRecreateWebhooks()
     {
+        // Stub the responses
+        ApiStub::stubResponses([
+            'get_webhooks',
+        ]);
+
         $job = new WebhookInstaller($this->shop, $this->webhooks);
         $created = $job->handle();
 
@@ -88,6 +94,12 @@ class WebhookInstallerJobTest extends TestCase
 
     public function testJobShouldCreateWebhooks()
     {
+        // Stub the responses
+        ApiStub::stubResponses([
+            'get_webhooks',
+            'get_webhooks',
+        ]);
+
         $webhooks = [
             [
                 'topic'   => 'orders/create',

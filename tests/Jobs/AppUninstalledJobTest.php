@@ -2,7 +2,7 @@
 
 namespace OhMyBrew\ShopifyApp\Test\Jobs;
 
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use OhMyBrew\ShopifyApp\Jobs\AppUninstalledJob;
 use OhMyBrew\ShopifyApp\Models\Charge;
 use OhMyBrew\ShopifyApp\Models\Plan;
@@ -51,14 +51,16 @@ class AppUninstalledJobTest extends TestCase
         $charge->test = false;
         $charge->name = 'Base Plan Dummy';
         $charge->status = 'active';
-        $charge->type = 1;
+        $charge->type = Charge::CHARGE_RECURRING;
         $charge->price = 25.00;
         $charge->trial_days = 0;
         $charge->shop_id = $this->shop->id;
+        $charge->plan_id = 1;
         $charge->created_at = Carbon::now()->addDays(1); // Test runs too fast to make "latest" work
         $charge->save();
 
         // Ensure shop is not trashed, and has charges
+        $this->shop->update(['plan_id' => 1]);
         $this->shop->refresh();
         $this->assertFalse($this->shop->trashed());
         $this->assertEquals(true, $this->shop->hasCharges());
@@ -69,9 +71,11 @@ class AppUninstalledJobTest extends TestCase
 
         // Refresh both models to see the changes
         $this->shop->refresh();
-        $lastCharge = $this->shop->charges()
+        $lastCharge = $this->shop
+            ->charges()
             ->withTrashed()
             ->whereIn('type', [Charge::CHARGE_RECURRING, Charge::CHARGE_ONETIME])
+            ->where('plan_id', 1)
             ->orderBy('created_at', 'desc')
             ->first();
 
@@ -79,7 +83,6 @@ class AppUninstalledJobTest extends TestCase
         $this->assertEquals(true, $result);
         $this->assertEquals(true, $this->shop->trashed());
         $this->assertFalse($this->shop->hasCharges());
-        $this->assertEquals($charge->charge_id, $lastCharge->charge_id);
         $this->assertEquals('cancelled', $lastCharge->status);
         $this->assertNull($this->shop->plan);
         $this->assertNull($this->shop->shopify_token);

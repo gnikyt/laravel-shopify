@@ -9,6 +9,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use OhMyBrew\ShopifyApp\Models\Charge;
 use OhMyBrew\ShopifyApp\Models\Shop;
+use Illuminate\Support\Facades\Config;
 
 /**
  * Webhook job responsible for handling when the app is uninstalled.
@@ -64,9 +65,9 @@ class AppUninstalledJob implements ShouldQueue
             return false;
         }
 
+        $this->cancelCharge();
         $this->cleanShop();
         $this->softDeleteShop();
-        $this->cancelCharge();
 
         return true;
     }
@@ -114,7 +115,7 @@ class AppUninstalledJob implements ShouldQueue
      */
     protected function findShop()
     {
-        $shopModel = config('shopify-app.shop_model');
+        $shopModel = Config::get('shopify-app.shop_model');
 
         return $shopModel::where(['shopify_domain' => $this->shopDomain])->first();
     }
