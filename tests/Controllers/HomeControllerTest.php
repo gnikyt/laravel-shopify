@@ -4,6 +4,8 @@ namespace OhMyBrew\ShopifyApp\Test\Controllers;
 
 use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
 use OhMyBrew\ShopifyApp\Test\TestCase;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Session;
 
 class HomeControllerTest extends TestCase
 {
@@ -12,40 +14,25 @@ class HomeControllerTest extends TestCase
         parent::setUp();
 
         // Stub in our API class
-        config(['shopify-app.api_class' => new ApiStub()]);
+        Config::set('shopify-app.api_class', new ApiStub());
 
-        // Shop for all tests
-        session(['shopify_domain' => 'example.myshopify.com']);
+        // Base shop for all tests here
+        Session::put('shopify_domain', 'example.myshopify.com');
     }
 
-    public function testNoShopSessionShouldRedirectToAuthenticate()
-    {
-        // Kill the session
-        session()->forget('shopify_domain');
-
-        $response = $this->call('get', '/', ['shop' => 'example.myshopify.com']);
-        $this->assertTrue(strpos($response->content(), 'Redirecting to http://localhost/authenticate') !== false);
-    }
-
-    public function testWithMismatchedShopsShouldRedirectToAuthenticate()
-    {
-        $response = $this->call('get', '/', ['shop' => 'example-different-shop.myshopify.com']);
-        $this->assertTrue(strpos($response->content(), 'Redirecting to http://localhost/authenticate') !== false);
-    }
-
-    public function testShopWithSessionShouldLoad()
+    public function testHomeRouteWithESDK()
     {
         $response = $this->get('/');
-
         $response->assertStatus(200);
+
         $this->assertTrue(strpos($response->content(), "apiKey: ''") !== false);
         $this->assertTrue(strpos($response->content(), "shopOrigin: 'https://example.myshopify.com'") !== false);
     }
 
-    public function testShopWithSessionAndDisabledEsdkShouldLoad()
+    public function testHomeRouteWithNoESDK()
     {
         // Tuen off ESDK
-        config(['shopify-app.esdk_enabled' => false]);
+        Config::set('shopify-app.esdk_enabled', false);
 
         $response = $this->get('/');
 

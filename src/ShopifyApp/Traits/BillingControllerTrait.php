@@ -59,7 +59,7 @@ trait BillingControllerTrait
         ]);
 
         // Go to homepage of app
-        return Redirect::route('home');
+        return Redirect::route('home')->with('success', 'billing');
     }
 
     /**
@@ -78,6 +78,8 @@ trait BillingControllerTrait
         $uc->save();
 
         // All done, return with success
-        return isset($validated['redirect']) ? Redirect::to($validated['redirect']) : Redirect::back()->with('success', true);
+        return isset($validated['redirect']) ?
+            Redirect::to($validated['redirect'])->with('success', 'usage_charge') :
+            Redirect::back()->with('success', 'usage_charge');
     }
 }

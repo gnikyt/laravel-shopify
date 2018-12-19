@@ -1,0 +1,12 @@
+{
+    "usage_charge": {
+        "id": 1034618209,
+        "description": "One email",
+        "price": "1.00",
+        "created_at": "2018-07-05T13:05:43-04:00",
+        "billing_on": "2018-08-04",
+        "balance_used": 11.0,
+        "balance_remaining": 89.0,
+        "risk_level": 0.08
+    }
+}
