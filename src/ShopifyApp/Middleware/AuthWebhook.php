@@ -4,6 +4,7 @@ namespace OhMyBrew\ShopifyApp\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 
 /**
