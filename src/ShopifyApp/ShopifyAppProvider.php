@@ -6,6 +6,10 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
 use OhMyBrew\ShopifyApp\Console\WebhookJobMakeCommand;
 use OhMyBrew\ShopifyApp\Observers\ShopObserver;
+use OhMyBrew\ShopifyApp\Middleware\AuthShop;
+use OhMyBrew\ShopifyApp\Middleware\AuthWebhook;
+use OhMyBrew\ShopifyApp\Middleware\AuthProxy;
+use OhMyBrew\ShopifyApp\Middleware\Billable;
 
 /**
  * This package's provider for Laravel.
@@ -43,6 +47,12 @@ class ShopifyAppProvider extends ServiceProvider
         // Shop observer
         $shopModel = Config::get('shopify-app.shop_model');
         $shopModel::observe(ShopObserver::class);
+
+        // Middlewares
+        $this->app['router']->aliasMiddleware('auth.shop', AuthShop::class);
+        $this->app['router']->aliasMiddleware('auth.webhook', AuthWebhook::class);
+        $this->app['router']->aliasMiddleware('auth.proxy', AuthProxy::class);
+        $this->app['router']->aliasMiddleware('billable', Billable::class);
     }
 
     /**
