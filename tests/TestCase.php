@@ -15,10 +15,11 @@ abstract class TestCase extends OrchestraTestCase
     public function setUp()
     {
         parent::setUp();
-
+        
         // Setup database
         $this->setupDatabase($this->app);
         $this->seedDatabase();
+        $this->withFactories(__DIR__.'/../src/ShopifyApp/resources/database/factories');
     }
 
     protected function getPackageProviders($app)

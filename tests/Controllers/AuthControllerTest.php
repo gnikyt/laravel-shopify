@@ -18,7 +18,6 @@ class AuthControllerTest extends TestCase
 
         // Stub the API
         Config::set('shopify-app.api_class', ApiStub::class);
-        $this->withoutExceptionHandling();
     }
 
     public function testLoginRoute()

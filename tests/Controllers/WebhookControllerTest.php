@@ -13,7 +13,7 @@ class WebhookControllerTest extends TestCase
 {
     public function setUp()
     {
-        parent::setUp();$this->withoutExceptionHandling();
+        parent::setUp();
 
         // Mock headers that match Shopify
         $this->headers = [
