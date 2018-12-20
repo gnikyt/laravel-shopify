@@ -5,11 +5,11 @@ namespace OhMyBrew\ShopifyApp;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
 use OhMyBrew\ShopifyApp\Console\WebhookJobMakeCommand;
-use OhMyBrew\ShopifyApp\Observers\ShopObserver;
+use OhMyBrew\ShopifyApp\Middleware\AuthProxy;
 use OhMyBrew\ShopifyApp\Middleware\AuthShop;
 use OhMyBrew\ShopifyApp\Middleware\AuthWebhook;
-use OhMyBrew\ShopifyApp\Middleware\AuthProxy;
 use OhMyBrew\ShopifyApp\Middleware\Billable;
+use OhMyBrew\ShopifyApp\Observers\ShopObserver;
 
 /**
  * This package's provider for Laravel.

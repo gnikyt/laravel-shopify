@@ -16,7 +16,7 @@ class BillingControllerTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        ;$this->withoutExceptionHandling();
+
         // Stub in our API class
         Config::set('shopify-app.api_class', new ApiStub());
 
