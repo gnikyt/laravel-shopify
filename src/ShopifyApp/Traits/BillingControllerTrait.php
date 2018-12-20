@@ -2,15 +2,14 @@
 
 namespace OhMyBrew\ShopifyApp\Traits;
 
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\View;
-use OhMyBrew\ShopifyApp\Models\Plan;
-use OhMyBrew\ShopifyApp\Models\Shop;
-use OhMyBrew\ShopifyApp\Models\Charge;
-use OhMyBrew\ShopifyApp\Requests\StoreUsageCharge;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\View;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
+use OhMyBrew\ShopifyApp\Models\Charge;
+use OhMyBrew\ShopifyApp\Models\Plan;
+use OhMyBrew\ShopifyApp\Models\Shop;
+use OhMyBrew\ShopifyApp\Requests\StoreUsageCharge;
 use OhMyBrew\ShopifyApp\Services\BillingPlan;
 use OhMyBrew\ShopifyApp\Services\UsageCharge;
 

@@ -4,9 +4,9 @@ namespace OhMyBrew\ShopifyApp\Traits;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
-use OhMyBrew\ShopifyApp\Scopes\NamespaceScope;
-use OhMyBrew\ShopifyApp\Models\Plan;
 use OhMyBrew\ShopifyApp\Models\Charge;
+use OhMyBrew\ShopifyApp\Models\Plan;
+use OhMyBrew\ShopifyApp\Scopes\NamespaceScope;
 
 /**
  * Responsible for reprecenting a shop record.
@@ -126,7 +126,6 @@ trait ShopModelTrait
             ->whereIn('type', [Charge::CHARGE_RECURRING, Charge::CHARGE_ONETIME])
             ->where('plan_id', $this->plan_id)
             ->orderBy('created_at', 'desc')
-            ->first()
-        ;
+            ->first();
     }
 }

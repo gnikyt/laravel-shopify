@@ -2,13 +2,13 @@
 
 namespace OhMyBrew\ShopifyApp\Test\Middleware;
 
-use Illuminate\Support\Facades\Input;
-use OhMyBrew\ShopifyApp\Middleware\AuthShop;
-use OhMyBrew\ShopifyApp\Test\TestCase;
-use OhMyBrew\ShopifyApp\Models\Shop;
-use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
+use OhMyBrew\ShopifyApp\Middleware\AuthShop;
+use OhMyBrew\ShopifyApp\Models\Shop;
+use OhMyBrew\ShopifyApp\Test\TestCase;
 
 class AuthShopMiddlewareTest extends TestCase
 {
@@ -88,7 +88,7 @@ class AuthShopMiddlewareTest extends TestCase
         // Set a shop
         $shop = factory(Shop::class)->create();
         Session::put('shopify_domain', $shop->shopify_domain);
-        
+
         // Run the middleware
         $result = $this->runAuthShop();
 

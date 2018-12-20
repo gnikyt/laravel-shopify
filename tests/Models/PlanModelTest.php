@@ -3,9 +3,9 @@
 namespace OhMyBrew\ShopifyApp\Test\Models;
 
 use Illuminate\Database\Eloquent\Collection;
-use OhMyBrew\ShopifyApp\Models\Shop;
-use OhMyBrew\ShopifyApp\Models\Plan;
 use OhMyBrew\ShopifyApp\Models\Charge;
+use OhMyBrew\ShopifyApp\Models\Plan;
+use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\Test\TestCase;
 
 class PlanModelTest extends TestCase

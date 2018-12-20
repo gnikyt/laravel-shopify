@@ -40,7 +40,7 @@ class UsageCharge
     protected $response;
 
     /**
-     * Constructor for usage charge class
+     * Constructor for usage charge class.
      *
      * @param \OhMyBrew\ShopifyApp\Models\Shop $shop The shop to target for billing.
      * @param array                            $data The usage charge data.
@@ -50,7 +50,7 @@ class UsageCharge
     public function __construct(Shop $shop, array $data)
     {
         $this->shop = $shop;
-        $this->api  = $this->shop->api();
+        $this->api = $this->shop->api();
         $this->data = $data;
 
         return $this;
@@ -86,7 +86,7 @@ class UsageCharge
     /**
      * Saves the usage charge to the database.
      *
-     * @return boolean
+     * @return bool
      */
     public function save()
     {

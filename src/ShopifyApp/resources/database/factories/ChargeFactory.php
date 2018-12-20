@@ -17,7 +17,7 @@ $factory->state(Charge::class, 'test', [
 ]);
 
 $factory->state(Charge::class, 'type_recurring', [
-    'type' => Charge::CHARGE_RECURRING
+    'type' => Charge::CHARGE_RECURRING,
 ]);
 
 $factory->state(Charge::class, 'type_onetime', [

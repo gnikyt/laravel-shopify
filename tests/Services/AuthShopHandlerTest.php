@@ -2,19 +2,17 @@
 
 namespace OhMyBrew\ShopifyApp\Test\Services;
 
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\URL;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
-use OhMyBrew\ShopifyApp\Models\Plan;
-use OhMyBrew\ShopifyApp\Models\Shop;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Config;
-use OhMyBrew\ShopifyApp\Models\Charge;
-use OhMyBrew\ShopifyApp\Test\TestCase;
-use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
-use OhMyBrew\ShopifyApp\Services\AuthShopHandler;
-use Illuminate\Support\Facades\Queue;
 use OhMyBrew\ShopifyApp\Jobs\ScripttagInstaller;
 use OhMyBrew\ShopifyApp\Jobs\WebhookInstaller;
+use OhMyBrew\ShopifyApp\Models\Shop;
+use OhMyBrew\ShopifyApp\Services\AuthShopHandler;
+use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
+use OhMyBrew\ShopifyApp\Test\TestCase;
 
 require_once __DIR__.'/../Stubs/AfterAuthenticateJobStub.php';
 
@@ -67,8 +65,8 @@ class AuthShopHandlerTest extends TestCase
             'protocol'  => 'https',
         ];
         $hmac = ShopifyApp::createHmac([
-            'data' => $data,
-            'buildQuery' => true,
+            'data'               => $data,
+            'buildQuery'         => true,
             'buildQueryWithJoin' => true,
         ]);
         $data['hmac'] = $hmac;

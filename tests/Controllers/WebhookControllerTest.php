@@ -3,10 +3,8 @@
 namespace OhMyBrew\ShopifyApp\Test\Controllers;
 
 use Illuminate\Support\Facades\Queue;
-use OhMyBrew\ShopifyApp\Controllers\WebhookController;
-use OhMyBrew\ShopifyApp\Test\TestCase;
 use OhMyBrew\ShopifyApp\Models\Shop;
-use ReflectionMethod;
+use OhMyBrew\ShopifyApp\Test\TestCase;
 
 require_once __DIR__.'/../Stubs/OrdersCreateJobStub.php';
 

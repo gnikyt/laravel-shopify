@@ -2,14 +2,14 @@
 
 namespace OhMyBrew\ShopifyApp\Test\Services;
 
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\URL;
+use OhMyBrew\ShopifyApp\Models\Charge;
 use OhMyBrew\ShopifyApp\Models\Plan;
 use OhMyBrew\ShopifyApp\Models\Shop;
-use Illuminate\Support\Facades\Config;
-use OhMyBrew\ShopifyApp\Models\Charge;
-use OhMyBrew\ShopifyApp\Test\TestCase;
-use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
 use OhMyBrew\ShopifyApp\Services\BillingPlan;
+use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
+use OhMyBrew\ShopifyApp\Test\TestCase;
 
 class BillingPlanTest extends TestCase
 {

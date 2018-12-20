@@ -2,14 +2,14 @@
 
 namespace OhMyBrew\ShopifyApp\Test\Middleware;
 
-use OhMyBrew\ShopifyApp\Middleware\Billable;
-use OhMyBrew\ShopifyApp\Test\TestCase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
-use OhMyBrew\ShopifyApp\Models\Shop;
-use OhMyBrew\ShopifyApp\Models\Plan;
+use OhMyBrew\ShopifyApp\Middleware\Billable;
 use OhMyBrew\ShopifyApp\Models\Charge;
+use OhMyBrew\ShopifyApp\Models\Plan;
+use OhMyBrew\ShopifyApp\Models\Shop;
+use OhMyBrew\ShopifyApp\Test\TestCase;
 
 class BillableMiddlewareTest extends TestCase
 {

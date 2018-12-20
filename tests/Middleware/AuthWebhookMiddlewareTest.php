@@ -4,8 +4,6 @@ namespace OhMyBrew\ShopifyApp\Test\Middleware;
 
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Request;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Session;
 use OhMyBrew\ShopifyApp\Middleware\AuthWebhook;
 use OhMyBrew\ShopifyApp\Test\TestCase;
 
@@ -16,7 +14,7 @@ class AuthWebhookMiddlewareTest extends TestCase
     public function testDenysForMissingShopHeader()
     {
         Request::instance()->header('x-shopify-hmac-sha256', '1234');
-        
+
         // Run the middleware
         $response = (new AuthWebhook())->handle(request(), function ($request) {
             // ...
@@ -29,7 +27,7 @@ class AuthWebhookMiddlewareTest extends TestCase
     public function testDenysForMissingHmacHeader()
     {
         Request::instance()->header('x-shopify-shop-domain', 'example.myshopify.com');
-        
+
         // Run the middleware
         $response = (new AuthWebhook())->handle(request(), function ($request) {
             // ...

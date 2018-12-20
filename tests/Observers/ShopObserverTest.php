@@ -2,10 +2,9 @@
 
 namespace OhMyBrew\ShopifyApp\Test\Observers;
 
-use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Config;
 use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\Test\TestCase;
-use Illuminate\Support\Facades\Config;
 
 class ShopObserverTest extends TestCase
 {

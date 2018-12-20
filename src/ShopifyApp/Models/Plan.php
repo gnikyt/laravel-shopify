@@ -3,7 +3,6 @@
 namespace OhMyBrew\ShopifyApp\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use OhMyBrew\ShopifyApp\Models\Charge;
 
 /**
  * Responsible for reprecenting a plan record.
