@@ -38,6 +38,12 @@ class ShopifyAppProvider extends ServiceProvider
         // Shop observer
         $shopModel = config('shopify-app.shop_model');
         $shopModel::observe(ShopObserver::class);
+
+        // Middlewares
+        $this->app['router']->aliasMiddleware('auth.shop', \OhMyBrew\ShopifyApp\Middleware\AuthShop::class);
+        $this->app['router']->aliasMiddleware('auth.webhook', \OhMyBrew\ShopifyApp\Middleware\AuthWebhook::class);
+        $this->app['router']->aliasMiddleware('auth.proxy', \OhMyBrew\ShopifyApp\Middleware\AuthProxy::class);
+        $this->app['router']->aliasMiddleware('billable', \OhMyBrew\ShopifyApp\Middleware\Billable::class);
     }
 
     /**
