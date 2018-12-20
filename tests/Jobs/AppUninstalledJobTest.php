@@ -16,12 +16,6 @@ class AppUninstalledJobTest extends TestCase
     {
         parent::setup();
 
-        // Isolated shop
-        $this->shop = new Shop();
-        $this->shop->shopify_domain = 'example-isolated.myshopify.com';
-        $this->shop->plan_id = Plan::find(1)->id;
-        $this->shop->save();
-
         // Get the data
         $this->data = json_decode(file_get_contents(__DIR__.'/../fixtures/app_uninstalled.json'));
     }

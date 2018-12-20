@@ -26,12 +26,10 @@ class AuthControllerTest extends TestCase
         $response->assertStatus(200);
     }
 
-    /**
-     * @expectedException Illuminate\Validation\ValidationException
-     */
     public function testAuthRedirectsWhenRequestIsBad()
     {
-        $this->post('/authenticate');
+        $response = $this->post('/authenticate');
+        $response->assertStatus(302);
     }
 
     public function testAuthRedirectsToShopifyWhenNoCode()

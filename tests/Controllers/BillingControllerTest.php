@@ -4,6 +4,8 @@ namespace OhMyBrew\ShopifyApp\Test\Controllers;
 
 use OhMyBrew\ShopifyApp\ShopifyApp;
 use OhMyBrew\ShopifyApp\Models\Shop;
+use OhMyBrew\ShopifyApp\Models\Plan;
+use OhMyBrew\ShopifyApp\Models\Charge;
 use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
 use OhMyBrew\ShopifyApp\Test\TestCase;
 use Illuminate\Support\Facades\Config;
@@ -20,10 +22,6 @@ class BillingControllerTest extends TestCase
 
         // Create the main class
         $this->shopifyApp = new ShopifyApp($this->app);
-
-        // Base shop for all tests here
-        $this->shop = Shop::where('shopify_domain', 'example.myshopify.com')->first();
-        Session::put('shopify_domain', $this->shop->shopify_domain);
     }
 
     public function testSendsShopToBillingScreen()
@@ -33,6 +31,10 @@ class BillingControllerTest extends TestCase
             'post_recurring_application_charges',
             'post_recurring_application_charges_activate',
         ]);
+
+        // Create the shop
+        $shop = factory(Shop::class)->create();
+        Session::put('shopify_domain', $shop->shopify_domain);
 
         // Run the call
         $response = $this->get('/billing');
@@ -50,16 +52,23 @@ class BillingControllerTest extends TestCase
             'post_recurring_application_charges_activate',
         ]);
 
+        // Create the shop
+        $shop = factory(Shop::class)->create();
+        Session::put('shopify_domain', $shop->shopify_domain);
+
+        // Make the plan
+        $plan = factory(Plan::class)->states('type_recurring')->create();
+
         // Run the call
-        $updatedAt = $this->shop->updated_at;
-        $response = $this->call('get', '/billing/process/1', ['charge_id' => 1]);
+        $updatedAt = $shop->updated_at;
+        $response = $this->call('get', "/billing/process/{$plan->id}", ['charge_id' => 1]);
 
         // Refresh the model
-        $this->shop->refresh();
+        $shop->refresh();
 
         // Assert we've redirected and shop has been updated
         $response->assertRedirect();
-        $this->assertFalse($updatedAt === $this->shop->updated_at);
+        $this->assertFalse($updatedAt === $shop->updated_at);
     }
 
     public function testUsageChargeSuccess()
@@ -69,6 +78,17 @@ class BillingControllerTest extends TestCase
             'post_recurring_application_charges_usage_charges_alt',
             'post_recurring_application_charges_usage_charges_alt2',
         ]);
+
+        // Create the shop
+        $plan = factory(Plan::class)->states('type_recurring')->create();
+        $shop = factory(Shop::class)->create([
+            'plan_id' => $plan->id,
+        ]);
+        $charge = factory(Charge::class)->states('type_recurring')->create([
+            'plan_id' => $plan->id,
+            'shop_id' => $shop->id,
+        ]);
+        Session::put('shopify_domain', $shop->shopify_domain);
 
         // Setup the data for the usage charge and the signature for it
         $data = ['description' => 'One email', 'price' => 1.00, 'redirect' => 'https://localhost/usage-success'];
