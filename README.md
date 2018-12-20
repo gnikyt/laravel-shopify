@@ -5,7 +5,7 @@
 [![StyleCI](https://styleci.io/repos/96462257/shield?branch=master)](https://styleci.io/repos/96462257)
 [![License](https://poser.pugx.org/ohmybrew/laravel-shopify/license)](https://packagist.org/packages/ohmybrew/laravel-shopify)
 
-A full-featured Laravel package for aiding in Shopify App development, similar to `shopify_app` for Rails. Works for Laravel 5.5-5.7.
+A full-featured Laravel package for aiding in Shopify App development, similar to `shopify_app` for Rails. Works for Laravel 5.6+
 
 ![Screenshot](https://github.com/ohmybrew/laravel-shopify/raw/master/screenshot.png)
 ![Screenshot: Billable](https://github.com/ohmybrew/laravel-shopify/raw/master/screenshot-billable.png)
