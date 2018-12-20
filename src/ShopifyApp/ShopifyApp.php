@@ -3,9 +3,9 @@
 namespace OhMyBrew\ShopifyApp;
 
 use Illuminate\Foundation\Application;
-use OhMyBrew\ShopifyApp\Models\Shop;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
+use OhMyBrew\ShopifyApp\Models\Shop;
 
 /**
  * The base "helper" class for this package.

@@ -2,9 +2,9 @@
 
 namespace OhMyBrew\ShopifyApp\Test\Models;
 
+use OhMyBrew\ShopifyApp\Models\Charge;
 use OhMyBrew\ShopifyApp\Models\Plan;
 use OhMyBrew\ShopifyApp\Models\Shop;
-use OhMyBrew\ShopifyApp\Models\Charge;
 use OhMyBrew\ShopifyApp\Test\TestCase;
 
 class ShopModelTest extends TestCase

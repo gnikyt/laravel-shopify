@@ -2,8 +2,8 @@
 
 namespace OhMyBrew\ShopifyApp\Test\Stubs;
 
-use Exception;
 use ErrorException;
+use Exception;
 use OhMyBrew\BasicShopifyAPI;
 
 class ApiStub extends BasicShopifyAPI

@@ -2,12 +2,10 @@
 
 namespace OhMyBrew\ShopifyApp\Test\Requests;
 
-use OhMyBrew\ShopifyApp\Test\TestCase;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Config;
-use OhMyBrew\ShopifyApp\Requests\AuthShop;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
-use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
+use OhMyBrew\ShopifyApp\Requests\AuthShop;
+use OhMyBrew\ShopifyApp\Test\TestCase;
 
 class AuthShopRequestTest extends TestCase
 {
@@ -32,8 +30,8 @@ class AuthShopRequestTest extends TestCase
             'protocol'  => 'https',
         ];
         $hmac = ShopifyApp::createHmac([
-            'data' => $data,
-            'buildQuery' => true,
+            'data'               => $data,
+            'buildQuery'         => true,
             'buildQueryWithJoin' => true,
         ]);
 
@@ -57,8 +55,8 @@ class AuthShopRequestTest extends TestCase
             'protocol'  => 'https',
         ];
         $hmac = ShopifyApp::createHmac([
-            'data' => $data,
-            'buildQuery' => true,
+            'data'               => $data,
+            'buildQuery'         => true,
             'buildQueryWithJoin' => true,
         ]);
         $data['hmac'] = $hmac;

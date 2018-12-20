@@ -3,11 +3,9 @@
 namespace OhMyBrew\ShopifyApp\Models;
 
 use Exception;
-use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use OhMyBrew\ShopifyApp\Models\Shop;
-use OhMyBrew\ShopifyApp\Models\Plan;
+use Illuminate\Support\Carbon;
 
 /**
  * Responsible for reprecenting a charge record.

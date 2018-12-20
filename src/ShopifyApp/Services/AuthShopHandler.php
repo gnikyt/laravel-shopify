@@ -3,13 +3,13 @@
 namespace OhMyBrew\ShopifyApp\Services;
 
 use Exception;
-use Illuminate\Support\Facades\URL;
-use OhMyBrew\ShopifyApp\Models\Shop;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\URL;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
-use OhMyBrew\ShopifyApp\Jobs\WebhookInstaller;
 use OhMyBrew\ShopifyApp\Jobs\ScripttagInstaller;
+use OhMyBrew\ShopifyApp\Jobs\WebhookInstaller;
+use OhMyBrew\ShopifyApp\Models\Shop;
 
 /**
  * Responsible for handling how to authenticate a shop.
@@ -83,7 +83,7 @@ class AuthShopHandler
      *
      * @param array $request The request parameters.
      *
-     * @return boolean
+     * @return bool
      */
     public function verifyRequest(array $request)
     {
@@ -104,7 +104,7 @@ class AuthShopHandler
             $this->shop->restore();
             $this->shop->charges()->restore();
         }
-    
+
         // Save the token to the shop
         $this->shop->shopify_token = $this->api->requestAccessToken($code);
         $this->shop->save();
@@ -113,7 +113,7 @@ class AuthShopHandler
     /**
      * Dispatches the jobs that happen after authentication.
      *
-     * @return boolean
+     * @return bool
      */
     public function dispatchJobs()
     {

@@ -2,10 +2,10 @@
 
 namespace OhMyBrew\ShopifyApp\Test\Models;
 
+use Illuminate\Support\Facades\Config;
 use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\Scopes\NamespaceScope;
 use OhMyBrew\ShopifyApp\Test\TestCase;
-use Illuminate\Support\Facades\Config;
 
 class NamespaceScopeTest extends TestCase
 {

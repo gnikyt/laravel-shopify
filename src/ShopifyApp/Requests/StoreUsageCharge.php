@@ -2,9 +2,8 @@
 
 namespace OhMyBrew\ShopifyApp\Requests;
 
-use Illuminate\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Collection;
+use Illuminate\Validation\Validator;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 
 /**
@@ -15,7 +14,7 @@ class StoreUsageCharge extends FormRequest
     /**
      * Configure the validator instance.
      *
-     * @param  \Illuminate\Validation\Validator $validator
+     * @param \Illuminate\Validation\Validator $validator
      *
      * @return void
      */

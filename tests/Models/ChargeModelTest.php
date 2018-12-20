@@ -3,12 +3,12 @@
 namespace OhMyBrew\ShopifyApp\Test\Models;
 
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Config;
 use OhMyBrew\ShopifyApp\Models\Charge;
 use OhMyBrew\ShopifyApp\Models\Plan;
 use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
 use OhMyBrew\ShopifyApp\Test\TestCase;
-use Illuminate\Support\Facades\Config;
 
 class ChargeModelTest extends TestCase
 {
@@ -73,11 +73,11 @@ class ChargeModelTest extends TestCase
         $shop = factory(Shop::class)->create();
         $charge = factory(Charge::class)->states('type_recurring', 'trial')->create([
             'shop_id'       => $shop->id,
-            'trial_ends_on' => Carbon::today()->addDays(1), 
+            'trial_ends_on' => Carbon::today()->addDays(1),
         ]);
         $charge_2 = factory(Charge::class)->states('type_recurring', 'trial')->create([
             'shop_id'       => $shop->id,
-            'trial_ends_on' => Carbon::today()->subDays(1), 
+            'trial_ends_on' => Carbon::today()->subDays(1),
         ]);
 
         $this->assertTrue($charge->isActiveTrial());
@@ -89,11 +89,11 @@ class ChargeModelTest extends TestCase
         $shop = factory(Shop::class)->create();
         $charge = factory(Charge::class)->states('type_recurring', 'trial')->create([
             'shop_id'       => $shop->id,
-            'trial_ends_on' => Carbon::today(), 
+            'trial_ends_on' => Carbon::today(),
         ]);
         $charge_2 = factory(Charge::class)->states('type_recurring', 'trial')->create([
             'shop_id'       => $shop->id,
-            'trial_ends_on' => Carbon::today()->addDays(1), 
+            'trial_ends_on' => Carbon::today()->addDays(1),
         ]);
         $charge_3 = factory(Charge::class)->states('type_recurring')->create([
             'shop_id' => $shop->id,
@@ -110,12 +110,12 @@ class ChargeModelTest extends TestCase
         $charge = factory(Charge::class)->states('type_recurring')->create([
             'shop_id'       => $shop->id,
             'trial_days'    => 5,
-            'trial_ends_on' => Carbon::today(), 
+            'trial_ends_on' => Carbon::today(),
         ]);
         $charge_2 = factory(Charge::class)->states('type_recurring')->create([
             'shop_id'       => $shop->id,
             'trial_days'    => 5,
-            'trial_ends_on' => Carbon::today()->addDays(1), 
+            'trial_ends_on' => Carbon::today()->addDays(1),
         ]);
         $charge_3 = factory(Charge::class)->states('type_recurring')->create([
             'shop_id' => $shop->id,
@@ -142,7 +142,7 @@ class ChargeModelTest extends TestCase
     {
         $shop = factory(Shop::class)->create();
         $charge = factory(Charge::class)->states('type_recurring')->create([
-            'status'  =>  Charge::STATUS_ACTIVE,
+            'status'  => Charge::STATUS_ACTIVE,
             'shop_id' => $shop->id,
         ]);
         $charge_2 = factory(Charge::class)->states('type_recurring')->create([
@@ -228,7 +228,7 @@ class ChargeModelTest extends TestCase
         ApiStub::stubResponses([
             'get_application_charge',
             'get_recurring_application_charge_activate',
-            'get_application_credit'
+            'get_application_credit',
         ]);
 
         $shop = factory(Shop::class)->create();

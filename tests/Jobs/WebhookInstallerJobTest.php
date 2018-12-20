@@ -2,11 +2,11 @@
 
 namespace OhMyBrew\ShopifyApp\Test\Jobs;
 
+use Illuminate\Support\Facades\Config;
 use OhMyBrew\ShopifyApp\Jobs\WebhookInstaller;
 use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
 use OhMyBrew\ShopifyApp\Test\TestCase;
-use Illuminate\Support\Facades\Config;
 use ReflectionMethod;
 use ReflectionObject;
 

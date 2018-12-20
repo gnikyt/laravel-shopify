@@ -3,12 +3,12 @@
 namespace OhMyBrew\ShopifyApp\Services;
 
 use Exception;
-use OhMyBrew\ShopifyApp\Models\Plan;
-use OhMyBrew\ShopifyApp\Models\Shop;
-use OhMyBrew\ShopifyApp\Models\Charge;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Carbon;
+use OhMyBrew\ShopifyApp\Models\Charge;
+use OhMyBrew\ShopifyApp\Models\Plan;
+use OhMyBrew\ShopifyApp\Models\Shop;
 
 /**
  * Responsible for creating a confirmation URL for a billing plan,
@@ -62,7 +62,7 @@ class BillingPlan
     public function __construct(Shop $shop, Plan $plan)
     {
         $this->shop = $shop;
-        $this->api  = $this->shop->api();
+        $this->api = $this->shop->api();
         $this->plan = $plan;
 
         return $this;
@@ -174,7 +174,7 @@ class BillingPlan
     /**
      * Cancels the current charge for the shop, saves the new charge.
      *
-     * @return boolean
+     * @return bool
      */
     public function save()
     {

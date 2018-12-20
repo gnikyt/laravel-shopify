@@ -2,11 +2,11 @@
 
 namespace OhMyBrew\ShopifyApp\Test\Controllers;
 
-use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
-use OhMyBrew\ShopifyApp\Test\TestCase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
 use OhMyBrew\ShopifyApp\Models\Shop;
+use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
+use OhMyBrew\ShopifyApp\Test\TestCase;
 
 class HomeControllerTest extends TestCase
 {

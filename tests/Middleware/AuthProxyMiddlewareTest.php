@@ -3,13 +3,13 @@
 namespace OhMyBrew\ShopifyApp\Test\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Session;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Middleware\AuthProxy;
 use OhMyBrew\ShopifyApp\Test\TestCase;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Request;
 
 class AuthProxyMiddlewareTest extends TestCase
 {

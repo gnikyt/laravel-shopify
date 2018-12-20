@@ -2,9 +2,6 @@
 
 namespace OhMyBrew\ShopifyApp\Test;
 
-use Carbon\Carbon;
-use OhMyBrew\ShopifyApp\Models\Charge;
-use OhMyBrew\ShopifyApp\Models\Plan;
 use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\ShopifyAppProvider;
 use Orchestra\Database\ConsoleServiceProvider;
@@ -15,7 +12,7 @@ abstract class TestCase extends OrchestraTestCase
     public function setUp()
     {
         parent::setUp();
-        
+
         // Setup database
         $this->setupDatabase($this->app);
         $this->withFactories(__DIR__.'/../src/ShopifyApp/resources/database/factories');

@@ -2,7 +2,6 @@
 
 namespace OhMyBrew\ShopifyApp\Test\Jobs;
 
-use Illuminate\Support\Carbon;
 use OhMyBrew\ShopifyApp\Jobs\AppUninstalledJob;
 use OhMyBrew\ShopifyApp\Models\Charge;
 use OhMyBrew\ShopifyApp\Models\Plan;

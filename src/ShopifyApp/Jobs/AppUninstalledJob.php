@@ -7,9 +7,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Config;
 use OhMyBrew\ShopifyApp\Models\Charge;
 use OhMyBrew\ShopifyApp\Models\Shop;
-use Illuminate\Support\Facades\Config;
 
 /**
  * Webhook job responsible for handling when the app is uninstalled.
