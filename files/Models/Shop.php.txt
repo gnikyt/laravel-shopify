@@ -3,12 +3,14 @@
 namespace OhMyBrew\ShopifyApp\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
+use OhMyBrew\ShopifyApp\Traits\ShopModelTrait;
 
+/**
+ * Responsible for reprecenting a shop record.
+ */
 class Shop extends Model
 {
-    use SoftDeletes;
+    use ShopModelTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -19,6 +21,19 @@ class Shop extends Model
         'shopify_domain',
         'shopify_token',
         'grandfathered',
+        'freemium',
+        'plan_id',
+        'namespace',
+    ];
+
+    /**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'grandfathered' => 'bool',
+        'freemium'      => 'bool',
     ];
 
     /**
@@ -27,61 +42,5 @@ class Shop extends Model
      * @var array
      */
     protected $dates = ['deleted_at'];
-
-    /**
-     * The API instance.
-     *
-     * @var object
-     */
-    protected $api;
-
-    /**
-     * Creates or returns an instance of API for the shop.
-     *
-     * @return object
-     */
-    public function api()
-    {
-        if (!$this->api) {
-            // Create new API instance
-            $api = ShopifyApp::api();
-            $api->setSession($this->shopify_domain, $this->shopify_token);
-
-            $this->api = $api;
-        }
-
-        // Return existing instance
-        return $this->api;
-    }
-
-    /**
-     * Checks is shop is grandfathered in.
-     *
-     * @return bool
-     */
-    public function isGrandfathered()
-    {
-        return ((bool) $this->grandfathered) === true;
-    }
-
-    /**
-     * Get charges.
-     *
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    public function charges()
-    {
-        return $this->hasMany('OhMyBrew\ShopifyApp\Models\Charge');
-    }
-
-    /**
-     * Checks if charges have been applied to the shop.
-     *
-     * @return bool
-     */
-    public function hasCharges()
-    {
-        return $this->charges->isNotEmpty();
-    }
 }
 

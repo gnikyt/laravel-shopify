@@ -2,160 +2,89 @@
 
 namespace OhMyBrew\ShopifyApp\Traits;
 
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\View;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
-use OhMyBrew\ShopifyApp\Libraries\BillingPlan;
 use OhMyBrew\ShopifyApp\Models\Charge;
+use OhMyBrew\ShopifyApp\Models\Plan;
 use OhMyBrew\ShopifyApp\Models\Shop;
+use OhMyBrew\ShopifyApp\Requests\StoreUsageCharge;
+use OhMyBrew\ShopifyApp\Services\BillingPlan;
+use OhMyBrew\ShopifyApp\Services\UsageCharge;
 
+/**
+ * Responsible for billing a shop for plans and usage charges.
+ */
 trait BillingControllerTrait
 {
     /**
      * Redirects to billing screen for Shopify.
      *
-     * @return \Illuminate\Http\Response
+     * @param \OhMyBrew\ShopifyApp\Models\Plan $plan The plan.
+     *
+     * @return \Illuminate\View\View
      */
-    public function index()
+    public function index(Plan $plan)
     {
+        // If the plan is null, get a plan
+        if (is_null($plan) || ($plan && !$plan->exists)) {
+            $plan = Plan::where('on_install', true)->first();
+        }
+
         // Get the confirmation URL
-        $shop = ShopifyApp::shop();
-        $plan = new BillingPlan($shop, $this->chargeType());
-        $plan->setDetails($this->planDetails($shop));
+        $bp = new BillingPlan(ShopifyApp::shop(), $plan);
+        $url = $bp->confirmationUrl();
 
         // Do a fullpage redirect
-        return view('shopify-app::billing.fullpage_redirect', [
-            'url' => $plan->getConfirmationUrl(),
-        ]);
+        return View::make('shopify-app::billing.fullpage_redirect', compact('url'));
     }
 
     /**
      * Processes the response from the customer.
      *
-     * @return void
+     * @param \OhMyBrew\ShopifyApp\Models\Plan $plan The plan.
+     *
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function process()
+    public function process(Plan $plan)
     {
-        // Setup the shop and get the charge ID passed in
+        // Activate the plan and save
         $shop = ShopifyApp::shop();
-        $chargeId = request('charge_id');
+        $bp = new BillingPlan($shop, $plan);
+        $bp->setChargeId(Request::query('charge_id'));
+        $bp->activate();
+        $bp->save();
 
-        // Setup the plan and get the charge
-        $plan = new BillingPlan($shop, $this->chargeType());
-        $plan->setChargeId($chargeId);
-        $status = $plan->getCharge()->status;
+        // All good, update the shop's plan and take them off freemium (if applicable)
+        $shop->update([
+            'freemium' => false,
+            'plan_id'  => $plan->id,
+        ]);
 
-        // Grab the plan detailed used
-        $planDetails = $this->planDetails($shop);
-        unset($planDetails['return_url']);
-
-        // Create a charge (regardless of the status)
-        $charge = new Charge();
-        $charge->type = $this->chargeType() === 'recurring' ? Charge::CHARGE_RECURRING : Charge::CHARGE_ONETIME;
-        $charge->charge_id = $chargeId;
-        $charge->status = $status;
-
-        // Check the customer's answer to the billing
-        if ($status === 'accepted') {
-            // Activate and add details to our charge
-            $response = $plan->activate();
-            $charge->status = $response->status;
-            $charge->billing_on = $response->billing_on;
-            $charge->trial_ends_on = $response->trial_ends_on;
-            $charge->activated_on = $response->activated_on;
-
-            // Set old charge as cancelled, if one
-            $lastCharge = $this->getLastCharge($shop);
-            if ($lastCharge) {
-                $lastCharge->status = 'cancelled';
-                $lastCharge->save();
-            }
-        } else {
-            // Customer declined the charge
-            $charge->status = 'declined';
-            $charge->cancelled_on = Carbon::today()->format('Y-m-d');
-        }
-
-        // Merge in the plan details since the fields match the database columns
-        foreach ($planDetails as $key => $value) {
-            $charge->{$key} = $value;
-        }
-
-        // Save and link to the shop
-        $shop->charges()->save($charge);
-
-        if ($status === 'declined') {
-            // Show the error... don't allow access
-            return abort(403, 'It seems you have declined the billing charge for this application');
-        }
-
-        // All good... go to homepage of app
-        return redirect()->route('home');
+        // Go to homepage of app
+        return Redirect::route('home')->with('success', 'billing');
     }
 
     /**
-     * Base plan to use for billing. Setup as a function so its patchable.
-     * Checks for cancelled charge within trial day limit, and issues
-     * a new trial days number depending on the result for shops who
-     * resinstall the app.
+     * Allows for setting a usage charge.
      *
-     * @param object $shop The shop object.
+     * @param \OhMyBrew\ShopifyApp\Requests\StoreUsageCharge $request
      *
-     * @return array
+     * @return \Illuminate\Http\RedirectResponse
      */
-    protected function planDetails(Shop $shop)
+    public function usageCharge(StoreUsageCharge $request)
     {
-        // Initial plan details
-        $plan = [
-            'name'       => config('shopify-app.billing_plan'),
-            'price'      => config('shopify-app.billing_price'),
-            'test'       => config('shopify-app.billing_test'),
-            'return_url' => url(config('shopify-app.billing_redirect')),
-        ];
+        // Activate and save the usage charge
+        $validated = $request->validated();
+        $uc = new UsageCharge(ShopifyApp::shop(), $validated);
+        $uc->activate();
+        $uc->save();
 
-        // Handle capped amounts for UsageCharge API
-        if (config('shopify-app.billing_capped_amount')) {
-            $plan['capped_amount'] = config('shopify-app.billing_capped_amount');
-            $plan['terms'] = config('shopify-app.billing_terms');
-        }
-
-        // Grab the last charge for the shop (if any) to determine if this shop
-        // reinstalled the app so we can issue new trial days based on result
-        $lastCharge = $this->getLastCharge($shop);
-        if ($lastCharge && $lastCharge->isCancelled()) {
-            // Return the new trial days, could result in 0
-            $plan['trial_days'] = $lastCharge->remainingTrialDaysFromCancel();
-        } else {
-            // Set initial trial days fromc config
-            $plan['trial_days'] = config('shopify-app.billing_trial_days');
-        }
-
-        return $plan;
-    }
-
-    /**
-     * Base charge type (single or recurring).
-     * Setup as a function so its patchable.
-     *
-     * @return string
-     */
-    protected function chargeType()
-    {
-        return config('shopify-app.billing_type');
-    }
-
-    /**
-     * Gets the last single or recurring charge for the shop.
-     *
-     * @param object $shop The shop object.
-     *
-     * @return null|Charge
-     */
-    protected function getLastCharge(Shop $shop)
-    {
-        return $shop->charges()
-            ->whereIn('type', [Charge::CHARGE_RECURRING, Charge::CHARGE_ONETIME])
-            ->orderBy('created_at', 'desc')
-            ->first();
+        // All done, return with success
+        return isset($validated['redirect']) ?
+            Redirect::to($validated['redirect'])->with('success', 'usage_charge') :
+            Redirect::back()->with('success', 'usage_charge');
     }
 }
 

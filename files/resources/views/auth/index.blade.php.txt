@@ -3,7 +3,7 @@
     <head>
         <meta name="csrf-token" content="{{ csrf_token() }}">
         
-        <title>Shopify App — Installation</title>
+        <title>Shopify App — Login</title>
 
         <style>
             html, body { padding: 0; margin: 0; }
@@ -73,7 +73,7 @@
             <header>
                 <h1>{{ config('shopify-app.app_name') }}</h1>
                 <p class="subhead">
-                    <label for="shop">Enter your shop domain to log in or install this app.</label>
+                    <label for="shop">Enter your Shopify domain to login.</label>
                 </p>
 
                 @if (session()->has('error'))
@@ -85,7 +85,7 @@
                 <form class="form-horizontal" method="POST" action="{{ route('authenticate') }}">
                     {{ csrf_field() }}
                     <input type="text" name="shop" id="shop" placeholder="example.myshopify.com">
-                    <button type="submit">Install</button>
+                    <button type="submit">Submit</button>
                 </form>
             </div>
         </main>

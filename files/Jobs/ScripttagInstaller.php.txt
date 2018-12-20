@@ -7,16 +7,18 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use OhMyBrew\ShopifyApp\Models\Shop;
 
+/**
+ * Webhook job responsible for handling installing scripttag.
+ */
 class ScripttagInstaller implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
-     * The shop.
+     * The shop object.
      *
-     * @var \OhMyBrew\ShopifyApp\Models\Shop
+     * @var object
      */
     protected $shop;
 
@@ -30,12 +32,12 @@ class ScripttagInstaller implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param \OhMyBrew\ShopifyApp\Models\Shop $shop       The shop object
-     * @param array                            $scripttags The scripttag list
+     * @param object $shop       The shop object
+     * @param array  $scripttags The scripttag list
      *
      * @return void
      */
-    public function __construct(Shop $shop, array $scripttags)
+    public function __construct($shop, array $scripttags)
     {
         $this->shop = $shop;
         $this->scripttags = $scripttags;
@@ -56,7 +58,10 @@ class ScripttagInstaller implements ShouldQueue
         $shopScripttags = $api->rest(
             'GET',
             '/admin/script_tags.json',
-            ['limit' => 250, 'fields' => 'id,src']
+            [
+                'limit'  => 250,
+                'fields' => 'id,src',
+            ]
         )->body->script_tags;
 
         foreach ($this->scripttags as $scripttag) {
