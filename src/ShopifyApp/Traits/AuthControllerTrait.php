@@ -44,7 +44,7 @@ trait AuthControllerTrait
         $authHandler = new AuthShopHandler($shopDomain);
         $authHandler->storeSession();
 
-        if (!isset($request['code'])) {
+        if (!$request->has('code')) {
             // Handle a request without a code, do a fullpage redirect
             $authUrl = $authHandler->buildAuthUrl();
 

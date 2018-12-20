@@ -21,14 +21,19 @@ trait BillingControllerTrait
     /**
      * Redirects to billing screen for Shopify.
      *
-     * @param \OhMyBrew\ShopifyApp\Models\Plan $billingPlan The plan.
+     * @param \OhMyBrew\ShopifyApp\Models\Plan|null $plan The plan.
      *
      * @return \Illuminate\View\View
      */
-    public function index(Plan $billingPlan)
+    public function index(Plan $plan = null)
     {
+        // If the plan is null, get a plan
+        if (is_null($plan)) {
+            $plan = Plan::where('on_install', true)->first();
+        }
+
         // Get the confirmation URL
-        $bp = new BillingPlan(ShopifyApp::shop(), $billingPlan);
+        $bp = new BillingPlan(ShopifyApp::shop(), $plan);
         $url = $bp->confirmationUrl();
 
         // Do a fullpage redirect
@@ -38,15 +43,15 @@ trait BillingControllerTrait
     /**
      * Processes the response from the customer.
      *
-     * @param \OhMyBrew\ShopifyApp\Models\Plan $billingPlan The plan.
+     * @param \OhMyBrew\ShopifyApp\Models\Plan $plan The plan.
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function process(Plan $billingPlan)
+    public function process(Plan $plan)
     {
         // Activate the plan and save
         $shop = ShopifyApp::shop();
-        $bp = new BillingPlan($shop, $billingPlan);
+        $bp = new BillingPlan($shop, $plan);
         $bp->setChargeId(Request::query('charge_id'));
         $bp->activate();
         $bp->save();
@@ -54,7 +59,7 @@ trait BillingControllerTrait
         // All good, update the shop's plan and take them off freemium (if applicable)
         $shop->update([
             'freemium' => false,
-            'plan_id'  => $billingPlan->id,
+            'plan_id'  => $plan->id,
         ]);
 
         // Go to homepage of app
