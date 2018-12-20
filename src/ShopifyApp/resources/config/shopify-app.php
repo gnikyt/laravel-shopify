@@ -3,6 +3,18 @@
 return [
     /*
     |--------------------------------------------------------------------------
+    | Manual migrations
+    |--------------------------------------------------------------------------
+    |
+    | This option option allows you to use:
+    | `php artisan vendor:publish --tag=migrations` to push migrations
+    | to your app's folder so you're free to modify before migrating.
+    |
+    */
+    'manual_migrations' => (bool) env('SHOPIFY_MANUAL_MIGRATIONS', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | Namespace
     |--------------------------------------------------------------------------
     |

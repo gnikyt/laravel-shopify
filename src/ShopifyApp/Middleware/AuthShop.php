@@ -5,6 +5,7 @@ namespace OhMyBrew\ShopifyApp\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
@@ -46,7 +47,7 @@ class AuthShop
 
         // Shop is OK, move on...
         $response = $next($request);
-        if (!$response instanceof Response) {
+        if (!$response instanceof Response && !$response instanceof RedirectResponse) {
             // We need a response object to modify headers
             $response = new Response($response);
         }
