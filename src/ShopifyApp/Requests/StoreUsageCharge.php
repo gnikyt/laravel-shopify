@@ -12,6 +12,16 @@ use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 class StoreUsageCharge extends FormRequest
 {
     /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool
+     */
+    public function authorize()
+    {
+        return true;
+    }
+
+    /**
      * Configure the validator instance.
      *
      * @param \Illuminate\Validation\Validator $validator
