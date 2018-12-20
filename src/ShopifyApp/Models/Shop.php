@@ -5,6 +5,9 @@ namespace OhMyBrew\ShopifyApp\Models;
 use Illuminate\Database\Eloquent\Model;
 use OhMyBrew\ShopifyApp\Traits\ShopModelTrait;
 
+/**
+ * Responsible for reprecenting a shop record.
+ */
 class Shop extends Model
 {
     use ShopModelTrait;
@@ -18,6 +21,8 @@ class Shop extends Model
         'shopify_domain',
         'shopify_token',
         'grandfathered',
+        'freemium',
+        'plan_id',
         'namespace',
     ];
 

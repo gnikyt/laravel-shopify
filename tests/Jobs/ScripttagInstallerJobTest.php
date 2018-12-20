@@ -2,6 +2,7 @@
 
 namespace OhMyBrew\ShopifyApp\Test\Jobs;
 
+use Illuminate\Support\Facades\Config;
 use OhMyBrew\ShopifyApp\Jobs\ScripttagInstaller;
 use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
@@ -15,8 +16,7 @@ class ScripttagInstallerJobTest extends TestCase
     {
         parent::setup();
 
-        // Re-used variables
-        $this->shop = Shop::find(1);
+        // Script tags to use
         $this->scripttags = [
             [
                 'src'   => 'https://js-aplenty.com/bar.js',
@@ -25,12 +25,13 @@ class ScripttagInstallerJobTest extends TestCase
         ];
 
         // Replace with our API
-        config(['shopify-app.api_class' => new ApiStub()]);
+        Config::set('shopify-app.api_class', new ApiStub());
     }
 
     public function testJobAcceptsLoad()
     {
-        $job = new ScripttagInstaller($this->shop, $this->scripttags);
+        $shop = factory(Shop::class)->create();
+        $job = new ScripttagInstaller($shop, $this->scripttags);
 
         $refJob = new ReflectionObject($job);
         $refScripttags = $refJob->getProperty('scripttags');
@@ -39,12 +40,13 @@ class ScripttagInstallerJobTest extends TestCase
         $refShop->setAccessible(true);
 
         $this->assertEquals($this->scripttags, $refScripttags->getValue($job));
-        $this->assertEquals($this->shop, $refShop->getValue($job));
+        $this->assertEquals($shop, $refShop->getValue($job));
     }
 
     public function testJobShouldTestScripttagExistanceMethod()
     {
-        $job = new ScripttagInstaller($this->shop, $this->scripttags);
+        $shop = factory(Shop::class)->create();
+        $job = new ScripttagInstaller($shop, $this->scripttags);
 
         $method = new ReflectionMethod($job, 'scripttagExists');
         $method->setAccessible(true);
@@ -78,7 +80,13 @@ class ScripttagInstallerJobTest extends TestCase
 
     public function testJobShouldNotRecreateScripttags()
     {
-        $job = new ScripttagInstaller($this->shop, $this->scripttags);
+        // Stub the responses
+        ApiStub::stubResponses([
+            'get_script_tags',
+        ]);
+
+        $shop = factory(Shop::class)->create();
+        $job = new ScripttagInstaller($shop, $this->scripttags);
         $created = $job->handle();
 
         // Scripttag JSON comes from fixture JSON which matches $this->scripttags
@@ -88,6 +96,12 @@ class ScripttagInstallerJobTest extends TestCase
 
     public function testJobShouldCreateScripttags()
     {
+        // Stub the responses
+        ApiStub::stubResponses([
+            'get_script_tags',
+            'get_script_tags',
+        ]);
+
         $scripttags = [
             [
                 'src'   => 'https://js-aplenty.com/fooy-dooy.js',
@@ -95,7 +109,8 @@ class ScripttagInstallerJobTest extends TestCase
             ],
         ];
 
-        $job = new ScripttagInstaller($this->shop, $scripttags);
+        $shop = factory(Shop::class)->create();
+        $job = new ScripttagInstaller($shop, $scripttags);
         $created = $job->handle();
 
         // $scripttags is new scripttags which does not exist in the JSON fixture

@@ -4,8 +4,13 @@ namespace OhMyBrew\ShopifyApp\Traits;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
+use OhMyBrew\ShopifyApp\Models\Charge;
+use OhMyBrew\ShopifyApp\Models\Plan;
 use OhMyBrew\ShopifyApp\Scopes\NamespaceScope;
 
+/**
+ * Responsible for reprecenting a shop record.
+ */
 trait ShopModelTrait
 {
     use SoftDeletes;
@@ -22,7 +27,7 @@ trait ShopModelTrait
      *
      * @param array $attributes The model attribues to pass in.
      *
-     * @reutrn self
+     * @return self
      */
     public function __construct(array $attributes = [])
     {
@@ -77,7 +82,7 @@ trait ShopModelTrait
      */
     public function charges()
     {
-        return $this->hasMany('OhMyBrew\ShopifyApp\Models\Charge');
+        return $this->hasMany(Charge::class);
     }
 
     /**
@@ -97,7 +102,7 @@ trait ShopModelTrait
      */
     public function plan()
     {
-        return $this->belongsTo('OhMyBrew\ShopifyApp\Models\Plan');
+        return $this->belongsTo(Plan::class);
     }
 
     /**
@@ -108,5 +113,19 @@ trait ShopModelTrait
     public function isFreemium()
     {
         return ((bool) $this->freemium) === true;
+    }
+
+    /**
+     * Gets the last single or recurring charge for the shop.
+     *
+     * @return null|\OhMyBrew\ShopifyApp\Models\Charge
+     */
+    public function planCharge()
+    {
+        return $this->charges()
+            ->whereIn('type', [Charge::CHARGE_RECURRING, Charge::CHARGE_ONETIME])
+            ->where('plan_id', $this->plan_id)
+            ->orderBy('created_at', 'desc')
+            ->first();
     }
 }

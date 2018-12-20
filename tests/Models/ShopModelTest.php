@@ -2,6 +2,7 @@
 
 namespace OhMyBrew\ShopifyApp\Test\Models;
 
+use OhMyBrew\ShopifyApp\Models\Charge;
 use OhMyBrew\ShopifyApp\Models\Plan;
 use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\Test\TestCase;
@@ -10,7 +11,8 @@ class ShopModelTest extends TestCase
 {
     public function testShopReturnsApi()
     {
-        $shop = Shop::find(1);
+        // Create a shop
+        $shop = factory(Shop::class)->create();
 
         // First run should store the api object to api var
         $run1 = $shop->api();
@@ -26,29 +28,15 @@ class ShopModelTest extends TestCase
      */
     public function testShopShouldNotSaveWithoutDomain()
     {
-        $shop = new Shop();
-        $shop->shopify_token = '1234';
-        $shop->save();
-    }
-
-    public function testShopShouldSaveAndAllowForMassAssignment()
-    {
-        $shop = new Shop();
-        $shop->shopify_domain = 'hello.myshopify.com';
-        $shop->shopify_token = '1234';
-        $shop->save();
-
-        $shop = Shop::create(
-            ['shopify_domain' => 'abc.myshopify.com', 'shopify_token' => '1234'],
-            ['shopify_domain' => 'cba.myshopify.com', 'shopify_token' => '1234', 'grandfathered' => true]
-        );
-        $this->assertEquals(true, true);
+        $shop = factory(Shop::class)->create([
+            'shopify_domain' => null,
+        ]);
     }
 
     public function testShopShouldReturnGrandfatheredState()
     {
-        $shop = Shop::where('shopify_domain', 'grandfathered.myshopify.com')->first();
-        $shop_2 = Shop::where('shopify_domain', 'example.myshopify.com')->first();
+        $shop = factory(Shop::class)->states('grandfathered')->create();
+        $shop_2 = factory(Shop::class)->create();
 
         $this->assertTrue($shop->isGrandfathered());
         $this->assertFalse($shop_2->isGrandfathered());
@@ -56,9 +44,7 @@ class ShopModelTest extends TestCase
 
     public function testShopCanSoftDeleteAndBeRestored()
     {
-        $shop = new Shop();
-        $shop->shopify_domain = 'hello.myshopify.com';
-        $shop->save();
+        $shop = factory(Shop::class)->create();
         $shop->delete();
 
         // Test soft delete
@@ -75,8 +61,11 @@ class ShopModelTest extends TestCase
 
     public function testShouldReturnBoolForChargesApplied()
     {
-        $shop = Shop::where('shopify_domain', 'grandfathered.myshopify.com')->first();
-        $shop_2 = Shop::where('shopify_domain', 'example.myshopify.com')->first();
+        $shop = factory(Shop::class)->create();
+        $shop_2 = factory(Shop::class)->create();
+        factory(Charge::class)->states('type_recurring')->create([
+            'shop_id' => $shop_2->id,
+        ]);
 
         $this->assertFalse($shop->hasCharges());
         $this->assertTrue($shop_2->hasCharges());
@@ -84,17 +73,27 @@ class ShopModelTest extends TestCase
 
     public function testShopReturnsPlan()
     {
-        $this->assertInstanceOf(Plan::class, Shop::find(1)->plan);
+        $plan = factory(Plan::class)->states('type_recurring')->create();
+        $shop = factory(Shop::class)->create([
+            'plan_id' => $plan->id,
+        ]);
+
+        $this->assertInstanceOf(Plan::class, $shop->plan);
     }
 
     public function testShopReturnsNoPlan()
     {
-        $this->assertEquals(null, Shop::find(5)->plan);
+        $shop = factory(Shop::class)->create();
+
+        $this->assertEquals(null, $shop->plan);
     }
 
     public function testShopIsFreemiumAndNotFreemium()
     {
-        $this->assertTrue(Shop::find(5)->isFreemium());
-        $this->assertFalse(Shop::find(1)->isFreemium());
+        $shop = factory(Shop::class)->states('freemium')->create();
+        $shop_2 = factory(Shop::class)->create();
+
+        $this->assertTrue($shop->isFreemium());
+        $this->assertFalse($shop_2->isFreemium());
     }
 }

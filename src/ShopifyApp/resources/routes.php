@@ -67,10 +67,10 @@ Route::group(['middleware' => ['web']], function () {
     */
 
     Route::get(
-        '/billing/{planId?}',
+        '/billing/{plan?}',
         'OhMyBrew\ShopifyApp\Controllers\BillingController@index'
     )
-    ->where('planId', '^([0-9]+|)$')
+    ->where('plan', '^([0-9]+|)$')
     ->name('billing');
 
     /*
@@ -83,10 +83,10 @@ Route::group(['middleware' => ['web']], function () {
     */
 
     Route::get(
-        '/billing/process/{planId?}',
+        '/billing/process/{plan?}',
         'OhMyBrew\ShopifyApp\Controllers\BillingController@process'
     )
-    ->where('planId', '^([0-9]+|)$')
+    ->where('plan', '^([0-9]+|)$')
     ->name('billing.process');
 
     /*

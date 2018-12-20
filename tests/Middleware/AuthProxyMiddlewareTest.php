@@ -2,7 +2,11 @@
 
 namespace OhMyBrew\ShopifyApp\Test\Middleware;
 
+use Closure;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Session;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Middleware\AuthProxy;
 use OhMyBrew\ShopifyApp\Test\TestCase;
@@ -23,13 +27,9 @@ class AuthProxyMiddlewareTest extends TestCase
         ];
 
         // Set the app secret to match Shopify's docs
-        config(['shopify-app.api_secret' => 'hush']);
+        Config::set('shopify-app.api_secret', 'hush');
     }
 
-    /**
-     * @expectedException Symfony\Component\HttpKernel\Exception\HttpException
-     * @expectedExceptionMessage Invalid proxy signature
-     */
     public function testDenysForMissingShop()
     {
         // Remove shop from params
@@ -37,13 +37,12 @@ class AuthProxyMiddlewareTest extends TestCase
         unset($query['shop']);
         Input::merge($query);
 
-        $called = false;
-        (new AuthProxy())->handle(request(), function ($request) use (&$called) {
-            // Should never be called
-            $called = true;
-        });
+        // Run the middleware
+        $result = $this->runAuthProxy();
 
-        $this->assertFalse($called);
+        // Assert it was not processed and our status
+        $this->assertFalse($result[1]);
+        $this->assertEquals(401, $result[0]->status());
     }
 
     public function testRuns()
@@ -51,15 +50,12 @@ class AuthProxyMiddlewareTest extends TestCase
         Input::merge($this->queryParams);
 
         // Confirm no shop
-        $this->assertNull(session('shopify_domain'));
+        $this->assertNull(Session::get('shopify_domain'));
 
-        $called = false;
-        (new AuthProxy())->handle(request(), function ($request) use (&$called) {
-            // Should be called
-            $called = true;
-
+        // Run the middleware
+        $result = $this->runAuthProxy(function ($request) {
             // Session should be set by now
-            $this->assertEquals($this->queryParams['shop'], session('shopify_domain'));
+            $this->assertEquals($this->queryParams['shop'], Session::get('shopify_domain'));
 
             // Shop should be callable
             $shop = ShopifyApp::shop();
@@ -67,13 +63,9 @@ class AuthProxyMiddlewareTest extends TestCase
         });
 
         // Confirm full run
-        $this->assertTrue($called);
+        $this->assertTrue($result[1]);
     }
 
-    /**
-     * @expectedException Symfony\Component\HttpKernel\Exception\HttpException
-     * @expectedExceptionMessage Invalid proxy signature
-     */
     public function testDoesNotRunForInvalidSignature()
     {
         // Make the signature invalid
@@ -81,12 +73,25 @@ class AuthProxyMiddlewareTest extends TestCase
         $query['oops'] = 'i-did-it-again';
         Input::merge($query);
 
+        // Run the middleware
+        $result = $this->runAuthProxy();
+
+        // Assert it was not processed and our status
+        $this->assertFalse($result[1]);
+        $this->assertEquals(401, $result[0]->status());
+    }
+
+    private function runAuthProxy(Closure $cb = null)
+    {
         $called = false;
-        (new AuthProxy())->handle(request(), function ($request) use (&$called) {
-            // Should never be called
+        $response = (new AuthProxy())->handle(Request::instance(), function ($request) use (&$called, $cb) {
             $called = true;
+
+            if ($cb) {
+                $cb($request);
+            }
         });
 
-        $this->assertFalse($called);
+        return [$response, $called];
     }
 }

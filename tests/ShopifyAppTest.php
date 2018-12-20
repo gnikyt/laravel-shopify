@@ -2,6 +2,8 @@
 
 namespace OhMyBrew\ShopifyApp\Test;
 
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Session;
 use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\ShopifyApp;
 
@@ -22,7 +24,7 @@ class ShopifyAppTest extends TestCase
 
     public function testShopWithSession()
     {
-        session(['shopify_domain' => 'example.myshopify.com']);
+        Session::put('shopify_domain', 'example.myshopify.com');
 
         // First run should store the shop object to shop var
         $run1 = $this->shopifyApp->shop();
@@ -35,7 +37,7 @@ class ShopifyAppTest extends TestCase
 
     public function testCreatesNewShopWithSessionIfItDoesNotExist()
     {
-        session(['shopify_domain' => 'example-nonexistant.myshopify.com']);
+        Session::put('shopify_domain', 'example-nonexistant.myshopify.com');
 
         $this->assertNull(Shop::where('shopify_domain', 'example-nonexistant.myshopify.com')->first());
 
@@ -51,7 +53,7 @@ class ShopifyAppTest extends TestCase
 
     public function testReturnsApiInstanceWithRateLimiting()
     {
-        config(['shopify-app.api_rate_limiting_enabled' => true]);
+        Config::set('shopify-app.api_rate_limiting_enabled', true);
 
         $this->assertTrue($this->shopifyApp->api()->isRateLimitingEnabled());
     }
@@ -68,7 +70,7 @@ class ShopifyAppTest extends TestCase
         }
 
         // Test if someone changed the domain
-        config(['shopify-app.myshopify_domain' => 'myshopify.io']);
+        Config::set('shopify-app.myshopify_domain', 'myshopify.io');
         foreach ($domains_2 as $domain) {
             $this->assertEquals('my-shop.myshopify.io', $this->shopifyApp->sanitizeShopDomain($domain));
         }
@@ -81,7 +83,8 @@ class ShopifyAppTest extends TestCase
 
     public function testShouldUseDefaultModel()
     {
-        session(['shopify_domain' => 'example.myshopify.com']);
+        $shop = factory(Shop::class)->create();
+        Session::put('shopify_domain', $shop->shopify_domain);
 
         $shop = $this->shopifyApp->shop();
 
@@ -90,8 +93,9 @@ class ShopifyAppTest extends TestCase
 
     public function testShouldAllowForModelOverride()
     {
-        session(['shopify_domain' => 'example.myshopify.com']);
-        config(['shopify-app.shop_model' => 'OhMyBrew\ShopifyApp\Test\Stubs\ShopModelStub']);
+        $shop = factory(Shop::class)->create();
+        Session::put('shopify_domain', $shop->shopify_domain);
+        Config::set('shopify-app.shop_model', \OhMyBrew\ShopifyApp\Test\Stubs\ShopModelStub::class);
 
         $shop = $this->shopifyApp->shop();
 
@@ -103,7 +107,7 @@ class ShopifyAppTest extends TestCase
     {
         // Set the secret to use for HMAC creations
         $secret = 'hello';
-        config(['shopify-app.api_secret' => $secret]);
+        Config::set('shopify-app.api_secret', $secret);
 
         // Raw data
         $data = 'one-two-three';

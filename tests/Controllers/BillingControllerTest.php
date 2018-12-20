@@ -2,15 +2,14 @@
 
 namespace OhMyBrew\ShopifyApp\Test\Controllers;
 
-use Carbon\Carbon;
-use OhMyBrew\ShopifyApp\Controllers\BillingController;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Session;
 use OhMyBrew\ShopifyApp\Models\Charge;
 use OhMyBrew\ShopifyApp\Models\Plan;
 use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\ShopifyApp;
 use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
 use OhMyBrew\ShopifyApp\Test\TestCase;
-use ReflectionMethod;
 
 class BillingControllerTest extends TestCase
 {
@@ -19,18 +18,28 @@ class BillingControllerTest extends TestCase
         parent::setUp();
 
         // Stub in our API class
-        config(['shopify-app.api_class' => new ApiStub()]);
+        Config::set('shopify-app.api_class', new ApiStub());
 
         // Create the main class
         $this->shopifyApp = new ShopifyApp($this->app);
-
-        // Base shop for all tests here
-        $this->shop = Shop::where('shopify_domain', 'example.myshopify.com')->first();
-        session(['shopify_domain' => $this->shop->shopify_domain]);
     }
 
     public function testSendsShopToBillingScreen()
     {
+        // Stub the responses
+        ApiStub::stubResponses([
+            'post_recurring_application_charges',
+            'post_recurring_application_charges_activate',
+        ]);
+
+        // Create the shop
+        $shop = factory(Shop::class)->create();
+        Session::put('shopify_domain', $shop->shopify_domain);
+
+        // Create a on-install plan
+        factory(Plan::class)->states('type_recurring', 'installable')->create();
+
+        // Run the call
         $response = $this->get('/billing');
         $response->assertViewHas(
             'url',
@@ -38,177 +47,68 @@ class BillingControllerTest extends TestCase
         );
     }
 
-    public function testShopAcceptsBillingRecurring()
+    public function testShopAcceptsBilling()
     {
-        // Use the base shop
-        $shop = Shop::where('shopify_domain', 'example.myshopify.com')->first();
-        $chargeId = 1029266947;
+        // Stub the responses
+        ApiStub::stubResponses([
+            'post_recurring_application_charges',
+            'post_recurring_application_charges_activate',
+        ]);
 
-        // example.myshopify.com has previous charge defined in TestCase setup
-        $oldCharge = $shop->charges()->whereIn('type', [Charge::CHARGE_RECURRING, Charge::CHARGE_ONETIME])->orderBy('created_at', 'desc')->first();
+        // Create the shop
+        $shop = factory(Shop::class)->create();
+        Session::put('shopify_domain', $shop->shopify_domain);
 
-        // Run with a new charge
-        $response = $this->call('get', '/billing/process/1', ['charge_id' => $chargeId]);
+        // Make the plan
+        $plan = factory(Plan::class)->states('type_recurring')->create();
 
-        // Get the new charge and refresh the old one
-        $newCharge = $shop->charges()->get()->last();
-        $oldCharge->refresh();
+        // Run the call
+        $updatedAt = $shop->updated_at;
+        $response = $this->call('get', "/billing/process/{$plan->id}", ['charge_id' => 1]);
 
-        $response->assertStatus(302);
-        $this->assertEquals($chargeId, $newCharge->charge_id);
-        $this->assertEquals('cancelled', $oldCharge->status);
+        // Refresh the model
+        $shop->refresh();
+
+        // Assert we've redirected and shop has been updated
+        $response->assertRedirect();
+        $this->assertFalse($updatedAt === $shop->updated_at);
     }
 
-    public function testShopAcceptsBillingOneTime()
+    public function testUsageChargeSuccess()
     {
-        // Use the base shop
-        $shop = Shop::where('shopify_domain', 'example.myshopify.com')->first();
-        $chargeId = 675931192;
+        // Stub the responses
+        ApiStub::stubResponses([
+            'post_recurring_application_charges_usage_charges_alt',
+            'post_recurring_application_charges_usage_charges_alt2',
+        ]);
 
-        // example.myshopify.com has previous charge defined in TestCase setup
-        $oldCharge = $shop->charges()->whereIn('type', [Charge::CHARGE_RECURRING, Charge::CHARGE_ONETIME])->orderBy('created_at', 'desc')->first();
-
-        // Run with a new charge
-        $response = $this->call('get', '/billing/process/3', ['charge_id' => $chargeId]);
-
-        // Get the new charge and refresh the old one
-        $newCharge = $shop->charges()->get()->last();
-        $oldCharge->refresh();
-
-        $response->assertStatus(302);
-        $this->assertEquals($chargeId, $newCharge->charge_id);
-        $this->assertEquals('cancelled', $oldCharge->status);
-    }
-
-    public function testReturnOnInstallFlaggedPlan()
-    {
-        $controller = new BillingController();
-        $method = new ReflectionMethod(BillingController::class, 'getPlan');
-        $method->setAccessible(true);
-
-        // Based on default config
-        $this->assertEquals(Plan::find(1), $method->invoke($controller, null));
-    }
-
-    public function testReturnPlanPassedToController()
-    {
-        $controller = new BillingController();
-        $method = new ReflectionMethod(BillingController::class, 'getPlan');
-        $method->setAccessible(true);
-
-        // Based on default config
-        $this->assertEquals(Plan::find(2), $method->invoke($controller, 2));
-    }
-
-    public function testReturnsLastChargeForShop()
-    {
-        $controller = new BillingController();
-        $method = new ReflectionMethod(BillingController::class, 'getLastCharge');
-        $method->setAccessible(true);
-
-        // Based on default config
-        $this->assertInstanceOf(Charge::class, $method->invoke($controller, $this->shop));
-    }
-
-    public function testUsageChargeSuccessWithRedirect()
-    {
-        // Create a new charge for the shop to make a usage charge against
-        $charge = new Charge();
-        $charge->charge_id = 12939009;
-        $charge->name = 'Base Plan';
-        $charge->type = Charge::CHARGE_RECURRING;
-        $charge->price = 25.00;
-        $charge->shop_id = $this->shop->id;
-        $charge->plan_id = Plan::find(1)->id;
-        $charge->created_at = Carbon::now()->addMinutes(5);
-        $charge->save();
+        // Create the shop
+        $plan = factory(Plan::class)->states('type_recurring')->create();
+        $shop = factory(Shop::class)->create([
+            'plan_id' => $plan->id,
+        ]);
+        $charge = factory(Charge::class)->states('type_recurring')->create([
+            'plan_id' => $plan->id,
+            'shop_id' => $shop->id,
+        ]);
+        Session::put('shopify_domain', $shop->shopify_domain);
 
         // Setup the data for the usage charge and the signature for it
         $data = ['description' => 'One email', 'price' => 1.00, 'redirect' => 'https://localhost/usage-success'];
         $signature = $this->shopifyApp->createHmac(['data' => $data, 'buildQuery' => true]);
 
+        // Run the call
         $response = $this->call('post', '/billing/usage-charge', array_merge($data, ['signature' => $signature]));
-        $lastCharge = $this->shop->charges()->get()->last();
-
-        $response->assertStatus(302);
         $response->assertRedirect($data['redirect']);
-        $this->assertEquals(Charge::CHARGE_USAGE, $lastCharge->type);
-        $this->assertEquals($data['description'], $lastCharge->description);
-        $this->assertEquals($data['price'], $lastCharge->price);
-    }
+        $response->assertSessionHas('success');
 
-    public function testUsageChargeSuccessWithNoRedirect()
-    {
-        // Create a new charge for the shop to make a usage charge against
-        $charge = new Charge();
-        $charge->charge_id = 21828118;
-        $charge->name = 'Base Plan';
-        $charge->type = Charge::CHARGE_RECURRING;
-        $charge->price = 25.00;
-        $charge->shop_id = $this->shop->id;
-        $charge->plan_id = Plan::find(1)->id;
-        $charge->created_at = Carbon::now()->addMinutes(5);
-        $charge->save();
-
-        // Setup the data for the usage charge and the signature for it
+        // Run again with no redirect
         $data = ['description' => 'One email', 'price' => 1.00];
         $signature = $this->shopifyApp->createHmac(['data' => $data, 'buildQuery' => true]);
 
+        // Run the call
         $response = $this->call('post', '/billing/usage-charge', array_merge($data, ['signature' => $signature]));
-        $lastCharge = $this->shop->charges()->get()->last();
-
-        $response->assertStatus(302);
         $response->assertRedirect('http://localhost');
         $response->assertSessionHas('success');
-        $this->assertEquals(Charge::CHARGE_USAGE, $lastCharge->type);
-        $this->assertEquals($data['description'], $lastCharge->description);
-        $this->assertEquals($data['price'], $lastCharge->price);
-    }
-
-    public function testUsageChargeFailureWithNonRecurringCharge()
-    {
-        // Create a new charge for the shop to make a usage charge against
-        $charge = new Charge();
-        $charge->charge_id = 25630290;
-        $charge->name = 'Base Plan';
-        $charge->type = Charge::CHARGE_ONETIME;
-        $charge->price = 25.00;
-        $charge->shop_id = $this->shop->id;
-        $charge->plan_id = Plan::find(1)->id;
-        $charge->created_at = Carbon::now()->addMinutes(5);
-        $charge->save();
-
-        // Setup the data for the usage charge and the signature for it
-        $data = ['description' => 'One email', 'price' => 1.00];
-        $signature = $this->shopifyApp->createHmac(['data' => $data, 'buildQuery' => true]);
-
-        $response = $this->call('post', '/billing/usage-charge', array_merge($data, ['signature' => $signature]));
-
-        $response->assertStatus(200);
-        $response->assertViewHas('message');
-    }
-
-    public function testUsageChargeFailureWithSignatureError()
-    {
-        // Create a new charge for the shop to make a usage charge against
-        $charge = new Charge();
-        $charge->charge_id = 78398939;
-        $charge->name = 'Base Plan';
-        $charge->type = Charge::CHARGE_RECURRING;
-        $charge->price = 25.00;
-        $charge->shop_id = $this->shop->id;
-        $charge->plan_id = Plan::find(1)->id;
-        $charge->created_at = Carbon::now()->addMinutes(5);
-        $charge->save();
-
-        // Setup the data for the usage charge and the signature for it
-        $data = ['description' => 'One email', 'price' => 1.00];
-        $signature = $this->shopifyApp->createHmac(['data' => $data, 'buildQuery' => true]);
-        $data['price'] = 0.00;
-
-        $response = $this->call('post', '/billing/usage-charge', array_merge($data, ['signature' => $signature]));
-
-        $response->assertStatus(200);
-        $response->assertViewHas('message');
     }
 }

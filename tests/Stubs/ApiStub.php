@@ -2,36 +2,36 @@
 
 namespace OhMyBrew\ShopifyApp\Test\Stubs;
 
+use ErrorException;
+use Exception;
 use OhMyBrew\BasicShopifyAPI;
 
 class ApiStub extends BasicShopifyAPI
 {
+    public static $stubFiles = [];
+
+    public static function stubResponses(array $stubFiles)
+    {
+        self::$stubFiles = $stubFiles;
+    }
+
     public function rest(string $method, string $path, array $params = null)
     {
-        $filePath = $this->pathToHash($method, $path);
-        $responseJSON = null;
-        if (file_exists($filePath)) {
-            $responseJSON = json_decode(file_get_contents($filePath));
+        try {
+            $filename = array_shift(self::$stubFiles);
+            $response = json_decode(file_get_contents(__DIR__."/../fixtures/{$filename}.json"));
+        } catch (ErrorException $error) {
+            throw new Exception("Missing fixture for {$method} @ {$path}, tried: '{$filename}.json'");
         }
 
         return (object) [
-            'body'   => $responseJSON,
+            'body'   => $response,
             'status' => 200,
         ];
     }
 
     public function requestAccessToken(string $code)
     {
-        $filePath = $this->pathToHash('GET', '/admin/access_token.json');
-
-        return json_decode(file_get_contents($filePath))->access_token;
-    }
-
-    private function pathToHash($method, $path)
-    {
-        $path = str_replace('/', '_', parse_url($path, PHP_URL_PATH));
-        $hash = hash('sha1', strtolower($method).$path);
-
-        return __DIR__."/../fixtures/{$hash}.json";
+        return json_decode(file_get_contents(__DIR__.'/../fixtures/access_token.json'))->access_token;
     }
 }

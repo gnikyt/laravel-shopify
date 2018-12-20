@@ -3,6 +3,7 @@
 namespace OhMyBrew\ShopifyApp\Test\Middleware;
 
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Request;
 use OhMyBrew\ShopifyApp\Middleware\AuthWebhook;
 use OhMyBrew\ShopifyApp\Test\TestCase;
 
@@ -10,28 +11,30 @@ require_once __DIR__.'/../Stubs/OrdersCreateJobStub.php';
 
 class AuthWebhookMiddlewareTest extends TestCase
 {
-    /**
-     * @expectedException Symfony\Component\HttpKernel\Exception\HttpException
-     * @expectedExceptionMessage Invalid webhook signature
-     */
     public function testDenysForMissingShopHeader()
     {
-        request()->header('x-shopify-hmac-sha256', '1234');
-        (new AuthWebhook())->handle(request(), function ($request) {
+        Request::instance()->header('x-shopify-hmac-sha256', '1234');
+
+        // Run the middleware
+        $response = (new AuthWebhook())->handle(request(), function ($request) {
             // ...
         });
+
+        // Assert we get a proper response
+        $this->assertEquals(401, $response->status());
     }
 
-    /**
-     * @expectedException Symfony\Component\HttpKernel\Exception\HttpException
-     * @expectedExceptionMessage Invalid webhook signature
-     */
     public function testDenysForMissingHmacHeader()
     {
-        request()->header('x-shopify-shop-domain', 'example.myshopify.com');
-        (new AuthWebhook())->handle(request(), function ($request) {
+        Request::instance()->header('x-shopify-shop-domain', 'example.myshopify.com');
+
+        // Run the middleware
+        $response = (new AuthWebhook())->handle(request(), function ($request) {
             // ...
         });
+
+        // Assert we get a proper response
+        $this->assertEquals(401, $response->status());
     }
 
     public function testRuns()

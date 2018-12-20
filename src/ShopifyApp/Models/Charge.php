@@ -2,10 +2,14 @@
 
 namespace OhMyBrew\ShopifyApp\Models;
 
-use Carbon\Carbon;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
+/**
+ * Responsible for reprecenting a charge record.
+ */
 class Charge extends Model
 {
     use SoftDeletes;
@@ -15,6 +19,12 @@ class Charge extends Model
     const CHARGE_ONETIME = 2;
     const CHARGE_USAGE = 3;
     const CHARGE_CREDIT = 4;
+
+    // Types of statuses
+    const STATUS_ACTIVE = 'active';
+    const STATUS_ACCEPTED = 'accepted';
+    const STATUS_DECLINED = 'declined';
+    const STATUS_CANCELLED = 'cancelled';
 
     /**
      * The attributes that are mass assignable.
@@ -26,6 +36,7 @@ class Charge extends Model
         'shop_id',
         'charge_id',
         'plan_id',
+        'status',
     ];
 
     /**
@@ -56,7 +67,7 @@ class Charge extends Model
      */
     public function shop()
     {
-        return $this->belongsTo('OhMyBrew\ShopifyApp\Models\Shop');
+        return $this->belongsTo(Shop::class);
     }
 
     /**
@@ -66,7 +77,7 @@ class Charge extends Model
      */
     public function plan()
     {
-        return $this->belongsTo('OhMyBrew\ShopifyApp\Models\Plan');
+        return $this->belongsTo(Plan::class);
     }
 
     /**
@@ -89,7 +100,10 @@ class Charge extends Model
                 break;
         }
 
-        return $this->shop->api()->rest('GET', "/admin/{$path}/{$this->charge_id}.json")->body->{substr($path, 0, -1)};
+        return $this
+            ->shop
+            ->api()
+            ->rest('GET', "/admin/{$path}/{$this->charge_id}.json")->body->{substr($path, 0, -1)};
     }
 
     /**
@@ -186,13 +200,25 @@ class Charge extends Model
     }
 
     /**
+     * Checks the status of the charge.
+     *
+     * @param string $status The status to check.
+     *
+     * @return bool
+     */
+    public function isStatus(string $status)
+    {
+        return $this->status === $status;
+    }
+
+    /**
      * Checks if the charge is active.
      *
      * @return bool
      */
     public function isActive()
     {
-        return $this->status === 'active';
+        return $this->isStatus(self::STATUS_ACTIVE);
     }
 
     /**
@@ -202,7 +228,7 @@ class Charge extends Model
      */
     public function isAccepted()
     {
-        return $this->status === 'accepted';
+        return $this->isStatus(self::STATUS_ACCEPTED);
     }
 
     /**
@@ -212,7 +238,7 @@ class Charge extends Model
      */
     public function isDeclined()
     {
-        return $this->status === 'declined';
+        return $this->isStatus(self::STATUS_DECLINED);
     }
 
     /**
@@ -222,7 +248,7 @@ class Charge extends Model
      */
     public function isCancelled()
     {
-        return !is_null($this->cancelled_on) || $this->status === 'cancelled';
+        return !is_null($this->cancelled_on) || $this->isStatus(self::STATUS_CANCELLED);
     }
 
     /**
@@ -233,5 +259,22 @@ class Charge extends Model
     public function isOngoing()
     {
         return $this->isActive() && !$this->isCancelled();
+    }
+
+    /**
+     * Cancels this charge.
+     *
+     * @return self
+     */
+    public function cancel()
+    {
+        if (!$this->isType(self::CHARGE_ONETIME) && !$this->isType(self::CHARGE_RECURRING)) {
+            throw new Exception('Cancel may only be called for single and recurring charges.');
+        }
+
+        $this->status = self::STATUS_CANCELLED;
+        $this->cancelled_on = Carbon::today()->format('Y-m-d');
+
+        return $this->save();
     }
 }

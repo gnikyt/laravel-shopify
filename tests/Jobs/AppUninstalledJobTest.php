@@ -2,7 +2,6 @@
 
 namespace OhMyBrew\ShopifyApp\Test\Jobs;
 
-use Carbon\Carbon;
 use OhMyBrew\ShopifyApp\Jobs\AppUninstalledJob;
 use OhMyBrew\ShopifyApp\Models\Charge;
 use OhMyBrew\ShopifyApp\Models\Plan;
@@ -16,19 +15,16 @@ class AppUninstalledJobTest extends TestCase
     {
         parent::setup();
 
-        // Isolated shop
-        $this->shop = new Shop();
-        $this->shop->shopify_domain = 'example-isolated.myshopify.com';
-        $this->shop->plan_id = Plan::find(1)->id;
-        $this->shop->save();
-
         // Get the data
         $this->data = json_decode(file_get_contents(__DIR__.'/../fixtures/app_uninstalled.json'));
     }
 
     public function testJobAcceptsLoad()
     {
-        $job = new AppUninstalledJob($this->shop->shopify_domain, $this->data);
+        $plan = factory(Plan::class)->states('type_recurring')->create();
+        $shop = factory(Shop::class)->create(['plan_id' => $plan->id]);
+
+        $job = new AppUninstalledJob($shop->shopify_domain, $this->data);
 
         $refJob = new ReflectionObject($job);
         $refData = $refJob->getProperty('data');
@@ -38,51 +34,46 @@ class AppUninstalledJobTest extends TestCase
         $refShop = $refJob->getProperty('shop');
         $refShop->setAccessible(true);
 
-        $this->assertEquals($this->shop->shopify_domain, $refShopDomain->getValue($job));
+        $this->assertEquals($shop->shopify_domain, $refShopDomain->getValue($job));
         $this->assertEquals($this->data, $refData->getValue($job));
-        $this->assertEquals($this->shop->shopify_domain, $refShop->getValue($job)->shopify_domain);
+        $this->assertEquals($shop->shopify_domain, $refShop->getValue($job)->shopify_domain);
     }
 
     public function testJobSoftDeletesShopAndCharges()
     {
-        // Create a new charge to test against
-        $charge = new Charge();
-        $charge->charge_id = 987654321;
-        $charge->test = false;
-        $charge->name = 'Base Plan Dummy';
-        $charge->status = 'active';
-        $charge->type = 1;
-        $charge->price = 25.00;
-        $charge->trial_days = 0;
-        $charge->shop_id = $this->shop->id;
-        $charge->created_at = Carbon::now()->addDays(1); // Test runs too fast to make "latest" work
-        $charge->save();
+        $plan = factory(Plan::class)->states('type_recurring')->create();
+        $shop = factory(Shop::class)->create(['plan_id' => $plan->id]);
+        $charge = factory(Charge::class)->states('type_recurring')->create([
+            'plan_id' => $plan->id,
+            'shop_id' => $shop->id,
+            'status'  => 'active',
+        ]);
 
         // Ensure shop is not trashed, and has charges
-        $this->shop->refresh();
-        $this->assertFalse($this->shop->trashed());
-        $this->assertEquals(true, $this->shop->hasCharges());
+        $this->assertFalse($shop->trashed());
+        $this->assertEquals(true, $shop->hasCharges());
 
         // Run the job
-        $job = new AppUninstalledJob($this->shop->shopify_domain, $this->data);
+        $job = new AppUninstalledJob($shop->shopify_domain, $this->data);
         $result = $job->handle();
 
         // Refresh both models to see the changes
-        $this->shop->refresh();
-        $lastCharge = $this->shop->charges()
+        $shop->refresh();
+        $lastCharge = $shop
+            ->charges()
             ->withTrashed()
             ->whereIn('type', [Charge::CHARGE_RECURRING, Charge::CHARGE_ONETIME])
+            ->where('plan_id', $plan->id)
             ->orderBy('created_at', 'desc')
             ->first();
 
         // Confirm job worked...
         $this->assertEquals(true, $result);
-        $this->assertEquals(true, $this->shop->trashed());
-        $this->assertFalse($this->shop->hasCharges());
-        $this->assertEquals($charge->charge_id, $lastCharge->charge_id);
+        $this->assertEquals(true, $shop->trashed());
+        $this->assertFalse($shop->hasCharges());
         $this->assertEquals('cancelled', $lastCharge->status);
-        $this->assertNull($this->shop->plan);
-        $this->assertNull($this->shop->shopify_token);
+        $this->assertNull($shop->plan);
+        $this->assertNull($shop->shopify_token);
     }
 
     public function testJobDoesNothingForUnknownShop()

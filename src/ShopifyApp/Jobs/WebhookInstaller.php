@@ -8,6 +8,9 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
+/**
+ * Webhook job responsible for handling installation of webhook listeners.
+ */
 class WebhookInstaller implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -55,7 +58,10 @@ class WebhookInstaller implements ShouldQueue
         $shopWebhooks = $api->rest(
             'GET',
             '/admin/webhooks.json',
-            ['limit' => 250, 'fields' => 'id,address']
+            [
+                'limit'  => 250,
+                'fields' => 'id,address',
+            ]
         )->body->webhooks;
 
         foreach ($this->webhooks as $webhook) {
