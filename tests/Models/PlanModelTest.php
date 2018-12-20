@@ -28,9 +28,12 @@ class PlanModelTest extends TestCase
     public function testReturnsTypeAsString()
     {
         $plan = factory(Plan::class)->states('type_recurring')->create();
+        $plan_2 = factory(Plan::class)->states('type_onetime')->create();
 
         $this->assertEquals('recurring_application_charge', $plan->typeAsString());
         $this->assertEquals('recurring_application_charges', $plan->typeAsString(true));
+        $this->assertEquals('application_charge', $plan_2->typeAsString());
+        $this->assertEquals('application_charges', $plan_2->typeAsString(true));
     }
 
     public function testPlanHasTrial()

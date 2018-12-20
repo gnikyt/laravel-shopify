@@ -91,7 +91,7 @@ class UsageCharge
     public function save()
     {
         if (!$this->response) {
-            throw Exception('No activation response was recieved.');
+            throw new Exception('No activation response was recieved.');
         }
 
         // Get the plan charge

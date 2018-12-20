@@ -79,7 +79,7 @@ class AuthShopHandler
     }
 
     /**
-     * Determines if the request HMAC is veridied.
+     * Determines if the request HMAC is verified.
      *
      * @param array $request The request parameters.
      *
@@ -113,7 +113,7 @@ class AuthShopHandler
     /**
      * Dispatches the jobs that happen after authentication.
      *
-     * @return void
+     * @return boolean
      */
     public function dispatchJobs()
     {
@@ -124,6 +124,8 @@ class AuthShopHandler
         $this->dispatchWebhooks();
         $this->dispatchScripttags();
         $this->dispatchAfterAuthenticate();
+
+        return true;
     }
 
     /**
@@ -159,6 +161,9 @@ class AuthShopHandler
      */
     public function dispatchAfterAuthenticate()
     {
+        // Grab the jobs config
+        $jobsConfig = Config::get('shopify-app.after_authenticate_job');
+
         /**
          * Fires the job.
          *

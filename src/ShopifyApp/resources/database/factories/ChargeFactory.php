@@ -28,6 +28,10 @@ $factory->state(Charge::class, 'type_usage', [
     'type' => Charge::CHARGE_USAGE,
 ]);
 
+$factory->state(Charge::class, 'type_credit', [
+    'type' => Charge::CHARGE_CREDIT,
+]);
+
 $factory->state(Charge::class, 'trial', function ($faker) {
     $days = $faker->numberBetween(7, 14);
 

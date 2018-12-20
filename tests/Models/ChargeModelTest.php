@@ -203,9 +203,22 @@ class ChargeModelTest extends TestCase
             'status'        => 'cancelled',
             'shop_id'       => $shop->id,
         ]);
+        $charge_3 = factory(Charge::class)->states('type_recurring')->create([
+            'cancelled_on'  => Carbon::today()->subDays(1),
+            'status'        => 'cancelled',
+            'shop_id'       => $shop->id,
+        ]);
+        $charge_4 = factory(Charge::class)->states('type_recurring')->create([
+            'trial_days'    => 5,
+            'trial_ends_on' => Carbon::today()->subDays(1),
+            'status'        => 'active',
+            'shop_id'       => $shop->id,
+        ]);
 
         $this->assertEquals(2, $charge->remainingTrialDaysFromCancel());
         $this->assertEquals(0, $charge_2->remainingTrialDaysFromCancel());
+        $this->assertNull($charge_3->remainingTrialDaysFromCancel());
+        $this->assertEquals(0, $charge_4->remainingTrialDaysFromCancel());
     }
 
     public function testRetreieve()
@@ -214,15 +227,52 @@ class ChargeModelTest extends TestCase
         Config::set('shopify-app.api_class', new ApiStub());
         ApiStub::stubResponses([
             'get_application_charge',
+            'get_recurring_application_charge_activate',
+            'get_application_credit'
         ]);
 
         $shop = factory(Shop::class)->create();
         $charge = factory(Charge::class)->states('type_onetime')->create([
             'shop_id' => $shop->id,
         ]);
+        $charge_2 = factory(Charge::class)->states('type_recurring')->create([
+            'shop_id' => $shop->id,
+        ]);
+        $charge_3 = factory(Charge::class)->states('type_credit')->create([
+            'shop_id' => $shop->id,
+        ]);
+
         $result = $charge->retrieve();
+        $result_2 = $charge_2->retrieve();
+        $result_3 = $charge_3->retrieve();
 
         // Assert we get an object
         $this->assertTrue(is_object($result));
+        $this->assertTrue(is_object($result_2));
+        $this->assertTrue(is_object($result_3));
+    }
+
+    public function testCancel()
+    {
+        $shop = factory(Shop::class)->create();
+        $charge = factory(Charge::class)->states('type_recurring')->create([
+            'status'  => Charge::STATUS_ACTIVE,
+            'shop_id' => $shop->id,
+        ]);
+        $charge->cancel();
+
+        $this->assertEquals(Charge::STATUS_CANCELLED, $charge->status);
+    }
+
+    /**
+     * @expectedException Exception
+     */
+    public function testCancelError()
+    {
+        $shop = factory(Shop::class)->create();
+        $charge = factory(Charge::class)->states('type_usage')->create([
+            'shop_id' => $shop->id,
+        ]);
+        $charge->cancel();
     }
 }

@@ -41,7 +41,7 @@ class ShopifyApp
     /**
      * Gets/sets the current shop.
      *
-     * @param string $shopDomain
+     * @param string|null $shopDomain
      *
      * @return \OhMyBrew\ShopifyApp\Models\Shop
      */
@@ -121,6 +121,7 @@ class ShopifyApp
         $data = $opts['data'];
         $raw = $opts['raw'] ?? false;
         $buildQuery = $opts['buildQuery'] ?? false;
+        $buildQueryWithJoin = $opts['buildQueryWithJoin'] ?? false;
         $encode = $opts['encode'] ?? false;
         $secret = $opts['secret'] ?? Config::get('shopify-app.api_secret');
 
@@ -131,7 +132,7 @@ class ShopifyApp
             foreach ($data as $key => $value) {
                 $queryCompiled[] = "{$key}=".(is_array($value) ? implode($value, ',') : $value);
             }
-            $data = implode($queryCompiled, '');
+            $data = implode($queryCompiled, ($buildQueryWithJoin ? '&' : ''));
         }
 
         // Create the hmac all based on the secret

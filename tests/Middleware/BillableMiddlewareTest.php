@@ -39,6 +39,7 @@ class BillableMiddlewareTest extends TestCase
             'plan_id' => $plan->id,
             'shop_id' => $shop->id,
         ]);
+
         Config::set('shopify-app.billing_enabled', true);
         Session::put('shopify_domain', $shop->shopify_domain);
 
