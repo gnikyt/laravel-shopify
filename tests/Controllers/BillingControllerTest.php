@@ -16,7 +16,7 @@ class BillingControllerTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-
+        ;$this->withoutExceptionHandling();
         // Stub in our API class
         Config::set('shopify-app.api_class', new ApiStub());
 
@@ -35,6 +35,9 @@ class BillingControllerTest extends TestCase
         // Create the shop
         $shop = factory(Shop::class)->create();
         Session::put('shopify_domain', $shop->shopify_domain);
+
+        // Create a on-install plan
+        factory(Plan::class)->states('type_recurring', 'installable')->create();
 
         // Run the call
         $response = $this->get('/billing');

@@ -1,7 +1,5 @@
 <?php
 
-use OhMyBrew\ShopifyApp\Models\Plan;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes

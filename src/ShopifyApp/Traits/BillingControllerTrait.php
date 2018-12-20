@@ -21,14 +21,14 @@ trait BillingControllerTrait
     /**
      * Redirects to billing screen for Shopify.
      *
-     * @param \OhMyBrew\ShopifyApp\Models\Plan|null $plan The plan.
+     * @param \OhMyBrew\ShopifyApp\Models\Plan $plan The plan.
      *
      * @return \Illuminate\View\View
      */
-    public function index(Plan $plan = null)
+    public function index(Plan $plan)
     {
         // If the plan is null, get a plan
-        if (is_null($plan)) {
+        if (is_null($plan) || ($plan && !$plan->exists)) {
             $plan = Plan::where('on_install', true)->first();
         }
 
