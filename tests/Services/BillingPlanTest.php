@@ -19,45 +19,43 @@ class BillingPlanTest extends TestCase
 
         // Stub in our API class
         Config::set('shopify-app.api_class', new ApiStub());
-
-        // Base shop to use
-        $this->shop = Shop::find(1);
-
-        // Charge ID we're using that matches the fixtures
-        $this->recurringChargeId = 1029266947;
-        $this->singleChargeId = 1017262355;
     }
 
     public function testShouldReturnConfirmationUrl()
     {
-        $this->assertEquals(
-            "https://example.myshopify.com/admin/charges/{$this->recurringChargeId}/confirm_recurring_application_charge?signature=BAhpBANeWT0%3D--64de8739eb1e63a8f848382bb757b20343eb414f",
-            (new BillingPlan($this->shop, Plan::find(1)))->confirmationUrl()
-        );
-    }
+        // Stub the responses
+        ApiStub::stubResponses([
+            'post_recurring_application_charges_activate',
+        ]);
 
-    public function testShouldReturnConfirmationUrlWhenUsageIsEnabled()
-    {
+        // Create a shop and plan
+        $plan = factory(Plan::class)->states('type_recurring')->create();
+        $shop = factory(Shop::class)->create();
+
         $this->assertEquals(
-            "https://example.myshopify.com/admin/charges/{$this->singleChargeId}/confirm_application_charge?signature=BAhpBBMxojw%3D--1139a82a3433b1a6771786e03f02300440e11883",
-            (new BillingPlan($this->shop, Plan::find(3)))->confirmationUrl()
+            'https://example.myshopify.com/admin/charges/1029266947/confirm_recurring_application_charge?signature=BAhpBANeWT0%3D--64de8739eb1e63a8f848382bb757b20343eb414f',
+            (new BillingPlan($shop, $plan))->confirmationUrl()
         );
     }
 
     public function testShouldReturnChargeParams()
     {
-        $bp = new BillingPlan($this->shop, Plan::find(4));
+        // Create a shop and plan
+        $plan = factory(Plan::class)->states('type_recurring', 'trial', 'usage')->create();
+        $shop = factory(Shop::class)->create();
+
+        $bp = new BillingPlan($shop, $plan);
 
         // Input should match output
         $this->assertEquals(
             [
-                'test'          => false,
-                'trial_days'    => '7',
-                'name'          => 'Capped Plan',
-                'price'         => '5',
-                'return_url'    => URL::Secure(Config::get('shopify-app.billing_redirect'), ['plan_id' => 4]),
-                'capped_amount' => '100',
-                'terms'         => '$1 for 500 emails',
+                'test'          => $plan->test,
+                'trial_days'    => $plan->trial_days,
+                'name'          => $plan->name,
+                'price'         => $plan->price,
+                'capped_amount' => $plan->capped_amount,
+                'terms'         => $plan->terms,
+                'return_url'    => URL::Secure(Config::get('shopify-app.billing_redirect'), ['plan_id' => $plan->id]),
             ],
             $bp->chargeParams()
         );
@@ -65,9 +63,18 @@ class BillingPlanTest extends TestCase
 
     public function testShouldActivatePlan()
     {
+        // Stub the responses
+        ApiStub::stubResponses([
+            'get_recurring_application_charge_activate',
+        ]);
+
+        // Create a shop and plan
+        $plan = factory(Plan::class)->states('type_recurring')->create();
+        $shop = factory(Shop::class)->create();
+
         // Activate the charge via API
-        $bp = new BillingPlan($this->shop, Plan::find(1));
-        $response = $bp->setChargeId($this->recurringChargeId)->activate();
+        $bp = new BillingPlan($shop, $plan);
+        $response = $bp->setChargeId(1234)->activate();
 
         $this->assertTrue(is_object($response));
         $this->assertEquals('active', $response->status);
@@ -79,16 +86,29 @@ class BillingPlanTest extends TestCase
      */
     public function testShouldNotActivatePlanAndThrowExceptionForMissingChargeId()
     {
+        // Create a shop and plan
+        $plan = factory(Plan::class)->states('type_recurring')->create();
+        $shop = factory(Shop::class)->create();
+
         // We're missing the charge ID
-        $bp = new BillingPlan($this->shop, Plan::find(1));
+        $bp = new BillingPlan($shop, $plan);
         $bp->activate();
     }
 
     public function testShouldGetChargeDetails()
     {
+        // Stub the responses
+        ApiStub::stubResponses([
+            'post_recurring_application_charges_activate',
+        ]);
+
+        // Create a shop and plan
+        $plan = factory(Plan::class)->states('type_recurring')->create();
+        $shop = factory(Shop::class)->create();
+
         // Should get the charge details from the API
-        $bp = new BillingPlan($this->shop, Plan::find(1));
-        $response = $bp->setChargeId($this->recurringChargeId)->getCharge();
+        $bp = new BillingPlan($shop, $plan);
+        $response = $bp->setChargeId(12345)->getCharge();
 
         $this->assertTrue(is_object($response));
         $this->assertEquals('accepted', $response->status);
@@ -100,7 +120,11 @@ class BillingPlanTest extends TestCase
      */
     public function testShouldNotGetChargeDetailsAndThrowException()
     {
-        $bp = new BillingPlan($this->shop, Plan::find(1));
+        // Create a shop and plan
+        $plan = factory(Plan::class)->states('type_recurring')->create();
+        $shop = factory(Shop::class)->create();
+
+        $bp = new BillingPlan($shop, $plan);
         $bp->getCharge();
     }
 
@@ -110,19 +134,38 @@ class BillingPlanTest extends TestCase
      */
     public function testShouldNotSaveDueToMissingActivation()
     {
-        $bp = new BillingPlan($this->shop, Plan::find(1));
+        // Create a shop and plan
+        $plan = factory(Plan::class)->states('type_recurring')->create();
+        $shop = factory(Shop::class)->create();
+
+        $bp = new BillingPlan($shop, $plan);
         $bp->save();
     }
 
     public function testShouldSave()
     {
+        // Stub the responses
+        ApiStub::stubResponses([
+            'post_recurring_application_charges_activate',
+        ]);
+
+        // Create a shop, plan, and charge
+        $plan = factory(Plan::class)->states('type_recurring')->create();
+        $shop = factory(Shop::class)->create([
+            'plan_id' => $plan->id,
+        ]);
+        $charge = factory(Charge::class)->states('type_recurring')->create([
+            'plan_id' => $plan->id,
+            'shop_id' => $shop->id,
+        ]);
+
         // Get the shop's plan charge, this should change to cancelled
-        $planCharge = $this->shop->planCharge();
+        $planCharge = $shop->planCharge();
         $status = $planCharge->status;
 
         // Should get a new charge
-        $bp = new BillingPlan($this->shop, Plan::find(1));
-        $bp->setChargeId($this->recurringChargeId);
+        $bp = new BillingPlan($shop, $plan);
+        $bp->setChargeId(1234);
         $bp->activate();
         $charge = $bp->save();
 
