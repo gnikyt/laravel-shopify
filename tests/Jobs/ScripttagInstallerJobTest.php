@@ -16,8 +16,7 @@ class ScripttagInstallerJobTest extends TestCase
     {
         parent::setup();
 
-        // Re-used variables
-        $this->shop = Shop::find(1);
+        // Script tags to use
         $this->scripttags = [
             [
                 'src'   => 'https://js-aplenty.com/bar.js',
@@ -31,7 +30,8 @@ class ScripttagInstallerJobTest extends TestCase
 
     public function testJobAcceptsLoad()
     {
-        $job = new ScripttagInstaller($this->shop, $this->scripttags);
+        $shop = factory(Shop::class)->create();
+        $job = new ScripttagInstaller($shop, $this->scripttags);
 
         $refJob = new ReflectionObject($job);
         $refScripttags = $refJob->getProperty('scripttags');
@@ -40,12 +40,13 @@ class ScripttagInstallerJobTest extends TestCase
         $refShop->setAccessible(true);
 
         $this->assertEquals($this->scripttags, $refScripttags->getValue($job));
-        $this->assertEquals($this->shop, $refShop->getValue($job));
+        $this->assertEquals($shop, $refShop->getValue($job));
     }
 
     public function testJobShouldTestScripttagExistanceMethod()
     {
-        $job = new ScripttagInstaller($this->shop, $this->scripttags);
+        $shop = factory(Shop::class)->create();
+        $job = new ScripttagInstaller($shop, $this->scripttags);
 
         $method = new ReflectionMethod($job, 'scripttagExists');
         $method->setAccessible(true);
@@ -84,7 +85,8 @@ class ScripttagInstallerJobTest extends TestCase
             'get_script_tags',
         ]);
 
-        $job = new ScripttagInstaller($this->shop, $this->scripttags);
+        $shop = factory(Shop::class)->create();
+        $job = new ScripttagInstaller($shop, $this->scripttags);
         $created = $job->handle();
 
         // Scripttag JSON comes from fixture JSON which matches $this->scripttags
@@ -107,7 +109,8 @@ class ScripttagInstallerJobTest extends TestCase
             ],
         ];
 
-        $job = new ScripttagInstaller($this->shop, $scripttags);
+        $shop = factory(Shop::class)->create();
+        $job = new ScripttagInstaller($shop, $scripttags);
         $created = $job->handle();
 
         // $scripttags is new scripttags which does not exist in the JSON fixture

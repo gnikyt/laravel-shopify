@@ -5,6 +5,7 @@ namespace OhMyBrew\ShopifyApp\Test\Middleware;
 use Illuminate\Support\Facades\Input;
 use OhMyBrew\ShopifyApp\Middleware\AuthShop;
 use OhMyBrew\ShopifyApp\Test\TestCase;
+use OhMyBrew\ShopifyApp\Models\Shop;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
@@ -24,7 +25,8 @@ class AuthShopMiddlewareTest extends TestCase
     public function testShopHasWithAccessShouldPassMiddleware()
     {
         // Set a shop
-        Session::put('shopify_domain', 'example.myshopify.com');
+        $shop = factory(Shop::class)->create();
+        Session::put('shopify_domain', $shop->shopify_domain);
 
         // Run the middleware
         $result = $this->runAuthShop();
@@ -36,7 +38,10 @@ class AuthShopMiddlewareTest extends TestCase
     public function testShopWithNoTokenShouldNotPassMiddleware()
     {
         // Set a shop
-        Session::put('shopify_domain', 'no-token.myshopify.com');
+        $shop = factory(Shop::class)->create([
+            'shopify_token' => null,
+        ]);
+        Session::put('shopify_domain', $shop->shopify_domain);
 
         // Run the middleware
         $result = $this->runAuthShop();
@@ -49,7 +54,9 @@ class AuthShopMiddlewareTest extends TestCase
     public function testShopTrashedShouldNotPassMiddleware()
     {
         // Set a shop
-        Session::put('shopify_domain', 'trashed-shop.myshopify.com');
+        $shop = factory(Shop::class)->create();
+        $shop->delete();
+        Session::put('shopify_domain', $shop->shopify_domain);
 
         // Run the middleware
         $result = $this->runAuthShop();
@@ -62,7 +69,10 @@ class AuthShopMiddlewareTest extends TestCase
     public function testShopsWhichDoNotMatchShouldKillSessionAndDirectToReAuthenticate()
     {
         // Set a shop
-        Session::put('shopify_domain', 'example.myshopify.com');
+        $shop = factory(Shop::class)->create();
+        Session::put('shopify_domain', $shop->shopify_domain);
+
+        // Go in as a new shop
         Input::merge(['shop' => 'example-different-shop.myshopify.com']);
 
         // Run the middleware
@@ -76,7 +86,8 @@ class AuthShopMiddlewareTest extends TestCase
     public function testHeadersForEsdkShouldBeAdjusted()
     {
         // Set a shop
-        Session::put('shopify_domain', 'example.myshopify.com');
+        $shop = factory(Shop::class)->create();
+        Session::put('shopify_domain', $shop->shopify_domain);
         
         // Run the middleware
         $result = $this->runAuthShop();
@@ -89,7 +100,10 @@ class AuthShopMiddlewareTest extends TestCase
     public function testHeadersForDisabledEsdk()
     {
         // Set a shop
-        Session::put('shopify_domain', 'example.myshopify.com');
+        $shop = factory(Shop::class)->create();
+        Session::put('shopify_domain', $shop->shopify_domain);
+
+        // Disable ESDL
         Config::set('shopify-app.esdk_enabled', false);
 
         // Run the middleware
@@ -103,7 +117,10 @@ class AuthShopMiddlewareTest extends TestCase
     public function testShouldSaveReturnUrl()
     {
         // Set a shop
-        Session::put('shopify_domain', 'no-token.myshopify.com');
+        $shop = factory(Shop::class)->create([
+            'shopify_token' => null,
+        ]);
+        Session::put('shopify_domain', $shop->shopify_domain);
 
         // Duplicate the request so we can mod the request URI
         $currentRequest = Request::instance();

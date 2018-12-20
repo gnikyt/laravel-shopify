@@ -7,14 +7,18 @@ use OhMyBrew\ShopifyApp\Test\TestCase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
+use OhMyBrew\ShopifyApp\Models\Shop;
+use OhMyBrew\ShopifyApp\Models\Plan;
+use OhMyBrew\ShopifyApp\Models\Charge;
 
 class BillableMiddlewareTest extends TestCase
 {
     public function testEnabledBillingWithUnpaidShop()
     {
         // Enable billing and set a shop
+        $shop = factory(Shop::class)->create();
         Config::set('shopify-app.billing_enabled', true);
-        Session::put('shopify_domain', 'new-shop.myshopify.com');
+        Session::put('shopify_domain', $shop->shopify_domain);
 
         // Run the middleware
         $result = $this->runBillable();
@@ -27,8 +31,16 @@ class BillableMiddlewareTest extends TestCase
     public function testEnabledBillingWithPaidShop()
     {
         // Enable billing and set a shop
+        $plan = factory(Plan::class)->states('type_recurring')->create();
+        $shop = factory(Shop::class)->create([
+            'plan_id' => $plan->id,
+        ]);
+        $charge = factory(Charge::class)->states('type_recurring')->create([
+            'plan_id' => $plan->id,
+            'shop_id' => $shop->id,
+        ]);
         Config::set('shopify-app.billing_enabled', true);
-        Session::put('shopify_domain', 'example.myshopify.com');
+        Session::put('shopify_domain', $shop->shopify_domain);
 
         // Run the middleware
         $result = $this->runBillable();
@@ -40,8 +52,9 @@ class BillableMiddlewareTest extends TestCase
     public function testEnabledBillingWithGrandfatheredShop()
     {
         // Enable billing and set a shop
+        $shop = factory(Shop::class)->states('grandfathered')->create();
         Config::set('shopify-app.billing_enabled', true);
-        Session::put('shopify_domain', 'grandfathered.myshopify.com');
+        Session::put('shopify_domain', $shop->shopify_domain);
 
         // Run the middleware
         $result = $this->runBillable();
@@ -53,8 +66,9 @@ class BillableMiddlewareTest extends TestCase
     public function testEnabledBillingWithFreemiumShop()
     {
         // Enable billing and set a shop
+        $shop = factory(Shop::class)->states('freemium')->create();
         Config::set('shopify-app.billing_enabled', true);
-        Session::put('shopify_domain', 'freemium-shop.myshopify.com');
+        Session::put('shopify_domain', $shop->shopify_domain);
 
         // Run the middleware
         $result = $this->runBillable();
@@ -66,8 +80,9 @@ class BillableMiddlewareTest extends TestCase
     public function testDisabledBillingShouldPassOn()
     {
         // Ensure billing is disabled and set a shop
+        $shop = factory(Shop::class)->create();
         Config::set('shopify-app.billing_enabled', false);
-        Session::put('shopify_domain', 'example.myshopify.com');
+        Session::put('shopify_domain', $shop->shopify_domain);
 
         // Run the middleware
         $result = $this->runBillable();
@@ -78,8 +93,9 @@ class BillableMiddlewareTest extends TestCase
     public function testShopWithNoPlanShouldRedirect()
     {
         // Ensure billing is disabled and set a shop
+        $shop = factory(Shop::class)->create();
         Config::set('shopify-app.billing_enabled', true);
-        Session::put('shopify_domain', 'planless-shop.myshopify.com');
+        Session::put('shopify_domain', $shop->shopify_domain);
 
         // Run the middleware
         $result = $this->runBillable();
