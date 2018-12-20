@@ -35,9 +35,7 @@ class ShopifyAppProvider extends ServiceProvider
         ], 'config');
 
         // Database migrations
-        $this->publishes([
-            __DIR__.'/resources/database/migrations' => "{$this->app->databasePath()}/migrations",
-        ], 'migrations');
+        $this->loadMigrationsFrom(__DIR__.'/resources/database/migrations');
 
         // Job publish
         $this->publishes([
