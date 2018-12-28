@@ -69,8 +69,8 @@ class Billable
             ->plan_name;
 
         try {
-            $plan = Plan::where('shop_plan', $shop_plan)
-                ->firstOrFail();
+            $plan = Plan::where('shop_plan', $shop_plan)->firstOrFail();
+
             return $plan->id;
         } catch (ModelNotFoundException $e) {
             return;
