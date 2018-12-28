@@ -72,7 +72,7 @@ class Billable
             $plan = Plan::where('shop_plan', $shop_plan)
                 ->firstOrFail();
             return $plan->id;
-        } catch(ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             return;
         }
     }
