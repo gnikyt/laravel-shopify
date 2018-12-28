@@ -3,12 +3,12 @@
 namespace OhMyBrew\ShopifyApp\Middleware;
 
 use Closure;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Redirect;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Models\Plan;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
  * Responsible for ensuring the shop is being billed.
@@ -55,9 +55,9 @@ class Billable
     }
 
     /**
-     * Get the id of the plan based on the shops billing plan
+     * Get the id of the plan based on the shops billing plan.
      *
-     * @return integer|null
+     * @return int|null
      */
     protected function getPlanId()
     {
@@ -73,7 +73,7 @@ class Billable
                 ->firstOrFail();
             return $plan->id;
         } catch(ModelNotFoundException $e) {
-            return null;
+            return;
         }
     }
 }
