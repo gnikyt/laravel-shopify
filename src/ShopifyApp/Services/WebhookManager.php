@@ -103,6 +103,8 @@ class WebhookManager
      */
     public function createWebhooks()
     {
+        $configWebhooks = $this->configWebhooks();
+
         // Create if it does not exist
         $created = [];
         foreach ($configWebhooks as $webhook) {

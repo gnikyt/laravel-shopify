@@ -137,7 +137,7 @@ class AuthShopHandler
     {
         $webhooks = Config::get('shopify-app.webhooks');
         if (count($webhooks) > 0) {
-            WebhookInstaller::dispatch($this->shop, $webhooks);
+            WebhookInstaller::dispatch($this->shop);
         }
     }
 
