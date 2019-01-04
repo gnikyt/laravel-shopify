@@ -4,9 +4,9 @@ namespace OhMyBrew\ShopifyApp\Test\Services;
 
 use Illuminate\Support\Facades\Config;
 use OhMyBrew\ShopifyApp\Models\Shop;
+use OhMyBrew\ShopifyApp\Services\WebhookManager;
 use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
 use OhMyBrew\ShopifyApp\Test\TestCase;
-use OhMyBrew\ShopifyApp\Services\WebhookManager;
 
 class WebhookManagerTest extends TestCase
 {
@@ -95,7 +95,7 @@ class WebhookManagerTest extends TestCase
         // Stub the responses
         ApiStub::stubResponses([
             'get_webhooks',
-            'post_webhook'
+            'post_webhook',
         ]);
 
         $shop = factory(Shop::class)->create();
