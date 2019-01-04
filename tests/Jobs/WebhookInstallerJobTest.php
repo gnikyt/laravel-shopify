@@ -7,7 +7,6 @@ use OhMyBrew\ShopifyApp\Jobs\WebhookInstaller;
 use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
 use OhMyBrew\ShopifyApp\Test\TestCase;
-use ReflectionMethod;
 use ReflectionObject;
 
 class WebhookInstallerJobTest extends TestCase
