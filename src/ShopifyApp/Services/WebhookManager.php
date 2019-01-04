@@ -2,7 +2,6 @@
 
 namespace OhMyBrew\ShopifyApp\Services;
 
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
 use OhMyBrew\ShopifyApp\Models\Shop;
 
