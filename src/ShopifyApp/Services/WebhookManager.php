@@ -128,9 +128,9 @@ class WebhookManager
         $shopWebhooks = $this->shopWebhooks();
 
         $deleted = [];
-        foreach ($shopWebhook as $webhook) {
+        foreach ($shopWebhooks as $webhook) {
             // Its a webhook in the config, delete it
-            $this->api->rest('DELETE', "/admin/webhooks/${$webhook->id}.json");
+            $this->api->rest('DELETE', "/admin/webhooks/{$webhook->id}.json");
             $deleted[] = $webhook;
         }
 
