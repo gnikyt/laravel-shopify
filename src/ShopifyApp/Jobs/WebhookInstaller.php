@@ -24,13 +24,6 @@ class WebhookInstaller implements ShouldQueue
     protected $shop;
 
     /**
-     * Webhook manager.
-     *
-     * @var \OhMyBrew\ShopifyApp\Services\WebhookManager
-     */
-    protected $manager;
-
-    /**
      * Create a new job instance.
      *
      * @param object $shop The shop object
@@ -40,7 +33,6 @@ class WebhookInstaller implements ShouldQueue
     public function __construct($shop)
     {
         $this->shop = $shop;
-        $this->manager = new WebhookManager($this->shop);
     }
 
     /**
@@ -50,6 +42,6 @@ class WebhookInstaller implements ShouldQueue
      */
     public function handle()
     {
-        return $this->manager->createWebhooks();
+        return (new WebhookManager($this->shop))->createWebhooks();
     }
 }
