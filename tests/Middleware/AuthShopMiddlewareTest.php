@@ -97,6 +97,23 @@ class AuthShopMiddlewareTest extends TestCase
         $this->assertNull($result[0]->headers->get('x-frame-options'));
     }
 
+    public function testAjaxCallShouldNotAdjustResponse()
+    {
+        // Set a shop
+        $shop = factory(Shop::class)->create();
+        Session::put('shopify_domain', $shop->shopify_domain);
+
+        // Set the request
+        $request = Request::instance();
+        $request->headers->set('x-requested-with', 'XMLHttpRequest');
+
+        // Run the middleware
+        $result = $this->runAuthShop(null, $request);
+
+        // Assert the headers were not modified
+        $this->assertNull($result[0]);
+    }
+
     public function testHeadersForDisabledEsdk()
     {
         // Set a shop
@@ -138,10 +155,10 @@ class AuthShopMiddlewareTest extends TestCase
         // Request::swap($currentRequest);
     }
 
-    private function runAuthShop(Closure $cb = null)
+    private function runAuthShop(Closure $cb = null, $requestInstance = null)
     {
         $called = false;
-        $response = (new AuthShop())->handle(Request::instance(), function ($request) use (&$called, $cb) {
+        $response = (new AuthShop())->handle($requestInstance ? $requestInstance : Request::instance(), function ($request) use (&$called, $cb) {
             $called = true;
 
             if ($cb) {

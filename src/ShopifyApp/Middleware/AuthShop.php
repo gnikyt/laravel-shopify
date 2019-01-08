@@ -47,15 +47,18 @@ class AuthShop
 
         // Shop is OK, move on...
         $response = $next($request);
-        if (!$response instanceof Response && !$response instanceof RedirectResponse) {
-            // We need a response object to modify headers
-            $response = new Response($response);
-        }
+        if (!$request->ajax()) {
+            // Request is not AJAX, continue as normal
+            if (!$response instanceof Response && !$response instanceof RedirectResponse) {
+                // We need a response object to modify headers
+                $response = new Response($response);
+            }
 
-        if (Config::get('shopify-app.esdk_enabled')) {
-            // Headers applicable to ESDK only
-            $response->headers->set('P3P', 'CP="Not used"');
-            $response->headers->remove('X-Frame-Options');
+            if (Config::get('shopify-app.esdk_enabled')) {
+                // Headers applicable to ESDK only
+                $response->headers->set('P3P', 'CP="Not used"');
+                $response->headers->remove('X-Frame-Options');
+            }
         }
 
         return $response;
