@@ -35,6 +35,7 @@ class ShopifyAppProvider extends ServiceProvider
         ], 'config');
 
         // Database migrations
+        // @codeCoverageIgnoreStart
         if (Config::get('shopify-app.manual_migrations')) {
             $this->publishes([
                 __DIR__.'/resources/database/migrations' => "{$this->app->databasePath()}/migrations",
@@ -42,6 +43,7 @@ class ShopifyAppProvider extends ServiceProvider
         } else {
             $this->loadMigrationsFrom(__DIR__.'/resources/database/migrations');
         }
+        // @codeCoverageIgnoreEnd
 
         // Job publish
         $this->publishes([
