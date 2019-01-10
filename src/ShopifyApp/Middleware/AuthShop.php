@@ -47,7 +47,7 @@ class AuthShop
 
         // Shop is OK, move on...
         $response = $next($request);
-        if (!$request->ajax()) {
+        if (($request->ajax() || $request->wantsJson() || $request->isJson()) === false) {
             // Request is not AJAX, continue as normal
             if (!$response instanceof Response && !$response instanceof RedirectResponse) {
                 // We need a response object to modify headers
