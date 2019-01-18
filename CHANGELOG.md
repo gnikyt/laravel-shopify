@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# 4.0.2
+
++ Changes to the response of GraphQL calls to better check for errors.
+
 # 4.0.1
 
 + Update for more accurate timing
