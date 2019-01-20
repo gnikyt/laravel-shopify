@@ -32,14 +32,14 @@ class ShopifyAppProvider extends ServiceProvider
         // Config publish
         $this->publishes([
             __DIR__.'/resources/config/shopify-app.php' => "{$this->app->configPath()}/shopify-app.php",
-        ], 'config');
+        ], 'shopify-config');
 
         // Database migrations
         // @codeCoverageIgnoreStart
         if (Config::get('shopify-app.manual_migrations')) {
             $this->publishes([
                 __DIR__.'/resources/database/migrations' => "{$this->app->databasePath()}/migrations",
-            ], 'migrations');
+            ], 'shopify-migrations');
         } else {
             $this->loadMigrationsFrom(__DIR__.'/resources/database/migrations');
         }
@@ -48,7 +48,7 @@ class ShopifyAppProvider extends ServiceProvider
         // Job publish
         $this->publishes([
             __DIR__.'/resources/jobs/AppUninstalledJob.php' => "{$this->app->path()}/Jobs/AppUninstalledJob.php",
-        ], 'jobs');
+        ], 'shopify-jobs');
 
         // Shop observer
         $shopModel = Config::get('shopify-app.shop_model');
