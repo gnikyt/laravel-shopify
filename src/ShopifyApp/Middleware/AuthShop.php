@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
@@ -49,7 +50,7 @@ class AuthShop
         $response = $next($request);
         if (($request->ajax() || $request->wantsJson() || $request->isJson()) === false) {
             // Request is not AJAX, continue as normal
-            if (!$response instanceof Response && !$response instanceof RedirectResponse) {
+            if (!$response instanceof Response && !$response instanceof RedirectResponse && !$response instanceof JsonResponse) {
                 // We need a response object to modify headers
                 $response = new Response($response);
             }
