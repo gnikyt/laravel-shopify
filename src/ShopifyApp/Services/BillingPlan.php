@@ -190,12 +190,13 @@ class BillingPlan
 
         // Create a charge
         $charge = Charge::firstOrNew([
-            'type'      => $this->plan->type,
-            'plan_id'   => $this->plan->id,
-            'shop_id'   => $this->shop->id,
             'charge_id' => $this->chargeId,
-            'status'    => $this->response->status,
+            'shop_id'   => $this->shop->id,
         ]);
+
+        $charge->plan_id = $this->plan->id;
+        $charge->type = $this->plan->type;
+        $charge->status = $this->response->status;
 
         if ($this->plan->isType(Plan::PLAN_RECURRING)) {
             // Recurring plan specifics

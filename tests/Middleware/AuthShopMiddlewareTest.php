@@ -90,7 +90,7 @@ class AuthShopMiddlewareTest extends TestCase
         Session::put('shopify_domain', $shop->shopify_domain);
 
         // Run the middleware
-        $result = $this->runAuthShop(null, Request::instance());
+        $result = $this->runAuthShop();
 
         // Assert the headers were modified
         $this->assertEquals('CP="Not used"', $result[0]->headers->get('p3p'));
@@ -141,7 +141,7 @@ class AuthShopMiddlewareTest extends TestCase
         Config::set('shopify-app.esdk_enabled', false);
 
         // Run the middleware
-        $result = $this->runAuthShop(null, Request::instance());
+        $result = $this->runAuthShop();
 
         // Assert the headers were not modified
         $this->assertNull($result[0]->headers->get('p3p'));
