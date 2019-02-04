@@ -1,0 +1,17 @@
+diff --git a/src/ShopifyApp/Middleware/AuthShop.php b/src/ShopifyApp/Middleware/AuthShop.php
+index a5074c9f364dee9eaefc559b18f10bcb90720e08..99e7e7a114bb5176df3cef21f210a338ecc60930 100644
+--- a/src/ShopifyApp/Middleware/AuthShop.php
++++ b/src/ShopifyApp/Middleware/AuthShop.php
+@@ -5,11 +5,9 @@ namespace OhMyBrew\ShopifyApp\Middleware;
+ use Closure;
+ use Illuminate\Http\Request;
+ use Illuminate\Http\Response;
+-use Illuminate\Http\JsonResponse;
+-use Illuminate\Http\RedirectResponse;
+ use Illuminate\Support\Facades\Config;
+-use Illuminate\Support\Facades\Session;
+ use Illuminate\Support\Facades\Redirect;
++use Illuminate\Support\Facades\Session;
+ use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
+ use Symfony\Component\HttpFoundation\Response as BaseResponse;
+ 
