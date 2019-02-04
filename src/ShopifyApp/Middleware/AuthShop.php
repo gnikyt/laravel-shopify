@@ -3,14 +3,15 @@
 namespace OhMyBrew\ShopifyApp\Middleware;
 
 use Closure;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Redirect;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
+use Symfony\Component\HttpFoundation\Response as BaseResponse;
 
 /**
  * Response for ensuring an authenticated shop.
@@ -33,9 +34,9 @@ class AuthShop
         // Check if shop has a session, also check the shops to ensure a match
         if (
             $shop === null ||
-            ($shopParam && $shopParam !== $shop->shopify_domain) === true ||
+            $shop->trashed() ||
             empty($shop->shopify_token) ||
-            $shop->trashed()
+            ($shopParam && $shopParam !== $shop->shopify_domain) === true
         ) {
             // Either no shop session or shops do not match
             Session::forget('shopify_domain');
@@ -46,20 +47,20 @@ class AuthShop
             return Redirect::route('authenticate', ['shop' => $shopParam]);
         }
 
-        // Shop is OK, move on...
+        // Shop is OK, now check if ESDK is enabled and this is not a JSON/AJAX request...
         $response = $next($request);
-        if (($request->ajax() || $request->wantsJson() || $request->isJson()) === false) {
-            // Request is not AJAX, continue as normal
-            if (!$response instanceof Response && !$response instanceof RedirectResponse && !$response instanceof JsonResponse) {
-                // We need a response object to modify headers
+        if (
+            Config::get('shopify-app.esdk_enabled') &&
+            ($request->ajax() || $request->expectsJson() || $request->isJson()) === false
+        ) {
+            if (($response instanceof BaseResponse) === false) {
+                // Not an instance of a Symfony response, override
                 $response = new Response($response);
             }
 
-            if (Config::get('shopify-app.esdk_enabled')) {
-                // Headers applicable to ESDK only
-                $response->headers->set('P3P', 'CP="Not used"');
-                $response->headers->remove('X-Frame-Options');
-            }
+            // Attempt to modify headers applicable to ESDK (does not work in all cases)
+            $response->headers->set('P3P', 'CP="Not used"');
+            $response->headers->remove('X-Frame-Options');
         }
 
         return $response;

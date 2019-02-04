@@ -137,15 +137,14 @@ class AuthShopMiddlewareTest extends TestCase
         $shop = factory(Shop::class)->create();
         Session::put('shopify_domain', $shop->shopify_domain);
 
-        // Disable ESDL
+        // Disable ESDK
         Config::set('shopify-app.esdk_enabled', false);
 
         // Run the middleware
         $result = $this->runAuthShop();
 
         // Assert the headers were not modified
-        $this->assertNull($result[0]->headers->get('p3p'));
-        $this->assertNull($result[0]->headers->get('x-frame-options'));
+        $this->assertFalse(is_object($result[0]));
     }
 
     public function testShouldSaveReturnUrl()
