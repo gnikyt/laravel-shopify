@@ -266,4 +266,20 @@ return [
             ],
         */
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Job Queues
+    |--------------------------------------------------------------------------
+    |
+    | This option is for setting a specific job queue for webhooks, scripttags
+    | and after_authenticate_job.
+    |
+    */
+
+    'job_queues' => [
+        'webhooks'           => env('WEBHOOKS_JOB_QUEUE', null),
+        'scripttags'         => env('SCRIPTTAGS_JOB_QUEUE', null),
+        'after_authenticate' => env('AFTER_AUTHENTICATE_JOB_QUEUE', null),
+    ],
 ];

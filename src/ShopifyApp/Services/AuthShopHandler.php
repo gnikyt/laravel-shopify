@@ -137,7 +137,7 @@ class AuthShopHandler
     {
         $webhooks = Config::get('shopify-app.webhooks');
         if (count($webhooks) > 0) {
-            WebhookInstaller::dispatch($this->shop);
+            WebhookInstaller::dispatch($this->shop)->onQueue(Config::get('shopify-app.job_queues.webhooks'));
         }
     }
 
@@ -150,7 +150,7 @@ class AuthShopHandler
     {
         $scripttags = Config::get('shopify-app.scripttags');
         if (count($scripttags) > 0) {
-            ScripttagInstaller::dispatch($this->shop, $scripttags);
+            ScripttagInstaller::dispatch($this->shop, $scripttags)->onQueue(Config::get('shopify-app.job_queues.scripttags'));
         }
     }
 
@@ -178,7 +178,7 @@ class AuthShopHandler
                 $job::dispatchNow($this->shop);
             } else {
                 // Run later
-                $job::dispatch($this->shop);
+                $job::dispatch($this->shop)->onQueue(Config::get('shopify-app.job_queues.after_authenticate'));
             }
 
             return true;

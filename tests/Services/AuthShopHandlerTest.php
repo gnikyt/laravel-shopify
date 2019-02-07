@@ -169,6 +169,7 @@ class AuthShopHandlerTest extends TestCase
                 'src' => 'https://localhost/scripts/file.js',
             ],
         ]);
+        Config::set('shopify-app.job_queues.webhooks', 'custom-queue');
 
         $jobClass = \App\Jobs\AfterAuthenticateJob::class;
         Config::set('shopify-app.after_authenticate_job', [[
@@ -187,6 +188,7 @@ class AuthShopHandlerTest extends TestCase
         Queue::assertPushed(WebhookInstaller::class);
         Queue::assertPushed(ScripttagInstaller::class);
         Queue::assertPushed($jobClass);
+        Queue::assertPushedOn('custom-queue', WebhookInstaller::class);
     }
 
     public function testAfterAuthenticateSingleJobRuns()
