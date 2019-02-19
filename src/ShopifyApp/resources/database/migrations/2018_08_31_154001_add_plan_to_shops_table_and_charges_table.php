@@ -34,7 +34,6 @@ class AddPlanToShopsTableAndChargesTable extends Migration
     public function down()
     {
         Schema::table('charges', function (Blueprint $table) {
-
             if (DB::getDriverName() != 'sqlite') {
                 $table->dropForeign(['plan_id']);
             }
