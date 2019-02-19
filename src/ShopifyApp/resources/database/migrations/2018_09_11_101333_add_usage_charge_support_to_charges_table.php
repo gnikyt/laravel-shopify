@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class AddUsageChargeSupportToChargesTable extends Migration
@@ -24,6 +25,21 @@ class AddUsageChargeSupportToChargesTable extends Migration
         Schema::table('charges', function (Blueprint $table) {
             // Linking to charge_id, seperate schema block due to contraint issue
             $table->foreign('reference_charge')->references('charge_id')->on('charges')->onDelete('cascade');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::table('charges', function (Blueprint $table) {
+            if (DB::getDriverName() != 'sqlite') {
+                $table->dropForeign('charges_reference_charge_foreign');
+            }
+            $table->dropColumn(['description', 'reference_charge']);
         });
     }
 }

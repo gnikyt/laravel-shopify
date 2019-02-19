@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class AddPlanToShopsTableAndChargesTable extends Migration
@@ -34,10 +35,17 @@ class AddPlanToShopsTableAndChargesTable extends Migration
     public function down()
     {
         Schema::table('charges', function (Blueprint $table) {
+            if (DB::getDriverName() != 'sqlite') {
+                $table->dropForeign(['plan_id']);
+            }
+
             $table->dropColumn(['plan_id']);
         });
 
         Schema::table('shops', function (Blueprint $table) {
+            if (DB::getDriverName() != 'sqlite') {
+                $table->dropForeign(['plan_id']);
+            }
             $table->dropColumn(['plan_id']);
         });
     }
