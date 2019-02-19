@@ -35,7 +35,7 @@ class AddUsageChargeSupportToChargesTable extends Migration
     public function down()
     {
         Schema::table('charges', function (Blueprint $table) {
-            if(DB::getDriverName() != 'sqlite') {
+            if (DB::getDriverName() != 'sqlite') {
                 $table->dropForeign('charges_reference_charge_foreign');
             }
             $table->dropColumn(['description', 'reference_charge']);

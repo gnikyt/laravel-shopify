@@ -35,7 +35,7 @@ class AddPlanToShopsTableAndChargesTable extends Migration
     {
         Schema::table('charges', function (Blueprint $table) {
 
-            if(DB::getDriverName() != 'sqlite') {
+            if (DB::getDriverName() != 'sqlite') {
                 $table->dropForeign(['plan_id']);
             }
 
@@ -43,7 +43,7 @@ class AddPlanToShopsTableAndChargesTable extends Migration
         });
 
         Schema::table('shops', function (Blueprint $table) {
-            if(DB::getDriverName() != 'sqlite') {
+            if (DB::getDriverName() != 'sqlite') {
                 $table->dropForeign(['plan_id']);
             }
             $table->dropColumn(['plan_id']);
