@@ -26,4 +26,17 @@ class AddUsageChargeSupportToChargesTable extends Migration
             $table->foreign('reference_charge')->references('charge_id')->on('charges')->onDelete('cascade');
         });
     }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::table('charges', function (Blueprint $table) {
+            $table->dropForeign('charges_reference_charge_foreign');
+            $table->dropColumn(['description', 'reference_charge']);
+        });
+    }
 }
