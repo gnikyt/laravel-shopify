@@ -135,12 +135,10 @@ class BasicShopifyAPI
 
             // Check if private access is in use but the URI is not privately accessed
             if ($this->private && strstr($uri, '@') === false) {
-                // Create a new URI which includes the private access
-                $path = parse_url($uri, PHP_URL_PATH);
-                $uri = new Uri("https://{$this->apiKey}:{$this->apiPassword}@{$this->shop}{$path}");
-
-                // Return a modified request
-                return $request->withUri($uri);
+                // Return a modified request with fixed URI
+                return $request->withUri(
+                    $this->getResturi()->withPath(parse_url($uri, PHP_URL_PATH))
+                );
             }
 
             // Nothing to do, use request passed in
