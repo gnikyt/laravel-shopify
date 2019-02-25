@@ -290,6 +290,7 @@ if ($call->errors) {
   // Example, if response body was `{"error": "Not found"}`...
   /// then: `$call->errors->body->error` would return "Not Found"
 }
+```
 
 ## Documentation
 
