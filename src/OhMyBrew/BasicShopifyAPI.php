@@ -499,7 +499,7 @@ class BasicShopifyAPI
             return new Uri("https://{$this->apiKey}:{$this->apiPassword}@{$this->shop}");
         }
 
-        return new Uri("https://{$this->shop}{$path}");
+        return new Uri("https://{$this->shop}");
     }
 
     /**

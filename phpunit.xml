@@ -7,7 +7,7 @@
          convertNoticesToExceptions="false"
          convertWarningsToExceptions="true"
          processIsolation="false"
-         stopOnFailure="false"
+         stopOnFailure="true"
          syntaxCheck="true"
          bootstrap="vendor/autoload.php"
 >

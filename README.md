@@ -276,6 +276,17 @@ $api->withSession('some-shop-two.myshopify.com', 'token from database?', functio
 });
 ```
 
+### Errors
+
+This library internally catches only 400 status range errors through Guzzle's `ClientException`. You're able to check for an error of this type and get its response status code and body.
+
+```
+$call = $api->rest('GET', '/admin/non-existant-route-or-object.json');
+if ($call->errors) {
+  echo "Oops! {$call->errors->status} error";
+  print_r($call->errors->body); // Example, if response body was `{"error": "Not found"}`, then: `$call->errors->body->error` would return "Not Found"
+}
+
 ## Documentation
 
 Code documentation is [available here](https://ohmybrew.com/Basic-Shopify-API) from phpDocumentor via `phpdoc -d src -t doc`.
