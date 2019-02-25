@@ -6,6 +6,7 @@ use Closure;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request;
@@ -612,20 +613,24 @@ class BasicShopifyAPI
         $this->requestTimestamp = microtime(true);
 
         $errors = false;
-
         try {
-            // Build URI
+            // Build URI and try the request
             $uri = $this->getRestUri()->withPath($path);
-
-            // Try the request
             $response = $this->client->request($type, $uri, $guzzleParams);
-        } catch (ClientException $e) {
-            // 400 level error
-            $response = $e->getResponse();
-            $errors = (object) [
-                'status' => $response->getStatusCode(),
-                'body'   => $this->jsonDecode($response->getBody()),
-            ];
+        } catch (Exception $e) {
+            if ($e instanceof ClientException || $e instanceof ServerException) {
+                // 400 or 500 level error
+                $response = $e->getResponse();
+
+                $errors = (object) [
+                    'status'    => $response->getStatusCode(),
+                    'body'      => $this->jsonDecode($response->getBody()),
+                    'exception' => $e,
+                ];
+            } else {
+                // Else, rethrow
+                throw $e;
+            }
         }
 
         // Grab the API call limit header returned from Shopify

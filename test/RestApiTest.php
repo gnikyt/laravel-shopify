@@ -4,6 +4,7 @@ namespace OhMyBrew;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
@@ -356,6 +357,34 @@ class RestApiTest extends \PHPUnit\Framework\TestCase
         // Confirm
         $this->assertTrue(is_object($result->errors));
         $this->assertEquals($result->errors->body->errors, 'Not Found');
+    }
+
+    /**
+     * @test
+     * @expectedException \GuzzleHttp\Exception\ConnectException
+     * @expectedExceptionMessage Connection issue
+     *
+     * Should rethrow exceptions that do not match a client or server exception.
+     */
+    public function itShouldRethrowExceptionsWhichAreNotClientOrServer()
+    {
+        // Fake a bad response
+        $response = new ConnectException(
+            'Connection issue',
+            new Request('GET', 'test')
+        );
+        $mock = new MockHandler([$response]);
+        $client = new Client(['handler' => $mock]);
+
+        // Make the call
+        $api = new BasicShopifyAPI(true);
+        $api->setClient($client);
+        $api->setShop('example.myshopify.com');
+        $api->setApiKey('123');
+        $api->setApiPassword('abc');
+
+        // Cause the exception
+        $result = $api->rest('GET', '/admin/shop-oops.json');
     }
 
     /**
