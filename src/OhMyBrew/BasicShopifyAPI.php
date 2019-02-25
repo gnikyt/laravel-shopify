@@ -5,6 +5,11 @@ namespace OhMyBrew;
 use Closure;
 use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7\Uri;
+use GuzzleHttp\Exception\ClientException;
 
 /**
  * Basic Shopify API for REST & GraphQL.
@@ -122,8 +127,28 @@ class BasicShopifyAPI
         // Set if app is private or public
         $this->private = $private;
 
-        // Create a default Guzzle client
-        $this->client = new Client();
+        // Create the stack and assign the middleware which attempts to fix redirects
+        $stack = HandlerStack::create();
+        $stack->push(Middleware::mapRequest(function (Request $request) {
+            // Get the request URI
+            $uri = (string) $request->getUri();
+
+            // Check if private access is in use but the URI is not privately accessed
+            if ($this->private && strstr($uri, '@') === false) {
+                // Create a new URI which includes the private access
+                $path = parse_url($uri, PHP_URL_PATH);
+                $uri = new Uri("https://{$this->apiKey}:{$this->apiPassword}@{$this->shop}{$path}");
+
+                // Return a modified request
+                return $request->withUri($uri);
+            }
+
+            // Nothing to do, use request passed in
+            return $request;
+        }));
+
+        // Create a default Guzzle client with our stack
+        $this->client = new Client(['handler' => $stack]);
 
         return $this;
     }
@@ -466,6 +491,20 @@ class BasicShopifyAPI
     }
 
     /**
+     * Returns/builds the REST URI to use.
+     *
+     * @return \Guzzle\Psr7\Uri
+     */
+    public function getRestUri()
+    {
+        if ($this->private) {
+            return new Uri("https://{$this->apiKey}:{$this->apiPassword}@{$this->shop}");
+        }
+
+        return new Uri("https://{$this->shop}{$path}");
+    }
+
+    /**
      * Runs a request to the Shopify API.
      *
      * @param string $query     The GraphQL query
@@ -560,17 +599,16 @@ class BasicShopifyAPI
         }
 
         // Build the request parameters for Guzzle
-        $guzzleParams = [];
+        $guzzleParams = [
+            'headers'         => [
+                'Accept'       => 'application/json',
+                'Content-Type' => 'application/json',
+            ]
+        ];
         $guzzleParams[strtoupper($type) === 'GET' ? 'query' : 'json'] = $params;
+
         if (!$this->private) {
             $guzzleParams['headers'] = ['X-Shopify-Access-Token' => $this->accessToken];
-        }
-
-        // Create the request, pass the access token and optional parameters
-        if ($this->private) {
-            $uri = "https://{$this->apiKey}:{$this->apiPassword}@{$this->shop}{$path}";
-        } else {
-            $uri = "https://{$this->shop}{$path}";
         }
 
         // Check the rate limit before firing the request
@@ -589,7 +627,21 @@ class BasicShopifyAPI
         $tmpTimestamp = $this->requestTimestamp;
         $this->requestTimestamp = microtime(true);
 
-        $response = $this->client->request($type, $uri, $guzzleParams);
+        $errors = false;
+        try {
+            // Build URI
+            $uri = $this->getRestUri()->withPath($path);
+
+            // Try the request
+            $response = $this->client->request($type, $uri, $guzzleParams);
+        } catch (ClientException $e) {
+            // 400 level error
+            $response = $e->getResponse();
+            $errors = (object) [
+                'status' => $response->getStatusCode(),
+                'body'   => $this->jsonDecode($response->getBody()),
+            ];
+        }
 
         // Grab the API call limit header returned from Shopify
         $callLimitHeader = $response->getHeader('http_x_shopify_shop_api_call_limit');
@@ -605,6 +657,7 @@ class BasicShopifyAPI
         // Return Guzzle response and JSON-decoded body
         return (object) [
             'response'   => $response,
+            'errors'     => $errors,
             'body'       => $this->jsonDecode($response->getBody()),
             'timestamps' => [$tmpTimestamp, $this->requestTimestamp],
         ];
