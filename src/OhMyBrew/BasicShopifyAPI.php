@@ -613,6 +613,7 @@ class BasicShopifyAPI
         $this->requestTimestamp = microtime(true);
 
         $errors = false;
+
         try {
             // Build URI and try the request
             $uri = $this->getRestUri()->withPath($path);
