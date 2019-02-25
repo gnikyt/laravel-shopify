@@ -280,11 +280,15 @@ $api->withSession('some-shop-two.myshopify.com', 'token from database?', functio
 
 This library internally catches only 400 status range errors through Guzzle's `ClientException`. You're able to check for an error of this type and get its response status code and body.
 
-```
+```php
 $call = $api->rest('GET', '/admin/non-existant-route-or-object.json');
+
 if ($call->errors) {
   echo "Oops! {$call->errors->status} error";
-  print_r($call->errors->body); // Example, if response body was `{"error": "Not found"}`, then: `$call->errors->body->error` would return "Not Found"
+  print_r($call->errors->body);
+  
+  // Example, if response body was `{"error": "Not found"}`...
+  /// then: `$call->errors->body->error` would return "Not Found"
 }
 
 ## Documentation
