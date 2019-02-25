@@ -129,21 +129,7 @@ class BasicShopifyAPI
 
         // Create the stack and assign the middleware which attempts to fix redirects
         $stack = HandlerStack::create();
-        $stack->push(Middleware::mapRequest(function (Request $request) {
-            // Get the request URI
-            $uri = (string) $request->getUri();
-
-            // Check if private access is in use but the URI is not privately accessed
-            if ($this->private && strstr($uri, '@') === false) {
-                // Return a modified request with fixed URI
-                return $request->withUri(
-                    $this->getResturi()->withPath(parse_url($uri, PHP_URL_PATH))
-                );
-            }
-
-            // Nothing to do, use request passed in
-            return $request;
-        }));
+        $stack->push(Middleware::mapRequest([$this, 'adjustRequestUri']));
 
         // Create a default Guzzle client with our stack
         $this->client = new Client(['handler' => $stack]);
@@ -659,6 +645,32 @@ class BasicShopifyAPI
             'body'       => $this->jsonDecode($response->getBody()),
             'timestamps' => [$tmpTimestamp, $this->requestTimestamp],
         ];
+    }
+
+    /**
+     * Fixes the redirect URI from Shopify location header.
+     *
+     * @param Request $request
+     *
+     * @return void
+     */
+    public function adjustRequestUri(Request $request)
+    {
+        // Check if private access is in use but the URI is not privately accessed
+        if ($this->private) {
+            // Get the request URI
+            $uri = (string) $request->getUri();
+
+            if (strstr($uri, '@') === false) {
+                // Return a modified request with fixed URI
+                return $request->withUri(
+                    $this->getRestUri()->withPath(parse_url($uri, PHP_URL_PATH))
+                );
+            }
+        }
+
+        // Nothing to do, use request passed in
+        return $request;
     }
 
     /**

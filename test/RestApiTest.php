@@ -5,6 +5,8 @@ namespace OhMyBrew;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Exception\ClientException;
 use ReflectionClass;
 
 class RestApiTest extends \PHPUnit\Framework\TestCase
@@ -126,6 +128,7 @@ class RestApiTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('Apple Computers', $request->body->shop->name);
         $this->assertEquals('limit=1&page=1', $data);
         $this->assertEquals('!@#', $token_header);
+        $this->assertFalse($request->errors);
     }
 
     /**
@@ -318,5 +321,80 @@ class RestApiTest extends \PHPUnit\Framework\TestCase
         // This call should have the last call's time for initial, and greater than 0 for current
         $this->assertEquals($timestamps[1], $timestamps2[0]);
         $this->assertTrue($timestamps2[1] > 0);
+    }
+
+    /**
+     * @test
+     *
+     * Should catch client exception and handle it.
+     */
+    public function itShouldCatchClientException()
+    {
+        // Fake a bad response
+        $response = new ClientException(
+            '404 Not Found',
+            new Request('GET', 'test'),
+            new Response(
+                404,
+                ['http_x_shopify_shop_api_call_limit' => '2/80'],
+                file_get_contents(__DIR__.'/fixtures/rest/admin__shop_oops.json')
+            )
+        );
+        $mock = new MockHandler([$response]);
+        $client = new Client(['handler' => $mock]);
+
+        // Make the call
+        $api = new BasicShopifyAPI(true);
+        $api->setClient($client);
+        $api->setShop('example.myshopify.com');
+        $api->setApiKey('123');
+        $api->setApiPassword('abc');
+
+        // Bad route
+        $result = $api->rest('GET', '/admin/shop-oops.json');
+
+        // Confirm
+        $this->assertTrue(is_object($result->errors));
+        $this->assertEquals($result->errors->body->errors, 'Not Found');
+    }
+
+    /**
+     * @test
+     *
+     * Should fix request URI redirect.
+     */
+    public function itShouldAdjustOrNotAdjustUris()
+    {
+        // Mock response
+        $response = new Response(
+            200,
+            ['http_x_shopify_shop_api_call_limit' => '2/80'],
+            '{}'
+        );
+        $mock = new MockHandler([$response, $response]);
+        $client = new Client(['handler' => $mock]);
+
+        // Setup API
+        $api = new BasicShopifyAPI(true);
+        $api->setClient($client);
+        $api->setShop('example.myshopify.com');
+        $api->setApiKey('123');
+        $api->setApiPassword('abc');
+
+        $expected = 'https://123:abc@example.myshopify.com/admin/missing_json_endpoint_and_has_domain_in_uri';
+
+        // Should Adjust...
+        $result = $api->adjustRequestUri(
+            new Request('GET', 'http://example.myshopify.com/admin/missing_json_endpoint_and_has_domain_in_uri')
+        );
+
+        $this->assertEquals($expected, (string) $result->getUri());
+
+        // Should not adjust...
+        $result = $api->adjustRequestUri(
+            new Request('GET', $expected)
+        );
+
+        $this->assertEquals($expected, (string) $result->getUri());
     }
 }
