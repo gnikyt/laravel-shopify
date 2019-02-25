@@ -5,11 +5,11 @@ namespace OhMyBrew;
 use Closure;
 use Exception;
 use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Uri;
-use GuzzleHttp\Exception\ClientException;
 
 /**
  * Basic Shopify API for REST & GraphQL.
@@ -587,7 +587,7 @@ class BasicShopifyAPI
             'headers'         => [
                 'Accept'       => 'application/json',
                 'Content-Type' => 'application/json',
-            ]
+            ],
         ];
         $guzzleParams[strtoupper($type) === 'GET' ? 'query' : 'json'] = $params;
 
@@ -612,6 +612,7 @@ class BasicShopifyAPI
         $this->requestTimestamp = microtime(true);
 
         $errors = false;
+
         try {
             // Build URI
             $uri = $this->getRestUri()->withPath($path);
