@@ -1,5 +1,12 @@
 # CHANGELOG
 
+# 5.0.0
+
+*Possible breaking release depending on how you handle errors*
+
++ 400-500 errors are now captured internally and accessible through the resulting object (#16)
++ Middleware was added to the Guzzle requests to fix redirections (#16)
+
 # 4.0.2
 
 + Changes to the response of GraphQL calls to better check for errors.
