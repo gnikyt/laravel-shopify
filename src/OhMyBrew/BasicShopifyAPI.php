@@ -389,8 +389,7 @@ class BasicShopifyAPI
                 'client_id'    => $this->apiKey,
                 'scope'        => $scopes,
                 'redirect_uri' => $redirectUri,
-            ]))
-        ;
+            ]));
     }
 
     /**
@@ -725,7 +724,7 @@ class BasicShopifyAPI
      *
      * @param Uri $uri
      *
-     * @return boolean
+     * @return bool
      */
     protected function isGraphRequest(Uri $uri)
     {
@@ -737,7 +736,7 @@ class BasicShopifyAPI
      *
      * @param Uri $uri
      *
-     * @return boolean
+     * @return bool
      */
     protected function isRestRequest(Uri $uri)
     {
@@ -749,7 +748,7 @@ class BasicShopifyAPI
      *
      * @param Uri $uri
      *
-     * @return boolean
+     * @return bool
      */
     protected function isAuthableRequest(Uri $uri)
     {

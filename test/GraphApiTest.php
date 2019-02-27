@@ -39,7 +39,7 @@ class GraphApiTest extends BaseTest
                 200,
                 [],
                 file_get_contents(__DIR__.'/fixtures/graphql/shop_products.json')
-            )
+            ),
         ];
 
         $api = new BasicShopifyAPI(true);
@@ -109,7 +109,7 @@ class GraphApiTest extends BaseTest
                 200,
                 [],
                 file_get_contents(__DIR__.'/fixtures/graphql/shop_products.json')
-            )
+            ),
         ];
 
         $api = new BasicShopifyAPI();
@@ -151,7 +151,7 @@ class GraphApiTest extends BaseTest
                 200,
                 [],
                 file_get_contents(__DIR__.'/fixtures/graphql/shop_products_error.json')
-            )
+            ),
         ];
 
         $api = new BasicShopifyAPI();
@@ -193,7 +193,7 @@ class GraphApiTest extends BaseTest
                 200,
                 [],
                 file_get_contents(__DIR__.'/fixtures/graphql/create_collection.json')
-            )
+            ),
         ];
 
         $api = new BasicShopifyAPI();

@@ -2,12 +2,11 @@
 
 namespace OhMyBrew\Test;
 
-use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
-use ReflectionClass;
-use ReflectionMethod;
 use GuzzleHttp\Psr7\Uri;
 use OhMyBrew\BasicShopifyAPI;
+use ReflectionClass;
+use ReflectionMethod;
 
 class BaseApiTest extends BaseTest
 {
@@ -307,7 +306,7 @@ class BaseApiTest extends BaseTest
                 200,
                 [],
                 file_get_contents(__DIR__.'/fixtures/admin__oauth__access_token.json')
-            )
+            ),
         ];
 
         $api = new BasicShopifyAPI();

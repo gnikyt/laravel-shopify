@@ -6,8 +6,8 @@ use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use ReflectionClass;
 use OhMyBrew\BasicShopifyAPI;
+use ReflectionClass;
 
 class RestApiTest extends BaseTest
 {
@@ -23,7 +23,7 @@ class RestApiTest extends BaseTest
                 200,
                 ['http_x_shopify_shop_api_call_limit' => '2/80'],
                 file_get_contents(__DIR__.'/fixtures/rest/admin__shop.json')
-            )
+            ),
         ];
 
         $api = new BasicShopifyAPI(true);
@@ -53,7 +53,7 @@ class RestApiTest extends BaseTest
                 200,
                 ['http_x_shopify_shop_api_call_limit' => '2/80'],
                 file_get_contents(__DIR__.'/fixtures/rest/admin__shop.json')
-            )
+            ),
         ];
 
         $api = new BasicShopifyAPI();
@@ -108,7 +108,7 @@ class RestApiTest extends BaseTest
                 200,
                 ['http_x_shopify_shop_api_call_limit' => '2/80'],
                 file_get_contents(__DIR__.'/fixtures/rest/admin__shop.json')
-            )
+            ),
         ];
 
         $api = new BasicShopifyAPI();
@@ -158,7 +158,7 @@ class RestApiTest extends BaseTest
                 200,
                 ['http_x_shopify_shop_api_call_limit' => '2/80'],
                 '{}'
-            )
+            ),
         ];
 
         $api = new BasicShopifyAPI();
@@ -211,7 +211,7 @@ class RestApiTest extends BaseTest
                 200,
                 ['http_x_shopify_shop_api_call_limit' => '2/80'],
                 '{}'
-            )
+            ),
         ];
 
         $api = new BasicShopifyAPI();
@@ -238,7 +238,7 @@ class RestApiTest extends BaseTest
                 200,
                 ['http_x_shopify_shop_api_call_limit' => '2/80'],
                 '{}'
-            )
+            ),
         ];
 
         $api = new BasicShopifyAPI();
@@ -265,7 +265,7 @@ class RestApiTest extends BaseTest
                 200,
                 ['http_x_shopify_shop_api_call_limit' => '2/80'],
                 file_get_contents(__DIR__.'/fixtures/rest/admin__shop.json')
-            )
+            ),
         ];
 
         $api = new BasicShopifyAPI();
@@ -290,7 +290,7 @@ class RestApiTest extends BaseTest
                 200,
                 ['http_x_shopify_shop_api_call_limit' => '2/80'],
                 file_get_contents(__DIR__.'/fixtures/rest/admin__shop.json')
-            )
+            ),
         ];
 
         $api = new BasicShopifyAPI();
@@ -357,7 +357,7 @@ class RestApiTest extends BaseTest
                     ['http_x_shopify_shop_api_call_limit' => '2/80'],
                     file_get_contents(__DIR__.'/fixtures/rest/admin__shop_oops.json')
                 )
-            )
+            ),
         ];
 
         $api = new BasicShopifyAPI(true);
@@ -390,7 +390,7 @@ class RestApiTest extends BaseTest
             new ConnectException(
                 'Connection issue',
                 new Request('GET', 'test')
-            )
+            ),
         ];
 
         $api = new BasicShopifyAPI(true);

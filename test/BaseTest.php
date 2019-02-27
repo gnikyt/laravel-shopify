@@ -2,12 +2,12 @@
 
 namespace OhMyBrew\Test;
 
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Middleware;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
-use PHPUnit\Framework\TestCase;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
 use OhMyBrew\BasicShopifyAPI;
+use PHPUnit\Framework\TestCase;
 
 abstract class BaseTest extends TestCase
 {
@@ -16,14 +16,14 @@ abstract class BaseTest extends TestCase
      *
      * @param BasicShopifyAPI $api
      * @param array           $responses
-     
+     *
      * @return MockHandler
      */
     protected function buildClient(BasicShopifyAPI $api, array $responses)
     {
         // Build mock handler
         $mock = new MockHandler($responses);
-        
+
         // Build stack with auth middleware
         $stack = HandlerStack::create($mock);
         $stack->push(Middleware::mapRequest([$api, 'authRequest']));
