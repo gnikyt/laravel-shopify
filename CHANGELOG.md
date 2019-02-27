@@ -1,5 +1,10 @@
 # CHANGELOG
 
+# 5.1.0
+
++ Added a `authRequest` middleware to Guzzle which handles adding all needed headers and checking required API keys to run those requests
++ Fixed issue for redirect not working
+
 # 5.0.0
 
 *Possible breaking release depending on how you handle errors*
