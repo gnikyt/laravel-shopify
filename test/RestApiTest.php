@@ -1,16 +1,15 @@
 <?php
 
-namespace OhMyBrew;
+namespace OhMyBrew\Test;
 
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
-use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use ReflectionClass;
+use OhMyBrew\BasicShopifyAPI;
 
-class RestApiTest extends \PHPUnit\Framework\TestCase
+class RestApiTest extends BaseTest
 {
     /**
      * @test
@@ -19,16 +18,17 @@ class RestApiTest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldReturnPrivateBaseUrl()
     {
-        $response = new Response(
-            200,
-            ['http_x_shopify_shop_api_call_limit' => '2/80'],
-            file_get_contents(__DIR__.'/fixtures/rest/admin__shop.json')
-        );
-        $mock = new MockHandler([$response]);
-        $client = new Client(['handler' => $mock]);
+        $responses = [
+            new Response(
+                200,
+                ['http_x_shopify_shop_api_call_limit' => '2/80'],
+                file_get_contents(__DIR__.'/fixtures/rest/admin__shop.json')
+            )
+        ];
 
         $api = new BasicShopifyAPI(true);
-        $api->setClient($client);
+        $mock = $this->buildClient($api, $responses);
+
         $api->setShop('example.myshopify.com');
         $api->setApiKey('123');
         $api->setApiPassword('abc');
@@ -37,8 +37,8 @@ class RestApiTest extends \PHPUnit\Framework\TestCase
         $lastRequest = $mock->getLastRequest()->getUri();
         $this->assertEquals('https', $lastRequest->getScheme());
         $this->assertEquals('example.myshopify.com', $lastRequest->getHost());
-        $this->assertEquals('123:abc', $lastRequest->getUserInfo());
         $this->assertEquals('/admin/shop.json', $lastRequest->getPath());
+        $this->assertEquals('Basic '.base64_encode('123:abc'), $mock->getLastRequest()->getHeaderLine('Authorization'));
     }
 
     /**
@@ -48,16 +48,17 @@ class RestApiTest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldReturnPublicBaseUrl()
     {
-        $response = new Response(
-            200,
-            ['http_x_shopify_shop_api_call_limit' => '2/80'],
-            file_get_contents(__DIR__.'/fixtures/rest/admin__shop.json')
-        );
-        $mock = new MockHandler([$response]);
-        $client = new Client(['handler' => $mock]);
+        $responses = [
+            new Response(
+                200,
+                ['http_x_shopify_shop_api_call_limit' => '2/80'],
+                file_get_contents(__DIR__.'/fixtures/rest/admin__shop.json')
+            )
+        ];
 
         $api = new BasicShopifyAPI();
-        $api->setClient($client);
+        $mock = $this->buildClient($api, $responses);
+
         $api->setShop('example.myshopify.com');
         $api->rest('GET', '/admin/shop.json');
 
@@ -102,17 +103,17 @@ class RestApiTest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldReturnGuzzleResponseAndJsonBody()
     {
-        $response = new Response(
-            200,
-            ['http_x_shopify_shop_api_call_limit' => '2/80'],
-            file_get_contents(__DIR__.'/fixtures/rest/admin__shop.json')
-        );
-
-        $mock = new MockHandler([$response]);
-        $client = new Client(['handler' => $mock]);
+        $responses = [
+            new Response(
+                200,
+                ['http_x_shopify_shop_api_call_limit' => '2/80'],
+                file_get_contents(__DIR__.'/fixtures/rest/admin__shop.json')
+            )
+        ];
 
         $api = new BasicShopifyAPI();
-        $api->setClient($client);
+        $mock = $this->buildClient($api, $responses);
+
         $api->setShop('example.myshopify.com');
         $api->setApiKey('123');
         $api->setAccessToken('!@#');
@@ -152,12 +153,17 @@ class RestApiTest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldReturnApiCallLimits()
     {
-        $response = new Response(200, ['http_x_shopify_shop_api_call_limit' => '2/80'], '{}');
-        $mock = new MockHandler([$response]);
-        $client = new Client(['handler' => $mock]);
+        $responses = [
+            new Response(
+                200,
+                ['http_x_shopify_shop_api_call_limit' => '2/80'],
+                '{}'
+            )
+        ];
 
         $api = new BasicShopifyAPI();
-        $api->setClient($client);
+        $mock = $this->buildClient($api, $responses);
+
         $api->setShop('example.myshopify.com');
         $api->setApiKey('123');
         $api->setAccessToken('!@#');
@@ -177,12 +183,11 @@ class RestApiTest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldContinueWithoutApiCallLimitHeader()
     {
-        $response = new Response(200, [], '{}');
-        $mock = new MockHandler([$response]);
-        $client = new Client(['handler' => $mock]);
+        $responses = [new Response(200, [], '{}')];
 
         $api = new BasicShopifyAPI();
-        $api->setClient($client);
+        $mock = $this->buildClient($api, $responses);
+
         $api->setShop('example.myshopify.com');
         $api->setApiKey('123');
         $api->setAccessToken('!@#');
@@ -201,12 +206,17 @@ class RestApiTest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldUseQueryForGetMethod()
     {
-        $response = new Response(200, ['http_x_shopify_shop_api_call_limit' => '2/80'], '{}');
-        $mock = new MockHandler([$response]);
-        $client = new Client(['handler' => $mock]);
+        $responses = [
+            new Response(
+                200,
+                ['http_x_shopify_shop_api_call_limit' => '2/80'],
+                '{}'
+            )
+        ];
 
         $api = new BasicShopifyAPI();
-        $api->setClient($client);
+        $mock = $this->buildClient($api, $responses);
+
         $api->setShop('example.myshopify.com');
         $api->setApiKey('123');
         $api->setAccessToken('!@#');
@@ -223,12 +233,17 @@ class RestApiTest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldUseJsonForNonGetMethods()
     {
-        $response = new Response(200, ['http_x_shopify_shop_api_call_limit' => '2/80'], '{}');
-        $mock = new MockHandler([$response]);
-        $client = new Client(['handler' => $mock]);
+        $responses = [
+            new Response(
+                200,
+                ['http_x_shopify_shop_api_call_limit' => '2/80'],
+                '{}'
+            )
+        ];
 
         $api = new BasicShopifyAPI();
-        $api->setClient($client);
+        $mock = $this->buildClient($api, $responses);
+
         $api->setShop('example.myshopify.com');
         $api->setApiKey('123');
         $api->setAccessToken('!@#');
@@ -245,16 +260,17 @@ class RestApiTest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldAliasRequestToRestMethod()
     {
-        $response = new Response(
-            200,
-            ['http_x_shopify_shop_api_call_limit' => '2/80'],
-            file_get_contents(__DIR__.'/fixtures/rest/admin__shop.json')
-        );
-        $mock = new MockHandler([$response]);
-        $client = new Client(['handler' => $mock]);
+        $responses = [
+            new Response(
+                200,
+                ['http_x_shopify_shop_api_call_limit' => '2/80'],
+                file_get_contents(__DIR__.'/fixtures/rest/admin__shop.json')
+            )
+        ];
 
         $api = new BasicShopifyAPI();
-        $api->setClient($client);
+        $mock = $this->buildClient($api, $responses);
+
         $api->setShop('example.myshopify.com');
         $request = $api->request('GET', '/admin/shop.json');
 
@@ -269,16 +285,17 @@ class RestApiTest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldTrackRequestTimestamps()
     {
-        $response = new Response(
-            200,
-            ['http_x_shopify_shop_api_call_limit' => '2/80'],
-            file_get_contents(__DIR__.'/fixtures/rest/admin__shop.json')
-        );
-        $mock = new MockHandler([$response]);
-        $client = new Client(['handler' => $mock]);
+        $responses = [
+            new Response(
+                200,
+                ['http_x_shopify_shop_api_call_limit' => '2/80'],
+                file_get_contents(__DIR__.'/fixtures/rest/admin__shop.json')
+            )
+        ];
 
         $api = new BasicShopifyAPI();
-        $api->setClient($client);
+        $mock = $this->buildClient($api, $responses);
+
         $api->setShop('example.myshopify.com');
 
         $reflected = new ReflectionClass($api);
@@ -304,11 +321,10 @@ class RestApiTest extends \PHPUnit\Framework\TestCase
             ['http_x_shopify_shop_api_call_limit' => '2/80'],
             file_get_contents(__DIR__.'/fixtures/rest/admin__shop.json')
         );
-        $mock = new MockHandler([$response, $response]);
-        $client = new Client(['handler' => $mock]);
 
         $api = new BasicShopifyAPI();
-        $api->setClient($client);
+        $mock = $this->buildClient($api, [$response, $response]);
+
         $api->setShop('example.myshopify.com');
         $api->enableRateLimiting();
 
@@ -332,21 +348,22 @@ class RestApiTest extends \PHPUnit\Framework\TestCase
     public function itShouldCatchClientException()
     {
         // Fake a bad response
-        $response = new ClientException(
-            '404 Not Found',
-            new Request('GET', 'test'),
-            new Response(
-                404,
-                ['http_x_shopify_shop_api_call_limit' => '2/80'],
-                file_get_contents(__DIR__.'/fixtures/rest/admin__shop_oops.json')
+        $responses = [
+            new ClientException(
+                '404 Not Found',
+                new Request('GET', 'test'),
+                new Response(
+                    404,
+                    ['http_x_shopify_shop_api_call_limit' => '2/80'],
+                    file_get_contents(__DIR__.'/fixtures/rest/admin__shop_oops.json')
+                )
             )
-        );
-        $mock = new MockHandler([$response]);
-        $client = new Client(['handler' => $mock]);
+        ];
+
+        $api = new BasicShopifyAPI(true);
+        $mock = $this->buildClient($api, $responses);
 
         // Make the call
-        $api = new BasicShopifyAPI(true);
-        $api->setClient($client);
         $api->setShop('example.myshopify.com');
         $api->setApiKey('123');
         $api->setApiPassword('abc');
@@ -369,61 +386,22 @@ class RestApiTest extends \PHPUnit\Framework\TestCase
     public function itShouldRethrowExceptionsWhichAreNotClientOrServer()
     {
         // Fake a bad response
-        $response = new ConnectException(
-            'Connection issue',
-            new Request('GET', 'test')
-        );
-        $mock = new MockHandler([$response]);
-        $client = new Client(['handler' => $mock]);
+        $responses = [
+            new ConnectException(
+                'Connection issue',
+                new Request('GET', 'test')
+            )
+        ];
+
+        $api = new BasicShopifyAPI(true);
+        $mock = $this->buildClient($api, $responses);
 
         // Make the call
-        $api = new BasicShopifyAPI(true);
-        $api->setClient($client);
         $api->setShop('example.myshopify.com');
         $api->setApiKey('123');
         $api->setApiPassword('abc');
 
         // Cause the exception
         $result = $api->rest('GET', '/admin/shop-oops.json');
-    }
-
-    /**
-     * @test
-     *
-     * Should fix request URI redirect.
-     */
-    public function itShouldAdjustOrNotAdjustUris()
-    {
-        // Mock response
-        $response = new Response(
-            200,
-            ['http_x_shopify_shop_api_call_limit' => '2/80'],
-            '{}'
-        );
-        $mock = new MockHandler([$response, $response]);
-        $client = new Client(['handler' => $mock]);
-
-        // Setup API
-        $api = new BasicShopifyAPI(true);
-        $api->setClient($client);
-        $api->setShop('example.myshopify.com');
-        $api->setApiKey('123');
-        $api->setApiPassword('abc');
-
-        $expected = 'https://123:abc@example.myshopify.com/admin/missing_json_endpoint_and_has_domain_in_uri';
-
-        // Should Adjust...
-        $result = $api->adjustRequestUri(
-            new Request('GET', 'http://example.myshopify.com/admin/missing_json_endpoint_and_has_domain_in_uri')
-        );
-
-        $this->assertEquals($expected, (string) $result->getUri());
-
-        // Should not adjust...
-        $result = $api->adjustRequestUri(
-            new Request('GET', $expected)
-        );
-
-        $this->assertEquals($expected, (string) $result->getUri());
     }
 }

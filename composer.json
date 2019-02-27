@@ -23,5 +23,10 @@
   "autoload": {
     "files": ["src/OhMyBrew/BasicShopifyAPI.php"]
   },
+  "autoload-dev": {
+    "psr-4": {
+      "OhMyBrew\\Test\\": "test"
+    }
+  },
   "config": { "bin-dir": "bin" }
 }

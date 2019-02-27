@@ -1,13 +1,15 @@
 <?php
 
-namespace OhMyBrew;
+namespace OhMyBrew\Test;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
 use ReflectionClass;
+use ReflectionMethod;
+use GuzzleHttp\Psr7\Uri;
+use OhMyBrew\BasicShopifyAPI;
 
-class BaseApiTest extends \PHPUnit\Framework\TestCase
+class BaseApiTest extends BaseTest
 {
     /**
      * @test
@@ -64,6 +66,70 @@ class BaseApiTest extends \PHPUnit\Framework\TestCase
     /**
      * @test
      *
+     * Ensure base URI builds.
+     */
+    public function itShouldReturnBaseUri()
+    {
+        $api = new BasicShopifyAPI(true);
+        $api->setShop('example.myshopify.com');
+
+        $this->assertEquals('https://example.myshopify.com', (string) $api->getBaseUri());
+    }
+
+    /**
+     * @test
+     * @expectedException Exception
+     * @expectedExceptionMessage Shopify domain missing for API calls
+     *
+     * Ensure Shopify domain is there
+     */
+    public function itShouldThrowExceptionForMissingShop()
+    {
+        $api = new BasicShopifyAPI(true);
+        $api->getBaseUri();
+    }
+
+    /**
+     * @test
+     *
+     * Determine if request is REST or a Graph call
+     */
+    public function itShouldDetermineTypesOfCalls()
+    {
+        // Setup API
+        $api = new BasicShopifyAPI(true);
+        $api->setShop('example.myshopify.com');
+
+        // Make the methods accessible
+        $isGraphRequest = new ReflectionMethod($api, 'isGraphRequest');
+        $isGraphRequest->setAccessible(true);
+        $isRestRequest = new ReflectionMethod($api, 'isRestRequest');
+        $isRestRequest->setAccessible(true);
+        $isAuthableRequest = new ReflectionMethod($api, 'isAuthableRequest');
+        $isAuthableRequest->setAccessible(true);
+
+        // REST
+        $uri = $api->getBaseUri()->withPath('/admin/shop.json');
+        $this->assertFalse($isGraphRequest->invoke($api, $uri));
+        $this->assertTrue($isRestRequest->invoke($api, $uri));
+        $this->assertTrue($isAuthableRequest->invoke($api, $uri));
+
+        // Graph
+        $uri = $api->getBaseUri()->withPath('/admin/api/graphql.json');
+        $this->assertTrue($isGraphRequest->invoke($api, $uri));
+        $this->assertFalse($isRestRequest->invoke($api, $uri));
+        $this->assertTrue($isAuthableRequest->invoke($api, $uri));
+
+        // Token
+        $uri = $api->getBaseUri()->withPath('/admin/oauth/access_token');
+        $this->assertFalse($isGraphRequest->invoke($api, $uri));
+        $this->assertTrue($isRestRequest->invoke($api, $uri));
+        $this->assertFalse($isAuthableRequest->invoke($api, $uri));
+    }
+
+    /**
+     * @test
+     *
      * Should set API key and API password and API shared secret
      */
     public function itShouldSetApiKeyAndPassword()
@@ -87,26 +153,6 @@ class BaseApiTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('123', $apiKeyProperty->getValue($api));
         $this->assertEquals('abc', $apiPasswordProperty->getValue($api));
         $this->assertEquals('!@#', $apiSecretProperty->getValue($api));
-    }
-
-    /**
-     * @test
-     *
-     * Should allow for own client injection
-     */
-    public function itShouldAllowForOwnClient()
-    {
-        $api = new BasicShopifyAPI();
-        $api->setClient(new Client(['handler' => new MockHandler()]));
-
-        $reflected = new ReflectionClass($api);
-
-        $clientProperty = $reflected->getProperty('client');
-        $clientProperty->setAccessible(true);
-
-        $value = $clientProperty->getValue($api);
-
-        $this->assertEquals('GuzzleHttp\Handler\MockHandler', get_class($value->getConfig('handler')));
     }
 
     /**
@@ -256,20 +302,20 @@ class BaseApiTest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldGetAccessTokenFromShopify()
     {
-        $response = new Response(
-            200,
-            [],
-            file_get_contents(__DIR__.'/fixtures/admin__oauth__access_token.json')
-        );
-
-        $mock = new MockHandler([$response]);
-        $client = new Client(['handler' => $mock]);
+        $responses = [
+            new Response(
+                200,
+                [],
+                file_get_contents(__DIR__.'/fixtures/admin__oauth__access_token.json')
+            )
+        ];
 
         $api = new BasicShopifyAPI();
+        $mock = $this->buildClient($api, $responses);
+
         $api->setShop('example.myshopify.com');
         $api->setApiKey('123');
         $api->setApiSecret('abc');
-        $api->setClient($client);
 
         $code = '!@#';
         $token = $api->requestAccessToken($code);
@@ -279,19 +325,6 @@ class BaseApiTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('abc', $data->client_secret);
         $this->assertEquals('123', $data->client_id);
         $this->assertEquals($code, $data->code);
-    }
-
-    /**
-     * @test
-     * @expectedException Exception
-     * @expectedExceptionMessage Shopify domain missing for API calls
-     *
-     * Ensure Shopify domain is there for grabbing the access tokens
-     */
-    public function itShouldThrowExceptionForMissingShopOnAccessTokenRequest()
-    {
-        $api = new BasicShopifyAPI(true);
-        $api->requestAccessToken('123');
     }
 
     /**
@@ -320,23 +353,9 @@ class BaseApiTest extends \PHPUnit\Framework\TestCase
         $api->setApiKey('123');
 
         $this->assertEquals(
-            'https://example.myshopify.com/admin/oauth/authorize?client_id=123&scope=read_products,write_products&redirect_uri=https://localapp.local/',
+            'https://example.myshopify.com/admin/oauth/authorize?client_id=123&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalapp.local%2F',
             $api->getAuthUrl(['read_products', 'write_products'], 'https://localapp.local/')
         );
-    }
-
-    /**
-     * @test
-     *
-     * @expectedException Exception
-     * @expectedExceptionMessage Shopify domain missing for API calls
-     *
-     * Should throw error for missing shop on auth call
-     */
-    public function itShouldThrowErrorForMissingShopDomainOnAuthCall()
-    {
-        $api = new BasicShopifyAPI();
-        $api->getAuthUrl(['read_products', 'write_products'], 'https://localapp.local/');
     }
 
     /**

@@ -1,13 +1,12 @@
 <?php
 
-namespace OhMyBrew;
+namespace OhMyBrew\Test;
 
 use Exception;
-use GuzzleHttp\Client;
-use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
+use OhMyBrew\BasicShopifyAPI;
 
-class GraphApiTest extends \PHPUnit\Framework\TestCase
+class GraphApiTest extends BaseTest
 {
     /**
      * Setup for phpUnit.
@@ -35,16 +34,17 @@ class GraphApiTest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldReturnBaseUrl()
     {
-        $response = new Response(
-            200,
-            [],
-            file_get_contents(__DIR__.'/fixtures/graphql/shop_products.json')
-        );
-        $mock = new MockHandler([$response]);
-        $client = new Client(['handler' => $mock]);
+        $responses = [
+            new Response(
+                200,
+                [],
+                file_get_contents(__DIR__.'/fixtures/graphql/shop_products.json')
+            )
+        ];
 
         $api = new BasicShopifyAPI(true);
-        $api->setClient($client);
+        $mock = $this->buildClient($api, $responses);
+
         $api->setShop('example.myshopify.com');
         $api->setApiKey('123');
         $api->setApiPassword('abc');
@@ -104,17 +104,17 @@ class GraphApiTest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldReturnGuzzleResponseAndJsonBodyForSuccess()
     {
-        $response = new Response(
-            200,
-            [],
-            file_get_contents(__DIR__.'/fixtures/graphql/shop_products.json')
-        );
-
-        $mock = new MockHandler([$response]);
-        $client = new Client(['handler' => $mock]);
+        $responses = [
+            new Response(
+                200,
+                [],
+                file_get_contents(__DIR__.'/fixtures/graphql/shop_products.json')
+            )
+        ];
 
         $api = new BasicShopifyAPI();
-        $api->setClient($client);
+        $mock = $this->buildClient($api, $responses);
+
         $api->setShop('example.myshopify.com');
         $api->setAccessToken('!@#');
 
@@ -146,17 +146,17 @@ class GraphApiTest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldReturnGuzzleResponseForError()
     {
-        $response = new Response(
-            200,
-            [],
-            file_get_contents(__DIR__.'/fixtures/graphql/shop_products_error.json')
-        );
-
-        $mock = new MockHandler([$response]);
-        $client = new Client(['handler' => $mock]);
+        $responses = [
+            new Response(
+                200,
+                [],
+                file_get_contents(__DIR__.'/fixtures/graphql/shop_products_error.json')
+            )
+        ];
 
         $api = new BasicShopifyAPI();
-        $api->setClient($client);
+        $mock = $this->buildClient($api, $responses);
+
         $api->setShop('example.myshopify.com');
         $api->setAccessToken('!@#');
 
@@ -188,17 +188,17 @@ class GraphApiTest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldProcessQueryWithVariables()
     {
-        $response = new Response(
-            200,
-            [],
-            file_get_contents(__DIR__.'/fixtures/graphql/create_collection.json')
-        );
-
-        $mock = new MockHandler([$response]);
-        $client = new Client(['handler' => $mock]);
+        $responses = [
+            new Response(
+                200,
+                [],
+                file_get_contents(__DIR__.'/fixtures/graphql/create_collection.json')
+            )
+        ];
 
         $api = new BasicShopifyAPI();
-        $api->setClient($client);
+        $mock = $this->buildClient($api, $responses);
+
         $api->setShop('example.myshopify.com');
         $api->setAccessToken('!@#');
 

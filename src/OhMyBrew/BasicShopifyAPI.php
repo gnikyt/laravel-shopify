@@ -130,10 +130,16 @@ class BasicShopifyAPI
 
         // Create the stack and assign the middleware which attempts to fix redirects
         $stack = HandlerStack::create();
-        $stack->push(Middleware::mapRequest([$this, 'adjustRequestUri']));
+        $stack->push(Middleware::mapRequest([$this, 'authRequest']));
 
         // Create a default Guzzle client with our stack
-        $this->client = new Client(['handler' => $stack]);
+        $this->client = new Client([
+            'handler'  => $stack,
+            'headers'  => [
+                'Accept'       => 'application/json',
+                'Content-Type' => 'application/json',
+            ],
+        ]);
 
         return $this;
     }
@@ -344,6 +350,21 @@ class BasicShopifyAPI
     }
 
     /**
+     * Returns the base URI to use.
+     *
+     * @return \Guzzle\Psr7\Uri
+     */
+    public function getBaseUri()
+    {
+        if ($this->shop === null) {
+            // Shop is required
+            throw new Exception('Shopify domain missing for API calls');
+        }
+
+        return new Uri("https://{$this->shop}");
+    }
+
+    /**
      * Gets the authentication URL for Shopify to allow the user to accept the app (for public apps).
      *
      * @param string|array $scopes      The API scopes as a comma seperated string or array
@@ -354,10 +375,6 @@ class BasicShopifyAPI
      */
     public function getAuthUrl($scopes, string $redirectUri)
     {
-        if ($this->shop === null) {
-            throw new Exception('Shopify domain missing for API calls');
-        }
-
         if ($this->apiKey === null) {
             throw new Exception('API key is missing');
         }
@@ -366,7 +383,14 @@ class BasicShopifyAPI
             $scopes = implode(',', $scopes);
         }
 
-        return "https://{$this->shop}/admin/oauth/authorize?client_id={$this->apiKey}&scope={$scopes}&redirect_uri={$redirectUri}";
+        return (string) $this->getBaseUri()
+            ->withPath('/admin/oauth/authorize')
+            ->withQuery(http_build_query([
+                'client_id'    => $this->apiKey,
+                'scope'        => $scopes,
+                'redirect_uri' => $redirectUri,
+            ]))
+        ;
     }
 
     /**
@@ -412,11 +436,6 @@ class BasicShopifyAPI
      */
     public function requestAccessToken(string $code)
     {
-        if ($this->shop === null) {
-            // Shop is required
-            throw new Exception('Shopify domain missing for API calls');
-        }
-
         if ($this->apiSecret === null || $this->apiKey === null) {
             // Key and secret required
             throw new Exception('API key or secret is missing');
@@ -425,7 +444,7 @@ class BasicShopifyAPI
         // Do a JSON POST request to grab the access token
         $request = $this->client->request(
             'POST',
-            "https://{$this->shop}/admin/oauth/access_token",
+            $this->getBaseUri()->withPath('/admin/oauth/access_token'),
             [
                 'json' => [
                     'client_id'     => $this->apiKey,
@@ -476,20 +495,6 @@ class BasicShopifyAPI
     }
 
     /**
-     * Returns/builds the REST URI to use.
-     *
-     * @return \Guzzle\Psr7\Uri
-     */
-    public function getRestUri()
-    {
-        if ($this->private) {
-            return new Uri("https://{$this->apiKey}:{$this->apiPassword}@{$this->shop}");
-        }
-
-        return new Uri("https://{$this->shop}");
-    }
-
-    /**
      * Runs a request to the Shopify API.
      *
      * @param string $query     The GraphQL query
@@ -502,19 +507,6 @@ class BasicShopifyAPI
      */
     public function graph(string $query, array $variables = [])
     {
-        if ($this->shop === null) {
-            // Shop is requiured
-            throw new Exception('Shopify domain missing for API calls');
-        }
-
-        if ($this->private && ($this->apiPassword === null && $this->accessToken === null)) {
-            // Private apps need password for use as access token
-            throw new Exception('API password/access token required for private Shopify GraphQL calls');
-        } elseif (!$this->private && $this->accessToken === null) {
-            // Need access token for public calls
-            throw new Exception('Access token required for public Shopify GraphQL calls');
-        }
-
         // Build the request
         $request = ['query' => $query];
         if (count($variables) > 0) {
@@ -528,14 +520,8 @@ class BasicShopifyAPI
         // Create the request, pass the access token and optional parameters
         $response = $this->client->request(
             'POST',
-            "https://{$this->shop}/admin/api/graphql.json",
-            [
-                'headers' => [
-                    'X-Shopify-Access-Token' => $this->apiPassword ?? $this->accessToken,
-                    'Content-Type'           => 'application/json',
-                ],
-                'body'    => json_encode($request),
-            ]
+            $this->getBaseUri()->withPath('/admin/api/graphql.json'),
+            ['body' => json_encode($request)]
         );
 
         // Grab the data result and extensions
@@ -573,29 +559,6 @@ class BasicShopifyAPI
      */
     public function rest(string $type, string $path, array $params = null)
     {
-        if ($this->shop === null) {
-            // Shop is required
-            throw new Exception('Shopify domain missing for API calls');
-        }
-
-        if ($this->private && ($this->apiKey === null || $this->apiPassword === null)) {
-            // Key and password are required for private API calls
-            throw new Exception('API key and password required for private Shopify REST calls');
-        }
-
-        // Build the request parameters for Guzzle
-        $guzzleParams = [
-            'headers'         => [
-                'Accept'       => 'application/json',
-                'Content-Type' => 'application/json',
-            ],
-        ];
-        $guzzleParams[strtoupper($type) === 'GET' ? 'query' : 'json'] = $params;
-
-        if (!$this->private) {
-            $guzzleParams['headers'] = ['X-Shopify-Access-Token' => $this->accessToken];
-        }
-
         // Check the rate limit before firing the request
         if ($this->isRateLimitingEnabled() && $this->requestTimestamp) {
             // Calculate in milliseconds the duration the API call took
@@ -613,19 +576,32 @@ class BasicShopifyAPI
         $this->requestTimestamp = microtime(true);
 
         $errors = false;
+        $response = null;
+        $body = null;
 
         try {
             // Build URI and try the request
-            $uri = $this->getRestUri()->withPath($path);
+            $uri = $this->getBaseUri()->withPath($path);
+
+            // Build the request parameters for Guzzle
+            $guzzleParams = [];
+            if ($params !== null) {
+                $guzzleParams[strtoupper($type) === 'GET' ? 'query' : 'json'] = $params;
+            }
+
+            // Set the response
             $response = $this->client->request($type, $uri, $guzzleParams);
+            $body = $response->getBody();
         } catch (Exception $e) {
             if ($e instanceof ClientException || $e instanceof ServerException) {
-                // 400 or 500 level error
+                // 400 or 500 level error, set the response
                 $response = $e->getResponse();
+                $body = $response->getBody();
 
+                // Build the error object
                 $errors = (object) [
                     'status'    => $response->getStatusCode(),
-                    'body'      => $this->jsonDecode($response->getBody()),
+                    'body'      => $this->jsonDecode($body),
                     'exception' => $e,
                 ];
             } else {
@@ -649,34 +625,64 @@ class BasicShopifyAPI
         return (object) [
             'response'   => $response,
             'errors'     => $errors,
-            'body'       => $this->jsonDecode($response->getBody()),
+            'body'       => $errors ? $body->getContents() : $this->jsonDecode($body),
             'timestamps' => [$tmpTimestamp, $this->requestTimestamp],
         ];
     }
 
     /**
-     * Fixes the redirect URI from Shopify location header.
+     * Ensures we have the proper request for private and public calls.
+     * Also modifies issues with redirects.
      *
      * @param Request $request
      *
      * @return void
      */
-    public function adjustRequestUri(Request $request)
+    public function authRequest(Request $request)
     {
-        // Check if private access is in use but the URI is not privately accessed
-        if ($this->private) {
-            // Get the request URI
-            $uri = (string) $request->getUri();
+        // Get the request URI
+        $uri = $request->getUri();
 
-            if (strstr($uri, '@') === false) {
-                // Return a modified request with fixed URI
-                return $request->withUri(
-                    $this->getRestUri()->withPath(parse_url($uri, PHP_URL_PATH))
+        if ($this->isAuthableRequest($uri)) {
+            if ($this->isRestRequest($uri)) {
+                // Checks for REST
+                if ($this->private && ($this->apiKey === null || $this->apiPassword === null)) {
+                    // Key and password are required for private API calls
+                    throw new Exception('API key and password required for private Shopify REST calls');
+                }
+
+                // Private: Add auth for REST calls
+                if ($this->private) {
+                    // Add the basic auth header
+                    return $request->withHeader(
+                        'Authorization',
+                        'Basic '.base64_encode("{$this->apiKey}:{$this->apiPassword}")
+                    );
+                }
+
+                // Public: Add the token header
+                return $request->withHeader(
+                    'X-Shopify-Access-Token',
+                    $this->accessToken
+                );
+            } else {
+                // Checks for Graph
+                if ($this->private && ($this->apiPassword === null && $this->accessToken === null)) {
+                    // Private apps need password for use as access token
+                    throw new Exception('API password/access token required for private Shopify GraphQL calls');
+                } elseif (!$this->private && $this->accessToken === null) {
+                    // Need access token for public calls
+                    throw new Exception('Access token required for public Shopify GraphQL calls');
+                }
+
+                // Public/Private: Add the token header
+                return $request->withHeader(
+                    'X-Shopify-Access-Token',
+                    $this->apiPassword ?? $this->accessToken
                 );
             }
         }
 
-        // Nothing to do, use request passed in
         return $request;
     }
 
@@ -712,5 +718,41 @@ class BasicShopifyAPI
         }
 
         return $obj;
+    }
+
+    /**
+     * Determines if the request is to Graph API.
+     *
+     * @param Uri $uri
+     *
+     * @return boolean
+     */
+    protected function isGraphRequest(Uri $uri)
+    {
+        return strpos((string) $uri, 'graphql.json') !== false;
+    }
+
+    /**
+     * Determines if the request is to REST API.
+     *
+     * @param Uri $uri
+     *
+     * @return boolean
+     */
+    protected function isRestRequest(Uri $uri)
+    {
+        return $this->isGraphRequest($uri) === false;
+    }
+
+    /**
+     * Determines if the request requires auth headers.
+     *
+     * @param Uri $uri
+     *
+     * @return boolean
+     */
+    protected function isAuthableRequest(Uri $uri)
+    {
+        return strpos((string) $uri, '/admin/oauth') === false;
     }
 }
