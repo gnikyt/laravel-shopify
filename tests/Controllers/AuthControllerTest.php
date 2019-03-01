@@ -41,7 +41,7 @@ class AuthControllerTest extends TestCase
         $response->assertViewHas('shopDomain', 'example.myshopify.com');
         $response->assertViewHas(
             'authUrl',
-            'https://example.myshopify.com/admin/oauth/authorize?client_id=&scope=read_products,write_products&redirect_uri=https://localhost/authenticate'
+            'https://example.myshopify.com/admin/oauth/authorize?client_id=&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalhost%2Fauthenticate'
         );
     }
 

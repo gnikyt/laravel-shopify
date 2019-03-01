@@ -48,7 +48,7 @@ class AuthShopHandlerTest extends TestCase
         $url = $as->buildAuthUrl();
 
         $this->assertEquals(
-            "https://{$shop->shopify_domain}/admin/oauth/authorize?client_id=&scope=read_products,write_products&redirect_uri=https://localhost/authenticate",
+            "https://{$shop->shopify_domain}/admin/oauth/authorize?client_id=&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalhost%2Fauthenticate",
             $url
         );
     }

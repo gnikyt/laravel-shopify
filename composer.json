@@ -17,8 +17,8 @@
     "doctrine/dbal": "~2.5"
   },
   "require-dev":{
-    "orchestra/database": "^3.5",
-    "orchestra/testbench": "^3.5",
+    "orchestra/database": "3.6.2",
+    "orchestra/testbench": "3.6.6",
     "phpunit/phpunit": "~6.0||~7.0",
     "squizlabs/php_codesniffer": "^3.0",
     "mockery/mockery": "^1.0"
