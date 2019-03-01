@@ -12,7 +12,7 @@ use ReflectionObject;
 
 class ScripttagInstallerJobTest extends TestCase
 {
-    public function setup()
+    public function setup() : void
     {
         parent::setup();
 

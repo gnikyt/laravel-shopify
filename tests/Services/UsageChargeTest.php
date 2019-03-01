@@ -12,7 +12,7 @@ use OhMyBrew\ShopifyApp\Test\TestCase;
 
 class UsageChargeTest extends TestCase
 {
-    public function setUp()
+    public function setUp() : void
     {
         parent::setUp();
 

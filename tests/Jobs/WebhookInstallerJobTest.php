@@ -11,7 +11,7 @@ use ReflectionObject;
 
 class WebhookInstallerJobTest extends TestCase
 {
-    public function setup()
+    public function setup() : void
     {
         parent::setup();
 
