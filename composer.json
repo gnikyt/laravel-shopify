@@ -7,13 +7,13 @@
   "authors": [
     {
       "name": "Tyler King",
-      "email": "tyler.n.king@gmail.com"
+      "email": "tyler@ohmybrew.com"
     }
   ],
   "require": {
     "php": ">=7.1.0",
     "laravel/framework": "~5.6",
-    "ohmybrew/basic-shopify-api": "~4.0",
+    "ohmybrew/basic-shopify-api": "~5.1",
     "doctrine/dbal": "~2.5"
   },
   "require-dev":{
