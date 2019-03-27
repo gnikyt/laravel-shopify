@@ -26,8 +26,8 @@ class AuthShop
      */
     public function handle(Request $request, Closure $next)
     {
-        $shop = ShopifyApp::shop();
         $shopParam = ShopifyApp::sanitizeShopDomain($request->get('shop'));
+        $shop = ShopifyApp::shop($shopParam);
 
         // Check if shop has a session, also check the shops to ensure a match
         if (
