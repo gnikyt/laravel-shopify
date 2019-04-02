@@ -437,7 +437,9 @@ class BasicShopifyAPI
 
         return (string) $this->getBaseUri()
             ->withPath('/admin/oauth/authorize')
-            ->withQuery(http_build_query($query));
+            ->withQuery(
+                preg_replace('/\%5B\d+\%5D/', '%5B%5D', http_build_query($query))
+            );
     }
 
     /**

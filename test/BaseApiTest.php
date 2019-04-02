@@ -392,7 +392,7 @@ class BaseApiTest extends BaseTest
         $api->setApiKey('123');
 
         $this->assertEquals(
-            'https://example.myshopify.com/admin/oauth/authorize?client_id=123&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalapp.local%2F&grant_options%5B0%5D=per-user',
+            'https://example.myshopify.com/admin/oauth/authorize?client_id=123&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalapp.local%2F&grant_options%5B%5D=per-user',
             $api->getAuthUrl(['read_products', 'write_products'], 'https://localapp.local/', 'per-user')
         );
     }
