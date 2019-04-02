@@ -5,7 +5,7 @@
 [![StyleCI](https://styleci.io/repos/61004776/shield?branch=master)](https://styleci.io/repos/61004776)
 [![License](https://poser.pugx.org/ohmybrew/basic-shopify-api/license)](https://packagist.org/packages/ohmybrew/basic-shopify-api)
 
-A simple, tested, API wrapper for Shopify using Guzzle. It supports both the REST and GraphQL API provided by Shopify, and basic rate limiting abilities. It contains helpful methods for generating a installation URL, an authorize URL, HMAC signature validation, call limits, and API requests. It works with both OAuth and private API apps.
+A simple, tested, API wrapper for Shopify using Guzzle. It supports both the REST and GraphQL API provided by Shopify, and basic rate limiting abilities. It contains helpful methods for generating a installation URL, an authorize URL (offline and per-user), HMAC signature validation, call limits, and API requests. It works with both OAuth and private API apps.
 
 This library required PHP >= 7.
 
@@ -49,8 +49,10 @@ $api->setAccessToken('your token here');
 $api->graph(...);
 ```
 
-#### Getting access token
+#### Getting access (offline)
 
+This is the default mode which returns a permanent token.
+ 
 After obtaining the user's shop domain, to then direct them to the auth screen use `getAuthUrl`, as example (basic PHP):
 
 ```php
@@ -71,12 +73,55 @@ if (!$code) {
   exit;
 } else {
   // We now have a code, lets grab the access token
-  $token = $api->requestAccessToken($code);
+  $api->requestAndSetAccess($code);
 
-  // You can now do what you wish with the access token after this (store it to db, etc)
-  $api->setAccessToken($token);
+  // Above is equiv. to:
+  //
+  // $access = $api->requestAccess($code);
+  // $api->setAccessToken($access->access_token);
+  //
+  // You can use: $api->getAccessToken() and set it into the database or a cookie, etc
 
-  // You can now make API calls as well once you've set the token to `setAccessToken`
+  // You can now make API callsn`
+  $request = $api->rest('GET', '/admin/shop.json'); // or GraphQL
+}
+```
+
+#### Getting access (per-user)
+
+You can also change the grant mode to be `per-user` as [outlined in Shopify documentation](https://help.shopify.com/en/api/getting-started/authentication/oauth/api-access-modes). This will receieve user info from the user of the app within the Shopify store. The token recieved will expire at a specific time.
+
+```php
+$api = new BasicShopifyAPI();
+$api->setShop($_SESSION['shop']);
+$api->setApiKey(env('SHOPIFY_API_KEY'));
+$api->setApiSecret(env('SHOPIFY_API_SECRET'));
+
+$code = $_GET['code'];
+if (!$code) {
+  /**
+   * No code, send user to authorize screen
+   * Pass your scopes as an array for the first argument
+   * Pass your redirect URI as the second argument
+   * Pass your grant mode as the third argument
+   */
+  $redirect = $api->getAuthUrl(env('SHOPIFY_API_SCOPES'), env('SHOPIFY_API_REDIRECT_URI'), 'per-user');
+  header("Location: {$redirect}");
+  exit;
+} else {
+  // We now have a code, lets grab the access object
+  $api->requestAndSetAccess($code);
+
+  // Above is equiv. to:
+  //
+  // $access = $api->requestAccess($code);
+  // $api->setAccessToken($access->access_token);
+  // $api->setUser($access->associated_user)
+  //
+  // You can use: $api->getAccessToken() and set it into a cookie, etc
+  // You can also get user details with: $api->getUser(), example: $api->getUser()->email
+
+  // You can now make API calls
   $request = $api->rest('GET', '/admin/shop.json'); // or GraphQL
 }
 ```

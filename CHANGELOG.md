@@ -1,5 +1,10 @@
 # CHANGELOG
 
+# 5.2.0
+
++ Added ability for `per-user` authentication. There is now ability to set/grab a user from authentication.
++ `requestAndSetAccess(string $code)` method added which will automatically set the access token and user (if applicable) to the API instance for you as a helper method.
+
 # 5.1.0
 
 + Added a `authRequest` middleware to Guzzle which handles adding all needed headers and checking required API keys to run those requests

@@ -67,6 +67,13 @@ class BasicShopifyAPI
     protected $private;
 
     /**
+     * If the API was called with per-user grant option, this will be filled.
+     *
+     * @var object
+     */
+    protected $user;
+
+    /**
      * The current API call limits from last request.
      *
      * @var array
@@ -269,6 +276,40 @@ class BasicShopifyAPI
     }
 
     /**
+     * Sets the user (public apps).
+     *
+     * @param object $user The user returned from the access request.
+     *
+     * @return self
+     */
+    public function setUser(object $user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Gets the user.
+     *
+     * @return object
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * Checks if we have a user.
+     *
+     * @return boolean
+     */
+    public function hasUser()
+    {
+        return $this->user !== null;
+    }
+
+    /**
      * Set the rate limiting state to enabled.
      *
      * @param int|null $cycle  The rate limiting cycle (in ms, default 500ms).
@@ -370,10 +411,11 @@ class BasicShopifyAPI
      * @param string|array $scopes      The API scopes as a comma seperated string or array
      * @param string       $redirectUri The valid redirect URI for after acceptance of the permissions.
      *                                  It must match the redirect_uri in your app settings.
+     * @param string       $mode        The API access mode, offline or per-user.
      *
      * @return string Formatted URL
      */
-    public function getAuthUrl($scopes, string $redirectUri)
+    public function getAuthUrl($scopes, string $redirectUri, string $mode = 'offline')
     {
         if ($this->apiKey === null) {
             throw new Exception('API key is missing');
@@ -383,13 +425,19 @@ class BasicShopifyAPI
             $scopes = implode(',', $scopes);
         }
 
+        $query = [
+            'client_id'    => $this->apiKey,
+            'scope'        => $scopes,
+            'redirect_uri' => $redirectUri,
+        ];
+
+        if ($mode !== 'offline') {
+            $query['grant_options'] = [$mode];
+        }
+
         return (string) $this->getBaseUri()
             ->withPath('/admin/oauth/authorize')
-            ->withQuery(http_build_query([
-                'client_id'    => $this->apiKey,
-                'scope'        => $scopes,
-                'redirect_uri' => $redirectUri,
-            ]));
+            ->withQuery(http_build_query($query));
     }
 
     /**
@@ -425,15 +473,15 @@ class BasicShopifyAPI
     }
 
     /**
-     * Gets the access token from a "code" supplied by Shopify request after successfull authentication (for public apps).
+     * Gets the access object from a "code" supplied by Shopify request after successfull authentication (for public apps).
      *
      * @param string $code The code from Shopify
      *
      * @throws \Exception When API secret is missing
      *
-     * @return string The access token
+     * @return array The access object
      */
-    public function requestAccessToken(string $code)
+    public function requestAccess(string $code)
     {
         if ($this->apiSecret === null || $this->apiKey === null) {
             // Key and secret required
@@ -453,8 +501,40 @@ class BasicShopifyAPI
             ]
         );
 
-        // Decode the response body as an array and return access token string
-        return json_decode($request->getBody(), true)['access_token'];
+        // Decode the response body
+        return json_decode($request->getBody());
+    }
+
+    /**
+     * Gets the access token from a "code" supplied by Shopify request after successfull authentication (for public apps).
+     *
+     * @param string $code The code from Shopify
+     *
+     * @return string The access token
+     */
+    public function requestAccessToken(string $code)
+    {
+        return $this->requestAccess($code)->access_token;
+    }
+
+    /**
+     * Gets the access object from a "code" and sets it to the instance (for public apps).
+     *
+     * @param string $code The code from Shopify
+     *
+     * @return void
+     */
+    public function requestAndSetAccess(string $code)
+    {
+        $access = $this->requestAccess($code);
+
+        // Set the access token
+        $this->setAccessToken($access->access_token);
+
+        if (property_exists($access, 'associated_user')) {
+            // Set the user if applicable
+            $this->setUser($access->associated_user);
+        }
     }
 
     /**

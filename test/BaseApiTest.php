@@ -297,15 +297,25 @@ class BaseApiTest extends BaseTest
     /**
      * @test
      *
-     * Should get access token from Shopify
+     * Should get access and set the access
      */
-    public function itShouldGetAccessTokenFromShopify()
+    public function itShouldGetAccessFromShopify()
     {
         $responses = [
             new Response(
                 200,
                 [],
                 file_get_contents(__DIR__.'/fixtures/admin__oauth__access_token.json')
+            ),
+            new Response(
+                200,
+                [],
+                file_get_contents(__DIR__.'/fixtures/admin__oauth__access_token.json')
+            ),
+            new Response(
+                200,
+                [],
+                file_get_contents(__DIR__.'/fixtures/admin__oauth__access_token__grant.json')
             ),
         ];
 
@@ -316,14 +326,27 @@ class BaseApiTest extends BaseTest
         $api->setApiKey('123');
         $api->setApiSecret('abc');
 
+        // Request access
         $code = '!@#';
-        $token = $api->requestAccessToken($code);
+        $obj = $api->requestAccess($code);
         $data = json_decode($mock->getLastRequest()->getBody());
 
-        $this->assertEquals('f85632530bf277ec9ac6f649fc327f17', $token);
+        $this->assertEquals('f85632530bf277ec9ac6f649fc327f17', $obj->access_token);
         $this->assertEquals('abc', $data->client_secret);
         $this->assertEquals('123', $data->client_id);
         $this->assertEquals($code, $data->code);
+
+        // Request access token
+        $token = $api->requestAccessToken($code);
+
+        $this->assertEquals('f85632530bf277ec9ac6f649fc327f17', $token);
+
+        // Request access and set
+        $api->requestAndSetAccess($code);
+
+        $this->assertEquals('f85632530bf277ec9ac6f649fc327f17', $api->getAccessToken());
+        $this->assertTrue($api->hasUser());
+        $this->assertEquals('john@example.com', $api->getUser()->email);
     }
 
     /**
@@ -331,21 +354,21 @@ class BaseApiTest extends BaseTest
      * @expectedException Exception
      * @expectedExceptionMessage API key or secret is missing
      *
-     * Ensure Shopify API secret is there for grabbing the access tokens
+     * Ensure Shopify API secret is there for grabbing the access object
      */
-    public function itShouldThrowExceptionForMissingApiSecretOnAccessTokenRequest()
+    public function itShouldThrowExceptionForMissingApiSecretOnAccessRequest()
     {
         $api = new BasicShopifyAPI(true);
         $api->setShop('example.myshopify.com');
-        $api->requestAccessToken('123');
+        $api->requestAccess('123');
     }
 
     /**
      * @test
      *
-     * Should get auth URL
+     * Should get auth URL for offline access
      */
-    public function itShouldReturnAuthUrl()
+    public function itShouldReturnAuthUrlForOffline()
     {
         $api = new BasicShopifyAPI();
         $api->setShop('example.myshopify.com');
@@ -354,6 +377,23 @@ class BaseApiTest extends BaseTest
         $this->assertEquals(
             'https://example.myshopify.com/admin/oauth/authorize?client_id=123&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalapp.local%2F',
             $api->getAuthUrl(['read_products', 'write_products'], 'https://localapp.local/')
+        );
+    }
+
+    /**
+     * @test
+     *
+     * Should get auth URL for per-use access
+     */
+    public function itShouldReturnAuthUrlForPerUser()
+    {
+        $api = new BasicShopifyAPI();
+        $api->setShop('example.myshopify.com');
+        $api->setApiKey('123');
+
+        $this->assertEquals(
+            'https://example.myshopify.com/admin/oauth/authorize?client_id=123&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalapp.local%2F&grant_options%5B0%5D=per-user',
+            $api->getAuthUrl(['read_products', 'write_products'], 'https://localapp.local/', 'per-user')
         );
     }
 
