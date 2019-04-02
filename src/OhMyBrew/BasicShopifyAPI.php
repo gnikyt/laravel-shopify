@@ -4,6 +4,7 @@ namespace OhMyBrew;
 
 use Closure;
 use Exception;
+use stdClass;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
@@ -69,7 +70,7 @@ class BasicShopifyAPI
     /**
      * If the API was called with per-user grant option, this will be filled.
      *
-     * @var object
+     * @var stdClass
      */
     protected $user;
 
@@ -278,11 +279,11 @@ class BasicShopifyAPI
     /**
      * Sets the user (public apps).
      *
-     * @param object $user The user returned from the access request.
+     * @param stdClass $user The user returned from the access request.
      *
      * @return self
      */
-    public function setUser(object $user)
+    public function setUser(stdClass $user)
     {
         $this->user = $user;
 
@@ -292,7 +293,7 @@ class BasicShopifyAPI
     /**
      * Gets the user.
      *
-     * @return object
+     * @return stdClass
      */
     public function getUser()
     {
@@ -302,7 +303,7 @@ class BasicShopifyAPI
     /**
      * Checks if we have a user.
      *
-     * @return boolean
+     * @return bool
      */
     public function hasUser()
     {
