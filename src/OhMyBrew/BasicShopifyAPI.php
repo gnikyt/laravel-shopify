@@ -4,7 +4,6 @@ namespace OhMyBrew;
 
 use Closure;
 use Exception;
-use stdClass;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
@@ -12,6 +11,7 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Uri;
+use stdClass;
 
 /**
  * Basic Shopify API for REST & GraphQL.
