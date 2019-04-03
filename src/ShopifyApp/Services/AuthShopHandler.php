@@ -2,6 +2,7 @@
 
 namespace OhMyBrew\ShopifyApp\Services;
 
+use stdClass;
 use Exception;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
@@ -16,13 +17,6 @@ use OhMyBrew\ShopifyApp\Models\Shop;
  */
 class AuthShopHandler
 {
-    /**
-     * The shop's domain.
-     *
-     * @var string|null
-     */
-    protected $shopDomain;
-
     /**
      * The shop.
      *
@@ -40,28 +34,18 @@ class AuthShopHandler
     /**
      * Constructor for auth shop handler.
      *
-     * @param string $shopDomain The shop's domain.
+     * @param \OhMyBrew\ShopifyApp\Models\Shop $shop The shop.
      *
      * @return self
      */
-    public function __construct(string $shopDomain)
+    public function __construct(shop $shop)
     {
-        $this->shopDomain = $shopDomain;
-        $this->shop = ShopifyApp::shop($this->shopDomain);
+        // Setup the API
+        $this->shop = $shop;
         $this->api = ShopifyApp::api();
-        $this->api->setShop($this->shopDomain);
+        $this->api->setShop($this->shop->shopify_domain);
 
         return $this;
-    }
-
-    /**
-     * Start the auth setup by storing the domaion to the session.
-     */
-    public function storeSession()
-    {
-        // Save shop domain to session, set no expiry on close because Laravel defaults to it
-        Config::set('session.expire_on_close', true);
-        Session::put('shopify_domain', $this->shopDomain);
     }
 
     /**
@@ -74,7 +58,8 @@ class AuthShopHandler
         // Grab the authentication URL
         return $this->api->getAuthUrl(
             Config::get('shopify-app.api_scopes'),
-            URL::secure(Config::get('shopify-app.api_redirect'))
+            URL::secure(Config::get('shopify-app.api_redirect')),
+            Config::get('shopify-app.api_grant_mode')
         );
     }
 
@@ -91,23 +76,29 @@ class AuthShopHandler
     }
 
     /**
-     * Finish the process by storing the new auth token.
+     * Finish the process by getting the access details from the code.
      *
      * @param string $code The code from the request.
      *
+     * @return stdClass
+     */
+    public function getAccess(string $code)
+    {
+        return $this->api->requestAccess($code);
+    }
+
+    /**
+     * Post process actions after authentication is done.
+     *
      * @return void
      */
-    public function storeAccessToken(string $code)
+    public function postProcess()
     {
-        // Grab or create the shop; restore if need-be
         if ($this->shop->trashed()) {
             $this->shop->restore();
             $this->shop->charges()->restore();
+            $this->shop->save();
         }
-
-        // Save the token to the shop
-        $this->shop->shopify_token = $this->api->requestAccessToken($code);
-        $this->shop->save();
     }
 
     /**
@@ -117,10 +108,6 @@ class AuthShopHandler
      */
     public function dispatchJobs()
     {
-        if (!$this->shop->shopify_token) {
-            throw new Exception('Shopify access token needed to dispatch jobs.');
-        }
-
         $this->dispatchWebhooks();
         $this->dispatchScripttags();
         $this->dispatchAfterAuthenticate();

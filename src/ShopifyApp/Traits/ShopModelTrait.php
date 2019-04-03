@@ -7,6 +7,7 @@ use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Models\Charge;
 use OhMyBrew\ShopifyApp\Models\Plan;
 use OhMyBrew\ShopifyApp\Scopes\NamespaceScope;
+use OhMyBrew\ShopifyApp\Services\ShopSession;
 
 /**
  * Responsible for reprecenting a shop record.
@@ -18,9 +19,16 @@ trait ShopModelTrait
     /**
      * The API instance.
      *
-     * @var object
+     * @var \OhMyBrew\BasicShopifyAPI
      */
     protected $api;
+
+    /**
+     * The session instance.
+     *
+     * @var \OhMyBrew\ShopifyApp\Services\ShopSession
+     */
+    protected $session;
 
     /**
      * Constructor for the model.
@@ -47,18 +55,36 @@ trait ShopModelTrait
     }
 
     /**
+     * Creates or returns an instance of session for the shop.
+     *
+     * @return \OhMyBrew\ShopifyApp\Services\ShopSession
+     */
+    public function session()
+    {
+        if (!$this->session) {
+            // Create new session instance
+            $this->session = new ShopSession($this);
+        }
+
+        // Return existing instance
+        return $this->session;
+    }
+
+    /**
      * Creates or returns an instance of API for the shop.
      *
-     * @return object
+     * @return \OhMyBrew\BasicShopifyAPI
      */
     public function api()
     {
         if (!$this->api) {
-            // Create new API instance
-            $api = ShopifyApp::api();
-            $api->setSession($this->shopify_domain, $this->shopify_token);
+            // Get the domain and token
+            $shopDomain = $this->shopify_domain;
+            $token = $this->session()->getToken();
 
-            $this->api = $api;
+            // Create new API instance
+            $this->api = ShopifyApp::api();
+            $this->api->setSession($shopDomain, $token);
         }
 
         // Return existing instance

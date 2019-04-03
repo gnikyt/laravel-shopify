@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\View;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Requests\AuthShop;
 use OhMyBrew\ShopifyApp\Services\AuthShopHandler;
+use OhMyBrew\ShopifyApp\Services\ShopSession;
 
 /**
  * Responsible for authenticating the shop.
@@ -39,21 +40,28 @@ trait AuthControllerTrait
         // Get the validated data
         $validated = $request->validated();
         $shopDomain = ShopifyApp::sanitizeShopDomain($validated['shop']);
+        $shop = ShopifyApp::shop($shopDomain);
 
         // Start the process
-        $authHandler = new AuthShopHandler($shopDomain);
-        $authHandler->storeSession();
+        $auth = new AuthShopHandler($shop);
+        $session = new ShopSession($shop);
 
+        // Check if we have a code
         if (!$request->has('code')) {
             // Handle a request without a code, do a fullpage redirect
-            $authUrl = $authHandler->buildAuthUrl();
+            $authUrl = $auth->buildAuthUrl();
 
             return View::make('shopify-app::auth.fullpage_redirect', compact('authUrl', 'shopDomain'));
         }
 
-        // We have a good code, authenticate
-        $authHandler->storeAccessToken($validated['code']);
-        $authHandler->dispatchJobs();
+        // We have a good code, do post processing, and run the jobs
+        $access = $auth->getAccess($validated['code']);
+        $auth->postProcess();
+        $auth->dispatchJobs($session);
+
+        // Save the session
+        $session->setDomain($shopDomain);
+        $session->setAccess($access);
 
         // Go to homepage of app or the return_to
         return $this->returnTo();

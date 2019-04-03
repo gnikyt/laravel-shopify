@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
+use OhMyBrew\ShopifyApp\Services\ShopSession;
 use Symfony\Component\HttpFoundation\Response as BaseResponse;
 
 /**
@@ -26,25 +27,51 @@ class AuthShop
      */
     public function handle(Request $request, Closure $next)
     {
+        $this->validateShop($request);
+
+        return $this->response($request, $next);
+    }
+
+    /**
+     * Checks we have a valid shop.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return void|\Illuminate\Http\RedirectResponse
+     */
+    protected function validateShop(Request $request)
+    {
         $shopParam = ShopifyApp::sanitizeShopDomain($request->get('shop'));
         $shop = ShopifyApp::shop($shopParam);
+        $session = new ShopSession($shop);
 
         // Check if shop has a session, also check the shops to ensure a match
         if (
             $shop === null ||
             $shop->trashed() ||
-            empty($shop->shopify_token) ||
+            empty($session->getToken()) ||
             ($shopParam && $shopParam !== $shop->shopify_domain) === true
         ) {
             // Either no shop session or shops do not match
-            Session::forget('shopify_domain');
+            $session->forget();
 
             // Set the return-to path so we can redirect after successful authentication
             Session::put('return_to', $request->fullUrl());
 
             return Redirect::route('authenticate', ['shop' => $shopParam]);
         }
+    }
 
+    /**
+     * Come back with a response.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure                 $next
+     *
+     * @return mixed
+     */
+    protected function response(Request $request, Closure $next)
+    {
         // Shop is OK, now check if ESDK is enabled and this is not a JSON/AJAX request...
         $response = $next($request);
         if (

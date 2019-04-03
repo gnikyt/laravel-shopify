@@ -2,10 +2,11 @@
 
 namespace OhMyBrew\ShopifyApp;
 
+use OhMyBrew\ShopifyApp\Models\Shop;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
-use OhMyBrew\ShopifyApp\Models\Shop;
+use OhMyBrew\ShopifyApp\Services\ShopSession;
 
 /**
  * The base "helper" class for this package.
@@ -47,7 +48,7 @@ class ShopifyApp
      */
     public function shop(string $shopDomain = null)
     {
-        $shopifyDomain = $shopDomain ? $this->sanitizeShopDomain($shopDomain) : Session::get('shopify_domain');
+        $shopifyDomain = $shopDomain ? $this->sanitizeShopDomain($shopDomain) : (new ShopSession())->getDomain();
         if (!$this->shop && $shopifyDomain) {
             // Grab shop from database here
             $shopModel = Config::get('shopify-app.shop_model');

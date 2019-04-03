@@ -95,6 +95,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Shopify API Grant Mode
+    |--------------------------------------------------------------------------
+    |
+    | This option is for the grant mode when authenticating.
+    | Default is "offline", "per-user" is available as well.
+    |
+    */
+
+    'api_grant_mode' => env('SHOPIFY_API_GRANT_MODE', 'offline'),
+
+
+    /*
+    |--------------------------------------------------------------------------
     | Shopify API Redirect
     |--------------------------------------------------------------------------
     |
