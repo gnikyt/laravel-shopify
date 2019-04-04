@@ -51,15 +51,18 @@ class AuthShopHandler
     /**
      * Builds the authentication URL for a shop.
      *
+     * @param string $mode The mode of grant ("offline"/"per-user").
+     *
      * @return string
      */
-    public function buildAuthUrl()
+    public function buildAuthUrl(string $mode)
     {
+        // Determine the type of mode
         // Grab the authentication URL
         return $this->api->getAuthUrl(
             Config::get('shopify-app.api_scopes'),
             URL::secure(Config::get('shopify-app.api_redirect')),
-            Config::get('shopify-app.api_grant_mode')
+            $mode
         );
     }
 
@@ -94,11 +97,14 @@ class AuthShopHandler
      */
     public function postProcess()
     {
-        if ($this->shop->trashed()) {
-            $this->shop->restore();
-            $this->shop->charges()->restore();
-            $this->shop->save();
+        if (!$this->shop->trashed()) {
+            return;
         }
+
+        // Trashed, fix it
+        $this->shop->restore();
+        $this->shop->charges()->restore();
+        $this->shop->save();
     }
 
     /**

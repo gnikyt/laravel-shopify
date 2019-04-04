@@ -49,7 +49,9 @@ trait AuthControllerTrait
         // Check if we have a code
         if (!$request->has('code')) {
             // Handle a request without a code, do a fullpage redirect
-            $authUrl = $auth->buildAuthUrl();
+            $authUrl = $auth->buildAuthUrl(
+                $shop->hasOfflineAccess() ? Config::get('shopify-app.api_grant_mode') : ShopSession::GRANT_OFFLINE
+            );
 
             return View::make('shopify-app::auth.fullpage_redirect', compact('authUrl', 'shopDomain'));
         }

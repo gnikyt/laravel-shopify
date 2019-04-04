@@ -154,4 +154,14 @@ trait ShopModelTrait
             ->orderBy('created_at', 'desc')
             ->first();
     }
+
+    /**
+     * Checks if the access token is filled.
+     *
+     * @return bool
+     */
+    public function hasOfflineAccess()
+    {
+        return !empty($this->shopify_token);
+    }
 }

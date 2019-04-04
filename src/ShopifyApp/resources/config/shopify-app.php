@@ -100,6 +100,7 @@ return [
     |
     | This option is for the grant mode when authenticating.
     | Default is "offline", "per-user" is available as well.
+    | Note: Install will always be in offline mode.
     |
     */
 

@@ -55,13 +55,6 @@ class ShopSession
     protected $shop;
 
     /**
-     * This associated user (if any).
-     *
-     * @var stdClass
-     */
-    protected $user;
-
-    /**
      * Constructor for shop session class.
      *
      * @param \OhMyBrew\ShopifyApp\Models\Shop|null $shop The shop.
@@ -80,7 +73,7 @@ class ShopSession
      */
     public function getType()
     {
-        if ($this->user !== null) {
+        if ($this->hasUser()) {
             return self::GRANT_PERUSER;
         }
 
@@ -109,7 +102,7 @@ class ShopSession
      */
     public function setDomain(string $shopDomain)
     {
-        Config::set('session.expire_on_close', true);
+        $this->fixLifetime();
         Session::put(self::DOMAIN, $shopDomain);
     }
 
@@ -141,6 +134,7 @@ class ShopSession
             // We have a user, so access will live only in session
             $this->user = $access->associated_user;
 
+            $this->fixLifetime();
             Session::put(self::USER, $this->user);
             Session::put(self::TOKEN, $token);
 
@@ -177,7 +171,7 @@ class ShopSession
      */
     public function getUser()
     {
-        return $this->user;
+        return Session::get(self::TOKEN);
     }
 
     /**
@@ -187,7 +181,7 @@ class ShopSession
      */
     public function hasUser()
     {
-        return $this->user !== null;
+        return $this->getUser() !== null;
     }
 
     /**
@@ -197,7 +191,19 @@ class ShopSession
      */
     public function forget()
     {
-        Session::forget(self::DOMAIN);
-        Session::forget(self::USER);
+        $keys = [self::DOMAIN, self::USER, self::TOKEN];
+        foreach ($keys as $key) {
+            Session::forget($key);
+        }
+    }
+
+    /**
+     * Fixes the lifetime of the session.
+     *
+     * @return void
+     */
+    protected function fixLifetime()
+    {
+        Config::set('session.expire_on_close', true);
     }
 }
