@@ -73,6 +73,12 @@ class ShopifyApp
         $api->setApiKey(Config::get('shopify-app.api_key'));
         $api->setApiSecret(Config::get('shopify-app.api_secret'));
 
+        // Add versioning?
+        $version = Config::get('shopify-app.api_version');
+        if ($version !== null) {
+            $api->setVersion($version);
+        }
+
         // Enable basic rate limiting?
         if (Config::get('shopify-app.api_rate_limiting_enabled') === true) {
             $api->enableRateLimiting(

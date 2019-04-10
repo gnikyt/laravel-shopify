@@ -62,6 +62,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Shopify API Version
+    |--------------------------------------------------------------------------
+    |
+    | This option is for the app's API version string.
+    | Use "YYYY-MM" or "unstable". Refer to Shopify's documentation
+    | on API versioning for the current stable version.
+    |
+    */
+
+    'api_version' => env('SHOPIFY_API_VERSION', null),
+
+    /*
+    |--------------------------------------------------------------------------
     | Shopify API Key
     |--------------------------------------------------------------------------
     |
