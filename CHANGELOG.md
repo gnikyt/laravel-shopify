@@ -1,5 +1,10 @@
 # CHANGELOG
 
+# 5.3.0
+
++ Added support for versioned API calls for both REST and GraphAPI
++ New `setVersion(string $version)` method added, and new `getVersion()` method added
+
 # 5.2.0
 
 + Added ability for `per-user` authentication. There is now ability to set/grab a user from authentication.

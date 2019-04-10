@@ -404,4 +404,42 @@ class RestApiTest extends BaseTest
         // Cause the exception
         $result = $api->rest('GET', '/admin/shop-oops.json');
     }
+
+    /**
+     * @test
+     *
+     * Should version API paths if a version is set.
+     */
+    public function itShouldVersionApiPaths()
+    {
+        $responses = [];
+        for ($i = 0; $i < 3; $i++) {
+            $responses[] = new Response(
+                200,
+                ['http_x_shopify_shop_api_call_limit' => '2/80'],
+                file_get_contents(__DIR__.'/fixtures/rest/admin__shop.json')
+            );
+        }
+
+        $api = new BasicShopifyAPI();
+        $api->setShop('example.myshopify.com');
+        $mock = $this->buildClient($api, $responses);
+
+        // No version set
+        $api->rest('GET', '/admin/shop.json');
+        $lastRequest = $mock->getLastRequest()->getUri();
+        $this->assertEquals('/admin/shop.json', $lastRequest->getPath());
+
+        // A set version
+        $api->setVersion('2020-01');
+        $api->rest('GET', '/admin/shop.json');
+        $lastRequest = $mock->getLastRequest()->getUri();
+        $this->assertEquals('/admin/api/2020-01/shop.json', $lastRequest->getPath());
+
+        // A set version already in the request path
+        $api->setVersion('2020-01');
+        $api->rest('GET', '/admin/api/unstable/shop.json');
+        $lastRequest = $mock->getLastRequest()->getUri();
+        $this->assertEquals('/admin/api/unstable/shop.json', $lastRequest->getPath());
+    }
 }

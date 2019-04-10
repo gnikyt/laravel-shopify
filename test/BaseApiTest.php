@@ -453,4 +453,36 @@ class BaseApiTest extends BaseTest
         $api->disableRateLimiting();
         $this->assertFalse($api->isRateLimitingEnabled());
     }
+
+    /**
+     * @test
+     *
+     * Should set and get version for API calls.
+     */
+    public function itShouldSetAndGetVersion()
+    {
+        $api = new BasicShopifyAPI(true);
+
+        $this->assertEquals(null, $api->getVersion());
+
+        $api->setVersion('2020-01');
+        $this->assertEquals('2020-01', $api->getVersion());
+
+        $api->setVersion('unstable');
+        $this->assertEquals('unstable', $api->getVersion());
+    }
+
+    /**
+     * @test
+     *
+     * @expectedException Exception
+     * @expectedExceptionMessage Version string must be of YYYY-MM or unstable
+     *
+     * Should throw error for bad API version.
+     */
+    public function itShouldThrowErrorForBadApiVersion()
+    {
+        $api = new BasicShopifyAPI(true);
+        $api->setVersion('01-2020');
+    }
 }

@@ -19,11 +19,25 @@ use stdClass;
 class BasicShopifyAPI
 {
     /**
+     * API version pattern.
+     *
+     * @var string
+     */
+    const VERSION_PATTERN = '/([0-9]{4}-[0-9]{2})|unstable/';
+
+    /**
      * The Guzzle client.
      *
      * @var \GuzzleHttp\Client
      */
     protected $client;
+
+    /**
+     * The version of API.
+     *
+     * @var string
+     */
+    protected $version;
 
     /**
      * The Shopify domain.
@@ -184,6 +198,35 @@ class BasicShopifyAPI
         $this->client = $client;
 
         return $this;
+    }
+
+    /**
+     * Sets the version of Shopify API to use.
+     *
+     * @param string $version
+     *
+     * @return self
+     */
+    public function setVersion(string $version)
+    {
+        if (!preg_match(self::VERSION_PATTERN, $version)) {
+            // Invalid version string
+            throw new Exception('Version string must be of YYYY-MM or unstable');
+        }
+
+        $this->version = $version;
+
+        return $this;
+    }
+
+    /**
+     * Returns the current in-use API version.
+     *
+     * @return string
+     */
+    public function getVersion()
+    {
+        return $this->version;
     }
 
     /**
@@ -602,7 +645,9 @@ class BasicShopifyAPI
         // Create the request, pass the access token and optional parameters
         $response = $this->client->request(
             'POST',
-            $this->getBaseUri()->withPath('/admin/api/graphql.json'),
+            $this->getBaseUri()->withPath(
+                $this->versionPath('/admin/api/graphql.json')
+            ),
             ['body' => json_encode($request)]
         );
 
@@ -663,7 +708,7 @@ class BasicShopifyAPI
 
         try {
             // Build URI and try the request
-            $uri = $this->getBaseUri()->withPath($path);
+            $uri = $this->getBaseUri()->withPath($this->versionPath($path));
 
             // Build the request parameters for Guzzle
             $guzzleParams = [];
@@ -725,8 +770,8 @@ class BasicShopifyAPI
         // Get the request URI
         $uri = $request->getUri();
 
-        if ($this->isAuthableRequest($uri)) {
-            if ($this->isRestRequest($uri)) {
+        if ($this->isAuthableRequest((string) $uri)) {
+            if ($this->isRestRequest((string) $uri)) {
                 // Checks for REST
                 if ($this->private && ($this->apiKey === null || $this->apiPassword === null)) {
                     // Key and password are required for private API calls
@@ -805,23 +850,23 @@ class BasicShopifyAPI
     /**
      * Determines if the request is to Graph API.
      *
-     * @param Uri $uri
+     * @param string $uri
      *
      * @return bool
      */
-    protected function isGraphRequest(Uri $uri)
+    protected function isGraphRequest(string $uri)
     {
-        return strpos((string) $uri, 'graphql.json') !== false;
+        return strpos($uri, 'graphql.json') !== false;
     }
 
     /**
      * Determines if the request is to REST API.
      *
-     * @param Uri $uri
+     * @param string $uri
      *
      * @return bool
      */
-    protected function isRestRequest(Uri $uri)
+    protected function isRestRequest(string $uri)
     {
         return $this->isGraphRequest($uri) === false;
     }
@@ -829,12 +874,35 @@ class BasicShopifyAPI
     /**
      * Determines if the request requires auth headers.
      *
-     * @param Uri $uri
+     * @param string $uri
      *
      * @return bool
      */
-    protected function isAuthableRequest(Uri $uri)
+    protected function isAuthableRequest(string $uri)
     {
-        return strpos((string) $uri, '/admin/oauth') === false;
+        return strpos($uri, '/admin/oauth') === false;
+    }
+
+    /**
+     * Versions the API call with the set version.
+     *
+     * @param string $uri
+     *
+     * @return string
+     */
+    protected function versionPath(string $uri)
+    {
+        if ($this->version === null || preg_match(self::VERSION_PATTERN, $uri)) {
+            // No version set, or already versioned... nothing to do
+            return $uri;
+        }
+
+        // Graph request
+        if ($this->isGraphRequest($uri)) {
+            return str_replace('/admin/api', "/admin/api/{$this->version}", $uri);
+        }
+
+        // REST request
+        return preg_replace('/\/admin(\/api)?\//', "/admin/api/{$this->version}/", $uri);
     }
 }

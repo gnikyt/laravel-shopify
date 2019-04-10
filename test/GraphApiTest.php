@@ -234,4 +234,38 @@ class GraphApiTest extends BaseTest
         $api = new BasicShopifyAPI();
         $api->getApiCalls('graph', 'oops');
     }
+
+    /**
+     * @test
+     *
+     * Should version API paths if a version is set.
+     */
+    public function itShouldVersionApiPaths()
+    {
+        $responses = [];
+        for ($i = 0; $i < 2; $i++) {
+            $responses[] = new Response(
+                200,
+                [],
+                file_get_contents(__DIR__.'/fixtures/graphql/shop_products.json')
+            );
+        }
+
+        $api = new BasicShopifyAPI(true);
+        $api->setShop('example.myshopify.com');
+        $api->setApiKey('123');
+        $api->setApiPassword('abc');
+        $mock = $this->buildClient($api, $responses);
+
+        // No version set
+        $api->graph($this->query[0]);
+        $lastRequest = $mock->getLastRequest()->getUri();
+        $this->assertEquals('/admin/api/graphql.json', $lastRequest->getPath());
+
+        // A set version
+        $api->setVersion('2020-01');
+        $api->graph($this->query[0]);
+        $lastRequest = $mock->getLastRequest()->getUri();
+        $this->assertEquals('/admin/api/2020-01/graphql.json', $lastRequest->getPath());
+    }
 }

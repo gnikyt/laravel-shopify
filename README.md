@@ -29,6 +29,7 @@ For REST calls, the shop domain and access token are required.
 
 ```php
 $api = new BasicShopifyAPI();
+$api->setVersion('2019-04'); // "YYYY-MM" or "unstable"
 $api->setShop('your shop here');
 $api->setAccessToken('your token here');
 
@@ -42,6 +43,7 @@ For GraphQL calls, the shop domain and access token are required.
 
 ```php
 $api = new BasicShopifyAPI();
+$api->setVersion('2019-04'); // "YYYY-MM" or "unstable"
 $api->setShop('your shop here');
 $api->setAccessToken('your token here');
 
@@ -57,6 +59,7 @@ After obtaining the user's shop domain, to then direct them to the auth screen u
 
 ```php
 $api = new BasicShopifyAPI();
+$api->setVersion('2019-04'); // "YYYY-MM" or "unstable"
 $api->setShop($_SESSION['shop']);
 $api->setApiKey(env('SHOPIFY_API_KEY'));
 $api->setApiSecret(env('SHOPIFY_API_SECRET'));
@@ -93,6 +96,7 @@ You can also change the grant mode to be `per-user` as [outlined in Shopify docu
 
 ```php
 $api = new BasicShopifyAPI();
+$api->setVersion('2019-04'); // "YYYY-MM" or "unstable"
 $api->setShop($_SESSION['shop']);
 $api->setApiKey(env('SHOPIFY_API_KEY'));
 $api->setApiSecret(env('SHOPIFY_API_SECRET'));
@@ -145,6 +149,7 @@ For REST calls, shop domain, API key, and API password are request
 
 ```php
 $api = new BasicShopifyAPI(true); // true sets it to private
+$api->setVersion('2019-04'); // "YYYY-MM" or "unstable"
 $api->setShop('example.myshopify.com');
 $api->setApiKey('your key here');
 $api->setApiPassword('your password here');
@@ -159,6 +164,7 @@ For GraphQL calls, shop domain and API password are required.
 
 ```php
 $api = new BasicShopifyAPI(true); // true sets it to private
+$api->setVersion('2019-04'); // "YYYY-MM" or "unstable"
 $api->setShop('example.myshopify.com');
 $api->setApiPassword('your password here');
 
@@ -219,6 +225,27 @@ $result = $api->graph(
     ['input' => ['title' => 'Test Collection']]
 );
 echo $result->body->collectionCreate->collection->id; // gid://shopify/Collection/63171592234
+```
+
+### API Versioning
+
+This library supports [versioning the requests](https://www.shopify.com/partners/blog/api-versioning-at-shopify), example:
+
+```php
+$api = new BasicShopifyAPI(true);
+$api->setVersion('2019-04'); // "YYYY-MM" or "unstable"
+
+// ... your code
+```
+
+You can override the versioning at anytime for specific API requests, example:
+
+```php
+$api = new BasicShopifyAPI(true);
+$api->setVersion('2019-04');
+
+$api->rest('GET', '/admin/api/unstable/shop.json'); // Will ignore "2019-04" version and use "unstable" for this request
+// ... your code
 ```
 
 ### Checking API limits
@@ -307,6 +334,7 @@ $api->withSession(string $shop, string $accessToken, Closure $closure);
 
 ```php
 $api = new BasicShopifyAPI(true);
+$api->setVersion('2019-04'); // "YYYY-MM" or "unstable"
 $api->setApiKey('your key here');
 $api->setApiPassword('your password here');
 
