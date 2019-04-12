@@ -51,18 +51,18 @@ class AuthShopHandler
     /**
      * Builds the authentication URL for a shop.
      *
-     * @param string $mode The mode of grant ("offline"/"per-user").
+     * @param string|null $mode The mode of grant ("offline"/"per-user").
      *
      * @return string
      */
-    public function buildAuthUrl(string $mode)
+    public function buildAuthUrl($mode = null)
     {
         // Determine the type of mode
         // Grab the authentication URL
         return $this->api->getAuthUrl(
             Config::get('shopify-app.api_scopes'),
             URL::secure(Config::get('shopify-app.api_redirect')),
-            $mode
+            $mode ?? 'offline'
         );
     }
 

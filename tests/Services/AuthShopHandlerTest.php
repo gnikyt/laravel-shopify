@@ -26,29 +26,23 @@ class AuthShopHandlerTest extends TestCase
         Config::set('shopify-app.api_class', new ApiStub());
     }
 
-    public function testStoresSession()
-    {
-        // Create the shop
-        $shop = factory(Shop::class)->create();
-
-        // Store the session
-        $as = new AuthShopHandler($shop->shopify_domain);
-        $as->storeSession();
-
-        $this->assertEquals($shop->shopify_domain, Session::get('shopify_domain'));
-    }
-
     public function testAuthUrl()
     {
         // Create the shop
         $shop = factory(Shop::class)->create();
 
         // Get the URL
-        $as = new AuthShopHandler($shop->shopify_domain);
-        $url = $as->buildAuthUrl();
+        $as = new AuthShopHandler($shop);
 
+        $url = $as->buildAuthUrl(null);
         $this->assertEquals(
             "https://{$shop->shopify_domain}/admin/oauth/authorize?client_id=&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalhost%2Fauthenticate",
+            $url
+        );
+
+        $url = $as->buildAuthUrl('per-user');
+        $this->assertEquals(
+            "https://{$shop->shopify_domain}/admin/oauth/authorize?client_id=&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalhost%2Fauthenticate&grant_options%5B%5D=per-user",
             $url
         );
     }
@@ -76,28 +70,7 @@ class AuthShopHandlerTest extends TestCase
 
         $this->assertTrue($result);
     }
-
-    public function testStoresAccessToken()
-    {
-        // Stub the responses
-        ApiStub::stubResponses([
-            'get_access_token',
-        ]);
-
-        // Create the shop
-        $shop = factory(Shop::class)->create();
-
-        // Run the call
-        $currentToken = $shop->shopify_token;
-        $as = new AuthShopHandler($shop->shopify_domain);
-        $as->storeAccessToken('1234');
-
-        // Refresh
-        $shop->refresh();
-
-        $this->assertTrue($currentToken !== $shop->shopify_token);
-    }
-
+/*
     public function testStoresAccessTokenForTrashedShop()
     {
         // Stub the responses
@@ -119,7 +92,7 @@ class AuthShopHandlerTest extends TestCase
 
         $this->assertTrue($currentToken !== $shop->shopify_token);
     }
-
+*/
     public function testJobsDoNotRun()
     {
         // Fake the queue
@@ -129,27 +102,12 @@ class AuthShopHandlerTest extends TestCase
         $shop = factory(Shop::class)->create();
 
         // Run the jobs
-        $as = new AuthShopHandler($shop->shopify_domain);
+        $as = new AuthShopHandler($shop);
         $as->dispatchJobs();
 
         // No jobs should be pushed when theres no config for them
         Queue::assertNotPushed(WebhookInstaller::class);
         Queue::assertNotPushed(ScripttagInstaller::class);
-    }
-
-    /**
-     * @expectedException Exception
-     */
-    public function testJobsDoNotRunForMissingToken()
-    {
-        // Create the shop
-        $shop = factory(Shop::class)->create([
-            'shopify_token' => null,
-        ]);
-
-        // Run the jobs
-        $as = new AuthShopHandler($shop->shopify_domain);
-        $as->dispatchJobs();
     }
 
     public function testJobsRun()
@@ -181,7 +139,7 @@ class AuthShopHandlerTest extends TestCase
         $shop = factory(Shop::class)->create();
 
         // Run the jobs
-        $as = new AuthShopHandler($shop->shopify_domain);
+        $as = new AuthShopHandler($shop);
         $as->dispatchJobs();
 
         // No jobs should be pushed when theres no config for them
@@ -207,7 +165,7 @@ class AuthShopHandlerTest extends TestCase
         $shop = factory(Shop::class)->create();
 
         // Run the jobs
-        $as = new AuthShopHandler($shop->shopify_domain);
+        $as = new AuthShopHandler($shop);
         $as->dispatchJobs();
 
         Queue::assertPushed($jobClass);
@@ -226,7 +184,7 @@ class AuthShopHandlerTest extends TestCase
         $shop = factory(Shop::class)->create();
 
         // Run the jobs
-        $as = new AuthShopHandler($shop->shopify_domain);
+        $as = new AuthShopHandler($shop);
 
         $this->assertTrue($as->dispatchJobs());
     }
