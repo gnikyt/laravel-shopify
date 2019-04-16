@@ -30,8 +30,8 @@ class ApiStub extends BasicShopifyAPI
         ];
     }
 
-    public function requestAccessToken(string $code)
+    public function requestAccess(string $code)
     {
-        return json_decode(file_get_contents(__DIR__.'/../fixtures/access_token.json'))->access_token;
+        return json_decode(file_get_contents(__DIR__.'/../fixtures/access_token.json'));
     }
 }

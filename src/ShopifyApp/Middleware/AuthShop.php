@@ -27,7 +27,10 @@ class AuthShop
      */
     public function handle(Request $request, Closure $next)
     {
-        $this->validateShop($request);
+        $validation = $this->validateShop($request);
+        if ($validation !== true) {
+            return $validation;
+        } 
 
         return $this->response($request, $next);
     }
@@ -37,7 +40,7 @@ class AuthShop
      *
      * @param \Illuminate\Http\Request $request
      *
-     * @return void|\Illuminate\Http\RedirectResponse
+     * @return boolean|\Illuminate\Http\RedirectResponse
      */
     protected function validateShop(Request $request)
     {
@@ -60,6 +63,8 @@ class AuthShop
 
             return Redirect::route('authenticate', ['shop' => $shopParam]);
         }
+
+        return true;
     }
 
     /**

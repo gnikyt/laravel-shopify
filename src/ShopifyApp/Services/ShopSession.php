@@ -171,7 +171,7 @@ class ShopSession
      */
     public function getUser()
     {
-        return Session::get(self::TOKEN);
+        return Session::get(self::USER);
     }
 
     /**

@@ -16,20 +16,14 @@ class AuthControllerTest extends TestCase
     {
         parent::setUp();
 
-        // Stub the API
-        Config::set('shopify-app.api_class', ApiStub::class);
+        // Stub in our API class
+        Config::set('shopify-app.api_class', new ApiStub());
     }
 
     public function testLoginRoute()
     {
         $response = $this->get('/login');
         $response->assertStatus(200);
-    }
-
-    public function testAuthRedirectsWhenRequestIsBad()
-    {
-        $response = $this->post('/authenticate');
-        $response->assertStatus(302);
     }
 
     public function testAuthRedirectsToShopifyWhenNoCode()
@@ -47,6 +41,11 @@ class AuthControllerTest extends TestCase
 
     public function testAuthAcceptsShopWithCode()
     {
+        // Stub the responses
+        ApiStub::stubResponses([
+            'access_token_grant',
+        ]);
+
         // HMAC for regular tests
         $hmac = 'a7448f7c42c9bc025b077ac8b73e7600b6f8012719d21cbeb88db66e5dbbd163';
         $hmacParams = [
