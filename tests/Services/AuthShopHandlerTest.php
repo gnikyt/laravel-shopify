@@ -4,7 +4,6 @@ namespace OhMyBrew\ShopifyApp\Test\Services;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Queue;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\URL;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Jobs\ScripttagInstaller;
@@ -70,29 +69,30 @@ class AuthShopHandlerTest extends TestCase
 
         $this->assertTrue($result);
     }
-/*
-    public function testStoresAccessTokenForTrashedShop()
-    {
-        // Stub the responses
-        ApiStub::stubResponses([
-            'get_access_token',
-        ]);
 
-        // Create the shop
-        $shop = factory(Shop::class)->create();
-        $shop->delete();
-
-        // Run the call
-        $currentToken = $shop->shopify_token;
-        $as = new AuthShopHandler($shop->shopify_domain);
-        $as->storeAccessToken('1234');
-
-        // Refresh
-        $shop->refresh();
-
-        $this->assertTrue($currentToken !== $shop->shopify_token);
-    }
-*/
+    /*
+        public function testStoresAccessTokenForTrashedShop()
+        {
+            // Stub the responses
+            ApiStub::stubResponses([
+                'get_access_token',
+            ]);
+    
+            // Create the shop
+            $shop = factory(Shop::class)->create();
+            $shop->delete();
+    
+            // Run the call
+            $currentToken = $shop->shopify_token;
+            $as = new AuthShopHandler($shop->shopify_domain);
+            $as->storeAccessToken('1234');
+    
+            // Refresh
+            $shop->refresh();
+    
+            $this->assertTrue($currentToken !== $shop->shopify_token);
+        }
+    */
     public function testJobsDoNotRun()
     {
         // Fake the queue

@@ -2,10 +2,9 @@
 
 namespace OhMyBrew\ShopifyApp;
 
-use OhMyBrew\ShopifyApp\Models\Shop;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Session;
+use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\Services\ShopSession;
 
 /**

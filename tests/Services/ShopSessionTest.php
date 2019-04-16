@@ -2,11 +2,11 @@
 
 namespace OhMyBrew\ShopifyApp\Test\Services;
 
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Session;
 use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\Services\ShopSession;
 use OhMyBrew\ShopifyApp\Test\TestCase;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Config;
 
 class ShopSessionTest extends TestCase
 {
