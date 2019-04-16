@@ -35,17 +35,22 @@ class AddPlanToShopsTableAndChargesTable extends Migration
     public function down()
     {
         Schema::table('charges', function (Blueprint $table) {
+            // @codeCoverageIgnoreStart
             if (DB::getDriverName() != 'sqlite') {
                 $table->dropForeign(['plan_id']);
             }
+            // @codeCoverageIgnoreEnd
 
             $table->dropColumn(['plan_id']);
         });
 
         Schema::table('shops', function (Blueprint $table) {
+            // @codeCoverageIgnoreStart
             if (DB::getDriverName() != 'sqlite') {
                 $table->dropForeign(['plan_id']);
             }
+            // @codeCoverageIgnoreEnd
+
             $table->dropColumn(['plan_id']);
         });
     }

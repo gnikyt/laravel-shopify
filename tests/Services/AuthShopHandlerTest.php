@@ -70,29 +70,25 @@ class AuthShopHandlerTest extends TestCase
         $this->assertTrue($result);
     }
 
-    /*
-        public function testStoresAccessTokenForTrashedShop()
-        {
-            // Stub the responses
-            ApiStub::stubResponses([
-                'get_access_token',
-            ]);
-    
-            // Create the shop
-            $shop = factory(Shop::class)->create();
-            $shop->delete();
-    
-            // Run the call
-            $currentToken = $shop->shopify_token;
-            $as = new AuthShopHandler($shop->shopify_domain);
-            $as->storeAccessToken('1234');
-    
-            // Refresh
-            $shop->refresh();
-    
-            $this->assertTrue($currentToken !== $shop->shopify_token);
-        }
-    */
+    public function testPostProcessForTrashedShop()
+    {
+        // Create the shop
+        $shop = factory(Shop::class)->create();
+        $shop->delete();
+
+        // Confirm trashed
+        $this->assertTrue($shop->trashed());
+
+        // Run the call
+        $as = new AuthShopHandler($shop);
+        $as->postProcess();
+ 
+        $shop->refresh();
+
+        // Confirm its not longer trashed
+        $this->assertFalse($shop->trashed());
+    }
+
     public function testJobsDoNotRun()
     {
         // Fake the queue

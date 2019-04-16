@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Validator;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Requests\AuthShop;
 use OhMyBrew\ShopifyApp\Test\TestCase;
+use ReflectionMethod;
 
 class AuthShopRequestTest extends TestCase
 {

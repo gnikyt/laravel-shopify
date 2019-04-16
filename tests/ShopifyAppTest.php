@@ -58,6 +58,13 @@ class ShopifyAppTest extends TestCase
         $this->assertTrue($this->shopifyApp->api()->isRateLimitingEnabled());
     }
 
+    public function testReturnsApiInstanceWithVersioning()
+    {
+        Config::set('shopify-app.api_version', 'unstable');
+
+        $this->assertEquals('unstable', $this->shopifyApp->api()->getVersion());
+    }
+
     public function testShopSanitize()
     {
         $domains = ['my-shop', 'my-shop.myshopify.com', 'https://my-shop.myshopify.com/abc/xyz', 'https://my-shop.myshopify.com', 'http://my-shop.myshopify.com'];
