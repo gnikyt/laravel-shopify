@@ -82,7 +82,7 @@ class AuthShopHandlerTest extends TestCase
         // Run the call
         $as = new AuthShopHandler($shop);
         $as->postProcess();
- 
+
         $shop->refresh();
 
         // Confirm its not longer trashed
