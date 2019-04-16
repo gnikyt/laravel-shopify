@@ -23,7 +23,7 @@ class ShopSessionTest extends TestCase
         $fixture = json_decode(file_get_contents(__DIR__.'/../fixtures/access_token_grant.json'));
 
         // Assert defaults
-        $this->assertFalse(Config::get('session.expire_on_close'));
+        $this->assertContains(Config::get('session.expire_on_close'), [null, false]);
         $this->assertNull(Session::get(ShopSession::USER));
         $this->assertNull(Session::get(ShopSession::TOKEN));
 
