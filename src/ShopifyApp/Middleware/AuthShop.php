@@ -30,7 +30,7 @@ class AuthShop
         $validation = $this->validateShop($request);
         if ($validation !== true) {
             return $validation;
-        } 
+        }
 
         return $this->response($request, $next);
     }
@@ -40,7 +40,7 @@ class AuthShop
      *
      * @param \Illuminate\Http\Request $request
      *
-     * @return boolean|\Illuminate\Http\RedirectResponse
+     * @return bool|\Illuminate\Http\RedirectResponse
      */
     protected function validateShop(Request $request)
     {

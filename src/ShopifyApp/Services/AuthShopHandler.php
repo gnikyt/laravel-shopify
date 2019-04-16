@@ -2,15 +2,13 @@
 
 namespace OhMyBrew\ShopifyApp\Services;
 
-use stdClass;
-use Exception;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\URL;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Jobs\ScripttagInstaller;
 use OhMyBrew\ShopifyApp\Jobs\WebhookInstaller;
 use OhMyBrew\ShopifyApp\Models\Shop;
+use stdClass;
 
 /**
  * Responsible for handling how to authenticate a shop.

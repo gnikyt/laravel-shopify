@@ -2,10 +2,10 @@
 
 namespace OhMyBrew\ShopifyApp\Services;
 
-use stdClass;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
 use OhMyBrew\ShopifyApp\Models\Shop;
+use stdClass;
 
 /**
  * Responsible for handling session retreival and storage.
@@ -97,7 +97,7 @@ class ShopSession
      * `expire_on_close` must be set to avoid issue of cookies being deleted too early.
      *
      * @param string $shopDomain The Shopify domain.
-     
+     *
      * @return void
      */
     public function setDomain(string $shopDomain)
@@ -144,8 +144,6 @@ class ShopSession
         // Offline
         $this->shop->{self::TOKEN} = $token;
         $this->shop->save();
-
-        return;
     }
 
     /**
