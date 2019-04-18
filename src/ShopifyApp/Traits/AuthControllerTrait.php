@@ -5,6 +5,7 @@ namespace OhMyBrew\ShopifyApp\Traits;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\View;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Requests\AuthShop;
@@ -49,6 +50,8 @@ trait AuthControllerTrait
         // Check if we have a code
         if (!$request->has('code')) {
             // Handle a request without a code, do a fullpage redirect
+            // Check if they have offline access, if they do not, this is most likely an install
+            // If they do, fallback to using configured grant mode
             $authUrl = $auth->buildAuthUrl(
                 $shop->hasOfflineAccess() ? Config::get('shopify-app.api_grant_mode') : ShopSession::GRANT_OFFLINE
             );
