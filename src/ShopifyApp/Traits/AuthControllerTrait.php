@@ -56,14 +56,16 @@ trait AuthControllerTrait
             return View::make('shopify-app::auth.fullpage_redirect', compact('authUrl', 'shopDomain'));
         }
 
-        // We have a good code, do post processing, and run the jobs
+        // We have a good code, get the access details
         $access = $auth->getAccess($validated['code']);
-        $auth->postProcess();
-        $auth->dispatchJobs($session);
 
         // Save the session
         $session->setDomain($shopDomain);
         $session->setAccess($access);
+
+        // Do post processing and dispatch the jobs
+        $auth->postProcess();
+        $auth->dispatchJobs($session);
 
         // Go to homepage of app or the return_to
         return $this->returnTo();

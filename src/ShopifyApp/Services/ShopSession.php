@@ -153,13 +153,16 @@ class ShopSession
      */
     public function getToken()
     {
-        // Per-User
+        // Offline token
+        $shopToken = $this->shop->{self::TOKEN};
+
+        // Per-user token
+        $puToken = null;
         if ($this->isType(self::GRANT_PERUSER)) {
-            return Session::get(self::TOKEN);
+            $puToken = Session::get(self::TOKEN);
         }
 
-        // Offline
-        return $this->shop->{self::TOKEN};
+        return $puToken ?: $shopToken;
     }
 
     /**
