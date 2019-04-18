@@ -149,20 +149,25 @@ class ShopSession
     /**
      * Gets the access token in use.
      *
+     * @param bool $strict Return the token matching the grant type (default: use either).
+     *
      * @return string
      */
-    public function getToken()
+    public function getToken(bool $strict = false)
     {
-        // Offline token
-        $shopToken = $this->shop->{self::TOKEN};
+        // Tokens
+        $tokens = [
+            self::GRANT_PERUSER => Session::get(self::TOKEN),
+            self::GRANT_OFFLINE => $this->shop->{self::TOKEN},
+        ];
 
-        // Per-user token
-        $puToken = null;
-        if ($this->isType(self::GRANT_PERUSER)) {
-            $puToken = Session::get(self::TOKEN);
+        if ($strict) {
+            // We need the token matching the type
+            return $tokens[$this->getType()];
         }
 
-        return $puToken ?: $shopToken;
+        // We need a token either way...
+        return $tokens[self::GRANT_PERUSER] ?? $tokens[self::GRANT_OFFLINE];
     }
 
     /**

@@ -52,7 +52,7 @@ class AuthShop
         if (
             $shop === null ||
             $shop->trashed() ||
-            empty($session->getToken()) ||
+            empty($session->getToken(true)) ||
             ($shopParam && $shopParam !== $shop->shopify_domain) === true
         ) {
             // Either no shop session or shops do not match

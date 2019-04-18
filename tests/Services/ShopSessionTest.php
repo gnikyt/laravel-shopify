@@ -60,6 +60,26 @@ class ShopSessionTest extends TestCase
         $this->assertEquals($ss->getToken(), $this->shop->shopify_token);
     }
 
+    public function testCanStrictlyGetToken()
+    {
+        // Change config
+        Config::set('shopify_app.api_grant_mode', ShopSession::GRANT_PERUSER);
+
+        // Create an isolated shop
+        $shop = factory(Shop::class)->create(['shopify_token' => 'abc']);
+
+        // Get the access token JSON
+        $fixture = json_decode(file_get_contents(__DIR__.'/../fixtures/access_token.json'));
+
+        // Run the code
+        $ss = new ShopSession($shop);
+        $ss->setAccess($fixture);
+
+        // Confirm we always get per-user
+        $this->assertEquals('12345678', $ss->getToken(true));
+        $this->assertEquals('12345678', $ss->getToken());
+    }
+
     public function testCanSetDomain()
     {
         // Assert defaults
