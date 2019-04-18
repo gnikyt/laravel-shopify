@@ -73,7 +73,8 @@ class ShopSession
      */
     public function getType()
     {
-        if ($this->hasUser()) {
+        $config = Config::get('shopify-app.api_grant_mode');
+        if ($config === self::GRANT_PERUSER) {
             return self::GRANT_PERUSER;
         }
 

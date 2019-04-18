@@ -19,6 +19,9 @@ class ShopSessionTest extends TestCase
 
     public function testCanSetAccessPerUser()
     {
+        // Change config
+        Config::set('shopify-app.api_grant_mode', ShopSession::GRANT_PERUSER);
+
         // Get the access token JSON
         $fixture = json_decode(file_get_contents(__DIR__.'/../fixtures/access_token_grant.json'));
 
@@ -41,6 +44,9 @@ class ShopSessionTest extends TestCase
 
     public function testCanSetAccessOffline()
     {
+        // Ensure config
+        Config::set('shopify-app.api_grant_mode', ShopSession::GRANT_OFFLINE);
+
         // Get the access token JSON
         $fixture = json_decode(file_get_contents(__DIR__.'/../fixtures/access_token.json'));
 
@@ -63,21 +69,21 @@ class ShopSessionTest extends TestCase
     public function testCanStrictlyGetToken()
     {
         // Change config
-        Config::set('shopify_app.api_grant_mode', ShopSession::GRANT_PERUSER);
+        Config::set('shopify-app.api_grant_mode', ShopSession::GRANT_PERUSER);
 
         // Create an isolated shop
         $shop = factory(Shop::class)->create(['shopify_token' => 'abc']);
 
         // Get the access token JSON
-        $fixture = json_decode(file_get_contents(__DIR__.'/../fixtures/access_token.json'));
+        $fixture = json_decode(file_get_contents(__DIR__.'/../fixtures/access_token_grant.json'));
 
         // Run the code
         $ss = new ShopSession($shop);
         $ss->setAccess($fixture);
 
         // Confirm we always get per-user
-        $this->assertEquals('12345678', $ss->getToken(true));
-        $this->assertEquals('12345678', $ss->getToken());
+        $this->assertEquals('f85632530bf277ec9ac6f649fc327f17', $ss->getToken(true));
+        $this->assertEquals('f85632530bf277ec9ac6f649fc327f17', $ss->getToken());
     }
 
     public function testCanSetDomain()
