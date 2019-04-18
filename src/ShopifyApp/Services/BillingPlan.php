@@ -139,7 +139,7 @@ class BillingPlan
         ];
 
         // Handle capped amounts for UsageCharge API
-        if (isset($this->plan->capped_amount)) {
+        if (isset($this->plan->capped_amount) && $this->plan->capped_amount > 0) {
             $chargeDetails['capped_amount'] = $this->plan->capped_amount;
             $chargeDetails['terms'] = $this->plan->terms;
         }
