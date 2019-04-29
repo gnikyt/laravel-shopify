@@ -103,7 +103,7 @@ class ShopifyApp
         }
 
         $configEndDomain = Config::get('shopify-app.myshopify_domain');
-        $domain = preg_replace('/https?:\/\//i', '', trim($domain));
+        $domain = strtolower(preg_replace('/https?:\/\//i', '', trim($domain)));
 
         if (strpos($domain, $configEndDomain) === false && strpos($domain, '.') === false) {
             // No myshopify.com ($configEndDomain) in shop's name

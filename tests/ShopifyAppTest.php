@@ -67,7 +67,7 @@ class ShopifyAppTest extends TestCase
 
     public function testShopSanitize()
     {
-        $domains = ['my-shop', 'my-shop.myshopify.com', 'https://my-shop.myshopify.com/abc/xyz', 'https://my-shop.myshopify.com', 'http://my-shop.myshopify.com'];
+        $domains = ['my-shop', 'my-shop.myshopify.com', 'MY-shOp.myshopify.com', 'https://my-shop.myshopify.com/abc/xyz', 'https://my-shop.myshopify.com', 'http://my-shop.myshopify.com'];
         $domains_2 = ['my-shop', 'my-shop.myshopify.io', 'https://my-shop.myshopify.io', 'http://my-shop.myshopify.io'];
         $domains_3 = ['', false, null];
 
