@@ -628,7 +628,7 @@ class BasicShopifyAPI
      * @throws \Exception When missing api password is missing for private apps
      * @throws \Exception When missing access key is missing for public apps
      *
-     * @return array An array of the Guzzle response, and JSON-decoded body
+     * @return object An Object of the Guzzle response, and JSON-decoded body
      */
     public function graph(string $query, array $variables = [])
     {
@@ -682,7 +682,9 @@ class BasicShopifyAPI
      * @param string     $path   The Shopify API path... /admin/xxxx/xxxx.json
      * @param array|null $params Optional parameters to send with the request
      *
-     * @return array An array of the Guzzle response, and JSON-decoded body
+     * @throws Exception
+     *
+     * @return object An Object of the Guzzle response, and JSON-decoded body
      */
     public function rest(string $type, string $path, array $params = null)
     {
