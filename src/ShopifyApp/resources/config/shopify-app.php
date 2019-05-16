@@ -195,7 +195,7 @@ return [
     |
     */
 
-    'myshopify_domain' => 'myshopify.com',
+    'myshopify_domain' => env('SHOPIFY_MYSHOPIFY_DOMAIN', 'myshopify.com'),
 
     /*
     |--------------------------------------------------------------------------
