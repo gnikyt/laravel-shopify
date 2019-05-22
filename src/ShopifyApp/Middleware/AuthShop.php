@@ -44,7 +44,13 @@ class AuthShop
      */
     protected function validateShop(Request $request)
     {
-        $shopParam = ShopifyApp::sanitizeShopDomain($request->get('shop'));
+        if ($request->filled('shop'))
+        {
+            session()->put('shop', $request->input('shop'));
+        }
+        $shopDomain = session('shop'); // <-- SO GEHTS
+        $shopParam = ShopifyApp::sanitizeShopDomain($shopDomain);
+
         $shop = ShopifyApp::shop($shopParam);
         $session = new ShopSession($shop);
 
