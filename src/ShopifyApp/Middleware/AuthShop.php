@@ -21,14 +21,15 @@ class AuthShop
      * Handle an incoming request.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Closure                 $next
+     * @param \Closure $next
      *
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
     {
         $validation = $this->validateShop($request);
-        if ($validation !== true) {
+        if ($validation !== true)
+        {
             return $validation;
         }
 
@@ -48,9 +49,7 @@ class AuthShop
         {
             session()->put('shop', $request->input('shop'));
         }
-        $shopDomain = session('shop'); // <-- SO GEHTS
-        $shopParam = ShopifyApp::sanitizeShopDomain($shopDomain);
-
+        $shopParam = ShopifyApp::sanitizeShopDomain(session('shop'));
         $shop = ShopifyApp::shop($shopParam);
         $session = new ShopSession($shop);
 
@@ -60,7 +59,8 @@ class AuthShop
             $shop->trashed() ||
             empty($session->getToken(true)) ||
             ($shopParam && $shopParam !== $shop->shopify_domain) === true
-        ) {
+        )
+        {
             // Either no shop session or shops do not match
             $session->forget();
 
@@ -77,7 +77,7 @@ class AuthShop
      * Come back with a response.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Closure                 $next
+     * @param \Closure $next
      *
      * @return mixed
      */
@@ -88,8 +88,10 @@ class AuthShop
         if (
             Config::get('shopify-app.esdk_enabled') &&
             ($request->ajax() || $request->expectsJson() || $request->isJson()) === false
-        ) {
-            if (($response instanceof BaseResponse) === false) {
+        )
+        {
+            if (($response instanceof BaseResponse) === false)
+            {
                 // Not an instance of a Symfony response, override
                 $response = new Response($response);
             }
