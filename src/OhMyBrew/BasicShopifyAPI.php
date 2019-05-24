@@ -898,6 +898,11 @@ class BasicShopifyAPI
             // No version set, or already versioned... nothing to do
             return $uri;
         }
+        
+        if($uri == '/admin/oauth/access_scopes.json'){
+            // this endpoint donot need version
+            return $uri;
+        }
 
         // Graph request
         if ($this->isGraphRequest($uri)) {
