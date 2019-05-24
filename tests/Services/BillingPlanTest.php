@@ -158,7 +158,7 @@ class BillingPlanTest extends TestCase
         $charge = factory(Charge::class)->states('type_recurring')->create([
             'plan_id'    => $plan->id,
             'shop_id'    => $shop->id,
-            'created_at' => Carbon::now()->sub('1 day'),
+            'created_at' => Carbon::now()->subWeek(),
         ]);
 
         // Get the shop's plan charge, this should change to cancelled
