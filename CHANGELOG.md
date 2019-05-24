@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# 5.3.1
+
++ Fixed merged in to prevent versioning on access token calls.
+
 # 5.3.0
 
 + Added support for versioned API calls for both REST and GraphAPI
