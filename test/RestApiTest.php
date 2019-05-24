@@ -413,7 +413,7 @@ class RestApiTest extends BaseTest
     public function itShouldVersionApiPaths()
     {
         $responses = [];
-        for ($i = 0; $i < 3; $i++) {
+        for ($i = 0; $i < 4; $i++) {
             $responses[] = new Response(
                 200,
                 ['http_x_shopify_shop_api_call_limit' => '2/80'],
@@ -441,5 +441,11 @@ class RestApiTest extends BaseTest
         $api->rest('GET', '/admin/api/unstable/shop.json');
         $lastRequest = $mock->getLastRequest()->getUri();
         $this->assertEquals('/admin/api/unstable/shop.json', $lastRequest->getPath());
+
+        // Should not version
+        $api->setVersion('2020-01');
+        $api->rest('GET', '/admin/oauth/access_token.json');
+        $lastRequest = $mock->getLastRequest()->getUri();
+        $this->assertEquals('/admin/oauth/access_token.json', $lastRequest->getPath());
     }
 }
