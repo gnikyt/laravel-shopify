@@ -899,7 +899,7 @@ class BasicShopifyAPI
             return $uri;
         }
         
-        if($uri == '/admin/oauth/access_scopes.json'){
+        if ($uri == '/admin/oauth/access_scopes.json') {
             // this endpoint donot need version
             return $uri;
         }
