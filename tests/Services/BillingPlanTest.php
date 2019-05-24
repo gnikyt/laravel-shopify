@@ -2,8 +2,8 @@
 
 namespace OhMyBrew\ShopifyApp\Test\Services;
 
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\URL;
 use OhMyBrew\ShopifyApp\Models\Charge;
 use OhMyBrew\ShopifyApp\Models\Plan;
@@ -156,8 +156,8 @@ class BillingPlanTest extends TestCase
             'plan_id' => $plan->id,
         ]);
         $charge = factory(Charge::class)->states('type_recurring')->create([
-            'plan_id' => $plan->id,
-            'shop_id' => $shop->id,
+            'plan_id'    => $plan->id,
+            'shop_id'    => $shop->id,
             'created_at' => Carbon::now()->sub('1 day'),
         ]);
 
