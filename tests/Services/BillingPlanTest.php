@@ -174,5 +174,10 @@ class BillingPlanTest extends TestCase
 
         $this->assertTrue($charge);
         $this->assertEquals('cancelled', $planCharge->status);
+
+        // Get the new charge
+        $shop->refresh();
+        $newPlanCharge = $shop->planCharge();
+        $this->assertEquals('accepted', $newPlanCharge->status);
     }
 }
