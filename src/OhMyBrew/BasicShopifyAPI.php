@@ -894,13 +894,8 @@ class BasicShopifyAPI
      */
     protected function versionPath(string $uri)
     {
-        if ($this->version === null || preg_match(self::VERSION_PATTERN, $uri)) {
+        if ($this->version === null || preg_match(self::VERSION_PATTERN, $uri) || $uri == '/admin/oauth/access_scopes.json') {
             // No version set, or already versioned... nothing to do
-            return $uri;
-        }
-        
-        if ($uri == '/admin/oauth/access_scopes.json') {
-            // this endpoint donot need version
             return $uri;
         }
 
