@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# 5.3.2
+
++ Added for for issue #24 in detection of what an authable request is.
+
 # 5.3.1
 
 + Fixed merged in to prevent versioning on access token calls.
