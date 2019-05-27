@@ -882,7 +882,7 @@ class BasicShopifyAPI
      */
     protected function isAuthableRequest(string $uri)
     {
-        return strpos($uri, '/admin/oauth') === false;
+        return strpos($uri, '/admin/oauth/authorize') === false && strpos($uri, '/admin/oauth/access_token') === false;
     }
 
     /**
