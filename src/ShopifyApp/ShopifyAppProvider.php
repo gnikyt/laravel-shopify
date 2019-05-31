@@ -29,6 +29,11 @@ class ShopifyAppProvider extends ServiceProvider
         // Views
         $this->loadViewsFrom(__DIR__.'/resources/views', 'shopify-app');
 
+        // Views publish
+        $this->publishes([
+            __DIR__ . '/resources/views' => resource_path('views/vendor/shopify-app'),
+        ], 'shopify-views');
+
         // Config publish
         $this->publishes([
             __DIR__.'/resources/config/shopify-app.php' => "{$this->app->configPath()}/shopify-app.php",
