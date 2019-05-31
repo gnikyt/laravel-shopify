@@ -16,7 +16,7 @@ class AuthWebhook
      * Handle an incoming request to ensure webhook is valid.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
+     * @param \Closure                 $next
      *
      * @return mixed
      */
@@ -29,8 +29,8 @@ class AuthWebhook
         ! config('shopify-app.debug') ?: logger(get_class() . ' - Webhook ' . $request->getUri() . ' triggert for ' . $shop);
 
         $hmacLocal = ShopifyApp::createHmac(['data' => $data, 'raw' => true, 'encode' => true]);
-        if ( ! hash_equals($hmac, $hmacLocal) || empty($shop))
-        {
+        if (!hash_equals($hmac, $hmacLocal) || empty($shop)) {
+
             ! config('shopify-app.debug') ?: logger()->warning(get_class() . ' - Invalid webhook signature ' . $request->getUri() . ' for shopify_domain ' . $shop);
             // Issue with HMAC or missing shop header
             return Response::make('Invalid webhook signature.', 401);
