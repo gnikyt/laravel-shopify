@@ -2,8 +2,8 @@
 
 namespace OhMyBrew\ShopifyApp\Events;
 
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
 /**
  * Event fired when a shop passes through authentication.

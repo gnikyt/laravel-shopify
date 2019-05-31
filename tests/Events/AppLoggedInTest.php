@@ -3,8 +3,8 @@
 namespace OhMyBrew\ShopifyApp\Test\Events;
 
 use OhMyBrew\ShopifyApp\Events\AppLoggedIn;
-use OhMyBrew\ShopifyApp\Test\TestCase;
 use OhMyBrew\ShopifyApp\Models\Shop;
+use OhMyBrew\ShopifyApp\Test\TestCase;
 use ReflectionObject;
 
 class AppLoggedInTest extends TestCase
