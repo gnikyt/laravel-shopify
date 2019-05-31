@@ -58,9 +58,8 @@ class AuthShop
             // Trashed shop?
             $shop->trashed() ||
 
-            // No token set or domain in session?
-            empty($session->getToken(true)) ||
-            $session->getDomain() === null ||
+            // Session valid?
+            !$session->isValid() ||
 
             // Store loaded in session doesn't match whats incoming?
             ($shopParam && $shopParam !== $shop->shopify_domain) === true

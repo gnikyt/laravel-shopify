@@ -205,6 +205,17 @@ class ShopSession
     }
 
     /**
+     * Checks if the package has everything it needs in session.
+     *
+     * @return boolean
+     */
+    public function isValid()
+    {
+        // No token set or domain in session?
+        return !empty($this->getToken(true)) && $this->getDomain() !== null;
+    }
+
+    /**
      * Fixes the lifetime of the session.
      *
      * @return void
