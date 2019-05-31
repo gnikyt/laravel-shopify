@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# 5.3.3
+
++ Added matching to ignore certain oauth paths.
+
 # 5.3.2
 
 + Added for for issue #24 in detection of what an authable request is.
