@@ -69,10 +69,8 @@ trait AuthControllerTrait
 
         // Do post processing and dispatch the jobs
         $auth->postProcess();
-        $auth->dispatchJobs($session);
-
-        // Fire event to tell outside that the merchant logged in
-        event(new AppLoggedIn());
+        $auth->dispatchJobs();
+        $auth->dispatchEvent();
 
         // Go to homepage of app or the return_to
         return $this->returnTo();

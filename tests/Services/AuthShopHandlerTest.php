@@ -5,10 +5,12 @@ namespace OhMyBrew\ShopifyApp\Test\Services;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Event;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Jobs\ScripttagInstaller;
 use OhMyBrew\ShopifyApp\Jobs\WebhookInstaller;
 use OhMyBrew\ShopifyApp\Models\Shop;
+use OhMyBrew\ShopifyApp\Events\AppLoggedIn;
 use OhMyBrew\ShopifyApp\Services\AuthShopHandler;
 use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
 use OhMyBrew\ShopifyApp\Test\TestCase;
@@ -183,5 +185,21 @@ class AuthShopHandlerTest extends TestCase
         $as = new AuthShopHandler($shop);
 
         $this->assertTrue($as->dispatchJobs());
+    }
+
+    public function testLoginEvent()
+    {
+        // Fake the event
+        Event::fake();
+
+        // Create the shop
+        $shop = factory(Shop::class)->create();
+
+        // Run the event
+        $as = new AuthShopHandler($shop);
+        $as->dispatchEvent();
+
+        // No jobs should be pushed when theres no config for them
+        Event::assertDispatched(AppLoggedIn::class);
     }
 }

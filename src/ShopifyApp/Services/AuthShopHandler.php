@@ -4,7 +4,9 @@ namespace OhMyBrew\ShopifyApp\Services;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Event;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
+use OhMyBrew\ShopifyApp\Events\AppLoggedIn;
 use OhMyBrew\ShopifyApp\Jobs\ScripttagInstaller;
 use OhMyBrew\ShopifyApp\Jobs\WebhookInstaller;
 use OhMyBrew\ShopifyApp\Models\Shop;
@@ -103,6 +105,17 @@ class AuthShopHandler
         $this->shop->restore();
         $this->shop->charges()->restore();
         $this->shop->save();
+    }
+
+    /**
+     * Dispatches event on login.
+     *
+     * @return void
+     */
+    public function dispatchEvent()
+    {
+        // Fire event to tell outside that the merchant logged in
+        Event::dispatch(new AppLoggedIn($this->shop));
     }
 
     /**
