@@ -3,14 +3,14 @@
 namespace OhMyBrew\ShopifyApp\Test\Services;
 
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Facades\Event;
+use OhMyBrew\ShopifyApp\Events\AppLoggedIn;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Jobs\ScripttagInstaller;
 use OhMyBrew\ShopifyApp\Jobs\WebhookInstaller;
 use OhMyBrew\ShopifyApp\Models\Shop;
-use OhMyBrew\ShopifyApp\Events\AppLoggedIn;
 use OhMyBrew\ShopifyApp\Services\AuthShopHandler;
 use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
 use OhMyBrew\ShopifyApp\Test\TestCase;
