@@ -91,13 +91,19 @@ class ShopSessionTest extends TestCase
         // Assert defaults
         $this->assertNull(Session::get(ShopSession::DOMAIN));
 
-        // Run the code
+        // Start the session
         $ss = new ShopSession($this->shop);
+
+        // Confirm its not valid
+        $this->assertFalse($ss->isValid());
+
+        // Set the domain
         $ss->setDomain($this->shop->shopify_domain);
 
         // Confirm changes
         $this->assertTrue($ss->isType(ShopSession::GRANT_OFFLINE));
         $this->assertEquals($this->shop->shopify_domain, $ss->getDomain());
+        $this->assertTrue($ss->isValid());
     }
 
     public function testCanForget()

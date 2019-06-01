@@ -68,7 +68,8 @@ trait AuthControllerTrait
 
         // Do post processing and dispatch the jobs
         $auth->postProcess();
-        $auth->dispatchJobs($session);
+        $auth->dispatchJobs();
+        $auth->dispatchEvent();
 
         // Go to homepage of app or the return_to
         return $this->returnTo();

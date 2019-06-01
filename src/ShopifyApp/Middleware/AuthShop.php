@@ -53,9 +53,16 @@ class AuthShop
 
         // Check if shop has a session, also check the shops to ensure a match
         if (
+            // Shop?
             $shop === null ||
+
+            // Trashed shop?
             $shop->trashed() ||
-            empty($session->getToken(true)) ||
+
+            // Session valid?
+            !$session->isValid() ||
+
+            // Store loaded in session doesn't match whats incoming?
             ($shopParam && $shopParam !== $shop->shopify_domain) === true
         ) {
             // Either no shop session or shops do not match
