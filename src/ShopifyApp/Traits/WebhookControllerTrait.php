@@ -33,7 +33,7 @@ trait WebhookControllerTrait
             json_decode(Request::getContent())
         );
 
-        !config('shopify-app.debug') ?: \Log::info(get_class() .' - '. $jobClass .' webhook dispatched');
+        !config('shopify-app.debug') ?: \Log::info(get_class().' - '.$jobClass.' webhook dispatched');
 
         return Response::make('', 201);
     }
