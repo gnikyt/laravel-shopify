@@ -16,8 +16,8 @@ class AuthProxy
     /**
      * Handle an incoming request to ensure it is valid.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
+     * @param \Illuminate\Http\Request  $request
+     * @param \Closure                  $next
      *
      * @return mixed
      */
@@ -30,14 +30,13 @@ class AuthProxy
 
         // Build a local signature
         $signatureLocal = ShopifyApp::createHmac(['data' => $query, 'buildQuery' => true]);
-        if ($signature !== $signatureLocal || ! isset($query['shop']))
-        {
-            ! config('shopify-app.debug') ?: \Log::warning(get_class() . ' Invalid proxy signature');
+        if ($signature !== $signatureLocal || !isset($query['shop'])) {
+            !config('shopify-app.debug') ?: \Log::warning(get_class().' Invalid proxy signature');
             // Issue with HMAC or missing shop header
             return Response::make('Invalid proxy signature.', 401);
         }
 
-        ! config('shopify-app.debug') ?: \Log::info(get_class() . '  signature received');
+        !config('shopify-app.debug') ?: \Log::info(get_class() . '  signature received');
 
         // Save shop domain to session
         Session::put('shopify_domain', ShopifyApp::sanitizeShopDomain($request->get('shop')));
