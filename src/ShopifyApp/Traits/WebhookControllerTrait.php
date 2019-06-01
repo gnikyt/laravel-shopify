@@ -19,12 +19,22 @@ trait WebhookControllerTrait
      */
     public function handle($type)
     {
+        $shopDomain = Request::header('x-shopify-shop-domain');
         // Get the job class and dispatch
-        $jobClass = '\\App\\Jobs\\'.str_replace('-', '', ucwords($type, '-')).'Job';
+        $jobClass = '\\App\\Jobs\\' . str_replace('-', '', ucwords($type, '-')) . 'Job';
+        if ( ! class_exists($jobClass))
+        {
+            logger()->error(get_class() . ' - ' . $jobClass . ' webhook not exists');
+
+            return Response::make('', 404);
+        }
+
         $jobClass::dispatch(
-            Request::header('x-shopify-shop-domain'),
+            $shopDomain,
             json_decode(Request::getContent())
         );
+
+        ! config('shopify-app.debug') ?: logger(get_class() . ' - ' . $jobClass . ' webhook dispatched');
 
         return Response::make('', 201);
     }
