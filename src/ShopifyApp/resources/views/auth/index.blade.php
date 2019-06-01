@@ -84,7 +84,7 @@
             <div class="container__form">
                 <form class="form-horizontal" method="POST" action="{{ route('authenticate') }}">
                     {{ csrf_field() }}
-                    <input type="text" name="shop" id="shop" placeholder="example.myshopify.com">
+                    <input type="text" name="shop" id="shop" placeholder="example.myshopify.com" value="{{ isset($shopDomain) ? $shopDomain : '' }}">
                     <button type="submit">Submit</button>
                 </form>
             </div>
