@@ -65,7 +65,7 @@ class AuthShop
             ($shopDomain && $shopDomain !== $shop->shopify_domain) === true
         ) {
             !config('shopify-app.debug')
-                ?: \Log::warning(get_class() . ' validation failed for ' . $shopDomain . ' redirect to authenticate');
+                ?: \Log::warning(get_class() .' validation failed for '. $shopDomain .' redirect to authenticate');
 
             // Either no shop session or shops do not match
             $session->forget();
