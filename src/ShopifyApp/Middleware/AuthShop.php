@@ -47,7 +47,6 @@ class AuthShop
         $shopParam = ShopifyApp::sanitizeShopDomain(
             $request->filled('shop') ? $request->get('shop') : (new ShopSession())->getDomain()
         );
-        ! config('shopify-app.debug') ?: logger(get_class() . ' - shopify_domain ' . $shopParam);
         $shop = ShopifyApp::shop($shopParam);
         $session = new ShopSession($shop);
 
