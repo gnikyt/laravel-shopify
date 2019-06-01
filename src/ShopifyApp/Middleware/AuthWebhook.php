@@ -26,8 +26,6 @@ class AuthWebhook
         $shop = $request->header('x-shopify-shop-domain');
         $data = $request->getContent();
 
-        ! config('shopify-app.debug') ?: logger(get_class() . ' - Webhook ' . $request->getUri() . ' triggert for ' . $shop);
-
         $hmacLocal = ShopifyApp::createHmac(['data' => $data, 'raw' => true, 'encode' => true]);
         if (!hash_equals($hmac, $hmacLocal) || empty($shop)) {
 
