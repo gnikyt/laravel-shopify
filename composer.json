@@ -19,7 +19,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/StefanNeuser/Basic-Shopify-API"
+            "url": "https://github.com/StefanNeuser/basic-shopify-api"
         }
     ],
     "require": {
