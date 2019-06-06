@@ -225,24 +225,24 @@ class ChargeModelTest extends TestCase
     {
         $shop = factory(Shop::class)->create();
         $plan = factory(Plan::class)->states('type_recurring')->create();
-        $subsetActivatedOn = 4 * 30;
+        $daysOffsetForActivatedOn = random_int(1, 10) * 30;
         /** @var Charge $charge */
         $charge1 = factory(Charge::class)->states('type_recurring')->create([
-            'activated_on'  => Carbon::today()->subDays(25 + $subsetActivatedOn),
+            'activated_on'  => Carbon::today()->subDays(25 + $daysOffsetForActivatedOn),
             'cancelled_on'  => Carbon::today()->subDay(1),
             'status'        => 'cancelled',
             'shop_id'       => $shop->id,
             'plan_id'       => $plan->id
         ]);
         $charge2 = factory(Charge::class)->states('type_recurring')->create([
-            'activated_on'  => Carbon::today()->subDays(5 + $subsetActivatedOn),
+            'activated_on'  => Carbon::today()->subDays(5 + $daysOffsetForActivatedOn),
             'cancelled_on'  => Carbon::today()->subDay(1),
             'status'        => 'cancelled',
             'shop_id'       => $shop->id,
             'plan_id'       => $plan->id
         ]);
         $chargeCancelBeforeNewPeriodBegins = factory(Charge::class)->states('type_recurring')->create([
-            'activated_on'  => Carbon::today()->subDays(30 + $subsetActivatedOn),
+            'activated_on'  => Carbon::today()->subDays(30 + $daysOffsetForActivatedOn),
             'cancelled_on'  => Carbon::today()->subDay(1),
             'status'        => 'cancelled',
             'shop_id'       => $shop->id,
@@ -250,7 +250,7 @@ class ChargeModelTest extends TestCase
         ]);
         /** @var Charge $charge */
         $chargeCancelWhenNewPeriodBegins = factory(Charge::class)->states('type_recurring')->create([
-            'activated_on'  => Carbon::today()->subDays(30 + $subsetActivatedOn),
+            'activated_on'  => Carbon::today()->subDays(30 + $daysOffsetForActivatedOn),
             'cancelled_on'  => Carbon::today(),
             'status'        => 'cancelled',
             'shop_id'       => $shop->id,

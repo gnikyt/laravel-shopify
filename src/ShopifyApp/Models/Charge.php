@@ -208,8 +208,8 @@ class Charge extends Model
 
         $cancelledDate = Carbon::parse($this->cancelled_on);
 
-        $periods = (int)(Carbon::parse($this->activated_on)->diffInDays(Carbon::today()) / 30);
-        $pastDaysInPeriod = Carbon::parse($this->activated_on)->addDays(30 * $periods)->diffInDays(Carbon::today());
+        $pastPeriods = (int)(Carbon::parse($this->activated_on)->diffInDays(Carbon::today()) / 30);
+        $pastDaysInPeriod = Carbon::parse($this->activated_on)->addDays(30 * $pastPeriods)->diffInDays(Carbon::today());
 
         if ($pastDaysInPeriod == 0 && $cancelledDate->lt(Carbon::today()))
         {
