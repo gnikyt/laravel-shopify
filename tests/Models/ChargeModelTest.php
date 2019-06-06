@@ -221,6 +221,39 @@ class ChargeModelTest extends TestCase
         $this->assertEquals(0, $charge_4->remainingTrialDaysFromCancel());
     }
 
+    public function testRemainingDaysAfterCancel()
+    {
+        $shop = factory(Shop::class)->create();
+        $plan = factory(Plan::class)->states('type_recurring')->create();
+        /** @var Charge $charge */
+        $charge1 = factory(Charge::class)->states('type_recurring')->create([
+            'activated_on'  => Carbon::today()->subDays(25 + random_int(1,10) * 30),
+            'cancelled_on'  => Carbon::today()->subDay(1),
+            'status'        => 'cancelled',
+            'shop_id'       => $shop->id,
+            'plan_id'       => $plan->id
+        ]);
+        $chargeCancelBeforeNewPeriodBegins = factory(Charge::class)->states('type_recurring')->create([
+            'activated_on'  => Carbon::today()->subDays(30 + random_int(1,10) * 30),
+            'cancelled_on'  => Carbon::today()->subDay(1),
+            'status'        => 'cancelled',
+            'shop_id'       => $shop->id,
+            'plan_id'       => $plan->id
+        ]);
+        /** @var Charge $charge */
+        $chargeCancelWhenNewPeriodBegins = factory(Charge::class)->states('type_recurring')->create([
+            'activated_on'  => Carbon::today()->subDays(30 + random_int(1,10) * 30),
+            'cancelled_on'  => Carbon::today(),
+            'status'        => 'cancelled',
+            'shop_id'       => $shop->id,
+            'plan_id'       => $plan->id
+        ]);
+
+        $this->assertEquals(5, $charge1->remainingDaysAfterCancel());
+        $this->assertEquals(0, $chargeCancelBeforeNewPeriodBegins->remainingDaysAfterCancel());
+        $this->assertEquals(30, $chargeCancelWhenNewPeriodBegins->remainingDaysAfterCancel());
+    }
+
     public function testRetreieve()
     {
         // Stub the API
