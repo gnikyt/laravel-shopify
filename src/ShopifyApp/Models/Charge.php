@@ -198,24 +198,26 @@ class Charge extends Model
     {
         if ( ! $this->isCancelled())
         {
-            return;
+            return false;
         }
 
         if ( ! $this->plan->isType(Plan::PLAN_RECURRING))
         {
-            return;
+            return false;
         }
+
 
         $cancelledDate = Carbon::parse($this->cancelled_on);
-        $remainingDays = 30 - Carbon::parse($this->activated_on)->diffInDays(Carbon::today()) % 30;
 
-        // the cancellation-date is before a new period of 30 days begins
-        if ($cancelledDate->lt(Carbon::today()) && $remainingDays == 30)
+        $periods = (int)(Carbon::parse($this->activated_on)->diffInDays(Carbon::today()) / 30);
+        $pastDaysInPeriod = Carbon::parse($this->activated_on)->addDays(30 * $periods)->diffInDays(Carbon::today());
+
+        if ($pastDaysInPeriod == 0 && $cancelledDate->lt(Carbon::today()))
         {
-            return 0;
+            return $pastDaysInPeriod;
         }
 
-        return $remainingDays;
+       return 30 - $pastDaysInPeriod;
     }
 
 
