@@ -219,10 +219,8 @@ class Charge extends Model
      */
     public function remainingDaysForPeriod()
     {
-        $pastDaysInPeriod = $this->pastDaysForPeriod();
-
-        return ($pastDaysInPeriod == 0 && Carbon::parse($this->cancelled_on)->lt(Carbon::today()))
-            ? 0 : 30 - $pastDaysInPeriod;
+        return ($this->pastDaysForPeriod() == 0 && Carbon::parse($this->cancelled_on)->lt(Carbon::today()))
+            ? 0 : 30 - $this->pastDaysForPeriod();
     }
 
     /**
