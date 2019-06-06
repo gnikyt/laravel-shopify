@@ -190,33 +190,51 @@ class Charge extends Model
     }
 
     /**
-     * Returns the remaining days for recurring charge from cancellation date.
+     * return the date when the current period has begun
+     *
+     * @return string
+     */
+    public function periodBeginDate()
+    {
+        $pastPeriods = (int)(Carbon::parse($this->activated_on)->diffInDays(Carbon::today()) / 30);
+        $periodBeginDate = Carbon::parse($this->activated_on)->addDays(30 * $pastPeriods)->toDateString();
+
+        return $periodBeginDate;
+    }
+
+    /**
+     * return the end date of the current period
+     *
+     * @return string
+     */
+    public function periodEndDate()
+    {
+        return Carbon::parse($this->periodBeginDate())->addDays(30)->toDateString();
+    }
+
+    /**
+     * Returns the remaining days for the current recurring charge
      *
      * @return int
      */
-    public function remainingDaysAfterCancel()
+    public function remainingDaysForPeriod()
     {
-        if ( ! $this->isCancelled())
-        {
-            return false;
-        }
+        $pastDaysInPeriod = $this->pastDaysForPeriod();
 
-        if ( ! $this->plan->isType(Plan::PLAN_RECURRING))
-        {
-            return false;
-        }
+        return ($pastDaysInPeriod == 0 && Carbon::parse($this->cancelled_on)->lt(Carbon::today()))
+            ? 0 : 30 - $pastDaysInPeriod;
+    }
 
-        $cancelledDate = Carbon::parse($this->cancelled_on);
+    /**
+     * Returns the past days for the current recurring charge
+     *
+     * @return int
+     */
+    public function pastDaysForPeriod()
+    {
+        $pastDaysInPeriod = Carbon::parse($this->periodBeginDate())->diffInDays(Carbon::today());
 
-        $pastPeriods = (int)(Carbon::parse($this->activated_on)->diffInDays(Carbon::today()) / 30);
-        $pastDaysInPeriod = Carbon::parse($this->activated_on)->addDays(30 * $pastPeriods)->diffInDays(Carbon::today());
-
-        if ($pastDaysInPeriod == 0 && $cancelledDate->lt(Carbon::today()))
-        {
-            return $pastDaysInPeriod;
-        }
-
-        return 30 - $pastDaysInPeriod;
+        return $pastDaysInPeriod;
     }
 
 
