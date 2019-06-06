@@ -210,7 +210,7 @@ class Charge extends Model
         $remainingDays = 30 - Carbon::parse($this->activated_on)->diffInDays(Carbon::today()) % 30;
 
         // the cancellation-date is before a new period of 30 days begins
-        if ($cancelledDate->diffInDays(Carbon::today()) != 0 && $remainingDays == 30)
+        if ($cancelledDate->lt(Carbon::today()) != 0 && $remainingDays == 30)
         {
             return 0;
         }
