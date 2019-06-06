@@ -70,6 +70,8 @@ class AuthShop
             // Set the return-to path so we can redirect after successful authentication
             Session::put('return_to', $request->fullUrl());
 
+            // if auth is successful a new new session will be generated
+            /* @see \OhMyBrew\ShopifyApp\Traits\AuthControllerTrait::authenticate() */
             return Redirect::route('authenticate', ['shop' => $shopParam]);
         }
 

@@ -48,7 +48,7 @@ trait AuthControllerTrait
         $session = new ShopSession($shop);
 
         // Check if we have a code
-        if (!$request->has('code')) {
+        if (!$request->filled('code')) {
             // Handle a request without a code, do a fullpage redirect
             // Check if they have offline access, if they do not, this is most likely an install
             // If they do, fallback to using configured grant mode
@@ -68,7 +68,8 @@ trait AuthControllerTrait
 
         // Do post processing and dispatch the jobs
         $auth->postProcess();
-        $auth->dispatchJobs($session);
+        $auth->dispatchJobs();
+        $auth->dispatchEvent();
 
         // Go to homepage of app or the return_to
         return $this->returnTo();
