@@ -16,12 +16,6 @@
             "email": "tyler@ohmybrew.com"
         }
     ],
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/StefanNeuser/basic-shopify-api"
-        }
-    ],
     "require": {
         "php": ">=7.1.0",
         "laravel/framework": "~5.6",
