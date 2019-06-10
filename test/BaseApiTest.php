@@ -4,6 +4,7 @@ namespace OhMyBrew\Test;
 
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Uri;
+use Psr\Log\NullLogger;
 use OhMyBrew\BasicShopifyAPI;
 use ReflectionClass;
 use ReflectionMethod;
@@ -34,6 +35,23 @@ class BaseApiTest extends BaseTest
 
         $this->assertEquals(false, $api->isPrivate());
         $this->assertEquals(true, $api->isPublic());
+    }
+
+    /**
+     * @test
+     *
+     * Should set a logger.
+     */
+    public function itShouldSetLogger()
+    {
+        $api = new BasicShopifyAPI();
+        $api->setLogger(new NullLogger());
+
+        $reflected = new ReflectionClass($api);
+        $loggerProperty = $reflected->getProperty('logger');
+        $loggerProperty->setAccessible(true);
+
+        $this->assertEquals(NullLogger::class, get_class($loggerProperty->getValue($api)));
     }
 
     /**
