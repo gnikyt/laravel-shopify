@@ -12,11 +12,13 @@ use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Uri;
 use stdClass;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Basic Shopify API for REST & GraphQL.
  */
-class BasicShopifyAPI
+class BasicShopifyAPI implements LoggerAwareInterface
 {
     /**
      * API version pattern.
@@ -137,6 +139,13 @@ class BasicShopifyAPI
      * @var int
      */
     protected $requestTimestamp;
+
+    /**
+     * The logger.
+     *
+     * @var LoggerInterface
+     */
+    protected $logger;
 
     /**
      * Constructor.
@@ -813,6 +822,18 @@ class BasicShopifyAPI
         }
 
         return $request;
+    }
+
+    /**
+     * Sets a logger instance on the object.
+     *
+     * @param LoggerInterface $logger
+     *
+     * @return void
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
     }
 
     /**
