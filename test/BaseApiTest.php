@@ -4,8 +4,8 @@ namespace OhMyBrew\Test;
 
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Uri;
-use Psr\Log\NullLogger;
 use OhMyBrew\BasicShopifyAPI;
+use Psr\Log\NullLogger;
 use ReflectionClass;
 use ReflectionMethod;
 
