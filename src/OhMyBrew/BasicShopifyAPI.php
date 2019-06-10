@@ -11,9 +11,9 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Uri;
-use stdClass;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
+use stdClass;
 
 /**
  * Basic Shopify API for REST & GraphQL.
