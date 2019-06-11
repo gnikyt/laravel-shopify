@@ -569,7 +569,8 @@ class BasicShopifyAPI implements LoggerAwareInterface
         // Decode the response body
         $body = json_decode($request->getBody());
 
-        $this->log("RequestAccess response: ".json_encode($body));
+        $this->log('RequestAccess response: '.json_encode($body));
+
         return $body;
     }
 
@@ -602,7 +603,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
         if (property_exists($access, 'associated_user')) {
             // Set the user if applicable
             $this->setUser($access->associated_user);
-            $this->log("User access: ".json_encode($access->associated_user));
+            $this->log('User access: '.json_encode($access->associated_user));
         }
     }
 
@@ -691,7 +692,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
             ];
         }
 
-        $this->log("Graph response: ".json_encode(property_exists($body, 'errors') ? $body->errors : $body->data));
+        $this->log('Graph response: '.json_encode(property_exists($body, 'errors') ? $body->errors : $body->data));
 
         // Return Guzzle response and JSON-decoded body
         return (object) [
@@ -723,7 +724,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
 
             if ($waitTime > 0) {
                 // Do the sleep for X mircoseconds (convert from milliseconds)
-                $this->log("Rest rate limit hit");
+                $this->log('Rest rate limit hit');
                 usleep($waitTime * 1000);
             }
         }
@@ -864,9 +865,10 @@ class BasicShopifyAPI implements LoggerAwareInterface
     /**
      * Log a message to the logger.
      *
-     * @param string  $msg   The message to send.
-     * @param integer $level The level of message.
-     * @return boolean
+     * @param string $msg   The message to send.
+     * @param int    $level The level of message.
+     *
+     * @return bool
      */
     public function log(string $msg, string $level = LogLevel::DEBUG)
     {
@@ -877,6 +879,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
 
         // Call the logger by level and pass the message
         call_user_func([$this->logger, $level], self::LOG_KEY.' '.$msg);
+
         return true;
     }
 
