@@ -44,10 +44,10 @@ class AuthShop
      */
     protected function validateShop(Request $request)
     {
-        $shopParam = ShopifyApp::sanitizeShopDomain(
+        $shopDomain = ShopifyApp::sanitizeShopDomain(
             $request->filled('shop') ? $request->get('shop') : (new ShopSession())->getDomain()
         );
-        $shop = ShopifyApp::shop($shopParam);
+        $shop = ShopifyApp::shop($shopDomain);
         $session = new ShopSession($shop);
 
         // Check if shop has a session, also check the shops to ensure a match
@@ -62,8 +62,11 @@ class AuthShop
             !$session->isValid() ||
 
             // Store loaded in session doesn't match whats incoming?
-            ($shopParam && $shopParam !== $shop->shopify_domain) === true
+            ($shopDomain && $shopDomain !== $shop->shopify_domain) === true
         ) {
+            ! config('shopify-app.debug')
+                ?: logger(get_class() . '::validateShop failed for ' . $shopDomain . ' redirect to authenticate');
+
             // Either no shop session or shops do not match
             $session->forget();
 
@@ -72,7 +75,7 @@ class AuthShop
 
             // if auth is successful a new new session will be generated
             /* @see \OhMyBrew\ShopifyApp\Traits\AuthControllerTrait::authenticate() */
-            return Redirect::route('authenticate', ['shop' => $shopParam]);
+            return Redirect::route('authenticate', ['shop' => $shopDomain]);
         }
 
         return true;

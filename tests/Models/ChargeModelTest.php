@@ -221,6 +221,55 @@ class ChargeModelTest extends TestCase
         $this->assertEquals(0, $charge_4->remainingTrialDaysFromCancel());
     }
 
+    public function testRemainingDaysForRecurringCharge()
+    {
+        $shop = factory(Shop::class)->create();
+        $plan = factory(Plan::class)->states('type_recurring')->create();
+        $daysOffsetForActivatedOn = random_int(1, 10) * 30;
+        /** @var Charge $charge */
+        $charge = factory(Charge::class)->states('type_recurring')->create([
+            'activated_on'  => Carbon::today()->subDays(25 + $daysOffsetForActivatedOn),
+            'cancelled_on'  => Carbon::today()->subDay(1),
+            'status'        => 'cancelled',
+            'shop_id'       => $shop->id,
+            'plan_id'       => $plan->id
+        ]);
+        $this->assertEquals(5, $charge->remainingDaysForPeriod());
+        $this->assertEquals(25, $charge->pastDaysForPeriod());
+
+        $charge = factory(Charge::class)->states('type_recurring')->create([
+            'activated_on'  => Carbon::today()->subDays(5 + $daysOffsetForActivatedOn),
+            'cancelled_on'  => Carbon::today()->subDay(1),
+            'status'        => 'cancelled',
+            'shop_id'       => $shop->id,
+            'plan_id'       => $plan->id
+        ]);
+        $this->assertEquals(25, $charge->remainingDaysForPeriod());
+        $this->assertEquals(5, $charge->pastDaysForPeriod());
+
+        $charge = factory(Charge::class)->states('type_recurring')->create([
+            'activated_on'  => Carbon::today()->subDays(30 + $daysOffsetForActivatedOn),
+            'cancelled_on'  => Carbon::today()->subDay(1), // cancel one day before a new period begins
+            'status'        => 'cancelled',
+            'shop_id'       => $shop->id,
+            'plan_id'       => $plan->id
+        ]);
+        $this->assertEquals(0, $charge->remainingDaysForPeriod());
+        $this->assertEquals(0, $charge->pastDaysForPeriod()); // canceled and a new period will NOT start
+
+        /** @var Charge $charge */
+        $charge = factory(Charge::class)->states('type_recurring')->create([
+            'activated_on'  => Carbon::today()->subDays(30 + $daysOffsetForActivatedOn),
+            'cancelled_on'  => Carbon::today(), // cancel on the same date as a new period starts
+            'status'        => 'cancelled',
+            'shop_id'       => $shop->id,
+            'plan_id'       => $plan->id
+        ]);
+        $this->assertEquals(30, $charge->remainingDaysForPeriod());
+        $this->assertEquals(0, $charge->pastDaysForPeriod());
+
+    }
+
     public function testRetreieve()
     {
         // Stub the API

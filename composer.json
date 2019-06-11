@@ -1,48 +1,55 @@
 {
-  "name": "ohmybrew/laravel-shopify",
-  "description": "Shopify package for Laravel to aide in app development",
-  "keywords": ["laravel", "shopify", "shopify-api", "api"],
-  "license": "MIT",
-  "minimum-stability": "dev",
-  "prefer-stable": true,
-  "authors": [
-    {
-      "name": "Tyler King",
-      "email": "tyler@ohmybrew.com"
+    "name": "ohmybrew/laravel-shopify",
+    "description": "Shopify package for Laravel to aide in app development",
+    "keywords": [
+        "laravel",
+        "shopify",
+        "shopify-api",
+        "api"
+    ],
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "authors": [
+        {
+            "name": "Tyler King",
+            "email": "tyler@ohmybrew.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.1.0",
+        "laravel/framework": "~5.6",
+        "ohmybrew/basic-shopify-api": "dev-master",
+        "doctrine/dbal": "~2.5"
+    },
+    "require-dev": {
+        "orchestra/database": "~3.6",
+        "orchestra/testbench": "~3.6",
+        "phpunit/phpunit": "~6.0 || ~7.0",
+        "squizlabs/php_codesniffer": "^3.0",
+        "mockery/mockery": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "OhMyBrew\\ShopifyApp\\": "src/ShopifyApp"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "OhMyBrew\\ShopifyApp\\Test\\": "tests"
+        }
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "OhMyBrew\\ShopifyApp\\ShopifyAppProvider"
+            ],
+            "aliases": {
+                "ShopifyApp": "OhMyBrew\\ShopifyApp\\Facades\\ShopifyApp"
+            }
+        }
     }
-  ],
-  "require": {
-    "php": ">=7.1.0",
-    "laravel/framework": "~5.6",
-    "ohmybrew/basic-shopify-api": "~5.3",
-    "doctrine/dbal": "~2.5"
-  },
-  "require-dev":{
-    "orchestra/database": "~3.6",
-    "orchestra/testbench": "~3.6",
-    "phpunit/phpunit": "~6.0 || ~7.0",
-    "squizlabs/php_codesniffer": "^3.0",
-    "mockery/mockery": "^1.0"
-  },
-  "autoload": {
-    "psr-4": {
-      "OhMyBrew\\ShopifyApp\\": "src/ShopifyApp"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "OhMyBrew\\ShopifyApp\\Test\\": "tests"
-    }
-  },
-  "config": { "bin-dir": "bin" },
-  "extra": {
-    "laravel": {
-      "providers": [
-        "OhMyBrew\\ShopifyApp\\ShopifyAppProvider"
-      ],
-      "aliases": {
-        "ShopifyApp": "OhMyBrew\\ShopifyApp\\Facades\\ShopifyApp"
-      }
-    }
-  }
 }
