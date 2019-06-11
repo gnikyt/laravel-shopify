@@ -23,9 +23,6 @@ trait WebhookControllerTrait
         $jobClass = '\\App\\Jobs\\'.str_replace('-', '', ucwords($type, '-')).'Job';
         $jobData = json_decode(Request::getContent());
 
-        ! config('shopify-app.debug')
-            ?: logger(get_class() . " try to dispatch $jobClass with ".print_r($jobData, true));
-
         $jobClass::dispatch(
             Request::header('x-shopify-shop-domain'),
             $jobData

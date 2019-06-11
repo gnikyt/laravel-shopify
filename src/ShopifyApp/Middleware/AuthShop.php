@@ -64,9 +64,6 @@ class AuthShop
             // Store loaded in session doesn't match whats incoming?
             ($shopDomain && $shopDomain !== $shop->shopify_domain) === true
         ) {
-            ! config('shopify-app.debug')
-                ?: logger(get_class() . '::validateShop failed for ' . $shopDomain . ' redirect to authenticate');
-
             // Either no shop session or shops do not match
             $session->forget();
 
