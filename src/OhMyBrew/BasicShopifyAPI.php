@@ -29,6 +29,13 @@ class BasicShopifyAPI implements LoggerAwareInterface
     const VERSION_PATTERN = '/([0-9]{4}-[0-9]{2})|unstable/';
 
     /**
+     * The key to use for logging (prefix for filtering).
+     *
+     * @var string
+     */
+    const LOG_KEY = '[BasicShopifyAPI]';
+
+    /**
      * The Guzzle client.
      *
      * @var \GuzzleHttp\Client
@@ -437,6 +444,8 @@ class BasicShopifyAPI implements LoggerAwareInterface
      */
     public function withSession(string $shop, string $accessToken, Closure $closure)
     {
+        $this->log("WithSession started for {$shop}");
+
         // Clone the API class and bind it to the closure
         $clonedApi = clone $this;
         $clonedApi->setSession($shop, $accessToken);
@@ -558,7 +567,10 @@ class BasicShopifyAPI implements LoggerAwareInterface
         );
 
         // Decode the response body
-        return json_decode($request->getBody());
+        $body = json_decode($request->getBody());
+
+        $this->log("RequestAccess response: ".json_encode($body));
+        return $body;
     }
 
     /**
@@ -590,6 +602,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
         if (property_exists($access, 'associated_user')) {
             // Set the user if applicable
             $this->setUser($access->associated_user);
+            $this->log("User access: ".json_encode($access->associated_user));
         }
     }
 
@@ -653,13 +666,15 @@ class BasicShopifyAPI implements LoggerAwareInterface
         $this->requestTimestamp = microtime(true);
 
         // Create the request, pass the access token and optional parameters
+        $req = json_encode($request);
         $response = $this->client->request(
             'POST',
             $this->getBaseUri()->withPath(
                 $this->versionPath('/admin/api/graphql.json')
             ),
-            ['body' => json_encode($request)]
+            ['body' => $req]
         );
+        $this->log("Graph request: {$req}");
 
         // Grab the data result and extensions
         $body = $this->jsonDecode($response->getBody());
@@ -675,6 +690,8 @@ class BasicShopifyAPI implements LoggerAwareInterface
                 'actualCost'    => (int) $calls->actualQueryCost,
             ];
         }
+
+        $this->log("Graph response: ".json_encode(property_exists($body, 'errors') ? $body->errors : $body->data));
 
         // Return Guzzle response and JSON-decoded body
         return (object) [
@@ -706,6 +723,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
 
             if ($waitTime > 0) {
                 // Do the sleep for X mircoseconds (convert from milliseconds)
+                $this->log("Rest rate limit hit");
                 usleep($waitTime * 1000);
             }
         }
@@ -728,6 +746,8 @@ class BasicShopifyAPI implements LoggerAwareInterface
                 $guzzleParams[strtoupper($type) === 'GET' ? 'query' : 'json'] = $params;
             }
 
+            $this->log("[{$uri}:{$type}] Request Params: ".json_encode($params));
+
             // Set the response
             $response = $this->client->request($type, $uri, $guzzleParams);
             $body = $response->getBody();
@@ -743,6 +763,8 @@ class BasicShopifyAPI implements LoggerAwareInterface
                     'body'      => $this->jsonDecode($body),
                     'exception' => $e,
                 ];
+
+                $this->log("[{$uri}:{$type}] {$response->getStatusCode()} Error: {$body}");
             } else {
                 // Else, rethrow
                 throw $e;
@@ -759,6 +781,8 @@ class BasicShopifyAPI implements LoggerAwareInterface
                 'limit' => (int) $calls[1],
             ];
         }
+
+        $this->log("[{$uri}:{$type}] {$response->getStatusCode()}: ".json_encode($errors ? $body->getContents() : $body));
 
         // Return Guzzle response and JSON-decoded body
         return (object) [
@@ -852,7 +876,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
         }
 
         // Call the logger by level and pass the message
-        call_user_func([$this->logger, $level], $msg);
+        call_user_func([$this->logger, $level], self::LOG_KEY.' '.$msg);
         return true;
     }
 
