@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# 5.4.0
+
++ Added option to supply a PSR-compatible logger via `setLogger`.
+
 # 5.3.3
 
 + Added matching to ignore certain oauth paths.

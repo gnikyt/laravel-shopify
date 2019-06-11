@@ -366,6 +366,14 @@ if ($call->errors) {
 }
 ```
 
+### Logging
+
+This library accepts a PSR-compatible logger.
+
+```php
+$api->setLogger(... your logger instance ...);
+```
+
 ## Documentation
 
 Code documentation is [available here](https://ohmybrew.com/Basic-Shopify-API) from phpDocumentor via `phpdoc -d src -t doc`.

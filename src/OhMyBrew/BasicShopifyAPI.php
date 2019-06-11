@@ -13,6 +13,7 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Uri;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use stdClass;
 
 /**
@@ -834,6 +835,25 @@ class BasicShopifyAPI implements LoggerAwareInterface
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
+    }
+
+    /**
+     * Log a message to the logger.
+     *
+     * @param string  $msg   The message to send.
+     * @param integer $level The level of message.
+     * @return boolean
+     */
+    public function log(string $msg, string $level = LogLevel::DEBUG)
+    {
+        if ($this->logger === null) {
+            // No logger, do nothing
+            return false;
+        }
+
+        // Call the logger by level and pass the message
+        call_user_func([$this->logger, $level], $msg);
+        return true;
     }
 
     /**

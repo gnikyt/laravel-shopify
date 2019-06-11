@@ -45,13 +45,23 @@ class BaseApiTest extends BaseTest
     public function itShouldSetLogger()
     {
         $api = new BasicShopifyAPI();
+
+        // Confirm no logging works
+        $this->assertFalse($api->log('Hello world!'));
+
+        // Set the test logger
         $api->setLogger(new NullLogger());
 
+        // Get the logger value
         $reflected = new ReflectionClass($api);
         $loggerProperty = $reflected->getProperty('logger');
         $loggerProperty->setAccessible(true);
 
+        // Ensure logger value matches the test logger
         $this->assertEquals(NullLogger::class, get_class($loggerProperty->getValue($api)));
+
+        // Confirm logging now works
+        $this->assertTrue($api->log('Hello world!'));
     }
 
     /**
