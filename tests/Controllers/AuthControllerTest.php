@@ -5,7 +5,6 @@ namespace OhMyBrew\ShopifyApp\Test\Controllers;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
 use OhMyBrew\ShopifyApp\Controllers\AuthController;
-use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\Test\Stubs\ApiStub;
 use OhMyBrew\ShopifyApp\Test\TestCase;
 use ReflectionMethod;
