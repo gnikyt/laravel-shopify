@@ -18,7 +18,7 @@ class HomeControllerTest extends TestCase
         Config::set('shopify-app.api_class', new ApiStub());
     }
 
-    public function testHomeRouteWithESDK()
+    public function testHomeRouteWithAppBridge()
     {
         $shop = factory(Shop::class)->create();
         Session::put('shopify_domain', $shop->shopify_domain);
@@ -27,20 +27,20 @@ class HomeControllerTest extends TestCase
         $response->assertStatus(200);
 
         $this->assertTrue(strpos($response->content(), "apiKey: ''") !== false);
-        $this->assertTrue(strpos($response->content(), "shopOrigin: 'https://{$shop->shopify_domain}'") !== false);
+        $this->assertTrue(strpos($response->content(), "shopOrigin: '{$shop->shopify_domain}'") !== false);
     }
 
-    public function testHomeRouteWithNoESDK()
+    public function testHomeRouteWithNoAppBridge()
     {
         $shop = factory(Shop::class)->create();
         Session::put('shopify_domain', $shop->shopify_domain);
 
-        // Turn off ESDK
-        Config::set('shopify-app.esdk_enabled', false);
+        // Turn off AppBridge
+        Config::set('shopify-app.appbridge_enabled', false);
 
         $response = $this->get('/');
 
         $response->assertStatus(200);
-        $this->assertFalse(strpos($response->content(), 'ShopifyApp.init'));
+        $this->assertFalse(strpos($response->content(), '@shopify'));
     }
 }

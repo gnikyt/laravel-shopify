@@ -83,7 +83,7 @@ class AuthShopMiddlewareTest extends TestCase
         $this->assertEquals('example-different-shop.myshopify.com', Request::get('shop'));
     }
 
-    public function testHeadersForEsdkShouldBeAdjusted()
+    public function testHeadersForAppBridgeShouldBeAdjusted()
     {
         // Set a shop
         $shop = factory(Shop::class)->create();
@@ -131,14 +131,14 @@ class AuthShopMiddlewareTest extends TestCase
         $this->assertNull($result[0]);
     }
 
-    public function testHeadersForDisabledEsdk()
+    public function testHeadersForDisabledAppBridge()
     {
         // Set a shop
         $shop = factory(Shop::class)->create();
         Session::put('shopify_domain', $shop->shopify_domain);
 
-        // Disable ESDK
-        Config::set('shopify-app.esdk_enabled', false);
+        // Disable AppBridge
+        Config::set('shopify-app.appbridge_enabled', false);
 
         // Run the middleware
         $result = $this->runAuthShop();

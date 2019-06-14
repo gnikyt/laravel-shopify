@@ -77,17 +77,9 @@
             var TitleBar = actions.TitleBar;
             var Button = actions.Button;
             var Redirect = actions.Redirect;
-
-            var breadcrumb = Button.create(app, { label: 'My breadcrumb' });
-            breadcrumb.subscribe(Button.Action.CLICK, function () {
-                app.dispatch(Redirect.toApp({ path: '/breadcrumb-link' }));
-            });
-
             var titleBarOptions = {
-                title: 'My page title',
-                breadcrumbs: breadcrumb,
+                title: 'Welcome',
             };
-
             var myTitleBar = TitleBar.create(app, titleBarOptions);
         </script>
     @endif
