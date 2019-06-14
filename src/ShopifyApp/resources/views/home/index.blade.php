@@ -70,19 +70,25 @@
 @section('scripts')
     @parent
 
-    <script type="text/javascript">
-        window.mainPageTitle = 'Main Page';
-            ShopifyApp.ready(function(){
-                ShopifyApp.Bar.initialize({
-                    title: 'Welcome',
-                    buttons: {
-                    secondary: {
-                        label: 'Documentation',
-                        href: 'https://github.com/ohmybrew/laravel-shopify',
-                        target: 'new'
-                    }
-                }
+    @if(config('shopify-app.appbridge_enabled'))
+        <script type="text/javascript">
+            var AppBridge = window['app-bridge'];
+            var actions = AppBridge.actions;
+            var TitleBar = actions.TitleBar;
+            var Button = actions.Button;
+            var Redirect = actions.Redirect;
+
+            var breadcrumb = Button.create(app, { label: 'My breadcrumb' });
+            breadcrumb.subscribe(Button.Action.CLICK, function () {
+                app.dispatch(Redirect.toApp({ path: '/breadcrumb-link' }));
             });
-        });
-    </script>
+
+            var titleBarOptions = {
+                title: 'My page title',
+                breadcrumbs: breadcrumb,
+            };
+
+            var myTitleBar = TitleBar.create(app, titleBarOptions);
+        </script>
+    @endif
 @endsection
