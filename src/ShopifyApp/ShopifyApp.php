@@ -4,6 +4,7 @@ namespace OhMyBrew\ShopifyApp;
 
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Log;
 use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\Services\ShopSession;
 
@@ -146,5 +147,21 @@ class ShopifyApp
 
         // Return based on options
         return $encode ? base64_encode($hmac) : $hmac;
+    }
+
+    /**
+     * Allows for sending a message to the logger for debugging.
+     *
+     * @param string $message The message to send.
+     
+     * @return void
+     */
+    public function debug(string $message)
+    {
+        if (!Config::get('shopify_app.debug')) {
+            return;
+        }
+
+        Log::debug($message);
     }
 }
