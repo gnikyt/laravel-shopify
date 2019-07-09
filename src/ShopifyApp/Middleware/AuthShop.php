@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
+use OhMyBrew\ShopifyApp\Services\AuthShopHandler;
 use OhMyBrew\ShopifyApp\Services\ShopSession;
 use Symfony\Component\HttpFoundation\Response as BaseResponse;
 
@@ -44,35 +45,33 @@ class AuthShop
      */
     protected function validateShop(Request $request)
     {
-        $shopDomain = ShopifyApp::sanitizeShopDomain(
-            $request->filled('shop') ? $request->get('shop') : (new ShopSession())->getDomain()
-        );
-        $shop = ShopifyApp::shop($shopDomain);
-        $session = new ShopSession($shop);
+        // Setup the session service
+        $session = new ShopSession();
 
-        // Check if shop has a session, also check the shops to ensure a match
+        // Grab the shop's myshopify domain from query or session
+        $shopDomain = ShopifyApp::sanitizeShopDomain(
+            $request->filled('shop') ? $request->get('shop') : $session->getDomain()
+        );
+
+        // Get the shop based on domain and update the session service
+        $shop = ShopifyApp::shop($shopDomain);
+        $session->setShop($shop);
+
         if (
-            // Shop?
+            // Shop loaded?
             $shop === null ||
 
-            // Trashed shop?
+            // Shop is trashed?
             $shop->trashed() ||
 
+            // Shop loaded does not match incoming shop?
+            ($shopDomain && $shopDomain !== $shop->shopify_domain) === true ||
+            
             // Session valid?
-            !$session->isValid() ||
-
-            // Store loaded in session doesn't match whats incoming?
-            ($shopDomain && $shopDomain !== $shop->shopify_domain) === true
+            !$session->isValid()
         ) {
-            // Either no shop session or shops do not match
-            $session->forget();
-
-            // Set the return-to path so we can redirect after successful authentication
-            Session::put('return_to', $request->fullUrl());
-
-            // if auth is successful a new new session will be generated
-            /* @see \OhMyBrew\ShopifyApp\Traits\AuthControllerTrait::authenticate() */
-            return Redirect::route('authenticate', ['shop' => $shopDomain]);
+            // We need to handle this issue...
+            return $this->handleBadSession($session, $request, $shopDomain);
         }
 
         return true;
@@ -105,5 +104,38 @@ class AuthShop
         }
 
         return $response;
+    }
+
+    /**
+     * Handles a bad shop session.
+     *
+     * @param \OhMyBrew\ShopifyApp\Services\ShopSession $session    The session service for the shop.
+     * @param \Illuminate\Http\Request                  $request    The incoming request.
+     * @param string|null                               $shopDomain The incoming shop domain.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    protected function handleBadSession(
+        ShopSession $session,
+        Request $request,
+        string $shopDomain = null
+    )
+    {
+        // Clear all session variables (domain, token, user, etc)
+        $session->forget();
+
+        // Set the return-to path so we can redirect after successful authentication
+        Session::put('return_to', $request->fullUrl());
+
+        // Depending on the type of grant mode, we need to do a full auth or partial
+        return Redirect::route(
+            'authenticate',
+            [
+                'type' => $session->isType(ShopSession::GRANT_PERUSER) ?
+                    AuthShopHandler::FLOW_PARTIAL :
+                    AuthShopHandler::FLOW_PARTIAL,
+                'shop' => $shopDomain,
+            ]
+        );
     }
 }

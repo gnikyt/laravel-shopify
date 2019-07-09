@@ -33,7 +33,8 @@ class AuthShop extends FormRequest
     {
         // Determine if the HMAC is correct
         $validator->after(function (Validator $validator) {
-            if (!$this->request->has('code')) {
+            $type = $this->request->get('type', AuthShopHandler::FLOW_FULL);
+            if ($type === AuthShopHandler::FLOW_FULL && !$this->request->has('code')) {
                 // No code, continue
                 return;
             }
