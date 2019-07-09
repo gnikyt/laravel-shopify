@@ -153,7 +153,7 @@ class ShopifyApp
      * Allows for sending a message to the logger for debugging.
      *
      * @param string $message The message to send.
-     
+     *
      * @return void
      */
     public function debug(string $message)

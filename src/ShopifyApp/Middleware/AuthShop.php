@@ -66,7 +66,7 @@ class AuthShop
 
             // Shop loaded does not match incoming shop?
             ($shopDomain && $shopDomain !== $shop->shopify_domain) === true ||
-            
+
             // Session valid?
             !$session->isValid()
         ) {
@@ -119,8 +119,7 @@ class AuthShop
         ShopSession $session,
         Request $request,
         string $shopDomain = null
-    )
-    {
+    ) {
         // Clear all session variables (domain, token, user, etc)
         $session->forget();
 
