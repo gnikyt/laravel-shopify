@@ -5,13 +5,11 @@ namespace OhMyBrew\ShopifyApp\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Services\AuthShopHandler;
 use OhMyBrew\ShopifyApp\Services\ShopSession;
-use Symfony\Component\HttpFoundation\Response as BaseResponse;
 
 /**
  * Response for ensuring an authenticated shop.
@@ -69,7 +67,7 @@ class AuthShop
                 $request,
                 $shopDomain
             );
-        } else if (!$session->isValid()) {
+        } elseif (!$session->isValid()) {
             // We need to handle this issue...
             return $this->handleBadSession(
                 $session->isType(ShopSession::GRANT_PERUSER) ? AuthShopHandler::FLOW_FULL : AuthShopHandler::FLOW_PARTIAL,
