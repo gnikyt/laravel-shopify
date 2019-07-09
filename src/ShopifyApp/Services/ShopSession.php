@@ -61,7 +61,7 @@ class ShopSession
      *
      * @return self
      */
-    public function __construct(object $shop = null)
+    public function __construct($shop = null)
     {
         $this->setShop($shop);
     }
@@ -73,7 +73,7 @@ class ShopSession
      *
      * @return void
      */
-    public function setShop(object $shop = null)
+    public function setShop($shop = null)
     {
         $this->shop = $shop;
     }
