@@ -33,7 +33,7 @@ class AuthShop
             return $validation;
         }
 
-        return $this->response($request, $next);
+        return $next($request);
     }
 
     /**
@@ -58,57 +58,35 @@ class AuthShop
         $session->setShop($shop);
 
         if (
-            // Shop loaded?
             $shop === null ||
-
-            // Shop is trashed?
             $shop->trashed() ||
-
-            // Shop loaded does not match incoming shop?
-            ($shopDomain && $shopDomain !== $shop->shopify_domain) === true ||
-
-            // Session valid?
-            !$session->isValid()
+            ($shopDomain && $shopDomain !== $shop->shopify_domain) === true
         ) {
             // We need to handle this issue...
-            return $this->handleBadSession($session, $request, $shopDomain);
+            return $this->handleBadSession(
+                AuthShopHandler::FLOW_FULL,
+                $session,
+                $request,
+                $shopDomain
+            );
+        } else if (!$session->isValid()) {
+            // We need to handle this issue...
+            return $this->handleBadSession(
+                $session->isType(ShopSession::GRANT_PERUSER) ? AuthShopHandler::FLOW_FULL : AuthShopHandler::FLOW_PARTIAL,
+                $session,
+                $request,
+                $shopDomain
+            );
+        } else {
+            // Everything is fine!
+            return true;
         }
-
-        return true;
-    }
-
-    /**
-     * Come back with a response.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure                 $next
-     *
-     * @return mixed
-     */
-    protected function response(Request $request, Closure $next)
-    {
-        // Shop is OK, now check if Appbridge is enabled and this is not a JSON/AJAX request...
-        $response = $next($request);
-        if (
-            Config::get('shopify-app.appbridge_enabled') &&
-            ($request->ajax() || $request->expectsJson() || $request->isJson()) === false
-        ) {
-            if (($response instanceof BaseResponse) === false) {
-                // Not an instance of a Symfony response, override
-                $response = new Response($response);
-            }
-
-            // Attempt to modify headers applicable to AppBridge (does not work in all cases)
-            $response->headers->set('P3P', 'CP="Not used"');
-            $response->headers->remove('X-Frame-Options');
-        }
-
-        return $response;
     }
 
     /**
      * Handles a bad shop session.
      *
+     * @param string                                    $type       The auth flow to perform.
      * @param \OhMyBrew\ShopifyApp\Services\ShopSession $session    The session service for the shop.
      * @param \Illuminate\Http\Request                  $request    The incoming request.
      * @param string|null                               $shopDomain The incoming shop domain.
@@ -116,6 +94,7 @@ class AuthShop
      * @return \Illuminate\Http\RedirectResponse
      */
     protected function handleBadSession(
+        string $type,
         ShopSession $session,
         Request $request,
         string $shopDomain = null
@@ -130,9 +109,7 @@ class AuthShop
         return Redirect::route(
             'authenticate',
             [
-                'type' => $session->isType(ShopSession::GRANT_PERUSER) ?
-                    AuthShopHandler::FLOW_PARTIAL :
-                    AuthShopHandler::FLOW_PARTIAL,
+                'type' => $type,
                 'shop' => $shopDomain,
             ]
         );
