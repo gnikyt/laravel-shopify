@@ -9,7 +9,7 @@
 |
 */
 
-Route::group(['middleware' => ['web']], function () {
+Route::group(['prefix' => config('shopify-app.prefix'), 'middleware' => ['web']], function () {
     /*
     |--------------------------------------------------------------------------
     | Home Route
