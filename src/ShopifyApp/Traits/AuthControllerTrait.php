@@ -49,6 +49,7 @@ trait AuthControllerTrait
         $session = new ShopSession($shop);
         $session->setDomain($shopDomain);
 
+        // Check if we need to do a full auth flow (most likely not)
         if ($type === AuthShopHandler::FLOW_FULL) {
             // Check if we have a code
             if (!$request->filled('code')) {
@@ -56,7 +57,9 @@ trait AuthControllerTrait
                 // Check if they have offline access, if they do not, this is most likely an install
                 // If they do, fallback to using configured grant mode
                 $authUrl = $auth->buildAuthUrl(
-                    $shop->hasOfflineAccess() ? Config::get('shopify-app.api_grant_mode') : ShopSession::GRANT_OFFLINE
+                    $shop->hasOfflineAccess() ?
+                        Config::get('shopify-app.api_grant_mode') :
+                        ShopSession::GRANT_OFFLINE
                 );
 
                 return View::make(
