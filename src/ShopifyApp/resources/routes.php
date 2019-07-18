@@ -46,13 +46,13 @@ Route::group(['middleware' => ['web']], function () {
     | Authenticate Method
     |--------------------------------------------------------------------------
     |
-    | Authenticates a shop.
+    | Authenticates a shop fully or partially.
     |
     */
 
     Route::match(
         ['get', 'post'],
-        '/authenticate',
+        '/authenticate/{type?}',
         'OhMyBrew\ShopifyApp\Controllers\AuthController@authenticate'
     )
     ->name('authenticate');

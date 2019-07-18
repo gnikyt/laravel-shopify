@@ -37,6 +37,7 @@ class ShopSessionTest extends TestCase
         // Confirm changes
         $this->assertTrue(Config::get('session.expire_on_close'));
         $this->assertEquals($fixture->associated_user, $ss->getUser());
+        $this->assertNotNull($ss->hasUser());
         $this->assertEquals($fixture->access_token, $ss->getToken());
         $this->assertEquals(ShopSession::GRANT_PERUSER, $ss->getType());
         $this->assertTrue($ss->isType(ShopSession::GRANT_PERUSER));

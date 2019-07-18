@@ -83,8 +83,11 @@ class AuthShopMiddlewareTest extends TestCase
         $this->assertEquals('example-different-shop.myshopify.com', Request::get('shop'));
     }
 
-    public function testHeadersForAppBridgeShouldBeAdjusted()
+    public function testGrantTypePerUserWithInvalidSessionShouldDirectToReAuthenticate()
     {
+        // Update config to be per-user
+        Config::set('shopify-app.api_grant_mode', 'per-user');
+
         // Set a shop
         $shop = factory(Shop::class)->create();
         Session::put('shopify_domain', $shop->shopify_domain);
@@ -92,59 +95,8 @@ class AuthShopMiddlewareTest extends TestCase
         // Run the middleware
         $result = $this->runAuthShop();
 
-        // Assert the headers were modified
-        $this->assertEquals('CP="Not used"', $result[0]->headers->get('p3p'));
-        $this->assertNull($result[0]->headers->get('x-frame-options'));
-    }
-
-    public function testAjaxCallShouldNotAdjustResponse()
-    {
-        // Set a shop
-        $shop = factory(Shop::class)->create();
-        Session::put('shopify_domain', $shop->shopify_domain);
-
-        // Set the request
-        $request = Request::instance();
-        $request->headers->set('x-requested-with', 'XMLHttpRequest');
-
-        // Run the middleware
-        $result = $this->runAuthShop(null, $request);
-
-        // Assert the headers were not modified
-        $this->assertNull($result[0]);
-    }
-
-    public function testJsonCallShouldNotAdjustResponse()
-    {
-        // Set a shop
-        $shop = factory(Shop::class)->create();
-        Session::put('shopify_domain', $shop->shopify_domain);
-
-        // Set the request
-        $request = Request::instance();
-        $request->headers->set('content-type', 'application/json');
-
-        // Run the middleware
-        $result = $this->runAuthShop(null, $request);
-
-        // Assert the headers were not modified
-        $this->assertNull($result[0]);
-    }
-
-    public function testHeadersForDisabledAppBridge()
-    {
-        // Set a shop
-        $shop = factory(Shop::class)->create();
-        Session::put('shopify_domain', $shop->shopify_domain);
-
-        // Disable AppBridge
-        Config::set('shopify-app.appbridge_enabled', false);
-
-        // Run the middleware
-        $result = $this->runAuthShop();
-
-        // Assert the headers were not modified
-        $this->assertFalse(is_object($result[0]));
+        // Assert it was not called and the new shop was passed
+        $this->assertFalse($result[1]);
     }
 
     public function testShouldSaveReturnUrl()

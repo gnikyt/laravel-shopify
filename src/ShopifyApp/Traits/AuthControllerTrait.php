@@ -32,11 +32,12 @@ trait AuthControllerTrait
     /**
      * Authenticating a shop.
      *
-     * @param \OhMyBrew\ShopifyApp\Requests\AuthShop $request
+     * @param \OhMyBrew\ShopifyApp\Requests\AuthShop $request The incoming request.
+     * @param string                                 $type    The type of auth to do (full or partial).
      *
      * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
-    public function authenticate(AuthShop $request)
+    public function authenticate(AuthShop $request, string $type = AuthShopHandler::FLOW_FULL)
     {
         // Get the validated data
         $validated = $request->validated();
@@ -46,29 +47,37 @@ trait AuthControllerTrait
         // Start the process
         $auth = new AuthShopHandler($shop);
         $session = new ShopSession($shop);
+        $session->setDomain($shopDomain);
 
-        // Check if we have a code
-        if (!$request->filled('code')) {
-            // Handle a request without a code, do a fullpage redirect
-            // Check if they have offline access, if they do not, this is most likely an install
-            // If they do, fallback to using configured grant mode
-            $authUrl = $auth->buildAuthUrl(
-                $shop->hasOfflineAccess() ? Config::get('shopify-app.api_grant_mode') : ShopSession::GRANT_OFFLINE
-            );
+        // Check if we need to do a full auth flow (most likely not)
+        if ($type === AuthShopHandler::FLOW_FULL) {
+            // Check if we have a code
+            if (!$request->filled('code')) {
+                // Handle a request without a code, do a fullpage redirect
+                // Check if they have offline access, if they do not, this is most likely an install
+                // If they do, fallback to using configured grant mode
+                $authUrl = $auth->buildAuthUrl(
+                    $shop->hasOfflineAccess() ?
+                        Config::get('shopify-app.api_grant_mode') :
+                        ShopSession::GRANT_OFFLINE
+                );
 
-            return View::make('shopify-app::auth.fullpage_redirect', compact('authUrl', 'shopDomain'));
+                return View::make(
+                    'shopify-app::auth.fullpage_redirect',
+                    compact('authUrl', 'shopDomain')
+                );
+            }
+
+            // We have a good code, get the access details
+            $access = $auth->getAccess($validated['code']);
+            $session->setAccess($access);
+
+            // Do post processing and dispatch the jobs
+            $auth->postProcess();
+            $auth->dispatchJobs();
         }
 
-        // We have a good code, get the access details
-        $access = $auth->getAccess($validated['code']);
-
-        // Save the session
-        $session->setDomain($shopDomain);
-        $session->setAccess($access);
-
-        // Do post processing and dispatch the jobs
-        $auth->postProcess();
-        $auth->dispatchJobs();
+        // Dispatch the events always (for full and partial)
         $auth->dispatchEvent();
 
         // Go to homepage of app or the return_to

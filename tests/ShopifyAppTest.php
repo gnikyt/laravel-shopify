@@ -137,4 +137,13 @@ class ShopifyAppTest extends TestCase
             $this->shopifyApp->createHmac(['data' => $data, 'buildQuery' => true])
         );
     }
+
+    public function testDebugger()
+    {
+        $this->shopifyApp->debug('test');
+        $this->assertFalse($this->shopifyApp->debug('test'));
+
+        Config::set('shopify-app.debug', true);
+        $this->assertTrue($this->shopifyApp->debug('test'));
+    }
 }

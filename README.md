@@ -46,6 +46,10 @@ For full resources on this package, see the [wiki](https://github.com/ohmybrew/l
 
 For internal documentation, it is [available here](https://ohmybrew.com/laravel-shopify/) from phpDocumentor.
 
+## Issue or request?
+
+If you have found a bug or would like to request a feature for discussion, please use the `ISSUE_TEMPLATE` in this repo when creating your issue. Any issue submitted without this template will be closed.
+
 ## LICENSE
 
 This project is released under the MIT [license](https://github.com/ohmybrew/laravel-shopify/blob/master/LICENSE).

@@ -50,18 +50,30 @@ class ShopSession
     /**
      * The shop.
      *
-     * @var \OhMyBrew\ShopifyApp\Models\Shop
+     * @var \OhMyBrew\ShopifyApp\Models\Shop|null
      */
     protected $shop;
 
     /**
      * Constructor for shop session class.
      *
-     * @param \OhMyBrew\ShopifyApp\Models\Shop|null $shop The shop.
+     * @param object|null $shop The shop.
      *
      * @return self
      */
-    public function __construct(Shop $shop = null)
+    public function __construct($shop = null)
+    {
+        $this->setShop($shop);
+    }
+
+    /**
+     * Sets the shop.
+     *
+     * @param object|null $shop The shop.
+     *
+     * @return void
+     */
+    public function setShop($shop = null)
     {
         $this->shop = $shop;
     }
