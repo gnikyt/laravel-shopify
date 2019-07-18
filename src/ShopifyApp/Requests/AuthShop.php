@@ -35,7 +35,7 @@ class AuthShop extends FormRequest
         $validator->after(function (Validator $validator) {
             $type = $this->request->get('type', AuthShopHandler::FLOW_FULL);
             if ($type === AuthShopHandler::FLOW_FULL && !$this->request->has('code')) {
-                // No code, continue
+                // No code, continue...
                 return;
             }
 

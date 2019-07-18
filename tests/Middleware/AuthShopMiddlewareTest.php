@@ -2,6 +2,7 @@
 
 namespace OhMyBrew\ShopifyApp\Test\Middleware;
 
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
@@ -80,6 +81,22 @@ class AuthShopMiddlewareTest extends TestCase
         // Assert it was not called and the new shop was passed
         $this->assertFalse($result[1]);
         $this->assertEquals('example-different-shop.myshopify.com', Request::get('shop'));
+    }
+
+    public function testGrantTypePerUserWithInvalidSessionShouldDirectToReAuthenticate()
+    {
+        // Update config to be per-user
+        Config::set('shopify-app.api_grant_mode', 'per-user');
+
+        // Set a shop
+        $shop = factory(Shop::class)->create();
+        Session::put('shopify_domain', $shop->shopify_domain);
+
+        // Run the middleware
+        $result = $this->runAuthShop();
+
+        // Assert it was not called and the new shop was passed
+        $this->assertFalse($result[1]);
     }
 
     public function testShouldSaveReturnUrl()

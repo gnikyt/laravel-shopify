@@ -47,38 +47,37 @@ class AuthShop
         $session = new ShopSession();
 
         // Grab the shop's myshopify domain from query or session
-        $shopDomain = ShopifyApp::sanitizeShopDomain(
-            $request->filled('shop') ? $request->get('shop') : $session->getDomain()
-        );
+        $shopDomainParam = $request->get('shop');
+        $shopDomainSession = $session->getDomain();
+        $shopDomain = ShopifyApp::sanitizeShopDomain($shopDomainParam ?? $shopDomainSession);
 
         // Get the shop based on domain and update the session service
         $shop = ShopifyApp::shop($shopDomain);
         $session->setShop($shop);
 
-        if (
-            $shop === null ||
-            $shop->trashed() ||
-            ($shopDomain && $shopDomain !== $shop->shopify_domain) === true
-        ) {
-            // We need to handle this issue...
-            return $this->handleBadSession(
-                AuthShopHandler::FLOW_FULL,
-                $session,
-                $request,
-                $shopDomain
-            );
+        $flowType = null;
+        if ($shop === null || $shop->trashed() || ($shopDomainParam && $shopDomainParam !== $shopDomainSession) === true) {
+            // We need to do a full flow
+            $flowType = AuthShopHandler::FLOW_FULL;
         } elseif (!$session->isValid()) {
-            // We need to handle this issue...
+            // Just a session issue, do a partial flow if we can...
+            $flowType = $session->isType(ShopSession::GRANT_PERUSER) ?
+                AuthShopHandler::FLOW_FULL :
+                AuthShopHandler::FLOW_PARTIAL;
+        }
+
+        if ($flowType !== null) {
+            // We have a bad session
             return $this->handleBadSession(
-                $session->isType(ShopSession::GRANT_PERUSER) ? AuthShopHandler::FLOW_FULL : AuthShopHandler::FLOW_PARTIAL,
+                $flowType,
                 $session,
                 $request,
                 $shopDomain
             );
-        } else {
-            // Everything is fine!
-            return true;
         }
+
+        // Everything is fine!
+        return true;
     }
 
     /**

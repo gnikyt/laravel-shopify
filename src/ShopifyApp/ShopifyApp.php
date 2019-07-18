@@ -154,14 +154,15 @@ class ShopifyApp
      *
      * @param string $message The message to send.
      *
-     * @return void
+     * @return boolean
      */
     public function debug(string $message)
     {
-        if (!Config::get('shopify_app.debug')) {
-            return;
+        if (!Config::get('shopify-app.debug')) {
+            return false;
         }
 
         Log::debug($message);
+        return true;
     }
 }
