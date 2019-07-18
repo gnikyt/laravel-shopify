@@ -154,7 +154,7 @@ class ShopifyApp
      *
      * @param string $message The message to send.
      *
-     * @return boolean
+     * @return bool
      */
     public function debug(string $message)
     {
@@ -163,6 +163,7 @@ class ShopifyApp
         }
 
         Log::debug($message);
+
         return true;
     }
 }
