@@ -448,4 +448,29 @@ class RestApiTest extends BaseTest
         $lastRequest = $mock->getLastRequest()->getUri();
         $this->assertEquals('/admin/oauth/access_token.json', $lastRequest->getPath());
     }
+
+    /**
+     * @test
+     *
+     * Should allow for custom headers.
+     */
+    public function itShouldAllowForCustomHeaders()
+    {
+        $responses = [
+            new Response(
+                200,
+                ['http_x_shopify_shop_api_call_limit' => '2/80'],
+                file_get_contents(__DIR__.'/fixtures/rest/admin__shop.json')
+            ),
+        ];
+
+        $api = new BasicShopifyAPI();
+        $mock = $this->buildClient($api, $responses);
+
+        $api->setShop('example.myshopify.com');
+        $api->request('GET', '/admin/shop.json', null, ['X-Shopify-Test' => '123']);
+
+        $lastRequest = $mock->getLastRequest();
+        $this->assertEquals('123', $lastRequest->getHeader('X-Shopify-Test')[0]);
+    }
 }

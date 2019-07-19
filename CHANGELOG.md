@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# 5.5.0
+
++ Added ability to use custom headers in REST calls.
+
 # 5.4.0
 
 + Added option to supply a PSR-compatible logger via `setLogger`.

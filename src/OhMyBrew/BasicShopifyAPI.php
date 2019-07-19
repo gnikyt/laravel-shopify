@@ -706,15 +706,16 @@ class BasicShopifyAPI implements LoggerAwareInterface
     /**
      * Runs a request to the Shopify API.
      *
-     * @param string     $type   The type of request... GET, POST, PUT, DELETE
-     * @param string     $path   The Shopify API path... /admin/xxxx/xxxx.json
-     * @param array|null $params Optional parameters to send with the request
+     * @param string     $type    The type of request... GET, POST, PUT, DELETE
+     * @param string     $path    The Shopify API path... /admin/xxxx/xxxx.json
+     * @param array|null $params  Optional parameters to send with the request
+     * @param array      $headers Optional headers to append to the request
      *
      * @throws Exception
      *
      * @return object An Object of the Guzzle response, and JSON-decoded body
      */
-    public function rest(string $type, string $path, array $params = null)
+    public function rest(string $type, string $path, array $params = null, array $headers = [])
     {
         // Check the rate limit before firing the request
         if ($this->isRateLimitingEnabled() && $this->requestTimestamp) {
@@ -749,8 +750,18 @@ class BasicShopifyAPI implements LoggerAwareInterface
 
             $this->log("[{$uri}:{$type}] Request Params: ".json_encode($params));
 
+            // Add custom headers
+            if (count($headers) > 0) {
+                $guzzleParams['headers'] = $headers;
+                $this->log("[{$uri}:{$type}] Request Headers: ".json_encode($headers));
+            }
+
             // Set the response
-            $response = $this->client->request($type, $uri, $guzzleParams);
+            $response = $this->client->request(
+                $type,
+                $uri,
+                $guzzleParams
+            );
             $body = $response->getBody();
         } catch (Exception $e) {
             if ($e instanceof ClientException || $e instanceof ServerException) {

@@ -179,12 +179,13 @@ $api->graph(...);
 Requests are made using Guzzle.
 
 ```php
-$api->rest(string $type, string $path, array $params = null);
+$api->rest(string $type, string $path, array $params = null, array $headers = []);
 ```
 
 + `type` refers to GET, POST, PUT, DELETE, etc
 + `path` refers to the API path, example: `/admin/products/1920902.json`
 + `params` refers to an array of params you wish to pass to the path, examples: `['handle' => 'cool-coat']`
++ `headers` refers to an array of custom headers you would like to optionally send with the request, example: `['X-Shopify-Test' => '123']`
 
 The return value for the request will be an object containing:
 
