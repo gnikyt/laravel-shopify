@@ -236,7 +236,7 @@ class Charge extends Model
     /**
      * Returns the past days for the current recurring charge.
      *
-     * @return int|null null is
+     * @return int|null
      */
     public function pastDaysForPeriod()
     {

@@ -26,7 +26,7 @@ class AddChargesTableExpiresOn extends Migration
     public function down()
     {
         Schema::table('charges', function (Blueprint $table) {
-            //
+            $table->dropColumn(['expires_on']);
         });
     }
 }
