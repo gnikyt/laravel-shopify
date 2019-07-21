@@ -318,9 +318,16 @@ class ChargeModelTest extends TestCase
             'status'  => Charge::STATUS_ACTIVE,
             'shop_id' => $shop->id,
         ]);
+
+        $this->assertEquals(Charge::STATUS_ACTIVE, $charge->status);
+        $this->assertFalse($charge->isCancelled());
+        $this->assertFalse($charge->hasExpired());
+
         $charge->cancel();
 
         $this->assertEquals(Charge::STATUS_CANCELLED, $charge->status);
+        $this->assertTrue($charge->isCancelled());
+        $this->assertFalse($charge->hasExpired());
     }
 
     /**
@@ -333,5 +340,17 @@ class ChargeModelTest extends TestCase
             'shop_id' => $shop->id,
         ]);
         $charge->cancel();
+    }
+
+    public function testExpired()
+    {
+        $shop = factory(Shop::class)->create();
+        $charge = factory(Charge::class)->states('type_recurring')->create([
+            'status'  => Charge::STATUS_CANCELLED,
+            'shop_id' => $shop->id,
+            'expires_on' => Carbon::today()->subDays(10),
+        ]);
+
+        $this->assertTrue($charge->hasExpired());
     }
 }
