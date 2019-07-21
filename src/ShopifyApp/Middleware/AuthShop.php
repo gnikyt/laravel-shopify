@@ -56,7 +56,7 @@ class AuthShop
         $session->setShop($shop);
 
         $flowType = null;
-        if ($shop === null || $shop->trashed() || ($shopDomainParam && $shopDomainParam !== $shopDomainSession) === true) {
+        if ($shop === null || $shop->trashed() || ($shopDomain && $shopDomain !== $shop->shopify_domain) === true) {
             // We need to do a full flow
             $flowType = AuthShopHandler::FLOW_FULL;
         } elseif (!$session->isValid()) {
