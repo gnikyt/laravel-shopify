@@ -346,8 +346,8 @@ class ChargeModelTest extends TestCase
     {
         $shop = factory(Shop::class)->create();
         $charge = factory(Charge::class)->states('type_recurring')->create([
-            'status'  => Charge::STATUS_CANCELLED,
-            'shop_id' => $shop->id,
+            'status'     => Charge::STATUS_CANCELLED,
+            'shop_id'    => $shop->id,
             'expires_on' => Carbon::today()->subDays(10),
         ]);
 
