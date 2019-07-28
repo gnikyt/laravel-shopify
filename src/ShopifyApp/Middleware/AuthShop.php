@@ -5,6 +5,7 @@ namespace OhMyBrew\ShopifyApp\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
@@ -52,25 +53,25 @@ class AuthShop
         $shopDomain = ShopifyApp::sanitizeShopDomain($shopDomainParam ?? $shopDomainSession);
 
         // Get the shop based on domain and update the session service
-        $shop = ShopifyApp::shop($shopDomain);
-        $session->setShop($shop);
+        $shopModel = Config::get('shopify-app.shop_model');
+        $shop = $shopModel::withTrashed()->where(['shopify_domain' => $shopDomain])->first();
 
         $flowType = null;
         if ($shop === null
             || $shop->trashed()
             || ($shopDomain && $shopDomain !== $shop->shopify_domain) === true
-            || ($shopDomain && $shopDomainSession && $shopDomain !== $shopDomainSession ) === true
+//            || ($shopDomain && $shopDomainSession && $shopDomain !== $shopDomainSession ) === true
         ) {
             // We need to do a full flow
             $flowType = AuthShopHandler::FLOW_FULL;
-        } elseif (!$session->isValid()) {
+        } elseif ($session->setShop($shop) && !$session->isValid()) {
             // Just a session issue, do a partial flow if we can...
             $flowType = $session->isType(ShopSession::GRANT_PERUSER) ?
                 AuthShopHandler::FLOW_FULL :
                 AuthShopHandler::FLOW_PARTIAL;
         }
 
-        if ($flowType !== null) {
+         if ($flowType !== null) {
             // We have a bad session
             return $this->handleBadSession(
                 $flowType,
