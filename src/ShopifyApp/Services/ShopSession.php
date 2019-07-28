@@ -86,7 +86,8 @@ class ShopSession
     public function getType()
     {
         $config = Config::get('shopify-app.api_grant_mode');
-        if ($config === self::GRANT_PERUSER) {
+        if ($config === self::GRANT_PERUSER)
+        {
             return self::GRANT_PERUSER;
         }
 
@@ -143,7 +144,8 @@ class ShopSession
         $token = $access->access_token;
 
         // Per-User
-        if (property_exists($access, 'associated_user')) {
+        if (property_exists($access, 'associated_user'))
+        {
             // We have a user, so access will live only in session
             $this->user = $access->associated_user;
 
@@ -174,7 +176,8 @@ class ShopSession
             self::GRANT_OFFLINE => $this->shop->{self::TOKEN},
         ];
 
-        if ($strict) {
+        if ($strict)
+        {
             // We need the token matching the type
             return $tokens[$this->getType()];
         }
@@ -211,7 +214,8 @@ class ShopSession
     public function forget()
     {
         $keys = [self::DOMAIN, self::USER, self::TOKEN];
-        foreach ($keys as $key) {
+        foreach ($keys as $key)
+        {
             Session::forget($key);
         }
     }
@@ -224,7 +228,11 @@ class ShopSession
     public function isValid()
     {
         // No token set or domain in session?
-        return !empty($this->getToken(true)) && $this->getDomain() !== null;
+        $result = ! empty($this->getToken(true))
+            && $this->getDomain() !== null
+            && $this->getDomain() == $this->shop->shopify_domain;
+        
+        return $result;
     }
 
     /**
