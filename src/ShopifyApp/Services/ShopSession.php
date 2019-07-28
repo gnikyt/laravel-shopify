@@ -231,7 +231,7 @@ class ShopSession
         $result = ! empty($this->getToken(true))
             && $this->getDomain() !== null
             && $this->getDomain() == $this->shop->shopify_domain;
-        
+
         return $result;
     }
 
