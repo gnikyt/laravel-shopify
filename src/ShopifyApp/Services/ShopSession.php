@@ -71,11 +71,12 @@ class ShopSession
      *
      * @param object|null $shop The shop.
      *
-     * @return void
+     * @return self
      */
     public function setShop($shop = null)
     {
         $this->shop = $shop;
+        return $this;
     }
 
     /**
@@ -111,12 +112,13 @@ class ShopSession
      *
      * @param string $shopDomain The Shopify domain.
      *
-     * @return void
+     * @return self
      */
     public function setDomain(string $shopDomain)
     {
         $this->fixLifetime();
         Session::put(self::DOMAIN, $shopDomain);
+        return $this;
     }
 
     /**
@@ -135,7 +137,7 @@ class ShopSession
      *
      * @param stdClass $access
      *
-     * @return void
+     * @return self
      */
     public function setAccess(stdClass $access)
     {
@@ -151,12 +153,13 @@ class ShopSession
             Session::put(self::USER, $this->user);
             Session::put(self::TOKEN, $token);
 
-            return;
+            return $this;
         }
 
         // Offline
         $this->shop->{self::TOKEN} = $token;
         $this->shop->save();
+        return $this;
     }
 
     /**
@@ -206,7 +209,7 @@ class ShopSession
     /**
      * Forgets anything in session.
      *
-     * @return void
+     * @return self
      */
     public function forget()
     {
@@ -214,6 +217,8 @@ class ShopSession
         foreach ($keys as $key) {
             Session::forget($key);
         }
+
+        return $this;
     }
 
     /**

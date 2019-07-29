@@ -52,11 +52,10 @@ class AuthShop
         $shopDomainSession = $session->getDomain();
         $shopDomain = ShopifyApp::sanitizeShopDomain($shopDomainParam ?? $shopDomainSession);
 
-        // Get the shop based on domain and update the session service
-        $shopModel = Config::get('shopify-app.shop_model');
-        $shop = $shopModel::withTrashed()->where(['shopify_domain' => $shopDomain])->first();
-
+        // Get the shop based on domaian
+        $shop = ShopifyApp::shop($shopDomain);
         $flowType = null;
+
         if ($shop === null
             || $shop->trashed()
             || ($shopDomain && $shopDomain !== $shop->shopify_domain) === true
