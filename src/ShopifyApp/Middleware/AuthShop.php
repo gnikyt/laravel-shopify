@@ -21,15 +21,14 @@ class AuthShop
      * Handle an incoming request.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
+     * @param \Closure                 $next
      *
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
     {
         $validation = $this->validateShop($request);
-        if ($validation !== true)
-        {
+        if ($validation !== true) {
             return $validation;
         }
 
@@ -55,13 +54,14 @@ class AuthShop
 
         // Get the shop based on domain and update the session service
         $shopModel = Config::get('shopify-app.shop_model');
-        $shop = $shopModel::withTrashed()->where(['shopify_domain' => $shopDomain])->first();
+        $shop = $shopModel::withTrashed()
+            ->where(['shopify_domain' => $shopDomain])
+            ->first();
 
         $session->setShop($shop);
 
         $flowType = null;
-        if ($shop === null || $shop->trashed())
-        {
+        if ($shop === null || $shop->trashed()) {
             // We need to do a full flow
             $flowType = AuthShopHandler::FLOW_FULL;
         } elseif (!$session->isValid()) {
@@ -88,10 +88,10 @@ class AuthShop
     /**
      * Handles a bad shop session.
      *
-     * @param string $type The auth flow to perform.
-     * @param \OhMyBrew\ShopifyApp\Services\ShopSession $session The session service for the shop.
-     * @param \Illuminate\Http\Request $request The incoming request.
-     * @param string|null $shopDomain The incoming shop domain.
+     * @param string                                    $type       The auth flow to perform.
+     * @param \OhMyBrew\ShopifyApp\Services\ShopSession $session    The session service for the shop.
+     * @param \Illuminate\Http\Request                  $request    The incoming request.
+     * @param string|null                               $shopDomain The incoming shop domain.
      *
      * @return \Illuminate\Http\RedirectResponse
      */

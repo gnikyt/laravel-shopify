@@ -76,6 +76,7 @@ class ShopSession
     public function setShop($shop = null)
     {
         $this->shop = $shop;
+
         return $this;
     }
 
@@ -118,6 +119,7 @@ class ShopSession
     {
         $this->fixLifetime();
         Session::put(self::DOMAIN, $shopDomain);
+
         return $this;
     }
 
@@ -159,6 +161,7 @@ class ShopSession
         // Offline
         $this->shop->{self::TOKEN} = $token;
         $this->shop->save();
+
         return $this;
     }
 
