@@ -71,11 +71,12 @@ class ShopSession
      *
      * @param object|null $shop The shop.
      *
-     * @return void
+     * @return self
      */
     public function setShop($shop = null)
     {
         $this->shop = $shop;
+        return $this;
     }
 
     /**
@@ -86,8 +87,7 @@ class ShopSession
     public function getType()
     {
         $config = Config::get('shopify-app.api_grant_mode');
-        if ($config === self::GRANT_PERUSER)
-        {
+        if ($config === self::GRANT_PERUSER) {
             return self::GRANT_PERUSER;
         }
 
@@ -112,12 +112,13 @@ class ShopSession
      *
      * @param string $shopDomain The Shopify domain.
      *
-     * @return void
+     * @return self
      */
     public function setDomain(string $shopDomain)
     {
         $this->fixLifetime();
         Session::put(self::DOMAIN, $shopDomain);
+        return $this;
     }
 
     /**
@@ -136,7 +137,7 @@ class ShopSession
      *
      * @param stdClass $access
      *
-     * @return void
+     * @return self
      */
     public function setAccess(stdClass $access)
     {
@@ -144,8 +145,7 @@ class ShopSession
         $token = $access->access_token;
 
         // Per-User
-        if (property_exists($access, 'associated_user'))
-        {
+        if (property_exists($access, 'associated_user')) {
             // We have a user, so access will live only in session
             $this->user = $access->associated_user;
 
@@ -153,12 +153,13 @@ class ShopSession
             Session::put(self::USER, $this->user);
             Session::put(self::TOKEN, $token);
 
-            return;
+            return $this;
         }
 
         // Offline
         $this->shop->{self::TOKEN} = $token;
         $this->shop->save();
+        return $this;
     }
 
     /**
@@ -176,8 +177,7 @@ class ShopSession
             self::GRANT_OFFLINE => $this->shop->{self::TOKEN},
         ];
 
-        if ($strict)
-        {
+        if ($strict) {
             // We need the token matching the type
             return $tokens[$this->getType()];
         }
@@ -209,15 +209,16 @@ class ShopSession
     /**
      * Forgets anything in session.
      *
-     * @return void
+     * @return self
      */
     public function forget()
     {
         $keys = [self::DOMAIN, self::USER, self::TOKEN];
-        foreach ($keys as $key)
-        {
+        foreach ($keys as $key) {
             Session::forget($key);
         }
+
+        return $this;
     }
 
     /**
@@ -228,7 +229,7 @@ class ShopSession
     public function isValid()
     {
         // No token set or domain in session?
-        $result = ! empty($this->getToken(true))
+        $result = !empty($this->getToken(true))
             && $this->getDomain() !== null
             && $this->getDomain() == $this->shop->shopify_domain;
 

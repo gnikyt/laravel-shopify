@@ -64,16 +64,14 @@ class AuthShop
         {
             // We need to do a full flow
             $flowType = AuthShopHandler::FLOW_FULL;
-        } elseif ( ! $session->isValid())
-        {
+        } elseif (!$session->isValid()) {
             // Just a session issue, do a partial flow if we can...
             $flowType = $session->isType(ShopSession::GRANT_PERUSER) ?
                 AuthShopHandler::FLOW_FULL :
                 AuthShopHandler::FLOW_PARTIAL;
         }
 
-        if ($flowType !== null)
-        {
+        if ($flowType !== null) {
             // We have a bad session
             return $this->handleBadSession(
                 $flowType,
