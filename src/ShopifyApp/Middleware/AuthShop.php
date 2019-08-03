@@ -110,10 +110,13 @@ class AuthShop
         // Depending on the type of grant mode, we need to do a full auth or partial
         return Redirect::route(
             'authenticate',
-            [
-                'type' => $type,
-                'shop' => $shopDomain,
-            ]
+            array_merge(
+                $request->all(),
+                [
+                    'type' => $type,
+                    'shop' => $shopDomain,
+                ]
+            )
         );
     }
 }
