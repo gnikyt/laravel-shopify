@@ -21,14 +21,15 @@ class AuthShop
      * Handle an incoming request.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Closure                 $next
+     * @param \Closure $next
      *
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
     {
         $validation = $this->validateShop($request);
-        if ($validation !== true) {
+        if ($validation !== true)
+        {
             return $validation;
         }
 
@@ -52,18 +53,18 @@ class AuthShop
         $shopDomainSession = $session->getDomain();
         $shopDomain = ShopifyApp::sanitizeShopDomain($shopDomainParam ?? $shopDomainSession);
 
-        // Get the shop based on domaian
-        $shop = ShopifyApp::shop($shopDomain);
-        $flowType = null;
+        // Get the shop based on domain and update the session service
+        $shopModel = Config::get('shopify-app.shop_model');
+        $shop = $shopModel::withTrashed()->where(['shopify_domain' => $shopDomain])->first();
 
-        if ($shop === null
-            || $shop->trashed()
-            || ($shopDomain && $shopDomain !== $shop->shopify_domain) === true
-            || ($shopDomain && $shopDomainSession && $shopDomain !== $shopDomainSession) === true
-        ) {
+        $session->setShop($shop);
+
+        $flowType = null;
+        if ($shop === null || $shop->trashed())
+        {
             // We need to do a full flow
             $flowType = AuthShopHandler::FLOW_FULL;
-        } elseif ($session->setShop($shop) && !$session->isValid()) {
+        } elseif (!$session->isValid()) {
             // Just a session issue, do a partial flow if we can...
             $flowType = $session->isType(ShopSession::GRANT_PERUSER) ?
                 AuthShopHandler::FLOW_FULL :
@@ -87,10 +88,10 @@ class AuthShop
     /**
      * Handles a bad shop session.
      *
-     * @param string                                    $type       The auth flow to perform.
-     * @param \OhMyBrew\ShopifyApp\Services\ShopSession $session    The session service for the shop.
-     * @param \Illuminate\Http\Request                  $request    The incoming request.
-     * @param string|null                               $shopDomain The incoming shop domain.
+     * @param string $type The auth flow to perform.
+     * @param \OhMyBrew\ShopifyApp\Services\ShopSession $session The session service for the shop.
+     * @param \Illuminate\Http\Request $request The incoming request.
+     * @param string|null $shopDomain The incoming shop domain.
      *
      * @return \Illuminate\Http\RedirectResponse
      */
