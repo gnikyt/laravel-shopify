@@ -48,9 +48,16 @@ class AuthShop
         $session = new ShopSession();
 
         // Grab the shop's myshopify domain from query or session
-        $shopDomainParam = $request->get('shop') ?? $request->header('shop');
+        // For SPA's we need X-Shop-Domain : See issue https://github.com/ohmybrew/laravel-shopify/issues/295
+        $shopDomainParam = $request->get('shop') ?? $request->header('X-Shop-Domain');
         $shopDomainSession = $session->getDomain();
         $shopDomain = ShopifyApp::sanitizeShopDomain($shopDomainParam ?? $shopDomainSession);
+
+        // See issue https://github.com/ohmybrew/laravel-shopify/issues/295
+        parse_str(parse_url($request->header('referer'), PHP_URL_QUERY), $refererQueryParams);
+        if (isset($refererQueryParams['shop']) && $shopDomain !== $refererQueryParams['shop'] && ShopifyApp::api()->verifyRequest($refererQueryParams)) {
+            $shopDomain = $refererQueryParams['shop'];
+        }
 
         // Get the shop based on domain and update the session service
         $shopModel = Config::get('shopify-app.shop_model');
