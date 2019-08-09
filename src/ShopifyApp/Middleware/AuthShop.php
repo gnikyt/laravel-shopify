@@ -52,6 +52,12 @@ class AuthShop
         $shopDomainSession = $session->getDomain();
         $shopDomain = ShopifyApp::sanitizeShopDomain($shopDomainParam ?? $shopDomainSession);
 
+        // See issue https://github.com/ohmybrew/laravel-shopify/issues/295
+        parse_str(parse_url($request->header('referer'), PHP_URL_QUERY), $refererQueryParams);
+        if (isset($refererQueryParams['shop']) && $shopDomain !== $refererQueryParams['shop'] && ShopifyApp::api()->verifyRequest($refererQueryParams)) {
+            $shopDomain = $refererQueryParams['shop'];
+        }
+
         // Get the shop based on domain and update the session service
         $shopModel = Config::get('shopify-app.shop_model');
         $shop = $shopModel::withTrashed()
