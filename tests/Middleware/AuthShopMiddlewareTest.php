@@ -12,14 +12,14 @@ use OhMyBrew\ShopifyApp\Test\TestCase;
 
 class AuthShopMiddlewareTest extends TestCase
 {
-    public function testShopHasNoAccessShouldAbort()
+    /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage Unable to get shop domain.
+     */
+    public function testShopHasNoDomainShouldAbort()
     {
         // Run the middleware
         $result = $this->runAuthShop();
-
-        // Assert it was not called and we redirect
-        $this->assertFalse($result[1]);
-        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate') !== false);
     }
 
     public function testShopHasWithAccessShouldPassMiddleware()
@@ -122,6 +122,154 @@ class AuthShopMiddlewareTest extends TestCase
         // Reset
         // Request::swap($currentRequest);
     }
+
+    public function testShopWithGetShouldLoadGetDomain()
+    {
+        // Set a shop
+        $shop = factory(Shop::class)->create();
+        // this should get ignored as there is a get variable
+        Session::put('shopify_domain', 'adsadda');
+
+        // Run the middleware
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            ['shop' => 'queryshop.myshopify.com'],
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            // This should be ignored as there is a get variable
+            array_merge(Request::server(), [
+                'HTTP_REFERER' => 'https://xxx.com?shop=example.myshopify.com&hmac=a7448f7c42c9bc025b077ac8b73e7600b6f8012719d21cbeb88db66e5dbbd163&timestamp=1337178173&code=1234678',
+            ])
+        );
+
+        Request::swap($newRequest);
+
+        $result = $this->runAuthShop();
+
+        // Assert it was not called and a redirect happened
+        $this->assertFalse($result[1]);
+        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=queryshop.myshopify.com') !== false);
+    }
+
+    public function testShopHasWithRefererShouldLoadRefererDomain()
+    {
+        // Set a shop
+        $shop = factory(Shop::class)->create();
+        // This should be ignored as there is a referer domain
+        Session::put('shopify_domain', 'adsadda');
+
+        // Run the middleware
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            null,
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            array_merge(Request::server(), [
+                'HTTP_REFERER' => 'https://xxx.com?shop=example.myshopify.com&hmac=a7448f7c42c9bc025b077ac8b73e7600b6f8012719d21cbeb88db66e5dbbd163&timestamp=1337178173&code=1234678',
+            ])
+        );
+
+        Request::swap($newRequest);
+
+        $result = $this->runAuthShop();
+
+        // Assert it was not called and a redirect happened
+        $this->assertFalse($result[1]);
+        // Make sure it's the one in the referer
+        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=example.myshopify.com') !== false);
+    }
+
+    public function testShopHasWithMissingRefererDetailsShouldLoadSessionDomain()
+    {
+        // Set a shop
+        $shop = factory(Shop::class)->create();
+        // This should be ignored as there is a referer domain
+        Session::put('shopify_domain', 'sessionz');
+
+        // Run the middleware
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            null,
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            // Intentionally bad hmac
+            array_merge(Request::server(), [
+                'HTTP_REFERER' => 'https://xxx.com?shop=example.myshopify.com',
+            ])
+        );
+
+        Request::swap($newRequest);
+
+        $result = $this->runAuthShop();
+
+        // Assert it was not called and a redirect happened
+        $this->assertFalse($result[1]);
+        // Make sure it's the one in the session
+        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=sessionz.myshopify.com') !== false);
+    }
+
+    public function testShopHasWithBadRefererHmacShouldLoadSessionDomain()
+    {
+        // Set a shop
+        $shop = factory(Shop::class)->create();
+        // This should be ignored as there is a referer domain
+        Session::put('shopify_domain', 'adsadda');
+
+        // Run the middleware
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            null,
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            // Intentionally bad hmac
+            array_merge(Request::server(), [
+                'HTTP_REFERER' => 'https://xxx.com?shop=example.myshopify.com&hmac=XXXXXXX&timestamp=1337178173&code=1234678',
+            ])
+        );
+
+        Request::swap($newRequest);
+
+        $result = $this->runAuthShop();
+
+        // Assert it was not called and a redirect happened
+        $this->assertFalse($result[1]);
+        // Make sure it's the one in the session
+        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=adsadda.myshopify.com') !== false);
+    }
+
+
 
     private function runAuthShop(Closure $cb = null, $requestInstance = null)
     {

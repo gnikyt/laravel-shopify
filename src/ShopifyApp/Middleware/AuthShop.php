@@ -3,6 +3,7 @@
 namespace OhMyBrew\ShopifyApp\Middleware;
 
 use Closure;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Config;
@@ -36,9 +37,80 @@ class AuthShop
     }
 
     /**
+     * Get the referer shopify domain from the request and validate
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return bool|string
+     */
+    protected function getRefererDomain(Request $request)
+    {
+        // Extract the referer
+        $referer = $request->header('referer');
+
+        if (!$referer) {
+            return false;
+        }
+
+        // Get the values of the referer query params as an array
+        $url = parse_url($referer, PHP_URL_QUERY);
+        parse_str($url, $refererQueryParams);
+
+        if (!$refererQueryParams) {
+            return false;
+        }
+
+        if (!isset($refererQueryParams['shop']) || !isset($refererQueryParams['hmac'])) {
+            return false;
+        }
+
+        // Make sure there is no param spoofing attempt
+        if (ShopifyApp::api()->verifyRequest($refererQueryParams)) {
+            return $refererQueryParams['shop'];
+        }
+
+        return false;
+    }
+
+    /**
+     * Grab the shop's myshopify domain from query, referer or session
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \OhMyBrew\ShopifyApp\Services\ShopSession $session
+     *
+     * @return bool|string
+     */
+    protected function getShopDomain(Request $request, ShopSession $session)
+    {
+        // Query variable is highest priority
+        $shopDomainParam = $request->get('shop');
+        if ($shopDomainParam) {
+            return ShopifyApp::sanitizeShopDomain($shopDomainParam);
+        }
+
+        // Then the value in the referer header (if validated)
+        // See issue https://github.com/ohmybrew/laravel-shopify/issues/295
+        $shopRefererParam = $this->getRefererDomain($request);
+        if ($shopRefererParam) {
+            return ShopifyApp::sanitizeShopDomain($shopRefererParam);
+        }
+
+        // If neither are available then pull from the session
+        $shopDomainSession = $session->getDomain();
+        if ($shopDomainSession) {
+            return ShopifyApp::sanitizeShopDomain($shopDomainSession);
+        }
+
+        // No domain :(
+        return false;
+    }
+
+    /**
      * Checks we have a valid shop.
      *
      * @param \Illuminate\Http\Request $request
+     *
+     * @throws Exception
      *
      * @return bool|\Illuminate\Http\RedirectResponse
      */
@@ -47,15 +119,9 @@ class AuthShop
         // Setup the session service
         $session = new ShopSession();
 
-        // Grab the shop's myshopify domain from query or session
-        $shopDomainParam = $request->get('shop');
-        $shopDomainSession = $session->getDomain();
-        $shopDomain = ShopifyApp::sanitizeShopDomain($shopDomainParam ?? $shopDomainSession);
-
-        // See issue https://github.com/ohmybrew/laravel-shopify/issues/295
-        parse_str(parse_url($request->header('referer'), PHP_URL_QUERY), $refererQueryParams);
-        if (isset($refererQueryParams['shop']) && $shopDomain !== $refererQueryParams['shop'] && ShopifyApp::api()->verifyRequest($refererQueryParams)) {
-            $shopDomain = $refererQueryParams['shop'];
+        $shopDomain = $this->getShopDomain($request, $session);
+        if (!$shopDomain) {
+            throw new Exception('Unable to get shop domain.');
         }
 
         // Get the shop based on domain and update the session service
