@@ -37,43 +37,52 @@ class AuthShop
     }
 
     /**
-     * Get the referer shopify domain from the request and validate.
-     *
-     * It is dangerous to blindly trust user input so we need to
-     * check and confirm the validity upfront before we return the
-     * value to anything.
+     * Checks we have a valid shop.
      *
      * @param \Illuminate\Http\Request $request
      *
-     * @return bool|string
+     * @throws Exception
+     *
+     * @return bool|\Illuminate\Http\RedirectResponse
      */
-    protected function getRefererDomain(Request $request)
+    protected function validateShop(Request $request)
     {
-        // Extract the referer
-        $referer = $request->header('referer');
+        // Setup the session service
+        $session = new ShopSession();
 
-        if (!$referer) {
-            return false;
+        $shopDomain = $this->getShopDomain($request, $session);
+
+        // Get the shop based on domain and update the session service
+        $shopModel = Config::get('shopify-app.shop_model');
+        $shop = $shopModel::withTrashed()
+            ->where(['shopify_domain' => $shopDomain])
+            ->first();
+
+        $session->setShop($shop);
+
+        $flowType = null;
+        if ($shop === null || $shop->trashed()) {
+            // We need to do a full flow
+            $flowType = AuthShopHandler::FLOW_FULL;
+        } elseif (!$session->isValid()) {
+            // Just a session issue, do a partial flow if we can...
+            $flowType = $session->isType(ShopSession::GRANT_PERUSER) ?
+                AuthShopHandler::FLOW_FULL :
+                AuthShopHandler::FLOW_PARTIAL;
         }
 
-        // Get the values of the referer query params as an array
-        $url = parse_url($referer, PHP_URL_QUERY);
-        parse_str($url, $refererQueryParams);
-
-        if (!$refererQueryParams) {
-            return false;
+        if ($flowType !== null) {
+            // We have a bad session
+            return $this->handleBadSession(
+                $flowType,
+                $session,
+                $request,
+                $shopDomain
+            );
         }
 
-        if (!isset($refererQueryParams['shop']) || !isset($refererQueryParams['hmac'])) {
-            return false;
-        }
-
-        // Make sure there is no param spoofing attempt
-        if (ShopifyApp::api()->verifyRequest($refererQueryParams)) {
-            return $refererQueryParams['shop'];
-        }
-
-        return false;
+        // Everything is fine!
+        return true;
     }
 
     /**
@@ -127,52 +136,43 @@ class AuthShop
     }
 
     /**
-     * Checks we have a valid shop.
+     * Get the referer shopify domain from the request and validate.
+     *
+     * It is dangerous to blindly trust user input so we need to
+     * check and confirm the validity upfront before we return the
+     * value to anything.
      *
      * @param \Illuminate\Http\Request $request
      *
-     * @throws Exception
-     *
-     * @return bool|\Illuminate\Http\RedirectResponse
+     * @return bool|string
      */
-    protected function validateShop(Request $request)
+    protected function getRefererDomain(Request $request)
     {
-        // Setup the session service
-        $session = new ShopSession();
+        // Extract the referer
+        $referer = $request->header('referer');
 
-        $shopDomain = $this->getShopDomain($request, $session);
-
-        // Get the shop based on domain and update the session service
-        $shopModel = Config::get('shopify-app.shop_model');
-        $shop = $shopModel::withTrashed()
-            ->where(['shopify_domain' => $shopDomain])
-            ->first();
-
-        $session->setShop($shop);
-
-        $flowType = null;
-        if ($shop === null || $shop->trashed()) {
-            // We need to do a full flow
-            $flowType = AuthShopHandler::FLOW_FULL;
-        } elseif (!$session->isValid()) {
-            // Just a session issue, do a partial flow if we can...
-            $flowType = $session->isType(ShopSession::GRANT_PERUSER) ?
-                AuthShopHandler::FLOW_FULL :
-                AuthShopHandler::FLOW_PARTIAL;
+        if (!$referer) {
+            return false;
         }
 
-        if ($flowType !== null) {
-            // We have a bad session
-            return $this->handleBadSession(
-                $flowType,
-                $session,
-                $request,
-                $shopDomain
-            );
+        // Get the values of the referer query params as an array
+        $url = parse_url($referer, PHP_URL_QUERY);
+        parse_str($url, $refererQueryParams);
+
+        if (!$refererQueryParams) {
+            return false;
         }
 
-        // Everything is fine!
-        return true;
+        if (!isset($refererQueryParams['shop']) || !isset($refererQueryParams['hmac'])) {
+            return false;
+        }
+
+        // Make sure there is no param spoofing attempt
+        if (ShopifyApp::api()->verifyRequest($refererQueryParams)) {
+            return $refererQueryParams['shop'];
+        }
+
+        return false;
     }
 
     /**
