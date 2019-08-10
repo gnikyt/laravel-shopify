@@ -269,6 +269,43 @@ class AuthShopMiddlewareTest extends TestCase
         $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=adsadda.myshopify.com') !== false);
     }
 
+    public function testShopWithEmptyRefererShouldLoadSessionDomain()
+    {
+        // Set a shop
+        $shop = factory(Shop::class)->create();
+        // This should be ignored as there is a referer domain
+        Session::put('shopify_domain', 'adsadda');
+
+        // Run the middleware
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            null,
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            // Referer with no query params
+            array_merge(Request::server(), [
+                'HTTP_REFERER' => 'https://xxx.com',
+            ])
+        );
+
+        Request::swap($newRequest);
+
+        $result = $this->runAuthShop();
+
+        // Assert it was not called and a redirect happened
+        $this->assertFalse($result[1]);
+        // Make sure it's the one in the session
+        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=adsadda.myshopify.com') !== false);
+    }
+
     private function runAuthShop(Closure $cb = null, $requestInstance = null)
     {
         $called = false;
