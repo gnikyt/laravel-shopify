@@ -60,18 +60,9 @@ class AuthShop
 
         $session->setShop($shop);
 
-        $flowType = null;
-        if ($shop === null || $shop->trashed()) {
-            // We need to do a full flow
-            $flowType = AuthShopHandler::FLOW_FULL;
-        } elseif (!$session->isValid()) {
-            // Just a session issue, do a partial flow if we can...
-            $flowType = $session->isType(ShopSession::GRANT_PERUSER) ?
-                AuthShopHandler::FLOW_FULL :
-                AuthShopHandler::FLOW_PARTIAL;
-        }
+        $flowType = $this->getFlowType($shop, $session);
 
-        if ($flowType !== null) {
+        if ($flowType) {
             // We have a bad session
             return $this->handleBadSession(
                 $flowType,
@@ -83,6 +74,36 @@ class AuthShop
 
         // Everything is fine!
         return true;
+    }
+
+    /**
+     * Gets the appropriate flow type. It either returns full, partial,
+     * or false. If it returns false it means that everything is fine.
+     *
+     * @param                                           $shop       The shop model.
+     * @param \OhMyBrew\ShopifyApp\Services\ShopSession $session    The session service for the shop.
+     *
+     * @return bool|string
+     */
+    private function getFlowType($shop, $session)
+    {
+        // We need to do a full flow if no shop or it is deleted
+        if ($shop === null || $shop->trashed()) {
+            return AuthShopHandler::FLOW_FULL;
+        }
+
+        // Do nothing if the session is valid
+        if ($session->isValid()) {
+            return false;
+        }
+
+        // We need to do a full flow if it grant per user
+        if ($session->isType(ShopSession::GRANT_PERUSER)) {
+            return AuthShopHandler::FLOW_FULL;
+        }
+
+        // Default is the partial flow
+        return AuthShopHandler::FLOW_PARTIAL;
     }
 
     /**
