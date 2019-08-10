@@ -102,7 +102,7 @@ class AuthShop
         }
 
         // No domain :(
-        return false;
+        throw new Exception('Unable to get shop domain.');
     }
 
     /**
@@ -120,9 +120,6 @@ class AuthShop
         $session = new ShopSession();
 
         $shopDomain = $this->getShopDomain($request, $session);
-        if (!$shopDomain) {
-            throw new Exception('Unable to get shop domain.');
-        }
 
         // Get the shop based on domain and update the session service
         $shopModel = Config::get('shopify-app.shop_model');
