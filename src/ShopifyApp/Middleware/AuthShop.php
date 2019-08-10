@@ -80,8 +80,8 @@ class AuthShop
      * Gets the appropriate flow type. It either returns full, partial,
      * or false. If it returns false it means that everything is fine.
      *
-     * @param                                           $shop       The shop model.
-     * @param \OhMyBrew\ShopifyApp\Services\ShopSession $session    The session service for the shop.
+     * @param                                           $shop    The shop model.
+     * @param \OhMyBrew\ShopifyApp\Services\ShopSession $session The session service for the shop.
      *
      * @return bool|string
      */
