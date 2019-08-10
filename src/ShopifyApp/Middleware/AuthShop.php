@@ -39,6 +39,10 @@ class AuthShop
     /**
      * Get the referer shopify domain from the request and validate.
      *
+     * It is dangerous to blindly trust user input so we need to
+     * check and confirm the validity upfront before we return the
+     * value to anything.
+     *
      * @param \Illuminate\Http\Request $request
      *
      * @return bool|string
@@ -74,6 +78,23 @@ class AuthShop
 
     /**
      * Grab the shop's myshopify domain from query, referer or session.
+     *
+     * Getting the domain for the shop from session is unreliable
+     * because if 2 shops have the same app open in the same browser
+     * (e.g. someone is managing the same app on 2 stores at the same
+     * time) then the sessions can bleed into each other due to the
+     * cookies being run on the same domain (the domain of the app,
+     * not the individual shops admin dashboard).
+     *
+     * To get around this select a domain based on other information
+     * available, and make sure to verify the input before use. This is
+     * still not 100% reliable.
+     *
+     * Order of precedence is:
+     *
+     *  - GET variable
+     *  - Referer
+     *  - Session
      *
      * @param \Illuminate\Http\Request                  $request
      * @param \OhMyBrew\ShopifyApp\Services\ShopSession $session
