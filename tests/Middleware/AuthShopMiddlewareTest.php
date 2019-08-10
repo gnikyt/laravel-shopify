@@ -144,7 +144,7 @@ class AuthShopMiddlewareTest extends TestCase
             // Files
             null,
             // Server vars
-            // This should be ignored as there is a get variable
+            // This valid referer should be ignored as there is a get variable
             array_merge(Request::server(), [
                 'HTTP_REFERER' => 'https://xxx.com?shop=example.myshopify.com&hmac=a7448f7c42c9bc025b077ac8b73e7600b6f8012719d21cbeb88db66e5dbbd163&timestamp=1337178173&code=1234678',
             ])
@@ -159,7 +159,7 @@ class AuthShopMiddlewareTest extends TestCase
         $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=queryshop.myshopify.com') !== false);
     }
 
-    public function testShopHasWithRefererShouldLoadRefererDomain()
+    public function testShopWithValidRefererShouldLoadRefererDomain()
     {
         // Set a shop
         $shop = factory(Shop::class)->create();
@@ -195,7 +195,7 @@ class AuthShopMiddlewareTest extends TestCase
         $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=example.myshopify.com') !== false);
     }
 
-    public function testShopHasWithMissingRefererDetailsShouldLoadSessionDomain()
+    public function testShopWithMissingRefererDetailsShouldLoadSessionDomain()
     {
         // Set a shop
         $shop = factory(Shop::class)->create();
@@ -232,7 +232,7 @@ class AuthShopMiddlewareTest extends TestCase
         $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=sessionz.myshopify.com') !== false);
     }
 
-    public function testShopHasWithBadRefererHmacShouldLoadSessionDomain()
+    public function testShopWithBadRefererHmacShouldLoadSessionDomain()
     {
         // Set a shop
         $shop = factory(Shop::class)->create();
