@@ -110,7 +110,7 @@ class AuthShop
      *
      * @return bool|string
      */
-    protected function getShopDomain(Request $request, ShopSession $session)
+    private function getShopDomain(Request $request, ShopSession $session)
     {
         // Query variable is highest priority
         $shopDomainParam = $request->get('shop');
@@ -146,7 +146,7 @@ class AuthShop
      *
      * @return bool|string
      */
-    protected function getRefererDomain(Request $request)
+    private function getRefererDomain(Request $request)
     {
         // Extract the referer
         $referer = $request->header('referer');
