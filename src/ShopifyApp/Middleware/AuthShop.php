@@ -41,8 +41,6 @@ class AuthShop
      *
      * @param \Illuminate\Http\Request $request
      *
-     * @throws Exception
-     *
      * @return bool|\Illuminate\Http\RedirectResponse
      */
     protected function validateShop(Request $request)
@@ -107,6 +105,8 @@ class AuthShop
      *
      * @param \Illuminate\Http\Request                  $request
      * @param \OhMyBrew\ShopifyApp\Services\ShopSession $session
+     *
+     * @throws Exception
      *
      * @return bool|string
      */
