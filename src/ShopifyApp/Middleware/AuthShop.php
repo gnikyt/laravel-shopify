@@ -37,7 +37,7 @@ class AuthShop
     }
 
     /**
-     * Get the referer shopify domain from the request and validate
+     * Get the referer shopify domain from the request and validate.
      *
      * @param \Illuminate\Http\Request $request
      *
@@ -73,9 +73,9 @@ class AuthShop
     }
 
     /**
-     * Grab the shop's myshopify domain from query, referer or session
+     * Grab the shop's myshopify domain from query, referer or session.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request                  $request
      * @param \OhMyBrew\ShopifyApp\Services\ShopSession $session
      *
      * @return bool|string

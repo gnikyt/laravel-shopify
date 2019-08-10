@@ -269,8 +269,6 @@ class AuthShopMiddlewareTest extends TestCase
         $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=adsadda.myshopify.com') !== false);
     }
 
-
-
     private function runAuthShop(Closure $cb = null, $requestInstance = null)
     {
         $called = false;
