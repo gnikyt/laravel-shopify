@@ -11,7 +11,7 @@ use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
  *
  * @return string
  */
-function shop_route($name, $parameters = [], $absolute = true)
+function shop_route($name, array $parameters = [], bool $absolute = true)
 {
     // Grab the current shop
     $shop = ShopifyApp::shop();
@@ -25,4 +25,27 @@ function shop_route($name, $parameters = [], $absolute = true)
     }
 
     return app('url')->route($name, $parameters, $absolute);
+}
+
+/**
+ * Generate the URL with the shop appended.
+ *
+ * @param string $url The URL to use.
+ *
+ * @return string
+ */
+function shop_url(string $url)
+{
+    // Grab the current shop
+    $shop = ShopifyApp::shop();
+
+    if ($shop) {
+        $part = strstr($url, '?') ? '&' : '?';
+        $url .= "{$part}shop={$shop->shopify_domain}";
+
+        return $url;
+    }
+
+    // No shop, return plain URL
+    return $url;
 }
