@@ -306,6 +306,89 @@ class AuthShopMiddlewareTest extends TestCase
         $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=adsadda.myshopify.com') !== false);
     }
 
+    public function testShopWithValidShopHeadersShouldLoadHeaderDomain()
+    {
+        // Set a shop
+        $shop = factory(Shop::class)->create();
+        // This should be ignored as there is a referer domain
+        Session::put('shopify_domain', 'xxxaaa');
+
+        // Run the middleware
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            null,
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            // Referer with no query params
+            array_merge(Request::server(), [
+                'Referer' => '',
+            ])
+        );
+
+        $newRequest->headers->set('X-Shop-Domain','example.myshopify.com');
+        $newRequest->headers->set('X-Shop-Signature', 'a7448f7c42c9bc025b077ac8b73e7600b6f8012719d21cbeb88db66e5dbbd163');
+        $newRequest->headers->set('X-Shop-Time', '1337178173');
+        $newRequest->headers->set('X-Shop-Code', '1234678');
+
+        Request::swap($newRequest);
+
+        $result = $this->runAuthShop();
+
+        // Assert it was not called and a redirect happened
+        $this->assertFalse($result[1]);
+        // Make sure it's the one in the session
+        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=example.myshopify.com') !== false);
+    }
+
+    /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage Unable to verify signature.
+     */
+    public function testShopWithInvalidShopHeadersShouldFail()
+    {
+        // Set a shop
+        $shop = factory(Shop::class)->create();
+        // This should be ignored as there is a referer domain
+        Session::put('shopify_domain', 'xxxaaa');
+
+        // Run the middleware
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            null,
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            // Referer with no query params
+            array_merge(Request::server(), [
+                'Referer' => '',
+            ])
+        );
+
+        $newRequest->headers->set('X-Shop-Domain','example.com');
+        $newRequest->headers->set('X-Shop-Signature', 'XXXXXXXX');
+
+        Request::swap($newRequest);
+
+        // An exception should be thrown. See docblock.
+        $result = $this->runAuthShop();
+    }
+
+
     private function runAuthShop(Closure $cb = null, $requestInstance = null)
     {
         $called = false;
