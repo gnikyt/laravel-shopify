@@ -32,7 +32,10 @@
     "autoload": {
         "psr-4": {
             "OhMyBrew\\ShopifyApp\\": "src/ShopifyApp"
-        }
+        },
+        "files": [
+            "src/ShopifyApp/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

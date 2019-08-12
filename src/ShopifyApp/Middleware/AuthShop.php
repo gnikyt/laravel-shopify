@@ -3,6 +3,7 @@
 namespace OhMyBrew\ShopifyApp\Middleware;
 
 use Closure;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Config;
@@ -21,15 +22,14 @@ class AuthShop
      * Handle an incoming request.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
+     * @param \Closure                 $next
      *
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
     {
         $validation = $this->validateShop($request);
-        if ($validation !== true)
-        {
+        if ($validation !== true) {
             return $validation;
         }
 
@@ -48,6 +48,7 @@ class AuthShop
         // Setup the session service
         $session = new ShopSession();
 
+
         // Grab the shop's myshopify domain from query or session
         $shopDomainParam = $request->get('shop') ?? $request->input('X-Shop-Domain');
         $shopDomainSession = $session->getDomain();
@@ -55,25 +56,13 @@ class AuthShop
 
         // Get the shop based on domain and update the session service
         $shopModel = Config::get('shopify-app.shop_model');
-        $shop = $shopModel::withTrashed()->where(['shopify_domain' => $shopDomain])->first();
-
+        $shop = $shopModel::withTrashed()
+            ->where(['shopify_domain' => $shopDomain])
+            ->first();
         $session->setShop($shop);
 
-        $flowType = null;
-        if ($shop === null || $shop->trashed())
-        {
-            // We need to do a full flow
-            $flowType = AuthShopHandler::FLOW_FULL;
-        } elseif ( ! $session->isValid())
-        {
-            // Just a session issue, do a partial flow if we can...
-            $flowType = $session->isType(ShopSession::GRANT_PERUSER) ?
-                AuthShopHandler::FLOW_FULL :
-                AuthShopHandler::FLOW_PARTIAL;
-        }
-
-        if ($flowType !== null)
-        {
+        $flowType = $this->getFlowType($shop, $session);
+        if ($flowType) {
             // We have a bad session
             return $this->handleBadSession(
                 $flowType,
@@ -88,12 +77,42 @@ class AuthShop
     }
 
     /**
+     * Gets the appropriate flow type. It either returns full, partial,
+     * or false. If it returns false it means that everything is fine.
+     *
+     * @param                                           $shop    The shop model.
+     * @param \OhMyBrew\ShopifyApp\Services\ShopSession $session The session service for the shop.
+     *
+     * @return bool|string
+     */
+    private function getFlowType($shop, $session)
+    {
+        // We need to do a full flow if no shop or it is deleted
+        if ($shop === null || $shop->trashed()) {
+            return AuthShopHandler::FLOW_FULL;
+        }
+
+        // Do nothing if the session is valid
+        if ($session->isValid()) {
+            return false;
+        }
+
+        // We need to do a full flow if it grant per user
+        if ($session->isType(ShopSession::GRANT_PERUSER)) {
+            return AuthShopHandler::FLOW_FULL;
+        }
+
+        // Default is the partial flow
+        return AuthShopHandler::FLOW_PARTIAL;
+    }
+
+    /**
      * Handles a bad shop session.
      *
-     * @param string $type The auth flow to perform.
-     * @param \OhMyBrew\ShopifyApp\Services\ShopSession $session The session service for the shop.
-     * @param \Illuminate\Http\Request $request The incoming request.
-     * @param string|null $shopDomain The incoming shop domain.
+     * @param string                                    $type       The auth flow to perform.
+     * @param \OhMyBrew\ShopifyApp\Services\ShopSession $session    The session service for the shop.
+     * @param \Illuminate\Http\Request                  $request    The incoming request.
+     * @param string|null                               $shopDomain The incoming shop domain.
      *
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -112,10 +131,13 @@ class AuthShop
         // Depending on the type of grant mode, we need to do a full auth or partial
         return Redirect::route(
             'authenticate',
-            [
-                'type' => $type,
-                'shop' => $shopDomain,
-            ]
+            array_merge(
+                $request->all(),
+                [
+                    'type' => $type,
+                    'shop' => $shopDomain,
+                ]
+            )
         );
     }
 }
