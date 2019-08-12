@@ -154,23 +154,22 @@ class AuthShop
             return false;
         }
 
-        $signatureHeaderParam = $request->input('hmac');
-        $timeHeaderParam = $request->input('timestamp');
-        $codeHeaderParam = $request->input('code');
+        $signature = $request->input('hmac');
+        $timestamp = $request->input('timestamp');
+        $code = $request->input('code');
 
         // Make sure there is no param spoofing attempt
         if (ShopifyApp::api()->verifyRequest([
             'shop' => $shop,
-            'hmac' => $signatureHeaderParam,
-            'timestamp' => $timeHeaderParam,
-            'code' => $codeHeaderParam,
+            'hmac' => $signature,
+            'timestamp' => $timestamp,
+            'code' => $code,
         ])) {
             return $shop;
         }
 
         throw new Exception('Unable to verify signature.');
     }
-
 
     /**
      * Get the referer shopify domain from the request and validate.
@@ -207,7 +206,7 @@ class AuthShop
             return $refererQueryParams['shop'];
         }
 
-        return false;
+        throw new Exception('Unable to verify signature.');
     }
 
     /**
@@ -231,16 +230,16 @@ class AuthShop
             return false;
         }
 
-        $signatureHeaderParam = $request->header('X-Shop-Signature');
-        $timeHeaderParam = $request->header('X-Shop-Time');
-        $codeHeaderParam = $request->header('X-Shop-Code');
+        $signature = $request->header('X-Shop-Signature');
+        $timestamp = $request->header('X-Shop-Time');
+        $code = $request->header('X-Shop-Code');
 
         // Make sure there is no param spoofing attempt
         if (ShopifyApp::api()->verifyRequest([
             'shop' => $shop,
-            'hmac' => $signatureHeaderParam,
-            'timestamp' => $timeHeaderParam,
-            'code' => $codeHeaderParam,
+            'hmac' => $signature,
+            'timestamp' => $timestamp,
+            'code' => $code,
         ])) {
             return $shop;
         }

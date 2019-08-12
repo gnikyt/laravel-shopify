@@ -285,6 +285,10 @@ class AuthShopMiddlewareTest extends TestCase
         $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=sessionz.myshopify.com') !== false);
     }
 
+    /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage Unable to verify signature.
+     */
     public function testShopWithBadRefererHmacShouldLoadSessionDomain()
     {
         // Set a shop
@@ -314,12 +318,8 @@ class AuthShopMiddlewareTest extends TestCase
 
         Request::swap($newRequest);
 
+        // Should throw exception
         $result = $this->runAuthShop();
-
-        // Assert it was not called and a redirect happened
-        $this->assertFalse($result[1]);
-        // Make sure it's the one in the session
-        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=adsadda.myshopify.com') !== false);
     }
 
     public function testShopWithEmptyRefererShouldLoadSessionDomain()
