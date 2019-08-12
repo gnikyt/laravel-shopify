@@ -74,10 +74,10 @@ class AuthShopMiddlewareTest extends TestCase
 
         // Go in as a new shop
         Input::merge([
-            'shop' => 'example.myshopify.com',
-            'hmac' => 'a7448f7c42c9bc025b077ac8b73e7600b6f8012719d21cbeb88db66e5dbbd163',
+            'shop'      => 'example.myshopify.com',
+            'hmac'      => 'a7448f7c42c9bc025b077ac8b73e7600b6f8012719d21cbeb88db66e5dbbd163',
             'timestamp' => '1337178173',
-            'code' => '1234678',
+            'code'      => '1234678',
         ]);
 
         // Run the middleware
@@ -142,10 +142,10 @@ class AuthShopMiddlewareTest extends TestCase
         $newRequest = $currentRequest->duplicate(
             // Query Params
             [
-                'shop' => 'example.myshopify.com',
-                'hmac' => 'a7448f7c42c9bc025b077ac8b73e7600b6f8012719d21cbeb88db66e5dbbd163',
+                'shop'      => 'example.myshopify.com',
+                'hmac'      => 'a7448f7c42c9bc025b077ac8b73e7600b6f8012719d21cbeb88db66e5dbbd163',
                 'timestamp' => '1337178173',
-                'code' => '1234678'
+                'code'      => '1234678',
             ],
             // Request Params
             null,
@@ -187,10 +187,10 @@ class AuthShopMiddlewareTest extends TestCase
         $newRequest = $currentRequest->duplicate(
             // Query Params
             [
-                'shop' => 'example.myshopify.com',
-                'hmac' => 'XXXXX',
+                'shop'      => 'example.myshopify.com',
+                'hmac'      => 'XXXXX',
                 'timestamp' => '1337178173',
-                'code' => '1234678'
+                'code'      => '1234678',
             ],
             // Request Params
             null,
@@ -386,7 +386,7 @@ class AuthShopMiddlewareTest extends TestCase
             ])
         );
 
-        $newRequest->headers->set('X-Shop-Domain','example.myshopify.com');
+        $newRequest->headers->set('X-Shop-Domain', 'example.myshopify.com');
         $newRequest->headers->set('X-Shop-Signature', 'a7448f7c42c9bc025b077ac8b73e7600b6f8012719d21cbeb88db66e5dbbd163');
         $newRequest->headers->set('X-Shop-Time', '1337178173');
         $newRequest->headers->set('X-Shop-Code', '1234678');
@@ -432,7 +432,7 @@ class AuthShopMiddlewareTest extends TestCase
             ])
         );
 
-        $newRequest->headers->set('X-Shop-Domain','example.com');
+        $newRequest->headers->set('X-Shop-Domain', 'example.com');
         $newRequest->headers->set('X-Shop-Signature', 'XXXXXXXX');
 
         Request::swap($newRequest);
