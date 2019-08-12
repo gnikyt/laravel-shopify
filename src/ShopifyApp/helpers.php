@@ -10,7 +10,7 @@ use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
  * @param bool         $absolute   If the URL is to be absolute.
  *
  * @return string
- * 
+ *
  * @example `<a href="{{ shop_route('your-orders') }}">Orders</a>`,
  * Creates: `<a href="/your-orders?shop=example.myshopify.com">Orders</a>`
  */
@@ -36,7 +36,7 @@ function shop_route($name, array $parameters = [], bool $absolute = true)
  * @param string $url The URL to use.
  *
  * @return string
- * 
+ *
  * @example `<a href="{{ shop_url('/your-orders?abc=123') }}">Orders</a>`,
  * Creates: `<a href="/your-orders?abc=123&shop=example.myshopify.com">Orders</a>`
  */
