@@ -47,7 +47,8 @@ class AuthShop
     {
         // Setup the session service
         $session = new ShopSession();
-
+      
+        // Get the shop domain
         $shopDomain = $this->getShopDomain($request, $session);
 
         // Get the shop based on domain and update the session service
@@ -55,21 +56,10 @@ class AuthShop
         $shop = $shopModel::withTrashed()
             ->where(['shopify_domain' => $shopDomain])
             ->first();
-
         $session->setShop($shop);
-
-        $flowType = null;
-        if ($shop === null || $shop->trashed()) {
-            // We need to do a full flow
-            $flowType = AuthShopHandler::FLOW_FULL;
-        } elseif (!$session->isValid()) {
-            // Just a session issue, do a partial flow if we can...
-            $flowType = $session->isType(ShopSession::GRANT_PERUSER) ?
-                AuthShopHandler::FLOW_FULL :
-                AuthShopHandler::FLOW_PARTIAL;
-        }
-
-        if ($flowType !== null) {
+   
+        $flowType = $this->getFlowType($shop, $session);
+        if ($flowType) {
             // We have a bad session
             return $this->handleBadSession(
                 $flowType,
@@ -150,7 +140,6 @@ class AuthShop
     {
         // Extract the referer
         $referer = $request->header('referer');
-
         if (!$referer) {
             return false;
         }
@@ -158,7 +147,6 @@ class AuthShop
         // Get the values of the referer query params as an array
         $url = parse_url($referer, PHP_URL_QUERY);
         parse_str($url, $refererQueryParams);
-
         if (!$refererQueryParams) {
             return false;
         }
@@ -173,6 +161,36 @@ class AuthShop
         }
 
         return false;
+    }
+
+    /**
+     * Gets the appropriate flow type. It either returns full, partial,
+     * or false. If it returns false it means that everything is fine.
+     *
+     * @param                                           $shop    The shop model.
+     * @param \OhMyBrew\ShopifyApp\Services\ShopSession $session The session service for the shop.
+     *
+     * @return bool|string
+     */
+    private function getFlowType($shop, $session)
+    {
+        // We need to do a full flow if no shop or it is deleted
+        if ($shop === null || $shop->trashed()) {
+            return AuthShopHandler::FLOW_FULL;
+        }
+
+        // Do nothing if the session is valid
+        if ($session->isValid()) {
+            return false;
+        }
+
+        // We need to do a full flow if it grant per user
+        if ($session->isType(ShopSession::GRANT_PERUSER)) {
+            return AuthShopHandler::FLOW_FULL;
+        }
+
+        // Default is the partial flow
+        return AuthShopHandler::FLOW_PARTIAL;
     }
 
     /**
