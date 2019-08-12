@@ -3,6 +3,7 @@
 namespace OhMyBrew\ShopifyApp\Middleware;
 
 use Closure;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Config;
@@ -46,22 +47,18 @@ class AuthShop
     {
         // Setup the session service
         $session = new ShopSession();
-
-        // Grab the shop's myshopify domain from query or session
-        $shopDomainParam = $request->get('shop');
-        $shopDomainSession = $session->getDomain();
-        $shopDomain = ShopifyApp::sanitizeShopDomain($shopDomainParam ?? $shopDomainSession);
+      
+        // Get the shop domain
+        $shopDomain = $this->getShopDomain($request, $session);
 
         // Get the shop based on domain and update the session service
         $shopModel = Config::get('shopify-app.shop_model');
         $shop = $shopModel::withTrashed()
             ->where(['shopify_domain' => $shopDomain])
             ->first();
-
         $session->setShop($shop);
-
+   
         $flowType = $this->getFlowType($shop, $session);
-
         if ($flowType) {
             // We have a bad session
             return $this->handleBadSession(
@@ -74,6 +71,96 @@ class AuthShop
 
         // Everything is fine!
         return true;
+    }
+
+    /**
+     * Grab the shop's myshopify domain from query, referer or session.
+     *
+     * Getting the domain for the shop from session is unreliable
+     * because if 2 shops have the same app open in the same browser
+     * (e.g. someone is managing the same app on 2 stores at the same
+     * time) then the sessions can bleed into each other due to the
+     * cookies being run on the same domain (the domain of the app,
+     * not the individual shops admin dashboard).
+     *
+     * To get around this select a domain based on other information
+     * available, and make sure to verify the input before use. This is
+     * still not 100% reliable.
+     *
+     * Order of precedence is:
+     *
+     *  - GET variable
+     *  - Referer
+     *  - Session
+     *
+     * @param \Illuminate\Http\Request                  $request
+     * @param \OhMyBrew\ShopifyApp\Services\ShopSession $session
+     *
+     * @throws Exception
+     *
+     * @return bool|string
+     */
+    private function getShopDomain(Request $request, ShopSession $session)
+    {
+        // Query variable is highest priority
+        $shopDomainParam = $request->get('shop');
+        if ($shopDomainParam) {
+            return ShopifyApp::sanitizeShopDomain($shopDomainParam);
+        }
+
+        // Then the value in the referer header (if validated)
+        // See issue https://github.com/ohmybrew/laravel-shopify/issues/295
+        $shopRefererParam = $this->getRefererDomain($request);
+        if ($shopRefererParam) {
+            return ShopifyApp::sanitizeShopDomain($shopRefererParam);
+        }
+
+        // If neither are available then pull from the session
+        $shopDomainSession = $session->getDomain();
+        if ($shopDomainSession) {
+            return ShopifyApp::sanitizeShopDomain($shopDomainSession);
+        }
+
+        // No domain :(
+        throw new Exception('Unable to get shop domain.');
+    }
+
+    /**
+     * Get the referer shopify domain from the request and validate.
+     *
+     * It is dangerous to blindly trust user input so we need to
+     * check and confirm the validity upfront before we return the
+     * value to anything.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return bool|string
+     */
+    private function getRefererDomain(Request $request)
+    {
+        // Extract the referer
+        $referer = $request->header('referer');
+        if (!$referer) {
+            return false;
+        }
+
+        // Get the values of the referer query params as an array
+        $url = parse_url($referer, PHP_URL_QUERY);
+        parse_str($url, $refererQueryParams);
+        if (!$refererQueryParams) {
+            return false;
+        }
+
+        if (!isset($refererQueryParams['shop']) || !isset($refererQueryParams['hmac'])) {
+            return false;
+        }
+
+        // Make sure there is no param spoofing attempt
+        if (ShopifyApp::api()->verifyRequest($refererQueryParams)) {
+            return $refererQueryParams['shop'];
+        }
+
+        return false;
     }
 
     /**
