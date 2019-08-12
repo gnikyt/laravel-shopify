@@ -74,7 +74,8 @@ class AuthShop
     }
 
     /**
-     * Grab the shop's myshopify domain from query, referer or session.
+     * Grab the shop's myshopify domain from query, referer, headers
+     * or session.
      *
      * Getting the domain for the shop from session is unreliable
      * because if 2 shops have the same app open in the same browser
@@ -89,8 +90,9 @@ class AuthShop
      *
      * Order of precedence is:
      *
-     *  - GET variable
+     *  - GET/POST Variable
      *  - Referer
+     *  - Headers
      *  - Session
      *
      * @param \Illuminate\Http\Request                  $request
@@ -115,15 +117,16 @@ class AuthShop
             return ShopifyApp::sanitizeShopDomain($shopRefererParam);
         }
 
-        // Grab the shop's myshopify domain from query or session
-        // For SPA's we need X-Shop-Domain
+        // Grab the shop's myshopify domain from headers
+        // Referer is more reliable
+        // For SPA's we need X-Shop-Domain and verification headers
         // See issue https://github.com/ohmybrew/laravel-shopify/issues/295
         $shopHeaderParam = $this->getHeaderDomain($request);
         if ($shopHeaderParam) {
             return ShopifyApp::sanitizeShopDomain($shopHeaderParam);
         }
 
-        // If neither are available then pull from the session
+        // If none of the above are available then pull from the session
         $shopDomainSession = $session->getDomain();
         if ($shopDomainSession) {
             return ShopifyApp::sanitizeShopDomain($shopDomainSession);

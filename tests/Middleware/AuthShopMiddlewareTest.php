@@ -441,7 +441,6 @@ class AuthShopMiddlewareTest extends TestCase
         $result = $this->runAuthShop();
     }
 
-
     private function runAuthShop(Closure $cb = null, $requestInstance = null)
     {
         $called = false;
