@@ -3,7 +3,6 @@
 namespace OhMyBrew\ShopifyApp\Test;
 
 use Illuminate\Support\Facades\Session;
-use OhMyBrew\ShopifyApp\ShopifyApp;
 use OhMyBrew\ShopifyApp\Models\Shop;
 
 class HelpersTest extends TestCase
