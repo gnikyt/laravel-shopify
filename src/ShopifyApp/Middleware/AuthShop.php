@@ -47,7 +47,7 @@ class AuthShop
     {
         // Setup the session service
         $session = new ShopSession();
- 
+
         // Get the shop domain
         $shopDomain = $this->getShopDomain($request, $session);
 
@@ -57,7 +57,7 @@ class AuthShop
             ->where(['shopify_domain' => $shopDomain])
             ->first();
         $session->setShop($shop);
-   
+
         $flowType = $this->getFlowType($shop, $session);
         if ($flowType) {
             // We have a bad session
@@ -107,7 +107,7 @@ class AuthShop
         if ($shopDomainParam) {
             return ShopifyApp::sanitizeShopDomain($shopDomainParam);
         }
-      
+
         // Grab the shop's myshopify domain from query or session
         // For SPA's we need X-Shop-Domain
         // See issue https://github.com/ohmybrew/laravel-shopify/issues/295
