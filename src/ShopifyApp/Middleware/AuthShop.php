@@ -74,7 +74,8 @@ class AuthShop
     }
 
     /**
-     * Grab the shop's myshopify domain from query, referer or session.
+     * Grab the shop's myshopify domain from query, referer, headers
+     * or session.
      *
      * Getting the domain for the shop from session is unreliable
      * because if 2 shops have the same app open in the same browser
@@ -89,8 +90,9 @@ class AuthShop
      *
      * Order of precedence is:
      *
-     *  - GET variable
+     *  - GET/POST Variable
      *  - Referer
+     *  - Headers
      *  - Session
      *
      * @param \Illuminate\Http\Request                  $request
@@ -103,15 +105,7 @@ class AuthShop
     private function getShopDomain(Request $request, ShopSession $session)
     {
         // Query variable is highest priority
-        $shopDomainParam = $request->get('shop');
-        if ($shopDomainParam) {
-            return ShopifyApp::sanitizeShopDomain($shopDomainParam);
-        }
-
-        // Grab the shop's myshopify domain from query or session
-        // For SPA's we need X-Shop-Domain
-        // See issue https://github.com/ohmybrew/laravel-shopify/issues/295
-        $shopHeaderParam = $request->header('X-Shop-Domain');
+        $shopDomainParam = $this->getQueryDomain($request);
         if ($shopDomainParam) {
             return ShopifyApp::sanitizeShopDomain($shopDomainParam);
         }
@@ -123,7 +117,16 @@ class AuthShop
             return ShopifyApp::sanitizeShopDomain($shopRefererParam);
         }
 
-        // If neither are available then pull from the session
+        // Grab the shop's myshopify domain from headers
+        // Referer is more reliable
+        // For SPA's we need X-Shop-Domain and verification headers
+        // See issue https://github.com/ohmybrew/laravel-shopify/issues/295
+        $shopHeaderParam = $this->getHeaderDomain($request);
+        if ($shopHeaderParam) {
+            return ShopifyApp::sanitizeShopDomain($shopHeaderParam);
+        }
+
+        // If none of the above are available then pull from the session
         $shopDomainSession = $session->getDomain();
         if ($shopDomainSession) {
             return ShopifyApp::sanitizeShopDomain($shopDomainSession);
@@ -131,6 +134,44 @@ class AuthShop
 
         // No domain :(
         throw new Exception('Unable to get shop domain.');
+    }
+
+    /**
+     * Get the query variable shopify domain from the request and validate.
+     *
+     * It is dangerous to blindly trust user input so we need to
+     * check and confirm the validity upfront before we return the
+     * value to anything.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @throws Exception
+     *
+     * @return bool|string
+     */
+    private function getQueryDomain(Request $request)
+    {
+        // Extract the referer
+        $shop = $request->input('shop');
+        if (!$shop) {
+            return false;
+        }
+
+        $signature = $request->input('hmac');
+        $timestamp = $request->input('timestamp');
+        $code = $request->input('code');
+
+        // Make sure there is no param spoofing attempt
+        if (ShopifyApp::api()->verifyRequest([
+            'shop' => $shop,
+            'hmac' => $signature,
+            'timestamp' => $timestamp,
+            'code' => $code,
+        ])) {
+            return $shop;
+        }
+
+        throw new Exception('Unable to verify signature.');
     }
 
     /**
@@ -159,7 +200,7 @@ class AuthShop
             return false;
         }
 
-        if (!isset($refererQueryParams['shop']) || !isset($refererQueryParams['hmac'])) {
+        if (!isset($refererQueryParams['shop']) || !isset($refererQueryParams['hmac']) || !isset($refererQueryParams['timestamp']) || !isset($refererQueryParams['code'])) {
             return false;
         }
 
@@ -168,7 +209,45 @@ class AuthShop
             return $refererQueryParams['shop'];
         }
 
-        return false;
+        throw new Exception('Unable to verify signature.');
+    }
+
+    /**
+     * Get the header shopify domain from the request and validate.
+     *
+     * It is dangerous to blindly trust user input so we need to
+     * check and confirm the validity upfront before we return the
+     * value to anything.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @throws Exception
+     *
+     * @return bool|string
+     */
+    private function getHeaderDomain(Request $request)
+    {
+        // Extract the referer
+        $shop = $request->header('X-Shop-Domain');
+        if (!$shop) {
+            return false;
+        }
+
+        $signature = $request->header('X-Shop-Signature');
+        $timestamp = $request->header('X-Shop-Time');
+        $code = $request->header('X-Shop-Code');
+
+        // Make sure there is no param spoofing attempt
+        if (ShopifyApp::api()->verifyRequest([
+            'shop' => $shop,
+            'hmac' => $signature,
+            'timestamp' => $timestamp,
+            'code' => $code,
+        ])) {
+            return $shop;
+        }
+
+        throw new Exception('Unable to verify signature.');
     }
 
     /**
