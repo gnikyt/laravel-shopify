@@ -669,7 +669,7 @@ class AuthShopMiddlewareTest extends TestCase
         $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=adsadda.myshopify.com') !== false);
     }
 
-    public function testShopWithValidShopHeadersShouldLoadHeaderDomain()
+    public function testShopWithValidShopHeadersAndCodeShouldLoadHeaderDomain()
     {
         // Set a shop
         $shop = factory(Shop::class)->create();
@@ -711,6 +711,175 @@ class AuthShopMiddlewareTest extends TestCase
         $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=example.myshopify.com') !== false);
     }
 
+    public function testShopWithAllValidShopHeadersShouldLoadHeaderDomain()
+    {
+        // Set a shop
+        $shop = factory(Shop::class)->create();
+        // This should be ignored as there is a referer domain
+        Session::put('shopify_domain', 'xxxaaa');
+
+        // Run the middleware
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            null,
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            // Referer with no query params
+            array_merge(Request::server(), [
+                'Referer' => '',
+            ])
+        );
+
+        $newRequest->headers->set('X-Shop-Domain', 'example007.myshopify.com');
+        $newRequest->headers->set('X-Shop-Signature', '609808dd12f1c464ce297821fe7ffbfe72cb51eac0944d1171e0db54c9846519');
+        $newRequest->headers->set('X-Shop-Time', '1337179173');
+        $newRequest->headers->set('X-Shop-Code', '123123123');
+        $newRequest->headers->set('X-Shop-Locale', 'es');
+        $newRequest->headers->set('X-Shop-State', '0.98765');
+
+        Request::swap($newRequest);
+
+        $result = $this->runAuthShop();
+
+        // Assert it was not called and a redirect happened
+        $this->assertFalse($result[1]);
+        // Make sure it's the one in the session
+        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=example007.myshopify.com') !== false);
+    }
+
+    public function testShopWithMinimumValidShopHeadersShouldLoadHeaderDomain()
+    {
+        // Set a shop
+        $shop = factory(Shop::class)->create();
+        // This should be ignored as there is a referer domain
+        Session::put('shopify_domain', 'xxxaaa');
+
+        // Run the middleware
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            null,
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            // Referer with no query params
+            array_merge(Request::server(), [
+                'Referer' => '',
+            ])
+        );
+
+        $newRequest->headers->set('X-Shop-Domain', 'example008.myshopify.com');
+        $newRequest->headers->set('X-Shop-Signature', '046edaedd7e1fc57bb433d8251dfcd17351e2600d872881b9ff3644fdac3eb24');
+        $newRequest->headers->set('X-Shop-Time', '1337179173');
+
+        Request::swap($newRequest);
+
+        $result = $this->runAuthShop();
+
+        // Assert it was not called and a redirect happened
+        $this->assertFalse($result[1]);
+        // Make sure it's the one in the session
+        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=example008.myshopify.com') !== false);
+    }
+
+    public function testShopWithValidShopHeadersAndLocaleShouldLoadHeaderDomain()
+    {
+        // Set a shop
+        $shop = factory(Shop::class)->create();
+        // This should be ignored as there is a referer domain
+        Session::put('shopify_domain', 'xxxaaa');
+
+        // Run the middleware
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            null,
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            // Referer with no query params
+            array_merge(Request::server(), [
+                'Referer' => '',
+            ])
+        );
+
+        $newRequest->headers->set('X-Shop-Domain', 'example009.myshopify.com');
+        $newRequest->headers->set('X-Shop-Signature', '6ed241365754634f8ee630d115e24a22e4cca33dba92f45506da27b789cd1e1b');
+        $newRequest->headers->set('X-Shop-Time', '1337179173');
+        $newRequest->headers->set('X-Shop-Locale', 'gb');
+
+        Request::swap($newRequest);
+
+        $result = $this->runAuthShop();
+
+        // Assert it was not called and a redirect happened
+        $this->assertFalse($result[1]);
+        // Make sure it's the one in the session
+        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=example009.myshopify.com') !== false);
+    }
+
+    public function testShopWithValidShopHeadersAndStateShouldLoadHeaderDomain()
+    {
+        // Set a shop
+        $shop = factory(Shop::class)->create();
+        // This should be ignored as there is a referer domain
+        Session::put('shopify_domain', 'xxxaaa');
+
+        // Run the middleware
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            null,
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            // Referer with no query params
+            array_merge(Request::server(), [
+                'Referer' => '',
+            ])
+        );
+
+        $newRequest->headers->set('X-Shop-Domain', 'example010.myshopify.com');
+        $newRequest->headers->set('X-Shop-Signature', 'af846cf75da1f12e97785d66d9340c877a65e86db44536c366476c30e34a57e8');
+        $newRequest->headers->set('X-Shop-Time', '1337179193');
+        $newRequest->headers->set('X-Shop-State', '0.555444333222111');
+
+        Request::swap($newRequest);
+
+        $result = $this->runAuthShop();
+
+        // Assert it was not called and a redirect happened
+        $this->assertFalse($result[1]);
+        // Make sure it's the one in the session
+        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=example010.myshopify.com') !== false);
+    }
+
     /**
      * @expectedException \Exception
      * @expectedExceptionMessage Unable to verify signature.
@@ -744,6 +913,7 @@ class AuthShopMiddlewareTest extends TestCase
 
         $newRequest->headers->set('X-Shop-Domain', 'example.com');
         $newRequest->headers->set('X-Shop-Signature', 'XXXXXXXX');
+        $newRequest->headers->set('X-Shop-Time', '123');
 
         Request::swap($newRequest);
 
