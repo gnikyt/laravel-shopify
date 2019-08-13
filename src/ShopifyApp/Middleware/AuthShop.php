@@ -162,8 +162,8 @@ class AuthShop
         $timestamp = $request->input('timestamp');
 
         $verify = [
-            'shop' => $shop,
-            'hmac' => $signature,
+            'shop'      => $shop,
+            'hmac'      => $signature,
             'timestamp' => $timestamp,
         ];
 
@@ -224,8 +224,8 @@ class AuthShop
         }
 
         $verify = [
-            'shop' => $refererQueryParams['shop'],
-            'hmac' => $refererQueryParams['hmac'],
+            'shop'      => $refererQueryParams['shop'],
+            'hmac'      => $refererQueryParams['hmac'],
             'timestamp' => $refererQueryParams['timestamp'],
         ];
 
@@ -280,8 +280,8 @@ class AuthShop
         $timestamp = $request->header('X-Shop-Time');
 
         $verify = [
-            'shop' => $shop,
-            'hmac' => $signature,
+            'shop'      => $shop,
+            'hmac'      => $signature,
             'timestamp' => $timestamp,
         ];
 
