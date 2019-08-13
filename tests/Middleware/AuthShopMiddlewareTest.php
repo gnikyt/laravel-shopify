@@ -295,7 +295,6 @@ class AuthShopMiddlewareTest extends TestCase
         $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=mystore03.myshopify.com') !== false);
     }
 
-
     public function testShopWithValidGetWithCodeShouldLoadGetDomain()
     {
         // Set a shop
