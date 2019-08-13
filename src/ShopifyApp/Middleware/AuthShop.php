@@ -157,17 +157,35 @@ class AuthShop
             return false;
         }
 
+        // Always
         $signature = $request->input('hmac');
         $timestamp = $request->input('timestamp');
-        $code = $request->input('code');
+
+        $verify = [
+            'shop'      => $shop,
+            'hmac'      => $signature,
+            'timestamp' => $timestamp,
+        ];
+
+        // Sometimes
+        $code = $request->input('code') ?? null;
+        $locale = $request->input('locale') ?? null;
+        $state = $request->input('state') ?? null;
+
+        if ($code) {
+            $verify['code'] = $code;
+        }
+
+        if ($locale) {
+            $verify['locale'] = $locale;
+        }
+
+        if ($state) {
+            $verify['state'] = $state;
+        }
 
         // Make sure there is no param spoofing attempt
-        if (ShopifyApp::api()->verifyRequest([
-            'shop' => $shop,
-            'hmac' => $signature,
-            'timestamp' => $timestamp,
-            'code' => $code,
-        ])) {
+        if (ShopifyApp::api()->verifyRequest($verify)) {
             return $shop;
         }
 
@@ -200,12 +218,36 @@ class AuthShop
             return false;
         }
 
-        if (!isset($refererQueryParams['shop']) || !isset($refererQueryParams['hmac']) || !isset($refererQueryParams['timestamp']) || !isset($refererQueryParams['code'])) {
+        // These 3 must always be present
+        if (!isset($refererQueryParams['shop']) || !isset($refererQueryParams['hmac']) || !isset($refererQueryParams['timestamp'])) {
             return false;
         }
 
+        $verify = [
+            'shop'      => $refererQueryParams['shop'],
+            'hmac'      => $refererQueryParams['hmac'],
+            'timestamp' => $refererQueryParams['timestamp'],
+        ];
+
+        // Sometimes present
+        $code = $refererQueryParams['code'] ?? null;
+        $locale = $refererQueryParams['locale'] ?? null;
+        $state = $refererQueryParams['state'] ?? null;
+
+        if ($code) {
+            $verify['code'] = $code;
+        }
+
+        if ($locale) {
+            $verify['locale'] = $locale;
+        }
+
+        if ($state) {
+            $verify['state'] = $state;
+        }
+
         // Make sure there is no param spoofing attempt
-        if (ShopifyApp::api()->verifyRequest($refererQueryParams)) {
+        if (ShopifyApp::api()->verifyRequest($verify)) {
             return $refererQueryParams['shop'];
         }
 
@@ -233,17 +275,35 @@ class AuthShop
             return false;
         }
 
+        // Always present
         $signature = $request->header('X-Shop-Signature');
         $timestamp = $request->header('X-Shop-Time');
-        $code = $request->header('X-Shop-Code');
+
+        $verify = [
+            'shop'      => $shop,
+            'hmac'      => $signature,
+            'timestamp' => $timestamp,
+        ];
+
+        // Sometimes present
+        $code = $request->header('X-Shop-Code') ?? null;
+        $locale = $request->header('X-Shop-Locale') ?? null;
+        $state = $request->header('X-Shop-State') ?? null;
+
+        if ($code) {
+            $verify['code'] = $code;
+        }
+
+        if ($locale) {
+            $verify['locale'] = $locale;
+        }
+
+        if ($state) {
+            $verify['state'] = $state;
+        }
 
         // Make sure there is no param spoofing attempt
-        if (ShopifyApp::api()->verifyRequest([
-            'shop' => $shop,
-            'hmac' => $signature,
-            'timestamp' => $timestamp,
-            'code' => $code,
-        ])) {
+        if (ShopifyApp::api()->verifyRequest($verify)) {
             return $shop;
         }
 
