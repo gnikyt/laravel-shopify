@@ -414,6 +414,150 @@ class AuthShopMiddlewareTest extends TestCase
         $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=example.myshopify.com') !== false);
     }
 
+    public function testShopWithValidRefererNoCodeShouldLoadRefererDomain()
+    {
+        // Set a shop
+        $shop = factory(Shop::class)->create();
+        // This should be ignored as there is a referer domain
+        Session::put('shopify_domain', 'adsadda');
+
+        // Run the middleware
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            null,
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            array_merge(Request::server(), [
+                'HTTP_REFERER' => 'https://xxx.com?shop=example.myshopify.com&hmac=53c2802b141a564dc1992e4c468def31391c0ad2a7172ee23ff1493c879c55ba&timestamp=1337178173',
+            ])
+        );
+
+        Request::swap($newRequest);
+
+        $result = $this->runAuthShop();
+
+        // Assert it was not called and a redirect happened
+        $this->assertFalse($result[1]);
+        // Make sure it's the one in the referer
+        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=example.myshopify.com') !== false);
+    }
+
+    public function testShopWithValidRefererNoCodeWithLocaleShouldLoadRefererDomain()
+    {
+        // Set a shop
+        $shop = factory(Shop::class)->create();
+        // This should be ignored as there is a referer domain
+        Session::put('shopify_domain', 'adsadda');
+
+        // Run the middleware
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            null,
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            array_merge(Request::server(), [
+                'HTTP_REFERER' => 'https://xxx.com?shop=example2.myshopify.com&hmac=9dfc3cd16c21f683a30a69921678c66382884bc6c25704c130c7ea1286cabeff&timestamp=1337188173&locale=de',
+            ])
+        );
+
+        Request::swap($newRequest);
+
+        $result = $this->runAuthShop();
+
+        // Assert it was not called and a redirect happened
+        $this->assertFalse($result[1]);
+        // Make sure it's the one in the referer
+        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=example2.myshopify.com') !== false);
+    }
+
+    public function testShopWithValidRefererNoCodeNoLocaleShouldLoadRefererDomain()
+    {
+        // Set a shop
+        $shop = factory(Shop::class)->create();
+        // This should be ignored as there is a referer domain
+        Session::put('shopify_domain', 'adsadda');
+
+        // Run the middleware
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            null,
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            array_merge(Request::server(), [
+                'HTTP_REFERER' => 'https://xxx.com?shop=example123.myshopify.com&hmac=e3ff572343356e923fddbec02a4720190469c6243584088d6da1b87f474d652b&timestamp=1337188173&state=0.12345678',
+            ])
+        );
+
+        Request::swap($newRequest);
+
+        $result = $this->runAuthShop();
+
+        // Assert it was not called and a redirect happened
+        $this->assertFalse($result[1]);
+        // Make sure it's the one in the referer
+        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=example123.myshopify.com') !== false);
+    }
+
+    public function testShopWithValidRefererAllParamsShouldLoadRefererDomain()
+    {
+        // Set a shop
+        $shop = factory(Shop::class)->create();
+        // This should be ignored as there is a referer domain
+        Session::put('shopify_domain', 'adsadda');
+
+        // Run the middleware
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            null,
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            array_merge(Request::server(), [
+                'HTTP_REFERER' => 'https://xxx.com?shop=example3.myshopify.com&hmac=25d780440c3aecf332c946fb9cc222534113c8a5de9c28976e37754aa0f46ba7&timestamp=1337188173&locale=de&code=5678&state=0.1234',
+            ])
+        );
+
+        Request::swap($newRequest);
+
+        $result = $this->runAuthShop();
+
+        // Assert it was not called and a redirect happened
+        $this->assertFalse($result[1]);
+        // Make sure it's the one in the referer
+        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=example3.myshopify.com') !== false);
+    }
+
     public function testShopWithMissingRefererDetailsShouldLoadSessionDomain()
     {
         // Set a shop
