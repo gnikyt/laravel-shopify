@@ -130,7 +130,173 @@ class AuthShopMiddlewareTest extends TestCase
         // Request::swap($currentRequest);
     }
 
-    public function testShopWithValidGetShouldLoadGetDomain()
+    public function testShopWithAllValidGetShouldLoadGetDomain()
+    {
+        // Set a shop
+        $shop = factory(Shop::class)->create();
+        // this should get ignored as there is a get variable
+        Session::put('shopify_domain', 'adsadda');
+
+        // Run the middleware
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            [
+                'shop'      => 'mystore123.myshopify.com',
+                'hmac'      => '9f4d79eb5ab1806c390b3dda0bfc7be714a92df165d878f22cf3cc8145249ca8',
+                'timestamp' => '1565631587',
+                'code'      => '123',
+                'locale'    => 'de',
+                'state'     => '3.14'
+            ],
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            // This valid referer should be ignored as there is a get variable
+            array_merge(Request::server(), [
+                'HTTP_REFERER' => 'https://xxx.com?shop=xyz.com',
+            ])
+        );
+
+        Request::swap($newRequest);
+
+        $result = $this->runAuthShop();
+
+        // Assert it was not called and a redirect happened
+        $this->assertFalse($result[1]);
+        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=mystore123.myshopify.com') !== false);
+    }
+
+    public function testShopWithValidGetNoCodeShouldLoadGetDomain()
+    {
+        // Set a shop
+        $shop = factory(Shop::class)->create();
+        // this should get ignored as there is a get variable
+        Session::put('shopify_domain', 'adsadda');
+
+        // Run the middleware
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            [
+                'shop'      => 'mystore01.myshopify.com',
+                'hmac'      => '1b8e7d49308155d164ba3768e9f4f16dca412a9c29e049fa0d76d995b5432ba7',
+                'timestamp' => '1565631587',
+                'locale'    => 'de'
+            ],
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            // This valid referer should be ignored as there is a get variable
+            array_merge(Request::server(), [
+                'HTTP_REFERER' => 'https://xxx.com?shop=xyz.com',
+            ])
+        );
+
+        Request::swap($newRequest);
+
+        $result = $this->runAuthShop();
+
+        // Assert it was not called and a redirect happened
+        $this->assertFalse($result[1]);
+        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=mystore01.myshopify.com') !== false);
+    }
+
+    public function testShopWithValidGetNoCodeNoLocaleShouldLoadGetDomain()
+    {
+        // Set a shop
+        $shop = factory(Shop::class)->create();
+        // this should get ignored as there is a get variable
+        Session::put('shopify_domain', 'adsadda');
+
+        // Run the middleware
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            [
+                'shop'      => 'mystore02.myshopify.com',
+                'hmac'      => '0c5789783621d5c31f19a66cc628441786d681f2de4b50dd0a0a8a849d00abfe',
+                'timestamp' => '1565631887'
+            ],
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            // This valid referer should be ignored as there is a get variable
+            array_merge(Request::server(), [
+                'HTTP_REFERER' => 'https://xxx.com?shop=xyz.com',
+            ])
+        );
+
+        Request::swap($newRequest);
+
+        $result = $this->runAuthShop();
+
+        // Assert it was not called and a redirect happened
+        $this->assertFalse($result[1]);
+        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=mystore02.myshopify.com') !== false);
+    }
+
+    public function testShopWithValidGetNoCodeNoLocaleWithStateShouldLoadGetDomain()
+    {
+        // Set a shop
+        $shop = factory(Shop::class)->create();
+        // this should get ignored as there is a get variable
+        Session::put('shopify_domain', 'adsadda');
+
+        // Run the middleware
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            [
+                'shop'      => 'mystore03.myshopify.com',
+                'hmac'      => '0a5207d2c73f09e66da51e7df47d5aeba9809ece6b1d7baa5daf7b7bfdaf0432',
+                'timestamp' => '1565631987',
+                'state'     => '6.62607004'
+            ],
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            // This valid referer should be ignored as there is a get variable
+            array_merge(Request::server(), [
+                'HTTP_REFERER' => 'https://xxx.com?shop=xyz.com',
+            ])
+        );
+
+        Request::swap($newRequest);
+
+        $result = $this->runAuthShop();
+
+        // Assert it was not called and a redirect happened
+        $this->assertFalse($result[1]);
+        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=mystore03.myshopify.com') !== false);
+    }
+
+
+    public function testShopWithValidGetWithCodeShouldLoadGetDomain()
     {
         // Set a shop
         $shop = factory(Shop::class)->create();
