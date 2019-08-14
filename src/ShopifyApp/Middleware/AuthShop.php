@@ -172,6 +172,7 @@ class AuthShop
         $code = $request->input('code') ?? null;
         $locale = $request->input('locale') ?? null;
         $state = $request->input('state') ?? null;
+        $id = $request->input('id') ?? null;
 
         if ($code) {
             $verify['code'] = $code;
@@ -183,6 +184,10 @@ class AuthShop
 
         if ($state) {
             $verify['state'] = $state;
+        }
+
+        if ($id) {
+            $verify['id'] = $id;
         }
 
         // Make sure there is no param spoofing attempt
@@ -234,6 +239,7 @@ class AuthShop
         $code = $refererQueryParams['code'] ?? null;
         $locale = $refererQueryParams['locale'] ?? null;
         $state = $refererQueryParams['state'] ?? null;
+        $id = $refererQueryParams['id'] ?? null;
 
         if ($code) {
             $verify['code'] = $code;
@@ -245,6 +251,10 @@ class AuthShop
 
         if ($state) {
             $verify['state'] = $state;
+        }
+
+        if ($state) {
+            $verify['id'] = $id;
         }
 
         // Make sure there is no param spoofing attempt
