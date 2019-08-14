@@ -266,7 +266,7 @@ class AuthShop
 
     /**
      * Get the header shopify domain from the request and validate.
-     *                                         
+     *
      * It is dangerous to blindly trust user input so we need to
      * check and confirm the validity upfront before we return the
      * value to anything.
