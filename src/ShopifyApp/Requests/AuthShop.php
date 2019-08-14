@@ -70,6 +70,8 @@ class AuthShop extends FormRequest
      * Get the URL to redirect to on a validation error.
      *
      * @return string
+     *
+     * @codeCoverageIgnore
      */
     protected function getRedirectUrl()
     {
