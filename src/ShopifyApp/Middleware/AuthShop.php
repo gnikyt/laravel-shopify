@@ -48,7 +48,7 @@ class AuthShop
         // Setup the session service
         $session = new ShopSession();
 
-        // Get the shop domain
+        // Grab the shop's myshopify domain from query or session
         $shopDomain = $this->getShopDomain($request, $session);
 
         // Get the shop based on domain and update the session service
@@ -57,6 +57,7 @@ class AuthShop
             ->where(['shopify_domain' => $shopDomain])
             ->first();
         $session->setShop($shop);
+
 
         $flowType = $this->getFlowType($shop, $session);
         if ($flowType) {
@@ -171,6 +172,7 @@ class AuthShop
         $code = $request->input('code') ?? null;
         $locale = $request->input('locale') ?? null;
         $state = $request->input('state') ?? null;
+        $id = $request->input('id') ?? null;
 
         if ($code) {
             $verify['code'] = $code;
@@ -182,6 +184,10 @@ class AuthShop
 
         if ($state) {
             $verify['state'] = $state;
+        }
+
+        if ($id) {
+            $verify['id'] = $id;
         }
 
         // Make sure there is no param spoofing attempt
@@ -233,6 +239,7 @@ class AuthShop
         $code = $refererQueryParams['code'] ?? null;
         $locale = $refererQueryParams['locale'] ?? null;
         $state = $refererQueryParams['state'] ?? null;
+        $id = $refererQueryParams['id'] ?? null;
 
         if ($code) {
             $verify['code'] = $code;
@@ -244,6 +251,10 @@ class AuthShop
 
         if ($state) {
             $verify['state'] = $state;
+        }
+
+        if ($id) {
+            $verify['id'] = $id;
         }
 
         // Make sure there is no param spoofing attempt
@@ -289,6 +300,7 @@ class AuthShop
         $code = $request->header('X-Shop-Code') ?? null;
         $locale = $request->header('X-Shop-Locale') ?? null;
         $state = $request->header('X-Shop-State') ?? null;
+        $id = $request->header('X-Shop-ID') ?? null;
 
         if ($code) {
             $verify['code'] = $code;
@@ -300,6 +312,10 @@ class AuthShop
 
         if ($state) {
             $verify['state'] = $state;
+        }
+
+        if ($id) {
+            $verify['id'] = $id;
         }
 
         // Make sure there is no param spoofing attempt
