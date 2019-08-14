@@ -253,7 +253,7 @@ class AuthShop
             $verify['state'] = $state;
         }
 
-        if ($state) {
+        if ($id) {
             $verify['id'] = $id;
         }
 
@@ -300,6 +300,7 @@ class AuthShop
         $code = $request->header('X-Shop-Code') ?? null;
         $locale = $request->header('X-Shop-Locale') ?? null;
         $state = $request->header('X-Shop-State') ?? null;
+        $id = $request->header('X-Shop-ID') ?? null;
 
         if ($code) {
             $verify['code'] = $code;
@@ -311,6 +312,10 @@ class AuthShop
 
         if ($state) {
             $verify['state'] = $state;
+        }
+
+        if ($id) {
+            $verify['id'] = $id;
         }
 
         // Make sure there is no param spoofing attempt
