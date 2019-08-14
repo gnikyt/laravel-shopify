@@ -21,8 +21,8 @@ class AuthShop
     /**
      * Handle an incoming request.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure                 $next
+     * @param \Illuminate\Http\Request $request The request object.
+     * @param \Closure                 $next    The "next" action to take.
      *
      * @return mixed
      */
@@ -39,7 +39,7 @@ class AuthShop
     /**
      * Checks we have a valid shop.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request The request object.
      *
      * @return bool|\Illuminate\Http\RedirectResponse
      */
@@ -57,7 +57,6 @@ class AuthShop
             ->where(['shopify_domain' => $shopDomain])
             ->first();
         $session->setShop($shop);
-
 
         $flowType = $this->getFlowType($shop, $session);
         if ($flowType) {
@@ -96,8 +95,8 @@ class AuthShop
      *  - Headers
      *  - Session
      *
-     * @param \Illuminate\Http\Request                  $request
-     * @param \OhMyBrew\ShopifyApp\Services\ShopSession $session
+     * @param \Illuminate\Http\Request                  $request The request object.
+     * @param \OhMyBrew\ShopifyApp\Services\ShopSession $session The shop session instance.
      *
      * @throws Exception
      *
@@ -144,7 +143,7 @@ class AuthShop
      * check and confirm the validity upfront before we return the
      * value to anything.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request The request object.
      *
      * @throws Exception
      *
@@ -205,7 +204,7 @@ class AuthShop
      * check and confirm the validity upfront before we return the
      * value to anything.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request The request object.
      *
      * @return bool|string
      */
@@ -267,12 +266,12 @@ class AuthShop
 
     /**
      * Get the header shopify domain from the request and validate.
-     *
+     *                                         
      * It is dangerous to blindly trust user input so we need to
      * check and confirm the validity upfront before we return the
      * value to anything.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request The request object.
      *
      * @throws Exception
      *
@@ -330,7 +329,7 @@ class AuthShop
      * Gets the appropriate flow type. It either returns full, partial,
      * or false. If it returns false it means that everything is fine.
      *
-     * @param                                           $shop    The shop model.
+     * @param object                                    $shop    The shop model.
      * @param \OhMyBrew\ShopifyApp\Services\ShopSession $session The session service for the shop.
      *
      * @return bool|string
@@ -360,8 +359,8 @@ class AuthShop
      * Handles a bad shop session.
      *
      * @param string                                    $type       The auth flow to perform.
-     * @param \OhMyBrew\ShopifyApp\Services\ShopSession $session    The session service for the shop.
-     * @param \Illuminate\Http\Request                  $request    The incoming request.
+     * @param \OhMyBrew\ShopifyApp\Services\ShopSession $session    The shop session instance.
+     * @param \Illuminate\Http\Request                  $request    The request object.
      * @param string|null                               $shopDomain The incoming shop domain.
      *
      * @return \Illuminate\Http\RedirectResponse
