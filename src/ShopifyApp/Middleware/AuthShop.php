@@ -346,10 +346,13 @@ class AuthShop
             return false;
         }
 
+        // disable partial auth
+        return AuthShopHandler::FLOW_FULL;
+
         // We need to do a full flow if it grant per user
-//        if ($session->isType(ShopSession::GRANT_PERUSER)) {
-//            return AuthShopHandler::FLOW_FULL;
-//        }
+        if ($session->isType(ShopSession::GRANT_PERUSER)) {
+            return AuthShopHandler::FLOW_FULL;
+        }
 
         // Default is the partial flow
         return AuthShopHandler::FLOW_PARTIAL;
