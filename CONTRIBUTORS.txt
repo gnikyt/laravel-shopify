@@ -1,16 +1,17 @@
-# curl -s -u "(username)" https://api.github.com/repos/ohmybrew/laravel-shopify/contributors | jq '.[] | .login' | xargs -n1 echo
+# [...document.getElementsByClassName('contrib-person')].map(n => n.getElementsByClassName('avatar')[0].alt).join('\n');
 ohmybrew
 darrynten
 amosmos
 ilamp
-oanhnn
 tuimz
-c4l3b
+oanhnn
+ncpope
 ericnkatz
 dellow
-awebartisan
-bilfeldt
-ImgBotApp
-baorv
-dhritimanrick
+c4l3b
 mat-dropshipspy
+dhritimanrick
+bilfeldt
+baorv
+awebartisan
+ImgBotApp
