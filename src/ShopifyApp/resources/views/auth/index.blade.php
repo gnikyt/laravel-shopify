@@ -114,6 +114,7 @@
             @if (session()->has('error'))
                 <div class="error">{{ session('error') }}</div>
             @endif
+            {{ csrf_field() }}
             <input id="shop" name="shop" type="text" autofocus="autofocus" placeholder="example.myshopify.com" class="marketing-input">
             <button type="submit" class="marketing-button">Install</button>
         </form>
