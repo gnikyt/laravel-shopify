@@ -50,7 +50,7 @@ trait AuthControllerTrait
         $session->setDomain($shopDomain);
 
         // Check if we need to do a full auth flow (most likely not)
-        if ($type === AuthShopHandler::FLOW_FULL) {
+       if ($type === AuthShopHandler::FLOW_FULL) {
             // Check if we have a code
             if (!$request->filled('code')) {
                 // Handle a request without a code, do a fullpage redirect
@@ -75,7 +75,7 @@ trait AuthControllerTrait
             // Do post processing and dispatch the jobs
             $auth->postProcess();
             $auth->dispatchJobs();
-        }
+       }
 
         // Dispatch the events always (for full and partial)
         $auth->dispatchEvent();

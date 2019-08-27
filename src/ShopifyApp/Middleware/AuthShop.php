@@ -7,11 +7,13 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Redirect;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
-use OhMyBrew\ShopifyApp\Services\AuthShopHandler;
 use OhMyBrew\ShopifyApp\Services\ShopSession;
+use OhMyBrew\ShopifyApp\Services\AuthShopHandler;
+use OhMyBrew\ShopifyApp\Exceptions\MissingShopDomainException;
+use OhMyBrew\ShopifyApp\Exceptions\SignatureVerificationException;
 
 /**
  * Response for ensuring an authenticated shop.
@@ -133,7 +135,7 @@ class AuthShop
         }
 
         // No domain :(
-        throw new Exception('Unable to get shop domain.');
+        throw new MissingShopDomainException('Unable to get shop domain.');
     }
 
     /**
@@ -194,7 +196,7 @@ class AuthShop
             return $shop;
         }
 
-        throw new Exception('Unable to verify signature.');
+        throw new SignatureVerificationException('Unable to verify signature.');
     }
 
     /**
@@ -261,7 +263,7 @@ class AuthShop
             return $refererQueryParams['shop'];
         }
 
-        throw new Exception('Unable to verify signature.');
+        throw new SignatureVerificationException('Unable to verify signature.');
     }
 
     /**
@@ -322,7 +324,7 @@ class AuthShop
             return $shop;
         }
 
-        throw new Exception('Unable to verify signature.');
+        throw new SignatureVerificationException('Unable to verify signature.');
     }
 
     /**
