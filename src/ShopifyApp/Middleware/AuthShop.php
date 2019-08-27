@@ -60,11 +60,10 @@ class AuthShop
             ->first();
         $session->setShop($shop);
 
-        $flowType = $this->getFlowType($shop, $session);
-        if ($flowType) {
+        // We need to do a full flow if no shop or it is deleted
+        if ($shop === null || $shop->trashed() || !$session->isValid()) {
             // We have a bad session
             return $this->handleBadSession(
-                $flowType,
                 $session,
                 $request,
                 $shopDomain
@@ -328,39 +327,8 @@ class AuthShop
     }
 
     /**
-     * Gets the appropriate flow type. It either returns full, partial,
-     * or false. If it returns false it means that everything is fine.
-     *
-     * @param object                                    $shop    The shop model.
-     * @param \OhMyBrew\ShopifyApp\Services\ShopSession $session The session service for the shop.
-     *
-     * @return bool|string
-     */
-    private function getFlowType($shop, $session)
-    {
-        // We need to do a full flow if no shop or it is deleted
-        if ($shop === null || $shop->trashed()) {
-            return AuthShopHandler::FLOW_FULL;
-        }
-
-        // Do nothing if the session is valid
-        if ($session->isValid()) {
-            return false;
-        }
-
-        // We need to do a full flow if it grant per user
-        if ($session->isType(ShopSession::GRANT_PERUSER)) {
-            return AuthShopHandler::FLOW_FULL;
-        }
-
-        // Default is the partial flow
-        return AuthShopHandler::FLOW_PARTIAL;
-    }
-
-    /**
      * Handles a bad shop session.
      *
-     * @param string                                    $type       The auth flow to perform.
      * @param \OhMyBrew\ShopifyApp\Services\ShopSession $session    The shop session instance.
      * @param \Illuminate\Http\Request                  $request    The request object.
      * @param string|null                               $shopDomain The incoming shop domain.
@@ -368,7 +336,6 @@ class AuthShop
      * @return \Illuminate\Http\RedirectResponse
      */
     protected function handleBadSession(
-        string $type,
         ShopSession $session,
         Request $request,
         string $shopDomain = null
@@ -384,10 +351,7 @@ class AuthShop
             'authenticate',
             array_merge(
                 $request->all(),
-                [
-                    'type' => $type,
-                    'shop' => $shopDomain,
-                ]
+                ['shop' => $shopDomain]
             )
         );
     }
