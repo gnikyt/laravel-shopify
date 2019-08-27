@@ -134,7 +134,8 @@ class AuthShopMiddlewareTest extends TestCase
     {
         // Set a shop
         $shop = factory(Shop::class)->create();
-        // this should get ignored as there is a get variable
+
+        // This should get ignored as there is a get variable
         Session::put('shopify_domain', 'adsadda');
 
         // Run the middleware
@@ -170,14 +171,15 @@ class AuthShopMiddlewareTest extends TestCase
 
         // Assert it was not called and a redirect happened
         $this->assertFalse($result[1]);
-        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=mystore123.myshopify.com') !== false);
+        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate?shop=mystore123.myshopify.com') !== false);
     }
 
     public function testShopWithValidGetNoCodeShouldLoadGetDomain()
     {
         // Set a shop
         $shop = factory(Shop::class)->create();
-        // this should get ignored as there is a get variable
+
+        // This should get ignored as there is a get variable
         Session::put('shopify_domain', 'adsadda');
 
         // Run the middleware
@@ -211,7 +213,7 @@ class AuthShopMiddlewareTest extends TestCase
 
         // Assert it was not called and a redirect happened
         $this->assertFalse($result[1]);
-        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=mystore01.myshopify.com') !== false);
+        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate?shop=mystore01.myshopify.com') !== false);
     }
 
     public function testShopWithValidGetNoCodeNoLocaleShouldLoadGetDomain()
@@ -251,7 +253,7 @@ class AuthShopMiddlewareTest extends TestCase
 
         // Assert it was not called and a redirect happened
         $this->assertFalse($result[1]);
-        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=mystore02.myshopify.com') !== false);
+        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate?shop=mystore02.myshopify.com') !== false);
     }
 
     public function testShopWithValidGetNoCodeNoLocaleWithStateShouldLoadGetDomain()
@@ -292,7 +294,7 @@ class AuthShopMiddlewareTest extends TestCase
 
         // Assert it was not called and a redirect happened
         $this->assertFalse($result[1]);
-        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=mystore03.myshopify.com') !== false);
+        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate?shop=mystore03.myshopify.com') !== false);
     }
 
     public function testShopWithValidGetWithCodeShouldLoadGetDomain()
@@ -333,7 +335,7 @@ class AuthShopMiddlewareTest extends TestCase
 
         // Assert it was not called and a redirect happened
         $this->assertFalse($result[1]);
-        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=example.myshopify.com') !== false);
+        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate?shop=example.myshopify.com') !== false);
     }
 
     /**
@@ -410,7 +412,7 @@ class AuthShopMiddlewareTest extends TestCase
         // Assert it was not called and a redirect happened
         $this->assertFalse($result[1]);
         // Make sure it's the one in the referer
-        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=example.myshopify.com') !== false);
+        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate?shop=example.myshopify.com') !== false);
     }
 
     public function testShopWithValidRefererNoCodeShouldLoadRefererDomain()
@@ -446,7 +448,7 @@ class AuthShopMiddlewareTest extends TestCase
         // Assert it was not called and a redirect happened
         $this->assertFalse($result[1]);
         // Make sure it's the one in the referer
-        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=example.myshopify.com') !== false);
+        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate?shop=example.myshopify.com') !== false);
     }
 
     public function testShopWithValidRefererNoCodeWithLocaleShouldLoadRefererDomain()
@@ -482,7 +484,7 @@ class AuthShopMiddlewareTest extends TestCase
         // Assert it was not called and a redirect happened
         $this->assertFalse($result[1]);
         // Make sure it's the one in the referer
-        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=example2.myshopify.com') !== false);
+        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate?shop=example2.myshopify.com') !== false);
     }
 
     public function testShopWithValidRefererNoCodeNoLocaleShouldLoadRefererDomain()
@@ -518,7 +520,7 @@ class AuthShopMiddlewareTest extends TestCase
         // Assert it was not called and a redirect happened
         $this->assertFalse($result[1]);
         // Make sure it's the one in the referer
-        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=example123.myshopify.com') !== false);
+        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate?shop=example123.myshopify.com') !== false);
     }
 
     public function testShopWithValidRefererAllParamsShouldLoadRefererDomain()
@@ -554,7 +556,7 @@ class AuthShopMiddlewareTest extends TestCase
         // Assert it was not called and a redirect happened
         $this->assertFalse($result[1]);
         // Make sure it's the one in the referer
-        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=example3.myshopify.com') !== false);
+        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate?shop=example3.myshopify.com') !== false);
     }
 
     public function testShopWithMissingRefererDetailsShouldLoadSessionDomain()
@@ -591,7 +593,7 @@ class AuthShopMiddlewareTest extends TestCase
         // Assert it was not called and a redirect happened
         $this->assertFalse($result[1]);
         // Make sure it's the one in the session
-        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=sessionz.myshopify.com') !== false);
+        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate?shop=sessionz.myshopify.com') !== false);
     }
 
     /**
@@ -665,7 +667,7 @@ class AuthShopMiddlewareTest extends TestCase
         // Assert it was not called and a redirect happened
         $this->assertFalse($result[1]);
         // Make sure it's the one in the session
-        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=adsadda.myshopify.com') !== false);
+        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate?shop=adsadda.myshopify.com') !== false);
     }
 
     public function testShopWithValidShopHeadersAndCodeShouldLoadHeaderDomain()
@@ -707,7 +709,7 @@ class AuthShopMiddlewareTest extends TestCase
         // Assert it was not called and a redirect happened
         $this->assertFalse($result[1]);
         // Make sure it's the one in the session
-        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=example.myshopify.com') !== false);
+        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate?shop=example.myshopify.com') !== false);
     }
 
     public function testShopWithAllValidShopHeadersShouldLoadHeaderDomain()
@@ -751,7 +753,7 @@ class AuthShopMiddlewareTest extends TestCase
         // Assert it was not called and a redirect happened
         $this->assertFalse($result[1]);
         // Make sure it's the one in the session
-        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=example007.myshopify.com') !== false);
+        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate?shop=example007.myshopify.com') !== false);
     }
 
     public function testShopWithMinimumValidShopHeadersShouldLoadHeaderDomain()
@@ -792,7 +794,7 @@ class AuthShopMiddlewareTest extends TestCase
         // Assert it was not called and a redirect happened
         $this->assertFalse($result[1]);
         // Make sure it's the one in the session
-        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=example008.myshopify.com') !== false);
+        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate?shop=example008.myshopify.com') !== false);
     }
 
     public function testShopWithValidShopHeadersAndLocaleShouldLoadHeaderDomain()
@@ -834,7 +836,7 @@ class AuthShopMiddlewareTest extends TestCase
         // Assert it was not called and a redirect happened
         $this->assertFalse($result[1]);
         // Make sure it's the one in the session
-        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=example009.myshopify.com') !== false);
+        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate?shop=example009.myshopify.com') !== false);
     }
 
     public function testShopWithValidShopHeadersAndStateShouldLoadHeaderDomain()
@@ -876,7 +878,7 @@ class AuthShopMiddlewareTest extends TestCase
         // Assert it was not called and a redirect happened
         $this->assertFalse($result[1]);
         // Make sure it's the one in the session
-        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate/full?shop=example010.myshopify.com') !== false);
+        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/authenticate?shop=example010.myshopify.com') !== false);
     }
 
     /**
