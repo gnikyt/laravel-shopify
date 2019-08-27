@@ -7,13 +7,12 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
-use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
-use OhMyBrew\ShopifyApp\Services\ShopSession;
-use OhMyBrew\ShopifyApp\Services\AuthShopHandler;
+use Illuminate\Support\Facades\Session;
 use OhMyBrew\ShopifyApp\Exceptions\MissingShopDomainException;
 use OhMyBrew\ShopifyApp\Exceptions\SignatureVerificationException;
+use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
+use OhMyBrew\ShopifyApp\Services\ShopSession;
 
 /**
  * Response for ensuring an authenticated shop.
