@@ -52,7 +52,7 @@ Route::group(['prefix' => config('shopify-app.prefix'), 'middleware' => ['web']]
 
     Route::match(
         ['get', 'post'],
-        '/authenticate/{type?}',
+        '/authenticate',
         'OhMyBrew\ShopifyApp\Controllers\AuthController@authenticate'
     )
     ->name('authenticate');

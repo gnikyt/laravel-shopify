@@ -18,20 +18,6 @@ use stdClass;
 class AuthShopHandler
 {
     /**
-     * Full authentication flow flag.
-     *
-     * @var string
-     */
-    const FLOW_FULL = 'full';
-
-    /**
-     * Partial authentication flow flag.
-     *
-     * @var string
-     */
-    const FLOW_PARTIAL = 'partial';
-
-    /**
      * The shop.
      *
      * @var \OhMyBrew\ShopifyApp\Models\Shop
