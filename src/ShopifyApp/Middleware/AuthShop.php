@@ -173,20 +173,10 @@ class AuthShop
         $state = $request->input('state') ?? null;
         $id = $request->input('id') ?? null;
 
-        if ($code) {
-            $verify['code'] = $code;
-        }
-
-        if ($locale) {
-            $verify['locale'] = $locale;
-        }
-
-        if ($state) {
-            $verify['state'] = $state;
-        }
-
-        if ($id) {
-            $verify['id'] = $id;
+        foreach (compact('code', 'locale', 'state', 'id') as $key => $value) {
+            if ($value) {
+                $verify[$key] = $value;
+            }
         }
 
         // Make sure there is no param spoofing attempt
@@ -240,20 +230,10 @@ class AuthShop
         $state = $refererQueryParams['state'] ?? null;
         $id = $refererQueryParams['id'] ?? null;
 
-        if ($code) {
-            $verify['code'] = $code;
-        }
-
-        if ($locale) {
-            $verify['locale'] = $locale;
-        }
-
-        if ($state) {
-            $verify['state'] = $state;
-        }
-
-        if ($id) {
-            $verify['id'] = $id;
+        foreach (compact('code', 'locale', 'state', 'id') as $key => $value) {
+            if ($value) {
+                $verify[$key] = $value;
+            }
         }
 
         // Make sure there is no param spoofing attempt
@@ -301,20 +281,10 @@ class AuthShop
         $state = $request->header('X-Shop-State') ?? null;
         $id = $request->header('X-Shop-ID') ?? null;
 
-        if ($code) {
-            $verify['code'] = $code;
-        }
-
-        if ($locale) {
-            $verify['locale'] = $locale;
-        }
-
-        if ($state) {
-            $verify['state'] = $state;
-        }
-
-        if ($id) {
-            $verify['id'] = $id;
+        foreach (compact('code', 'locale', 'state', 'id') as $key => $value) {
+            if ($value) {
+                $verify[$key] = $value;
+            }
         }
 
         // Make sure there is no param spoofing attempt

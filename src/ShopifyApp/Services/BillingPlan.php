@@ -134,8 +134,11 @@ class BillingPlan
             'name'          => $this->plan->name,
             'price'         => $this->plan->price,
             'test'          => $this->plan->isTest(),
-            'trial_days'    => $this->plan->hasTrial() ? $this->plan->trial_days : 0,
-            'return_url'    => URL::secure(Config::get('shopify-app.billing_redirect'), ['plan_id' => $this->plan->id]),
+            'trial_days'    => $this->determineTrialDays(),
+            'return_url'    => URL::secure(
+                Config::get('shopify-app.billing_redirect'),
+                ['plan_id' => $this->plan->id]
+            ),
         ];
 
         // Handle capped amounts for UsageCharge API
@@ -207,14 +210,46 @@ class BillingPlan
         // Set the activated on, try for the API, fallback to today
         $charge->activated_on = $this->response->activated_on ?? Carbon::today()->format('Y-m-d');
 
-        // Merge in the plan details since the fields match the database columns
+        // Merge in the plan detaiplan_idls since the fields match the database columns
         $planDetails = $this->chargeParams();
         unset($planDetails['return_url']);
         foreach ($planDetails as $key => $value) {
             $charge->{$key} = $value;
         }
+        $save = $charge->save();
 
-        // Finally, save the charge
-        return $charge->save();
+        if ($save) {
+            // All good, update the shop's plan and take them off freemium (if applicable)
+            $this->shop->update([
+                'freemium' => false,
+                'plan_id'  => $this->plan->id,
+            ]);
+        }
+
+        return $save;
+    }
+
+    /**
+     * Determines the trial days for the plan.
+     * Detects if reinstall is happening and properly adjusts.
+     *
+     * @return int
+     */
+    protected function determineTrialDays()
+    {
+        if (!$this->plan->hasTrial()) {
+            // Not a trial-type plan, return none
+            return 0;
+        }
+
+        // See if the shop has been charged for this plan before..
+        // If they have, its a good chance its a reinstall
+        $pc = $this->shop->planCharge($this->plan->ID);
+        if ($pc !== null) {
+            return $pc->remainingTrialDaysFromCancel();
+        }
+
+        // Seems like a fresh trial... return the days set in database
+        return $this->plan->trial_days;
     }
 }

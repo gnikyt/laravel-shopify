@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Test: With Coverage (HTML)
+"$PWD/bin/phpunit" --coverage-html "$PWD/../build/html/" "$@"
+
+BROWSER=""
+if [ -x "$(command -v xdg-open)" ]; then
+  BROWSER="xdg-open"
+fi;
+
+if [ -x "$(command -v open)" ]; then
+  BROWSER="open"
+fi;
+
+echo "Opening results..."
+"$BROWSER" file://"$PWD/../build/html/index.html"

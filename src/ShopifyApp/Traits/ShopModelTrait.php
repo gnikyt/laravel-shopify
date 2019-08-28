@@ -144,11 +144,15 @@ trait ShopModelTrait
     /**
      * Gets the last single or recurring charge for the shop.
      *
+     * @param int|null $planID The plan ID to check with.
+     *
      * @return null|\OhMyBrew\ShopifyApp\Models\Charge
      */
-    public function planCharge()
+    public function planCharge(int $planID = null)
     {
-        return $this->charges()
+        return $this
+            ->charges()
+            ->withTrashed()
             ->whereIn('type', [Charge::CHARGE_RECURRING, Charge::CHARGE_ONETIME])
             ->where('plan_id', $this->plan_id)
             ->orderBy('created_at', 'desc')

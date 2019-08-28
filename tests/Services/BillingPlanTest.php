@@ -151,6 +151,33 @@ class BillingPlanTest extends TestCase
         ]);
 
         // Create a shop, plan, and charge
+        $plan = factory(Plan::class)->states('type_recurring')->create([
+            'trial_days' => 7,
+        ]);
+        $shop = factory(Shop::class)->create();
+
+        // Should get a new charge
+        $bp = new BillingPlan($shop, $plan);
+        $bp->setChargeId(12345);
+        $bp->activate();
+        $charge = $bp->save();
+
+        // Get the charge
+        $shop->refresh();
+        $planCharge = $shop->planCharge();
+        $this->assertEquals('accepted', $planCharge->status);
+
+        // Confirm trial days are still 7 since this is brand new charge and plan
+        $this->assertEquals(7, $planCharge->trial_days);
+    }
+
+    public function testShouldSaveAndCancelLastCharge()
+    {
+        // Stub the responses
+        ApiStub::stubResponses([
+            'post_recurring_application_charges_activate',
+        ]);
+        // Create a shop, plan, and charge
         $plan = factory(Plan::class)->states('type_recurring')->create();
         $shop = factory(Shop::class)->create([
             'plan_id' => $plan->id,
@@ -159,6 +186,46 @@ class BillingPlanTest extends TestCase
             'plan_id'    => $plan->id,
             'shop_id'    => $shop->id,
             'created_at' => Carbon::now()->subWeek(),
+        ]);
+        // Get the shop's plan charge, this should change to cancelled
+        $planCharge = $shop->planCharge();
+        $status = $planCharge->status;
+        // Should get a new charge
+        $bp = new BillingPlan($shop, $plan);
+        $bp->setChargeId(12345);
+        $bp->activate();
+        $charge = $bp->save();
+        // Reload the old charge
+        $planCharge->refresh();
+        $this->assertTrue($charge);
+        $this->assertEquals('cancelled', $planCharge->status);
+        // Get the new charge
+        $newPlanCharge = $shop->planCharge();
+        $this->assertEquals('accepted', $newPlanCharge->status);
+    }
+
+    public function testShouldSaveWithAdjustedTrialDays()
+    {
+        // Stub the responses
+        ApiStub::stubResponses([
+            'post_recurring_application_charges_activate',
+        ]);
+
+        // Create a shop, plan, and charge
+        $trialDays = 14; // Two weeks
+        $plan = factory(Plan::class)->states('type_recurring')->create([
+            'trial_days' => $trialDays,
+        ]);
+        $shop = factory(Shop::class)->create([
+            'plan_id'    => $plan->id,
+        ]);
+        $charge = factory(Charge::class)->states('type_recurring')->create([
+            'plan_id'      => $plan->id,
+            'shop_id'      => $shop->id,
+            'status'        => Charge::STATUS_CANCELLED,
+            'cancelled_on'  => Carbon::now(),
+            'created_at'    => Carbon::now()->subWeek(),
+            'trial_ends_on' => Carbon::now()->subWeek()->addDays($trialDays),
         ]);
 
         // Get the shop's plan charge, this should change to cancelled
@@ -180,5 +247,8 @@ class BillingPlanTest extends TestCase
         // Get the new charge
         $newPlanCharge = $shop->planCharge();
         $this->assertEquals('accepted', $newPlanCharge->status);
+
+        // Trial days should be 7 since the shop used 7 of the 14 days before cancelling
+        $this->assertEquals(7, $newPlanCharge->trial_days);
     }
 }

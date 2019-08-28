@@ -54,16 +54,13 @@ trait BillingControllerTrait
         $bp = new BillingPlan($shop, $plan);
         $bp->setChargeId(Request::query('charge_id'));
         $bp->activate();
-        $bp->save();
-
-        // All good, update the shop's plan and take them off freemium (if applicable)
-        $shop->update([
-            'freemium' => false,
-            'plan_id'  => $plan->id,
-        ]);
+        $save = $bp->save();
 
         // Go to homepage of app
-        return Redirect::route('home')->with('success', 'billing');
+        return Redirect::route('home')->with(
+            $save ? 'success' : 'failure',
+            'billing'
+        );
     }
 
     /**
