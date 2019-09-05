@@ -3,7 +3,6 @@
 namespace OhMyBrew\ShopifyApp\Test\Middleware;
 
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
 use OhMyBrew\ShopifyApp\Middleware\AuthShop;
@@ -73,7 +72,7 @@ class AuthShopMiddlewareTest extends TestCase
         Session::put('shopify_domain', $shop->shopify_domain);
 
         // Go in as a new shop
-        Input::merge([
+        Request::merge([
             'shop'      => 'example.myshopify.com',
             'hmac'      => 'a7448f7c42c9bc025b077ac8b73e7600b6f8012719d21cbeb88db66e5dbbd163',
             'timestamp' => '1337178173',

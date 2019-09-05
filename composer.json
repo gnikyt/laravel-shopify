@@ -18,14 +18,14 @@
     ],
     "require": {
         "php": ">=7.1.0",
-        "laravel/framework": "~5.6",
+        "laravel/framework": "~5.6 | ^6.0",
         "ohmybrew/basic-shopify-api": "^5.4",
         "doctrine/dbal": "~2.5"
     },
     "require-dev": {
-        "orchestra/database": "~3.6",
-        "orchestra/testbench": "~3.6",
-        "phpunit/phpunit": "~6.0 || ~7.0",
+        "orchestra/database": "~4.0",
+        "orchestra/testbench": "~4.0",
+        "phpunit/phpunit": "~6.0 || ~7.0 || ~8.0",
         "squizlabs/php_codesniffer": "^3.0",
         "mockery/mockery": "^1.0"
     },
