@@ -15,6 +15,9 @@ env:
 
 matrix:
   fast_finish: true
+  exclude:
+  - php: 7.1
+    env: LARAVEL_VERSION=6.0.*
 
 cache:
   directories:
