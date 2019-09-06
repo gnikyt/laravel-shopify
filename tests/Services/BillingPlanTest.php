@@ -220,8 +220,8 @@ class BillingPlanTest extends TestCase
             'plan_id'    => $plan->id,
         ]);
         $charge = factory(Charge::class)->states('type_recurring')->create([
-            'plan_id'      => $plan->id,
-            'shop_id'      => $shop->id,
+            'plan_id'       => $plan->id,
+            'shop_id'       => $shop->id,
             'status'        => Charge::STATUS_CANCELLED,
             'cancelled_on'  => Carbon::now(),
             'created_at'    => Carbon::now()->subWeek(),
