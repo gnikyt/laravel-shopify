@@ -206,6 +206,19 @@ return [
     */
 
     'api_rate_limit_cycle_buffer' => env('SHOPIFY_API_RATE_LIMIT_CYCLE_BUFFER', null),
+    
+    /*
+    |--------------------------------------------------------------------------
+    | Shopify Jobs Namespace
+    |--------------------------------------------------------------------------
+    |
+    | This option option allows you to change out the default job namespace
+    | which is \App\Jobs. This option is mainly used if any custom configuration 
+    | is done in autoload and does not need to be changed unless required.
+    |
+    */
+
+    'job_namespace' => env('SHOPIFY_JOB_NAMESPACE', '\OhMyBrew\ShopifyApp\Jobs\\'),
 
     /*
     |--------------------------------------------------------------------------
