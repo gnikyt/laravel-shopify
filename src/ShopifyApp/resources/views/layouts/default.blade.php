@@ -19,7 +19,7 @@
         </div>
 
         @if(config('shopify-app.appbridge_enabled'))
-            <script src="https://unpkg.com/@shopify/app-bridge"></script>
+            <script src="https://unpkg.com/@shopify/app-bridge{{ config('shopify-app.appbridge_enabled') ? '@'.config('shopify-app.appbridge_enabled') : '' }}"></script>
             <script>
                 var AppBridge = window['app-bridge'];
                 var createApp = AppBridge.default;
