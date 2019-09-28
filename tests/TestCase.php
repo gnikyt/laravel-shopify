@@ -2,7 +2,7 @@
 
 namespace OhMyBrew\ShopifyApp\Test;
 
-use \Closure;
+use Closure;
 use Illuminate\Support\Facades\App;
 use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\ShopifyAppProvider;
@@ -66,12 +66,16 @@ abstract class TestCase extends OrchestraTestCase
         $currentEnv = App::environment();
 
         // Set the environment
-        App::detectEnvironment(function() use ($env) { return $env; });
+        App::detectEnvironment(function () use ($env) {
+            return $env;
+        });
 
         // Run the closure
         $fn();
 
         // Reset
-        App::detectEnvironment(function() use ($currentEnv) { return $currentEnv; });
+        App::detectEnvironment(function () use ($currentEnv) {
+            return $currentEnv;
+        });
     }
 }

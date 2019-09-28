@@ -2,11 +2,10 @@
 
 namespace OhMyBrew\ShopifyApp\Exceptions;
 
-use \Exception;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Http\RedirectResponse;
 
 /**
  * Base exception for all exceptions of the package.
