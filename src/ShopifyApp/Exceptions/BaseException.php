@@ -25,7 +25,7 @@ abstract class BaseException extends Exception
     {
         if (App::isProduction()) {
             // If in production mode, go to home with message
-            return Redirect::route('home')->with('error', $this->getMessage());
+            return Redirect::route('login')->with('error', $this->getMessage());
         }
     }
 }

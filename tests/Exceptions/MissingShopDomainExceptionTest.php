@@ -11,7 +11,7 @@ class MissingShopDomainExceptionTest extends TestCase
         $this->swapEnvironment('production', function () {
             // Run the request to billing since it is behind AuthShop
             $response = $this->get('/billing');
-            $response->assertRedirect('/');
+            $response->assertRedirect('/login');
             $response->assertSessionHas('error', 'Unable to get shop domain.');
         });
     }

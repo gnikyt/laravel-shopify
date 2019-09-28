@@ -52,7 +52,8 @@
         .error {
             line-height: 1em;
             padding: 0.5em;
-            color: red;
+            color: #b30000;
+            margin-bottom: 2em;
         }
 
         input.marketing-input {
@@ -105,14 +106,18 @@
         <h3 class="title">
             {{ config('shopify-app.app_name') }}
         </h3>
+
+        @if (session()->has('error'))
+            <div class="error">
+                <strong>Oops! An error has occured:</strong> {{ session('error') }}
+            </div>
+        @endif
+
         <p class="subhead">
             <label for="shop">Enter your Shopify domain to login.</label>
         </p>
 
         <form method="POST" action="{{ route('authenticate') }}">
-            @if (session()->has('error'))
-                <div class="error">{{ session('error') }}</div>
-            @endif
             {{ csrf_field() }}
             <input id="shop" name="shop" type="text" autofocus="autofocus" placeholder="example.myshopify.com" class="marketing-input">
             <button type="submit" class="marketing-button">Install</button>
