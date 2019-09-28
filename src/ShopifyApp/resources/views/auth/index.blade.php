@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('shopify-app.app_name') }} — Login</title>
+    <title>{{ config('shopify-app.app_name') }} &mdash; Login</title>
 
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -101,7 +101,6 @@
     </style>
 </head>
 <body>
-
     <main class="container" role="main">
         <h3 class="title">
             {{ config('shopify-app.app_name') }}
@@ -119,6 +118,5 @@
             <button type="submit" class="marketing-button">Install</button>
         </form>
     </main>
-
 </body>
 </html>

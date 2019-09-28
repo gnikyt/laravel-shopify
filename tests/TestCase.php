@@ -2,6 +2,8 @@
 
 namespace OhMyBrew\ShopifyApp\Test;
 
+use \Closure;
+use Illuminate\Support\Facades\App;
 use OhMyBrew\ShopifyApp\Models\Shop;
 use OhMyBrew\ShopifyApp\ShopifyAppProvider;
 use Orchestra\Database\ConsoleServiceProvider;
@@ -56,5 +58,20 @@ abstract class TestCase extends OrchestraTestCase
     {
         // Path to our migrations to load
         $this->loadMigrationsFrom(realpath(__DIR__.'/../src/ShopifyApp/resources/database/migrations'));
+    }
+
+    protected function swapEnvironment(string $env, Closure $fn)
+    {
+        // Get the current environemnt
+        $currentEnv = App::environment();
+
+        // Set the environment
+        App::detectEnvironment(function() use ($env) { return $env; });
+
+        // Run the closure
+        $fn();
+
+        // Reset
+        App::detectEnvironment(function() use ($currentEnv) { return $currentEnv; });
     }
 }
