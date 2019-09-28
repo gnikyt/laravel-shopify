@@ -22,7 +22,8 @@ abstract class BaseException extends Exception
      */
     public function render(Request $request)
     {
-        if (App::isProduction()) {
+        // Can not use isProduction due to older Laravels
+        if (App::environment() === 'production') {
             // If in production mode, go to home with message
             return Redirect::route('login')->with('error', $this->getMessage());
         }
