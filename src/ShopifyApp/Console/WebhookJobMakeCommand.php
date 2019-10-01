@@ -70,6 +70,7 @@ class WebhookJobMakeCommand extends JobMakeCommand
 
     /**
      * Append "Job" to the end of class name
+     *
      * @return string
      */
     protected function getNameInput()
@@ -79,6 +80,7 @@ class WebhookJobMakeCommand extends JobMakeCommand
         if (!Str::endsWith($name, $suffix)) {
             $name .= $suffix;
         }
+
         return $name;
     }
 
