@@ -69,7 +69,7 @@ class WebhookJobMakeCommand extends JobMakeCommand
     }
 
     /**
-     * Append "Job" to the end of class name
+     * Append "Job" to the end of class name.
      *
      * @return string
      */
