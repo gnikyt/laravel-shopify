@@ -244,7 +244,7 @@ class BillingPlan
 
         // See if the shop has been charged for this plan before..
         // If they have, its a good chance its a reinstall
-        $pc = $this->shop->planCharge($this->plan->ID);
+        $pc = $this->shop->planCharge($this->plan->id);
         if ($pc !== null) {
             return $pc->remainingTrialDaysFromCancel();
         }

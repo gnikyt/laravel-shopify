@@ -4,7 +4,7 @@ namespace OhMyBrew\ShopifyApp\Exceptions;
 
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Redirect;
 
 /**
@@ -22,9 +22,8 @@ abstract class BaseException extends Exception
      */
     public function render(Request $request)
     {
-        // Can not use isProduction due to older Laravels
-        if (App::environment() === 'production') {
-            // If in production mode, go to home with message
+        if (!Config::get('shopify-app.debug')) {
+            // If not in debug mode... show view
             return Redirect::route('login')->with('error', $this->getMessage());
         }
     }

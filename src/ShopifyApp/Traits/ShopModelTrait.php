@@ -154,7 +154,7 @@ trait ShopModelTrait
             ->charges()
             ->withTrashed()
             ->whereIn('type', [Charge::CHARGE_RECURRING, Charge::CHARGE_ONETIME])
-            ->where('plan_id', $this->plan_id)
+            ->where('plan_id', $planID ?? $this->plan_id)
             ->orderBy('created_at', 'desc')
             ->first();
     }
