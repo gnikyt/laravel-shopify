@@ -173,7 +173,7 @@ class AuthShop
         $state = $request->input('state') ?? null;
         $id = $request->input('id') ?? null;
 
-        foreach (compact('code', 'locale', 'state', 'id') as $key => $value) {
+        foreach (compact('code', 'locale', 'state', 'id', 'ids') as $key => $value) {
             if ($value) {
                 $verify[$key] = $value;
             }
@@ -230,7 +230,7 @@ class AuthShop
         $state = $refererQueryParams['state'] ?? null;
         $id = $refererQueryParams['id'] ?? null;
 
-        foreach (compact('code', 'locale', 'state', 'id') as $key => $value) {
+        foreach (compact('code', 'locale', 'state', 'id', 'ids') as $key => $value) {
             if ($value) {
                 $verify[$key] = $value;
             }
@@ -281,7 +281,7 @@ class AuthShop
         $state = $request->header('X-Shop-State') ?? null;
         $id = $request->header('X-Shop-ID') ?? null;
 
-        foreach (compact('code', 'locale', 'state', 'id') as $key => $value) {
+        foreach (compact('code', 'locale', 'state', 'id', 'ids') as $key => $value) {
             if ($value) {
                 $verify[$key] = $value;
             }
