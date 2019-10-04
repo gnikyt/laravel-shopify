@@ -172,10 +172,11 @@ class AuthShop
         $locale = $request->input('locale') ?? null;
         $state = $request->input('state') ?? null;
         $id = $request->input('id') ?? null;
+        $ids = $request->input('ids') ?? null;
 
         foreach (compact('code', 'locale', 'state', 'id', 'ids') as $key => $value) {
             if ($value) {
-                $verify[$key] = $value;
+                $verify[$key] = is_array($value) ? '["' . implode('", "', $value) . '"]' : $value;
             }
         }
 
@@ -229,10 +230,11 @@ class AuthShop
         $locale = $refererQueryParams['locale'] ?? null;
         $state = $refererQueryParams['state'] ?? null;
         $id = $refererQueryParams['id'] ?? null;
+        $ids = $refererQueryParams['ids'] ?? null;
 
         foreach (compact('code', 'locale', 'state', 'id', 'ids') as $key => $value) {
             if ($value) {
-                $verify[$key] = $value;
+                $verify[$key] = is_array($value) ? '["' . implode('", "', $value) . '"]' : $value;
             }
         }
 
@@ -280,10 +282,11 @@ class AuthShop
         $locale = $request->header('X-Shop-Locale') ?? null;
         $state = $request->header('X-Shop-State') ?? null;
         $id = $request->header('X-Shop-ID') ?? null;
+        $ids = $request->header('X-Shop-IDs') ?? null;
 
         foreach (compact('code', 'locale', 'state', 'id', 'ids') as $key => $value) {
             if ($value) {
-                $verify[$key] = $value;
+                $verify[$key] = is_array($value) ? '["' . implode('", "', $value) . '"]' : $value;
             }
         }
 
