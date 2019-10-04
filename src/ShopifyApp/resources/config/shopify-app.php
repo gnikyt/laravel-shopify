@@ -73,7 +73,7 @@ return [
 
     // Use semver range to link to a major or minor version number.
     // Leaving empty will use the latest verison - not recommended in production.
-    'appbridge_version' => (bool) env('SHOPIFY_APPBRIDGE_VERSION', '1'),
+    'appbridge_version' => env('SHOPIFY_APPBRIDGE_VERSION', '1'),
 
     /*
     |--------------------------------------------------------------------------
