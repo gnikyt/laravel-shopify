@@ -38,6 +38,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Shopify Jobs Namespace
+    |--------------------------------------------------------------------------
+    |
+    | This option option allows you to change out the default job namespace
+    | which is \App\Jobs. This option is mainly used if any custom configuration 
+    | is done in autoload and does not need to be changed unless required.
+    |
+    */
+    'job_namespace' => env('SHOPIFY_JOB_NAMESPACE', '\\App\\Jobs\\'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Prefix
     |--------------------------------------------------------------------------
     |
