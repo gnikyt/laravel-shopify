@@ -176,7 +176,7 @@ class AuthShop
 
         foreach (compact('code', 'locale', 'state', 'id', 'ids') as $key => $value) {
             if ($value) {
-                $verify[$key] = is_array($value) ? '["' . implode('", "', $value) . '"]' : $value;
+                $verify[$key] = is_array($value) ? '["'.implode('", "', $value).'"]' : $value;
             }
         }
 
@@ -234,7 +234,7 @@ class AuthShop
 
         foreach (compact('code', 'locale', 'state', 'id', 'ids') as $key => $value) {
             if ($value) {
-                $verify[$key] = is_array($value) ? '["' . implode('", "', $value) . '"]' : $value;
+                $verify[$key] = is_array($value) ? '["'.implode('", "', $value).'"]' : $value;
             }
         }
 
@@ -286,7 +286,7 @@ class AuthShop
 
         foreach (compact('code', 'locale', 'state', 'id', 'ids') as $key => $value) {
             if ($value) {
-                $verify[$key] = is_array($value) ? '["' . implode('", "', $value) . '"]' : $value;
+                $verify[$key] = is_array($value) ? '["'.implode('", "', $value).'"]' : $value;
             }
         }
 

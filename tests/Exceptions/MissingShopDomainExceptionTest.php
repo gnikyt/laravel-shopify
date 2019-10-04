@@ -2,8 +2,8 @@
 
 namespace OhMyBrew\ShopifyApp\Test\Exceptions;
 
-use OhMyBrew\ShopifyApp\Test\TestCase;
 use Illuminate\Support\Facades\Config;
+use OhMyBrew\ShopifyApp\Test\TestCase;
 
 class MissingShopDomainExceptionTest extends TestCase
 {
