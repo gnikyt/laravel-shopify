@@ -744,11 +744,18 @@ class BasicShopifyAPI implements LoggerAwareInterface
             $this->updateRestCallLimits($resp);
             $this->log("[{$uri}:{$type}] {$status}: ".json_encode($body));
 
+            // Check for "Link" header
+            $link = null;
+            if ($resp->hasHeader('link')) {
+                $link = $this->extractLinkHeader($resp->getHeader('link')[0]);
+            }
+
             // Return Guzzle response and JSON-decoded body
             return (object) [
                 'errors'     => false,
                 'response'   => $resp,
                 'body'       => $this->jsonDecode($body),
+                'link'       => $link,
                 'timestamps' => [$tmpTimestamp, $this->requestTimestamp],
             ];
         };
@@ -1069,5 +1076,16 @@ class BasicShopifyAPI implements LoggerAwareInterface
             'requestedCost' => (int) $calls->requestedQueryCost,
             'actualCost'    => (int) $calls->actualQueryCost,
         ];
+    }
+
+    /**
+     * Processes the "Link" header.
+     *
+     * @return string|null
+     */
+    protected function extractLinkHeader(string $header)
+    {
+        preg_match('/page_info=([a-z0-9\-]+)/i', $header, $matches);
+        return count($matches) > 1 ? $matches[1] : null;
     }
 }
