@@ -1053,7 +1053,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
      *
      * @return void
      */
-    protected function updateGraphCallLimits(object $body)
+    protected function updateGraphCallLimits($body)
     {
         if (!property_exists($body, 'extensions') || !property_exists($body->extensions, 'cost')) {
             return;
