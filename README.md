@@ -7,6 +7,8 @@
 
 A simple, tested, API wrapper for Shopify using Guzzle. It supports both the REST and GraphQL API provided by Shopify, and basic rate limiting abilities. It contains helpful methods for generating a installation URL, an authorize URL (offline and per-user), HMAC signature validation, call limits, and API requests. It works with both OAuth and private API apps.
 
+Also supported: asynchronous requests through Guzzle's promises.
+
 This library required PHP >= 7.
 
 ## Installation
@@ -23,7 +25,7 @@ Add `use OhMyBrew\BasicShopifyAPI;` to your imports.
 
 This assumes you properly have your app setup in the partner's dashboard with the correct keys and redirect URIs.
 
-#### REST
+#### REST (sync)
 
 For REST calls, the shop domain and access token are required.
 
@@ -34,7 +36,24 @@ $api->setShop('your shop here');
 $api->setAccessToken('your token here');
 
 // Now run your requests...
-$api->rest(...);
+$resul = $api->rest(...);
+```
+
+#### REST (async)
+
+For REST calls, the shop domain and access token are required.
+
+```php
+$api = new BasicShopifyAPI();
+$api->setVersion('2019-04'); // "YYYY-MM" or "unstable"
+$api->setShop('your shop here');
+$api->setAccessToken('your token here');
+
+// Now run your requests...
+$promise = $api->restAsync(...);
+$promise->then(function ($result) {
+  // ...
+});
 ```
 
 #### GraphQL
@@ -145,7 +164,7 @@ This assumes you properly have your app setup in the partner's dashboard with th
 
 #### REST
 
-For REST calls, shop domain, API key, and API password are request
+For REST (sync) calls, shop domain, API key, and API password are request
 
 ```php
 $api = new BasicShopifyAPI(true); // true sets it to private
@@ -155,7 +174,7 @@ $api->setApiKey('your key here');
 $api->setApiPassword('your password here');
 
 // Now run your requests...
-$api->rest(...);
+$result = $api->rest(...);
 ```
 
 #### GraphQL
@@ -179,13 +198,18 @@ $api->graph(...);
 Requests are made using Guzzle.
 
 ```php
-$api->rest(string $type, string $path, array $params = null, array $headers = []);
+$api->rest(string $type, string $path, array $params = null, array $headers = [], bool $sync = true);
 ```
 
 + `type` refers to GET, POST, PUT, DELETE, etc
 + `path` refers to the API path, example: `/admin/products/1920902.json`
 + `params` refers to an array of params you wish to pass to the path, examples: `['handle' => 'cool-coat']`
 + `headers` refers to an array of custom headers you would like to optionally send with the request, example: `['X-Shopify-Test' => '123']`
++ `sync` refers to if the request should be synchronous or asynchronous.
+
+You can use the alias `restAsync` to skip setting `sync` to `false`.
+
+##### If sync is true (regular rest call):
 
 The return value for the request will be an object containing:
 
@@ -193,6 +217,22 @@ The return value for the request will be an object containing:
 + `body` the JSON decoded response body
 
 *Note*: `request()` will alias to `rest()` as well.
+
+##### If sync is false (restAsync call):
+
+The return value for the request will be a Guzzle promise which you can handle on your own.
+
+The return value for the promise will be an object containing:
+
++ `response` the full Guzzle response object
++ `body` the JSON decoded response body
+
+```php
+$promise = $api->restAsync(...);
+$promise->then(function ($result) {
+  // `response` and `body` available in `$result`.
+});
+```
 
 #### GraphQL
 

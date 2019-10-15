@@ -1,5 +1,10 @@
 # CHANGELOG
 
+# 6.0.0
+
++ Added ability to do Guzzle sync and async requests through Promises.
++ `errors` now returns a boolean instead of an object. `body` now contains the error response.
+
 # 5.5.0
 
 + Added ability to use custom headers in REST calls.
