@@ -17,7 +17,7 @@ class MissingShopDomainExceptionTest extends TestCase
 
     public function testErrorIsThrownForDebug()
     {
-        Config::set('shopify-app.debug', true);
+        Config::set('app.debug', true);
 
         $response = $this->get('/billing');
         $response->assertStatus(500);
