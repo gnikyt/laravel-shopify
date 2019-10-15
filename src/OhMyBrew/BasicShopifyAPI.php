@@ -698,7 +698,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
      * @param string     $path    The Shopify API path... /admin/xxxx/xxxx.json
      * @param array|null $params  Optional parameters to send with the request
      * @param array      $headers Optional headers to append to the request
-     * @param boolean    $wait    Optionally wait for the request to finish.
+     * @param bool       $wait    Optionally wait for the request to finish.
      *
      * @throws Exception
      *
@@ -711,16 +711,16 @@ class BasicShopifyAPI implements LoggerAwareInterface
 
         // Update the timestamp of the request
         $tmpTimestamp = $this->updateRequestTime();
-        
+
         // Build URI and try the request
         $uri = $this->getBaseUri()->withPath($this->versionPath($path));
-        
+
         // Build the request parameters for Guzzle
         $guzzleParams = [];
         if ($params !== null) {
             $guzzleParams[strtoupper($type) === 'GET' ? 'query' : 'json'] = $params;
         }
-        
+
         $this->log("[{$uri}:{$type}] Request Params: ".json_encode($params));
 
         // Add custom headers
@@ -732,6 +732,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
         // Request function
         $requestFn = function () use ($sync, $type, $uri, $guzzleParams) {
             $fn = $sync ? 'request' : 'requestAsync';
+
             return $this->client->{$fn}($type, $uri, $guzzleParams);
         };
 
@@ -752,7 +753,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
             ];
         };
 
-        // Error function 
+        // Error function
         $errorFn = function (RequestException $e) use ($uri, $type) {
             $resp = $e->getResponse();
             $body = $resp->getBody();
@@ -773,6 +774,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
         if ($sync === false) {
             // Async request
             $promise = $requestFn();
+
             return $promise->then($successFn, $errorFn);
         } else {
             // Sync request (default)
