@@ -746,8 +746,8 @@ class BasicShopifyAPI implements LoggerAwareInterface
 
             // Check for "Link" header
             $link = null;
-            if ($resp->hasHeader('link')) {
-                $link = $this->extractLinkHeader($resp->getHeader('link')[0]);
+            if ($resp->hasHeader('Link')) {
+                $link = $this->extractLinkHeader($resp->getHeader('Link')[0]);
             }
 
             // Return Guzzle response and JSON-decoded body

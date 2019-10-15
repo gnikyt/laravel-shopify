@@ -347,6 +347,20 @@ $api->disableRateLimiting();
 $api->isRateLimitingEnabled();
 ```
 
+#### page_info / pagination Support
+
+2019-07 API version introduced a new `Link` header which is used for pagination ([explained here](https://help.shopify.com/en/api/guides/paginated-rest-results)).
+
+If an endpoint supports page_info, you can use `$response->link` to grab the page_info value to pass in your next request.
+
+Example:
+
+```php
+$response = $api->rest('GET', '/admin/products.json', ['limit' => 5]);
+$link = $response->link; // eyJsYXN0X2lkIjo0MDkw
+$response = $api->rest('GET', '/admin/products.json', ['limit' => 5, 'page_info' => $link]);
+```
+
 #### Getting Timestamps
 
 The library will track timestamps from the previous and current (last) call. To see information on this:
