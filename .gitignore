@@ -6,6 +6,7 @@ build/
 bin/
 doc/
 coverage/
+test.php
 
 # IDE and editor specific files #
 #################################

@@ -5,12 +5,12 @@ namespace OhMyBrew;
 use Closure;
 use Exception;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\ServerException;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Uri;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
@@ -663,8 +663,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
         }
 
         // Update the timestamp of the request
-        $tmpTimestamp = $this->requestTimestamp;
-        $this->requestTimestamp = microtime(true);
+        $this->updateRequestTime();
 
         // Create the request, pass the access token and optional parameters
         $req = json_encode($request);
@@ -679,18 +678,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
 
         // Grab the data result and extensions
         $body = $this->jsonDecode($response->getBody());
-        if (property_exists($body, 'extensions') && property_exists($body->extensions, 'cost')) {
-            // Update the API call information
-            $calls = $body->extensions->cost;
-            $this->apiCallLimits['graph'] = [
-                'left'          => (int) $calls->throttleStatus->currentlyAvailable,
-                'made'          => (int) ($calls->throttleStatus->maximumAvailable - $calls->throttleStatus->currentlyAvailable),
-                'limit'         => (int) $calls->throttleStatus->maximumAvailable,
-                'restoreRate'   => (int) $calls->throttleStatus->restoreRate,
-                'requestedCost' => (int) $calls->requestedQueryCost,
-                'actualCost'    => (int) $calls->actualQueryCost,
-            ];
-        }
+        $tmpTimestamp = $this->updateGraphCallLimits($body);
 
         $this->log('Graph response: '.json_encode(property_exists($body, 'errors') ? $body->errors : $body->data));
 
@@ -710,99 +698,110 @@ class BasicShopifyAPI implements LoggerAwareInterface
      * @param string     $path    The Shopify API path... /admin/xxxx/xxxx.json
      * @param array|null $params  Optional parameters to send with the request
      * @param array      $headers Optional headers to append to the request
+     * @param boolean    $wait    Optionally wait for the request to finish.
      *
      * @throws Exception
      *
-     * @return object An Object of the Guzzle response, and JSON-decoded body
+     * @return object|Promise\Promise An Object of the Guzzle response, and JSON-decoded body OR a promise.
      */
-    public function rest(string $type, string $path, array $params = null, array $headers = [])
+    public function rest(string $type, string $path, array $params = null, array $headers = [], bool $sync = true)
     {
         // Check the rate limit before firing the request
-        if ($this->isRateLimitingEnabled() && $this->requestTimestamp) {
-            // Calculate in milliseconds the duration the API call took
-            $duration = round(microtime(true) - $this->requestTimestamp, 3) * 1000;
-            $waitTime = ($this->rateLimitCycle - $duration) + $this->rateLimitCycleBuffer;
-
-            if ($waitTime > 0) {
-                // Do the sleep for X mircoseconds (convert from milliseconds)
-                $this->log('Rest rate limit hit');
-                usleep($waitTime * 1000);
-            }
-        }
+        $this->handleRateLimiting();
 
         // Update the timestamp of the request
-        $tmpTimestamp = $this->requestTimestamp;
-        $this->requestTimestamp = microtime(true);
+        $tmpTimestamp = $this->updateRequestTime();
+        
+        // Build URI and try the request
+        $uri = $this->getBaseUri()->withPath($this->versionPath($path));
+        
+        // Build the request parameters for Guzzle
+        $guzzleParams = [];
+        if ($params !== null) {
+            $guzzleParams[strtoupper($type) === 'GET' ? 'query' : 'json'] = $params;
+        }
+        
+        $this->log("[{$uri}:{$type}] Request Params: ".json_encode($params));
 
-        $errors = false;
-        $response = null;
-        $body = null;
-
-        try {
-            // Build URI and try the request
-            $uri = $this->getBaseUri()->withPath($this->versionPath($path));
-
-            // Build the request parameters for Guzzle
-            $guzzleParams = [];
-            if ($params !== null) {
-                $guzzleParams[strtoupper($type) === 'GET' ? 'query' : 'json'] = $params;
-            }
-
-            $this->log("[{$uri}:{$type}] Request Params: ".json_encode($params));
-
-            // Add custom headers
-            if (count($headers) > 0) {
-                $guzzleParams['headers'] = $headers;
-                $this->log("[{$uri}:{$type}] Request Headers: ".json_encode($headers));
-            }
-
-            // Set the response
-            $response = $this->client->request(
-                $type,
-                $uri,
-                $guzzleParams
-            );
-            $body = $response->getBody();
-        } catch (Exception $e) {
-            if ($e instanceof ClientException || $e instanceof ServerException) {
-                // 400 or 500 level error, set the response
-                $response = $e->getResponse();
-                $body = $response->getBody();
-
-                // Build the error object
-                $errors = (object) [
-                    'status'    => $response->getStatusCode(),
-                    'body'      => $this->jsonDecode($body),
-                    'exception' => $e,
-                ];
-
-                $this->log("[{$uri}:{$type}] {$response->getStatusCode()} Error: {$body}");
-            } else {
-                // Else, rethrow
-                throw $e;
-            }
+        // Add custom headers
+        if (count($headers) > 0) {
+            $guzzleParams['headers'] = $headers;
+            $this->log("[{$uri}:{$type}] Request Headers: ".json_encode($headers));
         }
 
-        // Grab the API call limit header returned from Shopify
-        $callLimitHeader = $response->getHeader('http_x_shopify_shop_api_call_limit');
-        if ($callLimitHeader) {
-            $calls = explode('/', $callLimitHeader[0]);
-            $this->apiCallLimits['rest'] = [
-                'left'  => (int) $calls[1] - $calls[0],
-                'made'  => (int) $calls[0],
-                'limit' => (int) $calls[1],
+        // Request function
+        $requestFn = function () use ($sync, $type, $uri, $guzzleParams) {
+            $fn = $sync ? 'request' : 'requestAsync';
+            return $this->client->{$fn}($type, $uri, $guzzleParams);
+        };
+
+        // Success function
+        $successFn = function (ResponseInterface $resp) use ($uri, $type, $tmpTimestamp) {
+            $body = $resp->getBody();
+            $status = $resp->getStatusCode();
+
+            $this->updateRestCallLimits($resp);
+            $this->log("[{$uri}:{$type}] {$status}: ".json_encode($body));
+
+            // Return Guzzle response and JSON-decoded body
+            return (object) [
+                'errors'     => false,
+                'response'   => $resp,
+                'body'       => $this->jsonDecode($body),
+                'timestamps' => [$tmpTimestamp, $this->requestTimestamp],
             ];
+        };
+
+        // Error function 
+        $errorFn = function (RequestException $e) use ($uri, $type) {
+            $resp = $e->getResponse();
+            $body = $resp->getBody();
+            $status = $resp->getStatusCode();
+
+            $this->updateRestCallLimits($resp);
+            $this->log("[{$uri}:{$type}] {$status} Error: {$body}");
+
+            // Build the error object
+            return (object) [
+                'errors'    => true,
+                'status'    => $status,
+                'body'      => $this->jsonDecode($body)->errors,
+                'exception' => $e,
+            ];
+        };
+
+        if ($sync === false) {
+            // Async request
+            $promise = $requestFn();
+            return $promise->then($successFn, $errorFn);
+        } else {
+            // Sync request (default)
+            try {
+                return $successFn($requestFn());
+            } catch (RequestException $e) {
+                return $errorFn($e);
+            }
         }
+    }
 
-        $this->log("[{$uri}:{$type}] {$response->getStatusCode()}: ".json_encode($errors ? $body->getContents() : $body));
-
-        // Return Guzzle response and JSON-decoded body
-        return (object) [
-            'response'   => $response,
-            'errors'     => $errors,
-            'body'       => $errors ? $body->getContents() : $this->jsonDecode($body),
-            'timestamps' => [$tmpTimestamp, $this->requestTimestamp],
-        ];
+    /**
+     * Runs a request to the Shopify API (async).
+     * Alias for `rest` with `sync` param set to `false`.
+     *
+     * @param string     $type    The type of request... GET, POST, PUT, DELETE
+     * @param string     $path    The Shopify API path... /admin/xxxx/xxxx.json
+     * @param array|null $params  Optional parameters to send with the request
+     * @param array      $headers Optional headers to append to the request
+     *
+     * @throws Exception
+     *
+     * @see rest
+     *
+     * @return object|Promise\Promise An Object of the Guzzle response, and JSON-decoded body OR a promise.
+     */
+    public function restAsync(string $type, string $path, array $params = null, array $headers = [], bool $sync = true)
+    {
+        return $this->rest($type, $path, $params, $headers, false);
     }
 
     /**
@@ -985,5 +984,88 @@ class BasicShopifyAPI implements LoggerAwareInterface
 
         // REST request
         return preg_replace('/\/admin(\/api)?\//', "/admin/api/{$this->version}/", $uri);
+    }
+
+    /**
+     * Handles rate limiting (if enabled).
+     *
+     * @return void
+     */
+    protected function handleRateLimiting()
+    {
+        if (!$this->isRateLimitingEnabled() || !$this->requestTimestamp) {
+            return;
+        }
+
+        // Calculate in milliseconds the duration the API call took
+        $duration = round(microtime(true) - $this->requestTimestamp, 3) * 1000;
+        $waitTime = ($this->rateLimitCycle - $duration) + $this->rateLimitCycleBuffer;
+
+        if ($waitTime > 0) {
+            // Do the sleep for X mircoseconds (convert from milliseconds)
+            $this->log('Rest rate limit hit');
+            usleep($waitTime * 1000);
+        }
+    }
+
+    /**
+     * Updates the request time.
+     *
+     * @return float
+     */
+    protected function updateRequestTime()
+    {
+        $tmpTimestamp = $this->requestTimestamp;
+        $this->requestTimestamp = microtime(true);
+
+        return $tmpTimestamp;
+    }
+
+    /**
+     * Updates the REST API call limits from Shopify headers.
+     *
+     * @param ResponseInterface $resp The response from the request.
+     *
+     * @return void
+     */
+    protected function updateRestCallLimits(ResponseInterface $resp)
+    {
+        // Grab the API call limit header returned from Shopify
+        $callLimitHeader = $resp->getHeader('http_x_shopify_shop_api_call_limit');
+        if (!$callLimitHeader) {
+            return;
+        }
+
+        $calls = explode('/', $callLimitHeader[0]);
+        $this->apiCallLimits['rest'] = [
+            'left'  => (int) $calls[1] - $calls[0],
+            'made'  => (int) $calls[0],
+            'limit' => (int) $calls[1],
+        ];
+    }
+
+    /**
+     * Updates the GraphQL API call limits from the response body.
+     *
+     * @param object $body The GraphQL response body.
+     *
+     * @return void
+     */
+    protected function updateGraphCallLimits(object $body)
+    {
+        if (!property_exists($body, 'extensions') || !property_exists($body->extensions, 'cost')) {
+            return;
+        }
+
+        // Update the API call information
+        $calls = $body->extensions->cost;
+        $this->apiCallLimits['graph'] = [
+            'left'          => (int) $calls->throttleStatus->currentlyAvailable,
+            'made'          => (int) ($calls->throttleStatus->maximumAvailable - $calls->throttleStatus->currentlyAvailable),
+            'limit'         => (int) $calls->throttleStatus->maximumAvailable,
+            'restoreRate'   => (int) $calls->throttleStatus->restoreRate,
+            'requestedCost' => (int) $calls->requestedQueryCost,
+            'actualCost'    => (int) $calls->actualQueryCost,
+        ];
     }
 }
