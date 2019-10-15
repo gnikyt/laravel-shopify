@@ -22,7 +22,7 @@ abstract class BaseException extends Exception
      */
     public function render(Request $request)
     {
-        if (!Config::get('shopify-app.debug')) {
+        if (!Config::get('app.debug')) {
             // If not in debug mode... show view
             return Redirect::route('login')->with('error', $this->getMessage());
         }
