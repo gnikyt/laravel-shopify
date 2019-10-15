@@ -1086,6 +1086,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
     protected function extractLinkHeader(string $header)
     {
         preg_match('/page_info=([a-z0-9\-]+)/i', $header, $matches);
+
         return count($matches) > 1 ? $matches[1] : null;
     }
 }
