@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# 6.1.1
+
++ Fixed `extractHeaderLink` for #45, to include both `next` and `previous`.
+
 # 6.1.0
 
 + Adds support for `Link` header (#39)

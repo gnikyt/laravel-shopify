@@ -357,7 +357,8 @@ Example:
 
 ```php
 $response = $api->rest('GET', '/admin/products.json', ['limit' => 5]);
-$link = $response->link; // eyJsYXN0X2lkIjo0MDkw
+$link = $response->link->next; // eyJsYXN0X2lkIjo0MDkw
+$link2 = $response->link->previous; // dkUIsk00wlskWKl
 $response = $api->rest('GET', '/admin/products.json', ['limit' => 5, 'page_info' => $link]);
 ```
 

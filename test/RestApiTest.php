@@ -487,7 +487,7 @@ class RestApiTest extends BaseTest
                 200,
                 [
                     'http_x_shopify_shop_api_call_limit' => '1/80',
-                    'link'                               => '<https://example.myshopify.com/admin/api/unstable/products.json?page_info='.$pageInfo.'>; rel="next',
+                    'link'                               => '<https://example.myshopify.com/admin/api/unstable/products.json?page_info='.$pageInfo.'>; rel="next"',
                 ],
                 file_get_contents(__DIR__.'/fixtures/rest/admin__shop.json')
             ),
@@ -502,6 +502,6 @@ class RestApiTest extends BaseTest
         $api->setApiPassword('abc');
 
         $result = $api->rest('GET', '/admin/shop.json');
-        $this->assertEquals($pageInfo, $result->link);
+        $this->assertEquals($pageInfo, $result->link->next);
     }
 }
