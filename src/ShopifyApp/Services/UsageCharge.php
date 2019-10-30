@@ -106,7 +106,8 @@ class UsageCharge
         $charge->price = $this->response->price;
         $charge->description = $this->response->description;
         $charge->billing_on = $this->response->billing_on;
+        $charge->save();
 
-        return $charge->save();
+        return $charge;
     }
 }
