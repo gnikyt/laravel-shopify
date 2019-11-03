@@ -18,6 +18,13 @@ use stdClass;
 
 /**
  * Basic Shopify API for REST & GraphQL.
+ *
+ * Note: Single file due to the nature of the project.
+ * Code was originally small, with just basic REST support.
+ * Now, it supports link headers, GraphQL, rate limiting, etc.
+ * In the future, we will try to seperate this class for better
+ * maintainability, right now we do not see a way without breaking
+ * changes occruing.
  */
 class BasicShopifyAPI implements LoggerAwareInterface
 {
@@ -732,7 +739,6 @@ class BasicShopifyAPI implements LoggerAwareInterface
         // Request function
         $requestFn = function () use ($sync, $type, $uri, $guzzleParams) {
             $fn = $sync ? 'request' : 'requestAsync';
-
             return $this->client->{$fn}($type, $uri, $guzzleParams);
         };
 
@@ -770,10 +776,15 @@ class BasicShopifyAPI implements LoggerAwareInterface
             $this->log("[{$uri}:{$type}] {$status} Error: {$body}");
 
             // Build the error object
+            $body = $this->jsonDecode($body);
+            if ($body !== null) {
+                $body = property_exists($body, 'errors') ? $body->errors : null;
+            }
+
             return (object) [
                 'errors'    => true,
                 'status'    => $status,
-                'body'      => $this->jsonDecode($body)->errors,
+                'body'      => $body,
                 'exception' => $e,
             ];
         };
@@ -781,7 +792,6 @@ class BasicShopifyAPI implements LoggerAwareInterface
         if ($sync === false) {
             // Async request
             $promise = $requestFn();
-
             return $promise->then($successFn, $errorFn);
         } else {
             // Sync request (default)

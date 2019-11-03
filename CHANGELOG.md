@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# 6.1.2
+
++ Fix for REST calls not properly building error object (#47).
+
 # 6.1.1
 
 + Fixed `extractHeaderLink` for #45, to include both `next` and `previous`.
