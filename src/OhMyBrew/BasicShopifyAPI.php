@@ -739,6 +739,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
         // Request function
         $requestFn = function () use ($sync, $type, $uri, $guzzleParams) {
             $fn = $sync ? 'request' : 'requestAsync';
+
             return $this->client->{$fn}($type, $uri, $guzzleParams);
         };
 
@@ -782,11 +783,11 @@ class BasicShopifyAPI implements LoggerAwareInterface
             }
 
             return (object) [
-                'errors'    => true,
-                'status'    => $status,
-                'body'      => $body,
-                'link'      => null,
-                'exception' => $e,
+                'errors'     => true,
+                'status'     => $status,
+                'body'       => $body,
+                'link'       => null,
+                'exception'  => $e,
                 'timestamps' => [$tmpTimestamp, $this->requestTimestamp],
             ];
         };
@@ -794,6 +795,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
         if ($sync === false) {
             // Async request
             $promise = $requestFn();
+
             return $promise->then($successFn, $errorFn);
         } else {
             // Sync request (default)
