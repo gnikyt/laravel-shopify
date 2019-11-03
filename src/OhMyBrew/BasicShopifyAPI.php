@@ -767,7 +767,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
         };
 
         // Error function
-        $errorFn = function (RequestException $e) use ($uri, $type) {
+        $errorFn = function (RequestException $e) use ($uri, $type, $tmpTimestamp) {
             $resp = $e->getResponse();
             $body = $resp->getBody();
             $status = $resp->getStatusCode();
@@ -785,7 +785,9 @@ class BasicShopifyAPI implements LoggerAwareInterface
                 'errors'    => true,
                 'status'    => $status,
                 'body'      => $body,
+                'link'      => null,
                 'exception' => $e,
+                'timestamps' => [$tmpTimestamp, $this->requestTimestamp],
             ];
         };
 
