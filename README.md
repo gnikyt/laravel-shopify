@@ -11,6 +11,38 @@ Also supported: asynchronous requests through Guzzle's promises.
 
 This library required PHP >= 7.
 
+## Table of Contents
+  * [Installation](#installation)
+  * [Usage](#usage)
+      * [Public API](#public-api)
+        * [REST (sync)](#rest-sync)
+        * [REST (async)](#rest-async)
+        * [GraphQL](#graphql)
+        * [Getting access (offline)](#getting-access-offline)
+        * [Getting access (per-user)](#getting-access-per-user)
+        * [Verifying HMAC signature](#verifying-hmac-signature)
+      * [Private API](#private-api)
+        * [REST](#rest)
+        * [GraphQL](#graphql-1)
+      * [Making requests](#making-requests)
+        * [REST](#rest-1)
+            * [If sync is true (regular rest call):](#if-sync-is-true-regular-rest-call)
+            * [If sync is false (restAsync call):](#if-sync-is-false-restasync-call)
+        * [GraphQL](#graphql-2)
+      * [API Versioning](#api-versioning)
+      * [Checking API limits](#checking-api-limits)
+      * [Rate Limiting](#rate-limiting)
+        * [Enable Rate Limiting](#enable-rate-limiting)
+        * [Disabiling Rate Limiting](#disabiling-rate-limiting)
+        * [Checking Rate Limiting Status](#checking-rate-limiting-status)
+        * [page_info / pagination Support](#page_info--pagination-support)
+        * [Getting Timestamps](#getting-timestamps)
+      * [Isolated API calls](#isolated-api-calls)
+      * [Errors](#errors)
+      * [Logging](#logging)
+  * [Documentation](#documentation)
+  * [LICENSE](#license)
+
 ## Installation
 
 The recommended way to install is [through composer](http://packagist.org).
