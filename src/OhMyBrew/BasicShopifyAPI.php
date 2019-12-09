@@ -760,6 +760,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
             // Return Guzzle response and JSON-decoded body
             return (object) [
                 'errors'     => false,
+                'status'     => $status,
                 'response'   => $resp,
                 'body'       => $this->jsonDecode($body),
                 'link'       => $link,
