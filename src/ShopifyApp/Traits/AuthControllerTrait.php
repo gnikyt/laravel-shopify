@@ -45,8 +45,6 @@ trait AuthControllerTrait
 
         // Start the process
         $auth = new AuthShopHandler($shop);
-        $session = new ShopSession($shop);
-        $session->setDomain($shopDomain);
 
         if (!$request->filled('code')) {
             // Handle a request without a code, do a fullpage redirect
@@ -66,6 +64,8 @@ trait AuthControllerTrait
 
         // We have a good code, get the access details
         $access = $auth->getAccess($validated['code']);
+        $session = new ShopSession($shop);
+        $session->setDomain($shopDomain);
         $session->setAccess($access);
 
         // Do post processing and dispatch the jobs
