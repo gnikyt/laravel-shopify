@@ -157,27 +157,10 @@ class AuthShop
             return false;
         }
 
-        // Always
-        $signature = $request->input('hmac');
-        $timestamp = $request->input('timestamp');
-
-        $verify = [
-            'shop'      => $shop,
-            'hmac'      => $signature,
-            'timestamp' => $timestamp,
-        ];
-
-        // Sometimes
-        $code = $request->input('code') ?? null;
-        $locale = $request->input('locale') ?? null;
-        $state = $request->input('state') ?? null;
-        $id = $request->input('id') ?? null;
-        $ids = $request->input('ids') ?? null;
-
-        foreach (compact('code', 'locale', 'state', 'id', 'ids') as $key => $value) {
-            if ($value) {
-                $verify[$key] = is_array($value) ? '["'.implode('", "', $value).'"]' : $value;
-            }
+        // Verify
+        $verify = [];
+        foreach ($request->all() as $key => $value) {
+            $verify[$key] = is_array($value) ? '["'.implode('", "', $value).'"]' : $value;
         }
 
         // Make sure there is no param spoofing attempt
@@ -219,23 +202,10 @@ class AuthShop
             return false;
         }
 
-        $verify = [
-            'shop'      => $refererQueryParams['shop'],
-            'hmac'      => $refererQueryParams['hmac'],
-            'timestamp' => $refererQueryParams['timestamp'],
-        ];
-
-        // Sometimes present
-        $code = $refererQueryParams['code'] ?? null;
-        $locale = $refererQueryParams['locale'] ?? null;
-        $state = $refererQueryParams['state'] ?? null;
-        $id = $refererQueryParams['id'] ?? null;
-        $ids = $refererQueryParams['ids'] ?? null;
-
-        foreach (compact('code', 'locale', 'state', 'id', 'ids') as $key => $value) {
-            if ($value) {
-                $verify[$key] = is_array($value) ? '["'.implode('", "', $value).'"]' : $value;
-            }
+        // Verify
+        $verify = [];
+        foreach ($refererQueryParams as $key => $value) {
+            $verify[$key] = is_array($value) ? '["'.implode('", "', $value).'"]' : $value;
         }
 
         // Make sure there is no param spoofing attempt

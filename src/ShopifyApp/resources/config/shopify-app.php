@@ -17,7 +17,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | This option option allows you to use:
-    | `php artisan vendor:publish --tag=migrations` to push migrations
+    | `php artisan vendor:publish --tag=shopify-migrations` to push migrations
     | to your app's folder so you're free to modify before migrating.
     |
     */
