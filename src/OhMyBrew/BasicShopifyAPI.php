@@ -782,7 +782,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
             if ($body !== null) {
                 if (property_exists($body, 'errors')) {
                     $body = $body->errors;
-                } else if (property_exists($body, 'error')) {
+                } elseif (property_exists($body, 'error')) {
                     $body = $body->error;
                 } else {
                     $body = null;
