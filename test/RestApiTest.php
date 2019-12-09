@@ -378,6 +378,42 @@ class RestApiTest extends BaseTest
     /**
      * @test
      *
+     * Should catch client exception and handle it #2.
+     */
+    public function itShouldCatchClientException2()
+    {
+        // Fake a bad response
+        $responses = [
+            new RequestException(
+                '404 Not Found',
+                new Request('GET', 'test'),
+                new Response(
+                    404,
+                    ['http_x_shopify_shop_api_call_limit' => '2/80'],
+                    file_get_contents(__DIR__.'/fixtures/rest/admin__shop_oops.json')
+                )
+            ),
+        ];
+
+        $api = new BasicShopifyAPI(true);
+        $mock = $this->buildClient($api, $responses);
+
+        // Make the call
+        $api->setShop('example.myshopify.com');
+        $api->setApiKey('123');
+        $api->setApiPassword('abc');
+
+        // Bad route
+        $result = $api->rest('GET', '/admin/shop-oops_2.json');
+
+        // Confirm
+        $this->assertTrue($result->errors);
+        $this->assertEquals($result->body, 'Not Found');
+    }
+
+    /**
+     * @test
+     *
      * Should version API paths if a version is set.
      */
     public function itShouldVersionApiPaths()
