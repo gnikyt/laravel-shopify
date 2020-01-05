@@ -4,12 +4,21 @@ namespace OhMyBrew\ShopifyApp;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
-use OhMyBrew\ShopifyApp\Console\WebhookJobMakeCommand;
-use OhMyBrew\ShopifyApp\Middleware\AuthProxy;
+use OhMyBrew\ShopifyApp\Queries\PlanQuery;
+use OhMyBrew\ShopifyApp\Queries\ShopQuery;
+use OhMyBrew\ShopifyApp\Actions\GetPlanUrl;
 use OhMyBrew\ShopifyApp\Middleware\AuthShop;
-use OhMyBrew\ShopifyApp\Middleware\AuthWebhook;
 use OhMyBrew\ShopifyApp\Middleware\Billable;
+use OhMyBrew\ShopifyApp\Middleware\AuthProxy;
+use OhMyBrew\ShopifyApp\Services\ShopSession;
+use OhMyBrew\ShopifyApp\Commands\ChargeCommand;
+use OhMyBrew\ShopifyApp\Interfaces\ChargeQuery;
+use OhMyBrew\ShopifyApp\Middleware\AuthWebhook;
 use OhMyBrew\ShopifyApp\Observers\ShopObserver;
+use OhMyBrew\ShopifyApp\Actions\AuthenticateShop;
+use OhMyBrew\ShopifyApp\Services\AuthShopHandler;
+use OhMyBrew\ShopifyApp\Actions\ActivatePlanForShop;
+use OhMyBrew\ShopifyApp\Console\WebhookJobMakeCommand;
 
 /**
  * This package's provider for Laravel.
@@ -79,6 +88,44 @@ class ShopifyAppProvider extends ServiceProvider
         // ShopifyApp facade
         $this->app->bind('shopifyapp', function ($app) {
             return new ShopifyApp($app);
+        });
+
+        // Queriers
+        $this->app->bind('OhMyBrew\ShopifyApp\Queries\ShopQuery', function ($app) {
+            return new ShopQuery(Config::get('shopify-app.shop_model'));
+        });
+        $this->app->bind('OhMyBrew\ShopifyApp\Queries\PlanQuery', function ($app) {
+            return new PlanQuery();
+        });
+        $this->app->bind('OhMyBrew\ShopifyApp\Queries\ChargeQuery', function ($app) {
+            return new ChargeQuery();
+        });
+
+        // Commands
+        $this->app->bind('OhMyBrew\ShopifyApp\Commands\ChargeCommand', function ($app) {
+            return new ChargeCommand(
+                $app->make('OhMyBrew\ShopifyApp\Queries\ChargeQuery')
+            );
+        });
+
+        // Actions
+        $this->app->bind('OhMyBrew\ShopifyApp\Actions\AuthenticateShop', function ($app) {
+            return new AuthenticateShop(
+                $app->make('OhMyBrew\ShopifyApp\Queries\ShopQuery'),
+                new AuthShopHandler(),
+                new ShopSession()
+            );
+        });
+        $this->app->bind('OhMyBrew\ShopifyApp\Actions\GetPlanUrl', function ($app) {
+            return new GetPlanUrl(
+                $app->make('OhMyBrew\ShopifyApp\Queries\PlanQuery')
+            );
+        });
+        $this->app->bind('OhMyBrew\ShopifyApp\Actions\ActivatePlanForShop', function ($app) {
+            return new ActivatePlanForShop(
+                $app->make('OhMyBrew\ShopifyApp\Queries\ChargeCommand'),
+                $app->make('OhMyBrew\ShopifyApp\Queries\ChargeQuery')
+            );
         });
 
         // Commands

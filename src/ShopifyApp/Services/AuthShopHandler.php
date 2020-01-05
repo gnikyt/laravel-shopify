@@ -2,15 +2,16 @@
 
 namespace OhMyBrew\ShopifyApp\Services;
 
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Event;
+use stdClass;
 use Illuminate\Support\Facades\URL;
+use OhMyBrew\ShopifyApp\Models\Shop;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Config;
 use OhMyBrew\ShopifyApp\Events\AppLoggedIn;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
-use OhMyBrew\ShopifyApp\Jobs\ScripttagInstaller;
+use OhMyBrew\ShopifyApp\Interfaces\IShopModel;
 use OhMyBrew\ShopifyApp\Jobs\WebhookInstaller;
-use OhMyBrew\ShopifyApp\Models\Shop;
-use stdClass;
+use OhMyBrew\ShopifyApp\Jobs\ScripttagInstaller;
 
 /**
  * Responsible for handling how to authenticate a shop.
@@ -32,13 +33,13 @@ class AuthShopHandler
     protected $api;
 
     /**
-     * Constructor for auth shop handler.
+     * Sets the shop.
      *
-     * @param \OhMyBrew\ShopifyApp\Models\Shop $shop The shop.
+     * @param IShopModel $shop The shop.
      *
      * @return self
      */
-    public function __construct(shop $shop)
+    public function setShop(IShopModel $shop)
     {
         // Setup the API
         $this->shop = $shop;

@@ -2,15 +2,15 @@
 
 namespace OhMyBrew\ShopifyApp\Traits;
 
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\View;
-use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
+use Illuminate\Support\Facades\Redirect;
 use OhMyBrew\ShopifyApp\Requests\AuthShop;
-use OhMyBrew\ShopifyApp\Services\AuthShopHandler;
-use OhMyBrew\ShopifyApp\Services\ShopSession;
+use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
+use Illuminate\Contracts\View\View as ViewContract;
+use OhMyBrew\ShopifyApp\Actions\AuthenticateShop;
 
 /**
  * Responsible for authenticating the shop.
@@ -19,82 +19,50 @@ trait AuthControllerTrait
 {
     /**
      * Index route which displays the login page.
+     * 
+     * @param Request $request The HTTP request.
      *
      * @return \Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        $shopDomain = Request::query('shop');
-
-        return View::make('shopify-app::auth.index', compact('shopDomain'));
+        return View::make(
+            'shopify-app::auth.index',
+            [
+                'shopDomain' => $request->query('shop'),
+            ]
+        );
     }
 
     /**
      * Authenticating a shop.
      *
-     * @param \OhMyBrew\ShopifyApp\Requests\AuthShop $request The incoming request.
+     * @param AuthShop $request The incoming request.
      *
-     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
+     * @return ViewContract|RedirectResponse
      */
-    public function authenticate(AuthShop $request)
+    public function authenticate(AuthShop $request, AuthenticateShop $authShop)
     {
-        // Get the validated data
+        // Run the action
         $validated = $request->validated();
-        $shopDomain = ShopifyApp::sanitizeShopDomain($validated['shop']);
-        $shop = ShopifyApp::shop($shopDomain);
+        $result = $authShop($validated['shop'], $validated['code']);
+        if ($result->completed) {
+            $return_to = Session::get('return_to');
+            if ($return_to) {
+                Session::forget('return_to');
+                return Redirect::to($return_to);
+            }
 
-        // Start the process
-        $auth = new AuthShopHandler($shop);
-
-        if (!$request->filled('code')) {
-            // Handle a request without a code, do a fullpage redirect
-            // Check if they have offline access, if they do not, this is most likely an install
-            // If they do, fallback to using configured grant mode
-            $authUrl = $auth->buildAuthUrl(
-                $shop->hasOfflineAccess() ?
-                    Config::get('shopify-app.api_grant_mode') :
-                    ShopSession::GRANT_OFFLINE
-            );
-
-            return View::make(
-                'shopify-app::auth.fullpage_redirect',
-                compact('authUrl', 'shopDomain')
-            );
+            // No return_to, go to home route
+            return Redirect::route('home');
         }
 
-        // We have a good code, get the access details
-        $access = $auth->getAccess($validated['code']);
-        $session = new ShopSession($shop);
-        $session->setDomain($shopDomain);
-        $session->setAccess($access);
-
-        // Do post processing and dispatch the jobs
-        $auth->postProcess();
-        $auth->dispatchJobs();
-
-        // Dispatch the events always (for full and partial)
-        $auth->dispatchEvent();
-
-        // Go to homepage of app or the return_to
-        return $this->returnTo();
-    }
-
-    /**
-     * Determines where to redirect after successfull auth.
-     *
-     * @return string
-     */
-    protected function returnTo()
-    {
-        // Set in AuthShop middleware
-        $return_to = Session::get('return_to');
-        if ($return_to) {
-            Session::forget('return_to');
-
-            return Redirect::to($return_to);
-        }
-
-        // No return_to, go to home route
-        return Redirect::route('home');
+        return View::make(
+            'shopify-app::auth.fullpage_redirect',
+            [
+                'authUrl'    => $result->url,
+                'shopDomain' => $validated['shop'],
+            ]
+        );
     }
 }
