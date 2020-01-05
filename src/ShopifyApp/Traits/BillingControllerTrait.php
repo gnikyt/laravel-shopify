@@ -5,6 +5,7 @@ namespace OhMyBrew\ShopifyApp\Traits;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\View;
+use OhMyBrew\ShopifyApp\Actions\GetPlanUrl;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Models\Charge;
 use OhMyBrew\ShopifyApp\Models\Plan;
@@ -25,19 +26,15 @@ trait BillingControllerTrait
      *
      * @return \Illuminate\View\View
      */
-    public function index(Plan $plan)
+    public function index(Plan $plan, GetPlanUrl $getPlanUrl)
     {
-        // If the plan is null, get a plan
-        if (is_null($plan) || ($plan && !$plan->exists)) {
-            $plan = Plan::where('on_install', true)->first();
-        }
-
-        // Get the confirmation URL
-        $bp = new BillingPlan(ShopifyApp::shop(), $plan);
-        $url = $bp->confirmationUrl();
-
         // Do a fullpage redirect
-        return View::make('shopify-app::billing.fullpage_redirect', compact('url'));
+        return View::make(
+            'shopify-app::billing.fullpage_redirect',
+            [
+                'url' => $getPlanUrl($plan),
+            ]
+        );
     }
 
     /**

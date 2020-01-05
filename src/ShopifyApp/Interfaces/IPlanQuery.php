@@ -18,7 +18,7 @@ interface IPlanQuery
      *
      * @return Plan|null
      */
-    public function getByID(int $id, array $with = []): ?Plan;
+    public function getById(int $id, array $with = []): ?Plan;
 
     /**
      * Get default on-install plan.

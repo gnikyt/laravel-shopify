@@ -17,7 +17,7 @@ interface IShopQuery
      *
      * @return IShopModel|null
      */
-    public function getByID(int $id, array $with = []): ?IShopModel;
+    public function getById(int $id, array $with = []): ?IShopModel;
 
     /**
      * Get by domain.

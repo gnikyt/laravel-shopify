@@ -5,6 +5,7 @@ namespace OhMyBrew\ShopifyApp\Models;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Eloquent\Model;
+use OhMyBrew\ShopifyApp\DTO\PlanDetailsDTO;
 use OhMyBrew\ShopifyApp\Interfaces\IShopModel;
 
 /**
@@ -109,29 +110,28 @@ class Plan extends Model
      * 
      * @param IShopModel $shop The shop the plan is for.
      *
-     * @return array
+     * @return PlanDetailsDTO
      */
-    public function chargeDetails(IShopModel $shop): array
+    public function chargeDetails(IShopModel $shop): PlanDetailsDTO
     {
-        // Build the charge array
-        $chargeDetails = [
-            'name'          => $this->name,
-            'price'         => $this->price,
-            'test'          => $this->isTest(),
-            'trial_days'    => $this->determineTrialDaysForShop($shop),
-            'return_url'    => URL::secure(
-                Config::get('shopify-app.billing_redirect'),
-                ['plan_id' => $this->id]
-            ),
-        ];
+        // Build the details object
+        $details = new PlanDetailsDTO();
+        $details->name = $this->name;
+        $details->price = $this->price;
+        $details->test = $this->isTest();
+        $details->trialDays = $this->determineTrialDaysForShop($shop);
+        $details->returnURL = URL::secure(
+            Config::get('shopify-app.billing_redirect'),
+            ['plan_id' => $this->id]
+        );
 
         // Handle capped amounts for UsageCharge API
         if (isset($this->capped_amount) && $this->capped_amount > 0) {
-            $chargeDetails['capped_amount'] = $this->capped_amount;
-            $chargeDetails['terms'] = $this->terms;
+            $details->cappedAmount = $this->capped_amount;
+            $details->cappedTerms = $this->terms;
         }
 
-        return $chargeDetails;
+        return $details;
     }
 
     /**

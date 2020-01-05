@@ -2,6 +2,8 @@
 
 namespace OhMyBrew\ShopifyApp\Commands;
 
+use OhMyBrew\ShopifyApp\DTO\CreateChargeDTO;
+use OhMyBrew\ShopifyApp\DTO\DeleteChargeDTO;
 use OhMyBrew\ShopifyApp\Interfaces\IChargeCommand;
 use OhMyBrew\ShopifyApp\Interfaces\IChargeQuery;
 use OhMyBrew\ShopifyApp\Models\Charge;
@@ -29,30 +31,23 @@ class ChargeCommand implements IChargeCommand
     /**
      * {@inheritDoc}
      */
-    public function createCharge(
-        int $shopId,
-        int $planId,
-        int $chargeId,
-        string $type,
-        string $status,
-        array $dates,
-        array $planDetails
-    ): int {
+    public function createCharge(CreateChargeDTO $chargeObj): int
+    {
         $charge = new Charge();
-        $charge->shop_id = $shopId;
-        $charge->charge_id = $chargeId;
-        $charge->type = $type;
-        $charge->status = $status;
-
-        // Set the dates
-        foreach ($dates as $key => $value) {
-            $charge->{$key} = $value; 
-        }
-
-        // Set the plan's details as reference
-        foreach ($planDetails as $key => $value) {
-            $charge->{$key} = $value;
-        }
+        $charge->shop_id = $chargeObj->shopId;
+        $charge->charge_id = $chargeObj->chargeId;
+        $charge->type = $chargeObj->chargeType;
+        $charge->status = $chargeObj->chargeStatus;
+        $charge->billing_on = $chargeObj->billingOn;
+        $charge->activated_on = $chargeObj->activatedOn;
+        $charge->trial_ends_on = $chargeObj->trialEndsOn;
+        $charge->name = $chargeObj->planDetails->name;
+        $charge->price = $chargeObj->planDetails->price;
+        $charge->name = $chargeObj->planDetails->name;
+        $charge->test = $chargeObj->planDetails->test;
+        $charge->trial_days = $chargeObj->planDetails->trialDays;
+        $charge->capped_amount = $chargeObj->planDetails->cappedAmount;
+        $charge->terms = $chargeObj->planDetails->cappedTerms;
 
         // Save the charge
         $charge->save();
@@ -63,9 +58,12 @@ class ChargeCommand implements IChargeCommand
     /**
      * {@inheritDoc}
      */
-    public function deleteCharge(int $shopId, int $chargeId): bool
+    public function deleteCharge(DeleteChargeDTO $deleteChargeObj): bool
     {
-        $charge = $this->chargeQuery->getByShopIdAndChargeId($shopId, $chargeId);
+        $charge = $this->chargeQuery->getByShopIdAndChargeId(
+            $deleteChargeObj->shopId,
+            $deleteChargeObj->chargeId
+        );
         if (!$charge) {
             return false;
         }

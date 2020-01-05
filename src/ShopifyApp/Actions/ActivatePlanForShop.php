@@ -2,12 +2,17 @@
 
 namespace OhMyBrew\ShopifyApp\Actions;
 
-use Exception;
 use Illuminate\Support\Carbon;
+use OhMyBrew\ShopifyApp\DTO\CreateChargeDTO;
+use OhMyBrew\ShopifyApp\DTO\DeleteChargeDTO;
+use OhMyBrew\ShopifyApp\DTO\PlanDetailsDTO;
+use OhMyBrew\ShopifyApp\DTO\ShopSetPlanDTO;
 use OhMyBrew\ShopifyApp\Models\Plan;
 use OhMyBrew\ShopifyApp\Interfaces\IShopModel;
 use OhMyBrew\ShopifyApp\Interfaces\IChargeQuery;
+use OhMyBrew\ShopifyApp\Interfaces\IShopCommand;
 use OhMyBrew\ShopifyApp\Interfaces\IChargeCommand;
+use OhMyBrew\ShopifyApp\Exceptions\ChargeActivationException;
 
 /**
  * Authenticates a shop via HTTP request.
@@ -29,6 +34,13 @@ class ActivatePlanForShop
     protected $chargeQuery;
 
     /**
+     * Command for shops.
+     *
+     * @var IShopCommand
+     */
+    protected $shopCommand;
+
+    /**
      * Setup.
      *
      * @param IChargeCommand $chargeCommand The commands for charges.
@@ -36,10 +48,14 @@ class ActivatePlanForShop
      *
      * @return self
      */
-    public function __construct(IChargeCommand $chargeCommand, IChargeQuery $chargeQuery)
-    {
+    public function __construct(
+        IChargeCommand $chargeCommand,
+        IChargeQuery $chargeQuery,
+        IShopCommand $shopCommand
+    ) {
         $this->chargeCommand = $chargeCommand;
         $this->chargeQuery = $chargeQuery;
+        $this->shopCommand = $shopCommand;
     }
 
     /**
@@ -49,7 +65,7 @@ class ActivatePlanForShop
      * @param string     $chargeId The charge ID from Shopify.
      * @param IShopModel $shop     The shop to charge for the plan.
      *
-     * @return object|Exception
+     * @return bool|Exception
      */
     public function __invoke(Plan $plan, string $chargeId, IShopModel $shop)
     {
@@ -59,7 +75,7 @@ class ActivatePlanForShop
             "/admin/{$plan->typeAsString(true)}/{$chargeId}/activate.json"
         )->body->{$plan->typeAsString()};
         if (!$response) {
-            throw new Exception('No activation response was recieved.');
+            throw new ChargeActivationException('No activation response was recieved.');
         }
 
         // Cancel the last charge
@@ -71,34 +87,39 @@ class ActivatePlanForShop
         // Delete existing charge if it exists
         $exists = $this->chargeQuery->getByShopIdAndChargeId($shop->id, $chargeId);
         if ($exists) {
-            $this->chargeCommand->deleteCharge($shop->id, $chargeId);
+            $deleteCharge = new DeleteChargeDTO();
+            $deleteCharge->shopId = $shop->id;
+            $deleteCharge->chargeId = $chargeId;
+
+            $this->chargeCommand->deleteCharge($deleteCharge);
         }
 
         // Get the plan's details
         $planDetails = $plan->chargeDetails($shop);
-        unset($planDetails['return_url']);
+        
+        // Create the charge object
+        $charge = new CreateChargeDTO();
+        $charge->shopId = $shop->id;
+        $charge->planId = $plan->id;
+        $charge->chargeId = $chargeId;
+        $charge->chargeType = $plan->type;
+        $charge->chargeStatus = $response->status;
+        $charge->activatedOn = $response->activated_on ?? Carbon::today()->format('Y-m-d');
+        $charge->billingOn = $plan->isType(Plan::PLAN_RECURRING) ? $response->billing_on : null;
+        $charge->trialEndsOn = $plan->isType(Plan::PLAN_RECURRING) ? $response->trial_ends_on : null;
+        $charge->planDetails = $planDetails;
 
         // Create the charge
-        $charge = $this->chargeCommand->createCharge(
-            $shop->id,
-            $plan->id,
-            $chargeId,
-            $plan->type,
-            $response->status,
-            [
-                'activated_on'  => $response->activated_on ?? Carbon::today()->format('Y-m-d'),
-                'billing_on'    => $plan->isType(Plan::PLAN_RECURRING) ? $response->billing_on : null,
-                'trial_ends_on' => $plan->isType(Plan::PLAN_RECURRING) ? $response->trial_ends_on : null,
-            ],
-            $planDetails
-        );
-
-        if ($save) {
+        $result = $this->chargeCommand->createCharge($charge);
+        if ($charge) {
             // All good, update the shop's plan and take them off freemium (if applicable)
-            $this->shop->update([
-                'freemium' => false,
-                'plan_id'  => $this->plan->id,
-            ]);
+            $stp = new ShopSetPlanDTO();
+            $stp->shopId = $shop->id;
+            $stp->planId = $plan->id;
+
+            return $this->shopCommand->setToPlan($stp);
         }
+
+        return false;
     }
 }
