@@ -37,7 +37,7 @@ trait AuthControllerTrait
      *
      * @param AuthShop $request The incoming request.
      *
-     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
+     * @return ViewView|\Illuminate\Http\RedirectResponse
      */
     public function authenticate(AuthShop $request, AuthenticateShop $authShop)
     {

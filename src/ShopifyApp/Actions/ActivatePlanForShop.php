@@ -16,7 +16,7 @@ use OhMyBrew\ShopifyApp\Exceptions\ChargeActivationException;
 use OhMyBrew\ShopifyApp\Interfaces\IPlanQuery;
 
 /**
- * Authenticates a shop via HTTP request.
+ * Activates a plan for a shop.
  */
 class ActivatePlanForShop
 {
