@@ -12,9 +12,10 @@ interface IShopCommand
     /**
      * Sets a plan to a shop, meanwhile cancelling freemium.
      *
-     * @param ShopSetPlanDTO $setObj The data needed for setting the plan to the shop.
+     * @param int $shopId The shop's ID.
+     * @param int $planId The plan's ID.
      *
      * @return bool
      */
-    public function setToPlan(ShopSetPlanDTO $setObj): bool;
+    public function setToPlan(int $shopId, int $planId): bool;
 }

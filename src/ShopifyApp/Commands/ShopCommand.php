@@ -2,7 +2,6 @@
 
 namespace OhMyBrew\ShopifyApp\Commands;
 
-use OhMyBrew\ShopifyApp\DTO\ShopSetPlanDTO;
 use OhMyBrew\ShopifyApp\Interfaces\IShopCommand;
 use OhMyBrew\ShopifyApp\Interfaces\IShopQuery;
 
@@ -29,10 +28,10 @@ class ShopCommand implements IShopCommand
     /**
      * {@inheritDoc}
      */
-    public function setToPlan(ShopSetPlanDTO $setObj): bool
+    public function setToPlan(int $shopId, int $planId): bool
     {
-        $shop = $this->query->getById($setObj->shopId);
-        $shop->plan_id = $setObj->planId;
+        $shop = $this->query->getById($shopId);
+        $shop->plan_id = $planId;
         $shop->freemium = false;
 
         return $shop->save();

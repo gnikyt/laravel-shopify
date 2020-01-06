@@ -5,7 +5,7 @@ namespace OhMyBrew\ShopifyApp\DTO;
 /**
  * Reprecents create charge.
  */
-class CreateChargeDTO
+class ChargeDTO
 {
     /**
      * Shop ID.

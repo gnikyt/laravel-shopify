@@ -3,7 +3,7 @@
 namespace OhMyBrew\ShopifyApp\Actions;
 
 use Illuminate\Support\Carbon;
-use OhMyBrew\ShopifyApp\DTO\CreateChargeDTO;
+use OhMyBrew\ShopifyApp\DTO\ChargeDTO;
 use OhMyBrew\ShopifyApp\DTO\DeleteChargeDTO;
 use OhMyBrew\ShopifyApp\DTO\PlanDetailsDTO;
 use OhMyBrew\ShopifyApp\DTO\ShopSetPlanDTO;
@@ -113,7 +113,7 @@ class ActivatePlanForShop
         $planDetails = $plan->chargeDetails($shop);
         
         // Create the charge object
-        $charge = new CreateChargeDTO();
+        $charge = new ChargeDTO();
         $charge->shopId = $shop->id;
         $charge->planId = $plan->id;
         $charge->chargeId = $chargeId;

@@ -2,8 +2,7 @@
 
 namespace OhMyBrew\ShopifyApp\Commands;
 
-use OhMyBrew\ShopifyApp\DTO\CreateChargeDTO;
-use OhMyBrew\ShopifyApp\DTO\DeleteChargeDTO;
+use OhMyBrew\ShopifyApp\DTO\ChargeDTO;
 use OhMyBrew\ShopifyApp\Interfaces\IChargeCommand;
 use OhMyBrew\ShopifyApp\Interfaces\IChargeQuery;
 use OhMyBrew\ShopifyApp\Models\Charge;
@@ -31,7 +30,7 @@ class ChargeCommand implements IChargeCommand
     /**
      * {@inheritDoc}
      */
-    public function createCharge(CreateChargeDTO $chargeObj): int
+    public function createCharge(ChargeDTO $chargeObj): int
     {
         $charge = new Charge();
         $charge->shop_id = $chargeObj->shopId;
@@ -58,12 +57,9 @@ class ChargeCommand implements IChargeCommand
     /**
      * {@inheritDoc}
      */
-    public function deleteCharge(DeleteChargeDTO $deleteChargeObj): bool
+    public function deleteCharge(int $shopId, int $chargeId): bool
     {
-        $charge = $this->chargeQuery->getByShopIdAndChargeId(
-            $deleteChargeObj->shopId,
-            $deleteChargeObj->chargeId
-        );
+        $charge = $this->chargeQuery->getByShopIdAndChargeId($shopId, $chargeId);
         if (!$charge) {
             return false;
         }

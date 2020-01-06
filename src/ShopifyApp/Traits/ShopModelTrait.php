@@ -2,7 +2,10 @@
 
 namespace OhMyBrew\ShopifyApp\Traits;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use OhMyBrew\BasicShopifyAPI;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Models\Charge;
 use OhMyBrew\ShopifyApp\Models\Plan;
@@ -19,14 +22,14 @@ trait ShopModelTrait
     /**
      * The API instance.
      *
-     * @var \OhMyBrew\BasicShopifyAPI
+     * @var BasicShopifyAPI
      */
     protected $api;
 
     /**
      * The session instance.
      *
-     * @var \OhMyBrew\ShopifyApp\Services\ShopSession
+     * @var ShopSession
      */
     protected $session;
 
@@ -47,7 +50,7 @@ trait ShopModelTrait
      *
      * @return void
      */
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 
@@ -57,9 +60,9 @@ trait ShopModelTrait
     /**
      * Creates or returns an instance of session for the shop.
      *
-     * @return \OhMyBrew\ShopifyApp\Services\ShopSession
+     * @return ShopSession
      */
-    public function session()
+    public function session(): ShopSession
     {
         if (!$this->session) {
             // Create new session instance
@@ -73,9 +76,9 @@ trait ShopModelTrait
     /**
      * Creates or returns an instance of API for the shop.
      *
-     * @return \OhMyBrew\BasicShopifyAPI
+     * @return BasicShopifyAPI
      */
-    public function api()
+    public function api(): BasicShopifyAPI
     {
         if (!$this->api) {
             // Get the domain and token
@@ -96,7 +99,7 @@ trait ShopModelTrait
      *
      * @return bool
      */
-    public function isGrandfathered()
+    public function isGrandfathered(): bool
     {
         return ((bool) $this->grandfathered) === true;
     }
@@ -104,9 +107,9 @@ trait ShopModelTrait
     /**
      * Get charges.
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return HasMany
      */
-    public function charges()
+    public function charges(): HasMany
     {
         return $this->hasMany(Charge::class);
     }
@@ -116,7 +119,7 @@ trait ShopModelTrait
      *
      * @return bool
      */
-    public function hasCharges()
+    public function hasCharges(): bool
     {
         return $this->charges->isNotEmpty();
     }
@@ -124,9 +127,9 @@ trait ShopModelTrait
     /**
      * Gets the plan.
      *
-     * @return \OhMyBrew\ShopifyApp\Models\Plan
+     * @return BelongsTo
      */
-    public function plan()
+    public function plan(): BelongsTo
     {
         return $this->belongsTo(Plan::class);
     }
@@ -136,7 +139,7 @@ trait ShopModelTrait
      *
      * @return bool
      */
-    public function isFreemium()
+    public function isFreemium(): bool
     {
         return ((bool) $this->freemium) === true;
     }
@@ -146,7 +149,7 @@ trait ShopModelTrait
      *
      * @param int|null $planId The plan ID to check with.
      *
-     * @return null|\OhMyBrew\ShopifyApp\Models\Charge
+     * @return null|Charge
      */
     public function planCharge(int $planId = null)
     {
@@ -164,7 +167,7 @@ trait ShopModelTrait
      *
      * @return bool
      */
-    public function hasOfflineAccess()
+    public function hasOfflineAccess(): bool
     {
         return !empty($this->shopify_token);
     }

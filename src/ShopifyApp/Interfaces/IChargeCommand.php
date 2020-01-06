@@ -2,7 +2,7 @@
 
 namespace OhMyBrew\ShopifyApp\Interfaces;
 
-use OhMyBrew\ShopifyApp\DTO\CreateChargeDTO;
+use OhMyBrew\ShopifyApp\DTO\ChargeDTO;
 use OhMyBrew\ShopifyApp\DTO\DeleteChargeDTO;
 
 /**
@@ -13,16 +13,17 @@ interface IChargeCommand
     /**
      * Create a charge entry.
      *
-     * @param CreateChargeDTO $charge The charge object.
+     * @param ChargeDTO $chargeObj The charge object.
      *
      * @return int
      */
-    public function createCharge(CreateChargeDTO $chargeObj): int;
+    public function createCharge(ChargeDTO $chargeObj): int;
 
     /**
      * Deletes a charge for a shop.
      *
-     * @param DeleteChargeDTO $deleteCharge The delete charge object.
+     * @param int $shopId   The shop's ID.
+     * @param int $chargeId The charge ID from Shopify.
      */
-    public function deleteCharge(DeleteChargeDTO $deleteChargeObj): bool;
+    public function deleteCharge(int $shopId, int $chargeId): bool;
 }

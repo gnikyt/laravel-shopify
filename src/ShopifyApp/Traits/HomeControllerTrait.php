@@ -2,6 +2,7 @@
 
 namespace OhMyBrew\ShopifyApp\Traits;
 
+use Illuminate\Contracts\View\View as ViewView;
 use Illuminate\Support\Facades\View;
 
 /**
@@ -12,9 +13,9 @@ trait HomeControllerTrait
     /**
      * Index route which displays the home page of the app.
      *
-     * @return \Illuminate\View\View
+     * @return ViewView
      */
-    public function index()
+    public function index(): ViewView
     {
         return View::make('shopify-app::home.index');
     }
