@@ -115,10 +115,7 @@ class Plan extends Model
     public function chargeDetails(IShopModel $shop): PlanDetailsDTO
     {
         // Handle capped amounts for UsageCharge API
-        $isCapped = false;
-        if (isset($this->capped_amount) && $this->capped_amount > 0) {
-            $isCapped = true;
-        }
+        $isCapped = isset($this->capped_amount) && $this->capped_amount > 0;
 
         // Build the details object
         return new PlanDetailsDTO(
