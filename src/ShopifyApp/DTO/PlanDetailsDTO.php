@@ -2,57 +2,88 @@
 
 namespace OhMyBrew\ShopifyApp\DTO;
 
+use OhMyBrew\ShopifyApp\DTO\AbstractDTO;
+
 /**
  * Reprecents details for a plan.
  */
-class PlanDetailsDTO
+class PlanDetailsDTO extends AbstractDTO
 {
     /**
-     * Plane name.
+     * Plan name.
      *
      * @var string
      */
-    public $name;
+    private $name;
 
     /**
      * Plan price.
      *
      * @var float
      */
-    public $price;
+    private $price;
 
     /**
      * Plan test or real?
      *
      * @var bool
      */
-    public $test;
+    private $test;
 
     /**
      * Plan trial days.
      *
      * @var int
      */
-    public $trialDays;
+    private $trialDays;
 
     /**
      * Capped amount value.
      *
-     * @var float
+     * @var float|null
      */
-    public $cappedAmount;
+    private $cappedAmount;
 
     /**
      * Terms for capped amount.
      *
-     * @var string
+     * @var string|null
      */
-    public $cappedTerms;
+    private $cappedTerms;
 
     /**
      * Plan return URL.
      *
-     * @var string
+     * @var string|null
      */
-    public $returnURL;
+    private $returnURL;
+
+    /**
+     * Constructor.
+     *
+     * @param string      $name         Plan name.
+     * @param float       $price        Plan price.
+     * @param boolean     $test         Plan test or real?
+     * @param int         $trialDays    Plan trial days.
+     * @param float|null  $cappedAmount Capped amount value.
+     * @param string|null $cappedTerms  Terms for capped amount.
+     * @param string|null $returnURL    Plan return URL.
+     */
+    public function __construct(
+        string $name,
+        float $price,
+        bool $test,
+        int $trialDays,
+        ?float $cappedAmount,
+        ?string $cappedTerms,
+        ?string $returnURL
+    ) {
+        $this->name = $name;
+        $this->price = $price;
+        $this->test = $test;
+        $this->trialDays = $trialDays;
+        $this->cappedAmount = $cappedAmount;
+        $this->cappedTerms = $cappedTerms;
+        $this->returnURL = $returnURL;
+    }
 }

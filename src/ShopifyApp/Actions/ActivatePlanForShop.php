@@ -102,37 +102,26 @@ class ActivatePlanForShop
         // Delete existing charge if it exists
         $exists = $this->chargeQuery->getByShopIdAndChargeId($shop->id, $chargeId);
         if ($exists) {
-            $deleteCharge = new DeleteChargeDTO();
-            $deleteCharge->shopId = $shop->id;
-            $deleteCharge->chargeId = $chargeId;
-
-            $this->chargeCommand->deleteCharge($deleteCharge);
+            $this->chargeCommand->deleteCharge($shop->id, $chargeId);
         }
 
-        // Get the plan's details
-        $planDetails = $plan->chargeDetails($shop);
-        
-        // Create the charge object
-        $charge = new ChargeDTO();
-        $charge->shopId = $shop->id;
-        $charge->planId = $plan->id;
-        $charge->chargeId = $chargeId;
-        $charge->chargeType = $plan->type;
-        $charge->chargeStatus = $response->status;
-        $charge->activatedOn = $response->activated_on ?? Carbon::today()->format('Y-m-d');
-        $charge->billingOn = $plan->isType(Plan::PLAN_RECURRING) ? $response->billing_on : null;
-        $charge->trialEndsOn = $plan->isType(Plan::PLAN_RECURRING) ? $response->trial_ends_on : null;
-        $charge->planDetails = $planDetails;
-
         // Create the charge
-        $result = $this->chargeCommand->createCharge($charge);
+        $charge = $this->chargeCommand->createCharge(
+            new ChargeDTO(
+                $shop->id,
+                $plan->id,
+                $chargeId,
+                $plan->type,
+                $response->status,
+                $response->activated_on ?? Carbon::today()->format('Y-m-d'),
+                $plan->isType(Plan::PLAN_RECURRING) ? $response->billing_on : null,
+                $plan->isType(Plan::PLAN_RECURRING) ? $response->trial_ends_on : null,
+                $plan->chargeDetails($shop)
+            )
+        );
         if ($charge) {
             // All good, update the shop's plan and take them off freemium (if applicable)
-            $stp = new ShopSetPlanDTO();
-            $stp->shopId = $shop->id;
-            $stp->planId = $plan->id;
-
-            return $this->shopCommand->setToPlan($stp);
+            return $this->shopCommand->setToPlan($shop->id, $plan->id);
         }
 
         return false;

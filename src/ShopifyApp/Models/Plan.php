@@ -114,24 +114,25 @@ class Plan extends Model
      */
     public function chargeDetails(IShopModel $shop): PlanDetailsDTO
     {
-        // Build the details object
-        $details = new PlanDetailsDTO();
-        $details->name = $this->name;
-        $details->price = $this->price;
-        $details->test = $this->isTest();
-        $details->trialDays = $this->determineTrialDaysForShop($shop);
-        $details->returnURL = URL::secure(
-            Config::get('shopify-app.billing_redirect'),
-            ['plan_id' => $this->id]
-        );
-
         // Handle capped amounts for UsageCharge API
+        $isCapped = false;
         if (isset($this->capped_amount) && $this->capped_amount > 0) {
-            $details->cappedAmount = $this->capped_amount;
-            $details->cappedTerms = $this->terms;
+            $isCapped = true;
         }
 
-        return $details;
+        // Build the details object
+        return new PlanDetailsDTO(
+            $this->name,
+            $this->price,
+            $this->isTest(),
+            $this->determineTrialDaysForShop($shop),
+            $isCapped ? $this->capped_amount : null,
+            $isCapped ? $this->terms : null,
+            URL::secure(
+                Config::get('shopify-app.billing_redirect'),
+                ['plan_id' => $this->id]
+            )
+        );
     }
 
     /**
