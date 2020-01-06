@@ -18,6 +18,7 @@ use OhMyBrew\ShopifyApp\Observers\ShopObserver;
 use OhMyBrew\ShopifyApp\Actions\AuthenticateShop;
 use OhMyBrew\ShopifyApp\Services\AuthShopHandler;
 use OhMyBrew\ShopifyApp\Actions\ActivatePlanForShop;
+use OhMyBrew\ShopifyApp\Commands\ShopCommand;
 use OhMyBrew\ShopifyApp\Console\WebhookJobMakeCommand;
 
 /**
@@ -107,6 +108,11 @@ class ShopifyAppProvider extends ServiceProvider
                 $app->make('OhMyBrew\ShopifyApp\Queries\ChargeQuery')
             );
         });
+        $this->app->bind('OhMyBrew\ShopifyApp\Commands\ShopCommand', function ($app) {
+            return new ShopCommand(
+                $app->make('OhMyBrew\ShopifyApp\Queries\ShopQuery')
+            );
+        });
 
         // Actions
         $this->app->bind('OhMyBrew\ShopifyApp\Actions\AuthenticateShop', function ($app) {
@@ -123,8 +129,9 @@ class ShopifyAppProvider extends ServiceProvider
         });
         $this->app->bind('OhMyBrew\ShopifyApp\Actions\ActivatePlanForShop', function ($app) {
             return new ActivatePlanForShop(
-                $app->make('OhMyBrew\ShopifyApp\Queries\ChargeCommand'),
-                $app->make('OhMyBrew\ShopifyApp\Queries\ChargeQuery')
+                $app->make('OhMyBrew\ShopifyApp\Commands\ChargeCommand'),
+                $app->make('OhMyBrew\ShopifyApp\Queries\ChargeQuery'),
+                $app->make('OhMyBrew\ShopifyApp\Commands\ShopCommand')
             );
         });
 

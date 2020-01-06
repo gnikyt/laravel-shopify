@@ -2,14 +2,12 @@
 
 namespace OhMyBrew\ShopifyApp\Traits;
 
+use Illuminate\Contracts\View\View as ViewView;
 use Illuminate\Support\Facades\View;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
 use OhMyBrew\ShopifyApp\Requests\AuthShop;
-use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
-use Illuminate\Contracts\View\View as ViewContract;
 use OhMyBrew\ShopifyApp\Actions\AuthenticateShop;
 
 /**
@@ -22,9 +20,9 @@ trait AuthControllerTrait
      * 
      * @param Request $request The HTTP request.
      *
-     * @return \Illuminate\View\View
+     * @return ViewView
      */
-    public function index(Request $request)
+    public function index(Request $request): ViewView
     {
         return View::make(
             'shopify-app::auth.index',
@@ -39,7 +37,7 @@ trait AuthControllerTrait
      *
      * @param AuthShop $request The incoming request.
      *
-     * @return ViewContract|RedirectResponse
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
     public function authenticate(AuthShop $request, AuthenticateShop $authShop)
     {

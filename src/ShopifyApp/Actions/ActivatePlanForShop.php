@@ -13,6 +13,7 @@ use OhMyBrew\ShopifyApp\Interfaces\IChargeQuery;
 use OhMyBrew\ShopifyApp\Interfaces\IShopCommand;
 use OhMyBrew\ShopifyApp\Interfaces\IChargeCommand;
 use OhMyBrew\ShopifyApp\Exceptions\ChargeActivationException;
+use OhMyBrew\ShopifyApp\Interfaces\IPlanQuery;
 
 /**
  * Authenticates a shop via HTTP request.
@@ -41,34 +42,48 @@ class ActivatePlanForShop
     protected $shopCommand;
 
     /**
+     * Querier for plans.
+     *
+     * @var IPlanQuery
+     */
+    protected $planQuery;
+
+    /**
      * Setup.
      *
      * @param IChargeCommand $chargeCommand The commands for charges.
      * @param IChargeQuery   $chargeQuery   The querier for charges.
+     * @param IShopCommand   $shopCommand   The commands for shops.
+     * @param IPlanQuery     $planQuery     The querier for plans.
      *
      * @return self
      */
     public function __construct(
         IChargeCommand $chargeCommand,
         IChargeQuery $chargeQuery,
-        IShopCommand $shopCommand
+        IShopCommand $shopCommand,
+        IPlanQuery $planQuery
     ) {
         $this->chargeCommand = $chargeCommand;
         $this->chargeQuery = $chargeQuery;
         $this->shopCommand = $shopCommand;
+        $this->planQuery = $planQuery;
     }
 
     /**
      * Execution.
      *
-     * @param Plan       $plan     The plan to use.
-     * @param string     $chargeId The charge ID from Shopify.
      * @param IShopModel $shop     The shop to charge for the plan.
+     * @param int        $planId   The plan to use.
+     * @param string     $chargeId The charge ID from Shopify.
      *
      * @return bool|Exception
      */
-    public function __invoke(Plan $plan, string $chargeId, IShopModel $shop)
+    public function __invoke(IShopModel $shop, int $planId, string $chargeId)
     {
+        // Get the plan
+        $plan = $this->planQuery->getById($planId);
+
         // Activate and return the API response
         $response = $shop->api()->rest(
             'POST',
