@@ -11,7 +11,7 @@ use OhMyBrew\ShopifyApp\Services\UsageCharge;
 use Illuminate\Contracts\View\View as ViewView;
 use Illuminate\Http\RedirectResponse;
 use OhMyBrew\ShopifyApp\Requests\StoreUsageCharge;
-use OhMyBrew\ShopifyApp\Actions\ActivatePlanForShop;
+use OhMyBrew\ShopifyApp\Actions\ActivatePlan;
 
 /**
  * Responsible for billing a shop for plans and usage charges.
@@ -40,16 +40,16 @@ trait BillingControllerTrait
     /**
      * Processes the response from the customer.
      *
-     * @param Request             $request             The HTTP request object.
-     * @param int                 $planId              The plan's ID.
-     * @param ActivatePlanForShop $activatePlanForShop The action for activating the plan for a shop.
+     * @param Request      $request      The HTTP request object.
+     * @param int          $planId       The plan's ID.
+     * @param ActivatePlan $activatePlan The action for activating the plan for a shop.
      *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function process(
         Request $request,
         int $planId,
-        ActivatePlanForShop $activatePlanForShop
+        ActivatePlan $activatePlanForShop
     ): RedirectResponse {
         // Activate the plan and save
         $result = $activatePlanForShop(

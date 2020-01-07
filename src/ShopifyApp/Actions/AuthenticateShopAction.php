@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 /**
  * Authenticates a shop via HTTP request.
  */
-class AuthenticateShop
+class AuthenticateShopAction
 {
     /**
      * Querier for shops.
@@ -65,11 +65,7 @@ class AuthenticateShop
     public function __invoke(string $shopDomain, string $code): object
     {
         // Get the shop
-        $shopDomain = ShopifyApp::sanitizeShopDomain($shopDomain);
-        $shop = $this->shopQuery->getByDomain($shopDomain);
-        if (!$shop) {
-            throw new ModelNotFoundException("Unable to find record for {$shopDomain}");
-        }
+        $shop = $this->shopQuery->getByDomain(ShopifyApp::sanitizeShopDomain($shopDomain));
 
         // Start the process
         $auth = $this->authShopHandler->setShop($shop);
@@ -89,10 +85,9 @@ class AuthenticateShop
         }
 
         // We have a good code, get the access details
-        $access = $auth->getAccess($code);
         $session = $this->shopSession->setShop($shop);
-        $session->setDomain($shopDomain);
-        $session->setAccess($access);
+        $session->setDomain($shop->shopify_domain);
+        $session->setAccess($auth->getAccess($code));
 
         // Do post processing and dispatch the jobs
         $auth->postProcess();

@@ -96,6 +96,7 @@ class AuthShopHandler
      *
      * @return void
      */
+    /* MARK: REPLACED WITH RESTORESHOPACTION */
     public function postProcess()
     {
         if (!$this->shop->trashed()) {
@@ -138,6 +139,7 @@ class AuthShopHandler
      *
      * @return void
      */
+    /* MARK: REPLACED WITH INSTALLWEBHOOKSACTION */
     public function dispatchWebhooks()
     {
         $webhooks = Config::get('shopify-app.webhooks');
@@ -152,6 +154,7 @@ class AuthShopHandler
      *
      * @return void
      */
+    /* MARK: REPLACED WITH INSTALLSCRIPTSACTION */
     public function dispatchScripttags()
     {
         $scripttags = Config::get('shopify-app.scripttags');
@@ -166,6 +169,7 @@ class AuthShopHandler
      *
      * @return void
      */
+    /* MARK: REPLACED WITH RUNAFTERAUTHACTION */
     public function dispatchAfterAuthenticate()
     {
         // Grab the jobs config

@@ -85,7 +85,7 @@ class ChargeDTO extends AbstractDTO
      * @param Carbon|null    $billingOn    When the charge will be billed on.
      * @param Carbon|null    $trialEndsOn  When the trial ends on.
      * @param PlanDetailsDTO $planDetails  Plan details for reference.
-     * 
+     *
      * @return self
      */
     public function __construct(

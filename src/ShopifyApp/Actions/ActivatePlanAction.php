@@ -3,23 +3,36 @@
 namespace OhMyBrew\ShopifyApp\Actions;
 
 use Illuminate\Support\Carbon;
-use OhMyBrew\ShopifyApp\DTO\ChargeDTO;
-use OhMyBrew\ShopifyApp\DTO\DeleteChargeDTO;
-use OhMyBrew\ShopifyApp\DTO\PlanDetailsDTO;
-use OhMyBrew\ShopifyApp\DTO\ShopSetPlanDTO;
 use OhMyBrew\ShopifyApp\Models\Plan;
-use OhMyBrew\ShopifyApp\Interfaces\IShopModel;
+use OhMyBrew\ShopifyApp\DTO\ChargeDTO;
+use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
+use OhMyBrew\ShopifyApp\Interfaces\IPlanQuery;
+use OhMyBrew\ShopifyApp\Interfaces\IShopQuery;
 use OhMyBrew\ShopifyApp\Interfaces\IChargeQuery;
 use OhMyBrew\ShopifyApp\Interfaces\IShopCommand;
 use OhMyBrew\ShopifyApp\Interfaces\IChargeCommand;
+use OhMyBrew\ShopifyApp\Actions\CancelCurrentPlanAction;
 use OhMyBrew\ShopifyApp\Exceptions\ChargeActivationException;
-use OhMyBrew\ShopifyApp\Interfaces\IPlanQuery;
 
 /**
  * Activates a plan for a shop.
  */
-class ActivatePlanForShop
+class ActivatePlanAction
 {
+    /**
+     * Action which cancels the current plan.
+     *
+     * @var CancelCurrentPlan
+     */
+    protected $cancelCurrentPlan;
+
+    /**
+     * Querier for shops.
+     *
+     * @var IShopQuery
+     */
+    protected $shopQuery;
+
     /**
      * Command for charges.
      *
@@ -51,55 +64,54 @@ class ActivatePlanForShop
     /**
      * Setup.
      *
-     * @param IChargeCommand $chargeCommand The commands for charges.
-     * @param IChargeQuery   $chargeQuery   The querier for charges.
-     * @param IShopCommand   $shopCommand   The commands for shops.
-     * @param IPlanQuery     $planQuery     The querier for plans.
+     * @param CancelCurrentPlanAction $cancelCurrentPlanAction Action which cancels the current plan.
+     * @param IChargeCommand          $chargeCommand           The commands for charges.
+     * @param IShopQuery              $shopQuery               The querier for shops.
+     * @param IChargeQuery            $chargeQuery             The querier for charges.
+     * @param IPlanQuery              $planQuery               The querier for plans.
+     * @param IShopCommand            $shopCommand             The commands for shops.
      *
      * @return self
      */
     public function __construct(
-        IChargeCommand $chargeCommand,
+        CancelCurrentPlanAction $cancelCurrentPlanAction,
+        IShopQuery $shopQuery,
         IChargeQuery $chargeQuery,
-        IShopCommand $shopCommand,
-        IPlanQuery $planQuery
+        IPlanQuery $planQuery,
+        IChargeCommand $chargeCommand,
+        IShopCommand $shopCommand
     ) {
-        $this->chargeCommand = $chargeCommand;
+        $this->cancelCurrentPlan = $cancelCurrentPlanAction;
         $this->chargeQuery = $chargeQuery;
-        $this->shopCommand = $shopCommand;
+        $this->shopQuery = $shopQuery;
         $this->planQuery = $planQuery;
+        $this->chargeCommand = $chargeCommand;
+        $this->shopCommand = $shopCommand;
     }
 
     /**
      * Execution.
      *
-     * @param IShopModel $shop     The shop to charge for the plan.
-     * @param int        $planId   The plan to use.
-     * @param string     $chargeId The charge ID from Shopify.
+     * @param string     $shopDomain The shop's domain.
+     * @param int        $planId     The plan to use.
+     * @param int        $chargeId   The charge ID from Shopify.
      *
      * @return bool|Exception
      */
-    public function __invoke(IShopModel $shop, int $planId, string $chargeId)
+    public function __invoke(string $shopDomain, int $planId, int $chargeId)
     {
-        // Get the plan
-        $plan = $this->planQuery->getById($planId);
+        // Get the shop
+        $shop = $this->shopQuery->getByDomain(ShopifyApp::sanitizeShopDomain($shopDomain));
 
-        // Activate and return the API response
-        $response = $shop->api()->rest(
-            'POST',
-            "/admin/{$plan->typeAsString(true)}/{$chargeId}/activate.json"
-        )->body->{$plan->typeAsString()};
+        // Get the plan and activate
+        $plan = $this->planQuery->getById($planId);
+        $response = $plan->apiChargeActivate($shop, $chargeId);
         if (!$response) {
             throw new ChargeActivationException('No activation response was recieved.');
         }
 
-        // Cancel the last charge
-        $planCharge = $shop->planCharge();
-        if ($planCharge && !$planCharge->isDeclined() && !$planCharge->isCancelled()) {
-            $planCharge->cancel();
-        }
-
-        // Delete existing charge if it exists
+        // Cancel the last charge, delete existing charge (if it exists)
+        call_user_func($this->cancelCurrentPlan, $shop);
         $exists = $this->chargeQuery->getByShopIdAndChargeId($shop->id, $chargeId);
         if ($exists) {
             $this->chargeCommand->deleteCharge($shop->id, $chargeId);

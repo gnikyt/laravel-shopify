@@ -11,7 +11,7 @@ use OhMyBrew\ShopifyApp\Interfaces\IChargeCommand;
 /**
  * Activates a usage charge for a shop.
  */
-class ActivateUsageChargeForShop
+class ActivateUsageChargeAction
 {
     /**
      * Command for charges.

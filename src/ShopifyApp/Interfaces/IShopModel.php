@@ -3,6 +3,7 @@
 namespace OhMyBrew\ShopifyApp\Interfaces;
 
 use OhMyBrew\BasicShopifyAPI;
+use OhMyBrew\ShopifyApp\Models\Plan;
 use OhMyBrew\ShopifyApp\Models\Charge;
 use OhMyBrew\ShopifyApp\Services\ShopSession;
 
