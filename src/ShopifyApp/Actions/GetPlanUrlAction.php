@@ -3,8 +3,8 @@
 namespace OhMyBrew\ShopifyApp\Actions;
 
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
+use OhMyBrew\ShopifyApp\Services\IApiHelper;
 use OhMyBrew\ShopifyApp\Interfaces\IPlanQuery;
-use OhMyBrew\ShopifyApp\Interfaces\IShopModel;
 use OhMyBrew\ShopifyApp\Interfaces\IShopQuery;
 
 /**
@@ -12,6 +12,13 @@ use OhMyBrew\ShopifyApp\Interfaces\IShopQuery;
  */
 class GetPlanUrlAction
 {
+    /**
+     * The API helper.
+     *
+     * @var IApiHelper
+     */
+    protected $apiHelper;
+
     /**
      * Querier for plans.
      *
@@ -29,13 +36,15 @@ class GetPlanUrlAction
     /**
      * Setup.
      *
+     * @param IApiHelper $apiHelper The API helper.
      * @param IPlanQuery $planQuery The querier for the plans.
      * @param IShopQuery $shopQuery The querier for shops.
      *
      * @return self
      */
-    public function __construct(IPlanQuery $planQuery, IShopQuery $shopQuery)
+    public function __construct(IApiHelper $apiHelper, IPlanQuery $planQuery, IShopQuery $shopQuery)
     {
+        $this->apiHelper = $apiHelper;
         $this->planQuery = $planQuery;
         $this->shopQuery = $shopQuery;
     }
@@ -58,6 +67,10 @@ class GetPlanUrlAction
             $plan = $this->planQuery->getDefault();
         }
 
-        return $plan->apiCreateCharge($shop)->confirmation_url;
+        $api = $this
+            ->apiHelper
+            ->setInstance($shop->api())
+            ->createCharge($plan->getTypeAsString(true), $plan->chargeDetails($shop));
+        return $api->confirmation_url;
     }
 }

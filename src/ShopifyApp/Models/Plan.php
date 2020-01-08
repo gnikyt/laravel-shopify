@@ -157,46 +157,4 @@ class Plan extends Model
         // Seems like a fresh trial... return the days set in database
         return $this->trial_days;
     }
-
-    /**
-     * API helper for plan activation.
-     *
-     * @param IShopModel $shop     The shop object.
-     * @param int        $chargeId The charge ID from Shopify to use for the call.
-     *
-     * @return object
-     */
-    public function apiChargeActivate(IShopModel $shop, int $chargeId): object
-    {
-        return $shop
-            ->api()
-            ->rest(
-                'POST',
-                "/admin/{$this->typeAsString(true)}/{$chargeId}/activate.json"
-            )
-            ->body
-            ->{$this->typeAsString()};
-    }
-
-    /**
-     * API helper for charge creation.
-     *
-     * @param IShopModel $shop     The shop object.
-     *
-     * @return object
-     */
-    public function apiCreateCharge(IShopModel $shop): object
-    {
-        return $shop
-            ->api()
-            ->rest(
-                'POST',
-                "/admin/{$this->typeAsString(true)}.json",
-                [
-                    "{$this->typeAsString()}" => $this->chargeDetails($this),
-                ]
-            )
-            ->body
-            ->{$this->typeAsString()};
-    }
 }

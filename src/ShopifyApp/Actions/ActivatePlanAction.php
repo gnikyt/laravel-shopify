@@ -6,19 +6,26 @@ use Illuminate\Support\Carbon;
 use OhMyBrew\ShopifyApp\Models\Plan;
 use OhMyBrew\ShopifyApp\DTO\ChargeDTO;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
+use OhMyBrew\ShopifyApp\Services\IApiHelper;
 use OhMyBrew\ShopifyApp\Interfaces\IPlanQuery;
 use OhMyBrew\ShopifyApp\Interfaces\IShopQuery;
 use OhMyBrew\ShopifyApp\Interfaces\IChargeQuery;
 use OhMyBrew\ShopifyApp\Interfaces\IShopCommand;
 use OhMyBrew\ShopifyApp\Interfaces\IChargeCommand;
 use OhMyBrew\ShopifyApp\Actions\CancelCurrentPlanAction;
-use OhMyBrew\ShopifyApp\Exceptions\ChargeActivationException;
 
 /**
  * Activates a plan for a shop.
  */
 class ActivatePlanAction
 {
+    /**
+     * The API helper.
+     *
+     * @var IApiHelper
+     */
+    protected $apiHelper;
+
     /**
      * Action which cancels the current plan.
      *
@@ -64,6 +71,7 @@ class ActivatePlanAction
     /**
      * Setup.
      *
+     * @param IApiHelper              $apiHelper               The API helper.
      * @param CancelCurrentPlanAction $cancelCurrentPlanAction Action which cancels the current plan.
      * @param IChargeCommand          $chargeCommand           The commands for charges.
      * @param IShopQuery              $shopQuery               The querier for shops.
@@ -74,6 +82,7 @@ class ActivatePlanAction
      * @return self
      */
     public function __construct(
+        IApiHelper $apiHelper,
         CancelCurrentPlanAction $cancelCurrentPlanAction,
         IShopQuery $shopQuery,
         IChargeQuery $chargeQuery,
@@ -81,6 +90,7 @@ class ActivatePlanAction
         IChargeCommand $chargeCommand,
         IShopCommand $shopCommand
     ) {
+        $this->apiHelper = $apiHelper;
         $this->cancelCurrentPlan = $cancelCurrentPlanAction;
         $this->chargeQuery = $chargeQuery;
         $this->shopQuery = $shopQuery;
@@ -105,10 +115,10 @@ class ActivatePlanAction
 
         // Get the plan and activate
         $plan = $this->planQuery->getById($planId);
-        $response = $plan->apiChargeActivate($shop, $chargeId);
-        if (!$response) {
-            throw new ChargeActivationException('No activation response was recieved.');
-        }
+        $response = $this
+            ->apiHelper
+            ->setInstance($shop->api())
+            ->activateCharge($plan->typeAsString(true), $chargeId);
 
         // Cancel the last charge, delete existing charge (if it exists)
         call_user_func($this->cancelCurrentPlan, $shop);

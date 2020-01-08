@@ -33,7 +33,7 @@ abstract class AbstractDTO
      *
      * @param string $key   The key to use.
      * @param mixed  $value The value for the key.
-     * 
+     *
      * @return Exception
      */
     public function __set($key, $value)

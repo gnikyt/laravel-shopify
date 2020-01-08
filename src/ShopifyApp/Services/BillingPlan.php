@@ -110,6 +110,7 @@ class BillingPlan
      *
      * @return string
      */
+    /* MARK: REPLACED BY GETPLANURLACTION */
     public function confirmationUrl()
     {
         // Begin the charge request
@@ -127,6 +128,7 @@ class BillingPlan
      *
      * @return array
      */
+    /* MARK: REPLACED BY PLAN/PLANDETAILSDTO */
     public function chargeParams()
     {
         // Build the charge array
@@ -158,6 +160,7 @@ class BillingPlan
      *
      * @return object
      */
+    /* MARK: REPLACED BY ACTIVATEPLANACTION */
     public function activate()
     {
         // Check if we have a charge ID to use
@@ -179,6 +182,7 @@ class BillingPlan
      *
      * @return bool
      */
+    /* MARK: REPLACED BY ACTIVATEPLANACTION AND CANCELPLANACTION */
     public function save()
     {
         if (!$this->response) {
@@ -235,6 +239,7 @@ class BillingPlan
      *
      * @return int
      */
+    /* MARK: REPLACED BY PLAN/DETERMINTRIALDAYS */
     protected function determineTrialDays()
     {
         if (!$this->plan->hasTrial()) {

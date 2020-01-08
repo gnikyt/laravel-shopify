@@ -3,10 +3,13 @@
 namespace OhMyBrew\ShopifyApp\Jobs;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
+use OhMyBrew\ShopifyApp\Services\APIHandler;
+use OhMyBrew\ShopifyApp\Services\IApiHelper;
+use OhMyBrew\ShopifyApp\Interfaces\IShopModel;
 
 /**
  * Webhook job responsible for handling installing scripttag.
@@ -18,9 +21,16 @@ class ScripttagInstaller implements ShouldQueue
     /**
      * The shop object.
      *
-     * @var object
+     * @var IShopModel
      */
     protected $shop;
+
+    /**
+     * The API helper.
+     *
+     * @var ApiHelper
+     */
+    protected $apiHelper;
 
     /**
      * Scripttag list.
@@ -32,14 +42,16 @@ class ScripttagInstaller implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param object $shop       The shop object
-     * @param array  $scripttags The scripttag list
+     * @param IShopModel  $shop       The shop object.
+     * @param array       $scripttags The scripttag list.
+     * @param IAPIHelper  $apiHelper  The API helper.
      *
-     * @return void
+     * @return self
      */
-    public function __construct($shop, array $scripttags)
+    public function __construct(IShopModel $shop, IApiHelper $apiHelper, array $scripttags)
     {
         $this->shop = $shop;
+        $this->apiHelper = $apiHelper;
         $this->scripttags = $scripttags;
     }
 
@@ -48,27 +60,19 @@ class ScripttagInstaller implements ShouldQueue
      *
      * @return array
      */
-    public function handle()
+    public function handle(): array
     {
+        // Get the current scripttags installed on the shop
+        $api = $this->apiHelper->setInstance($this->shop->api());
+        $shopScripttags = $api->getScriptTags();
+
         // Keep track of whats created
         $created = [];
-
-        // Get the current scripttags installed on the shop
-        $api = $this->shop->api();
-        $shopScripttags = $api->rest(
-            'GET',
-            '/admin/script_tags.json',
-            [
-                'limit'  => 250,
-                'fields' => 'id,src',
-            ]
-        )->body->script_tags;
-
         foreach ($this->scripttags as $scripttag) {
             // Check if the required scripttag exists on the shop
             if (!$this->scripttagExists($shopScripttags, $scripttag)) {
                 // It does not... create the scripttag
-                $api->rest('POST', '/admin/script_tags.json', ['script_tag' => $scripttag]);
+                $api->createScriptTag($scripttag);
                 $created[] = $scripttag;
             }
         }
@@ -84,7 +88,7 @@ class ScripttagInstaller implements ShouldQueue
      *
      * @return bool
      */
-    protected function scripttagExists(array $shopScripttags, array $scripttag)
+    protected function scripttagExists(array $shopScripttags, array $scripttag): bool
     {
         foreach ($shopScripttags as $shopScripttag) {
             if ($shopScripttag->src === $scripttag['src']) {

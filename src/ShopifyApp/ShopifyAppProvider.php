@@ -25,12 +25,25 @@ use OhMyBrew\ShopifyApp\Console\WebhookJobMakeCommand;
 use OhMyBrew\ShopifyApp\Actions\AuthenticateShopAction;
 use OhMyBrew\ShopifyApp\Actions\CancelCurrentPlanAction;
 use OhMyBrew\ShopifyApp\Actions\InstallWebhooksAction;
+use OhMyBrew\ShopifyApp\Services\ApiHelper;
 
 /**
  * This package's provider for Laravel.
  */
 class ShopifyAppProvider extends ServiceProvider
 {
+    /**
+     * Bind type: new instances.
+     *
+     * @var string
+     */
+    const CBIND = 'bind';
+
+    /**
+     * Bind type: singleton.
+     */
+    const CSINGLETON = 'singleton';
+
     /**
      * Bootstrap the application services.
      *
@@ -122,64 +135,66 @@ class ShopifyAppProvider extends ServiceProvider
             },
 
             // Queriers
-            'Queries\ShopQuery' => function () {
+            'Queries\ShopQuery' => [self::CSINGLETON, function () {
                 return new ShopQuery(Config::get('shopify-app.shop_model'));
-            },
-            'Queries\PlanQuery' => function () {
+            }],
+            'Queries\PlanQuery' => [self::CSINGLETON, function () {
                 return new PlanQuery();
-            },
-            'Queries\ChargeQuery' => function () {
+            }],
+            'Queries\ChargeQuery' => [self::CSINGLETON, function () {
                 return new ChargeQuery();
-            },
+            }],
 
             // Commands
-            'Commands\ChargeCommand' => function ($app) {
+            'Commands\ChargeCommand' => [self::CSINGLETON, function ($app) {
                 return new ChargeCommand(
                     $app->make($this->createClassPath('Queries\ChargeQuery'))
                 );
-            },
-            'Commands\ShopCommand' => function ($app) {
+            }],
+            'Commands\ShopCommand' => [self::CSINGLETON, function ($app) {
                 return new ShopCommand(
                     $app->make($this->createClassPath('Queries\ShopQuery'))
                 );
-            },
+            }],
 
             // Actions
-            'Actions\AuthenticateShopAction' => function ($app) {
+            'Actions\AuthenticateShopAction' => [self::CBIND, function ($app) {
                 return new AuthenticateShopAction(
                     $app->make($this->createClassPath('Queries\ShopQuery')),
                     new AuthShopHandler(),
                     new ShopSession()
                 );
-            },
-            'Actions\GetPlanUrlAction' => function ($app) {
+            }],
+            'Actions\GetPlanUrlAction' => [self::CBIND, function ($app) {
                 return new GetPlanUrlAction(
+                    new ApiHelper(),
                     $app->make($this->createClassPath('Queries\PlanQuery')),
                     $app->make($this->createClassPath('Queryies\ShopQuery')),
                 );
-            },
-            'Actions\RestoreShopAction' => function ($app) {
+            }],
+            'Actions\RestoreShopAction' => [self::CBIND, function ($app) {
                 return new RestoreShopAction(
                     $app->make($this->createClassPath('Queries\ShopQuery'))
                 );
-            },
-            'Actions\CancelCurrentPlanAction' => function ($app) {
+            }],
+            'Actions\CancelCurrentPlanAction' => [self::CBIND, function ($app) {
                 return new CancelCurrentPlanAction(
                     $app->make($this->createClassPath('Queries\ShopQuery'))
                 );
-            },
-            'Actions\InstallWebhooksAction' => function ($app) {
+            }],
+            'Actions\InstallWebhooksAction' => [self::CBIND, function ($app) {
                 return new InstallWebhooksAction(
                     $app->make($this->createClassPath('Queries\ShopQuery'))
                 );
-            },
-            'Actions\AfterAuthenticateAction' => function ($app) {
+            }],
+            'Actions\AfterAuthenticateAction' => [self::CBIND, function ($app) {
                 return new AfterAuthenticateAction(
                     $app->make($this->createClassPath('Queries\ShopQuery'))
                 );
-            },
-            'Actions\ActivatePlanAction' => function ($app) {
+            }],
+            'Actions\ActivatePlanAction' => [self::CBIND, function ($app) {
                 return new ActivatePlanAction(
+                    new ApiHelper(),
                     $app->make($this->createClassPath('Actions\CancelCurrentPlanAction')),
                     $app->make($this->createClassPath('Queryies\ShopQuery')),
                     $app->make($this->createClassPath('Queries\ChargeQuery')),
@@ -187,10 +202,10 @@ class ShopifyAppProvider extends ServiceProvider
                     $app->make($this->createClassPath('Commands\ChargeCommand')),
                     $app->make($this->createClassPath('Commands\ShopCommand'))
                 );
-            },
+            }],
         ];
         foreach ($binds as $key => $fn) {
-            $this->createBind($key, $fn);
+            $this->createBind($key, $fn[0], $fn[1]);
         }
     }
 
@@ -198,17 +213,18 @@ class ShopifyAppProvider extends ServiceProvider
      * Simple helper for creating binds.
      *
      * @param string  $obj  The relative path to the class or the bind key.
+     * @param string  $type The type of bind (true means singleton, false is bind).
      * @param Closure $fn   The callback passed to the bind.
      *
      * @return void
      */
-    private function createBind(string $obj, Closure $fn): void
+    private function createBind(string $obj, string $type, Closure $fn): void
     {
         if (strstr($obj, '\\')) {
             $obj = $this->createClassPath($obj);
         }
 
-        $this->app->bind($obj, $fn);
+        $this->app->{$type}($obj, $fn);
     }
 
     /**
