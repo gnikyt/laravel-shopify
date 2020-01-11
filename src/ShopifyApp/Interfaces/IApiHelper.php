@@ -12,6 +12,41 @@ use OhMyBrew\ShopifyApp\DTO\PlanDetailsDTO;
 interface IApiHelper
 {
     /**
+     * HTTP method: GET
+     *
+     * @var string
+     */
+    const METHOD_GET = self::METHOD_GET;
+
+    /**
+     * HTTP method: POST
+     *
+     * @var string
+     */
+    const METHOD_POST = self::METHOD_POST;
+
+    /**
+     * HTTP method: DELETE
+     *
+     * @var string
+     */
+    const METHOD_DELETE = 'DELETE';
+
+    /**
+     * Offline auth mode.
+     *
+     * @var string
+     */
+    const MODE_OFFLINE = 'offline';
+
+    /**
+     * Per-user auth mode.
+     *
+     * @var string
+     */
+    const MODE_PERUSER = 'per-user';
+
+    /**
      * Set the API instance.
      *
      * @param BasicShopifyAPI $api The API instance.
@@ -19,6 +54,34 @@ interface IApiHelper
      * @return self
      */
     public function setInstance(BasicShopifyAPI $api): self;
+
+    /**
+     * Build the authentication URL to Shopify.
+     *
+     * @param string $mode   The mode of authentication (offline or per-user).
+     * @param string $scopes The scopes for the authentication, comma-separated.
+     *
+     * @return string
+     */
+    public function buildAuthUrl(string $mode, string $scopes): string;
+
+    /**
+     * Determines if the request HMAC is verified.
+     *
+     * @param array $request The request parameters.
+     *
+     * @return bool
+     */
+    public function verifyRequest(array $request): bool;
+
+    /**
+     * Finish the process by getting the access details from the code.
+     *
+     * @param string $code The code from the request.
+     *
+     * @return object
+     */
+    public function getAccessData(string $code);
 
     /**
      * Get the script tags for the shop.

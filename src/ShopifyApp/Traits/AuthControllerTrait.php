@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
 use OhMyBrew\ShopifyApp\Requests\AuthShop;
-use OhMyBrew\ShopifyApp\Actions\AuthenticateShop;
+use OhMyBrew\ShopifyApp\Actions\AuthenticateShopAction;
 
 /**
  * Responsible for authenticating the shop.
@@ -35,16 +35,18 @@ trait AuthControllerTrait
     /**
      * Authenticating a shop.
      *
-     * @param AuthShop $request The incoming request.
+     * @param AuthShop               $request        The incoming request.
+     * @param AuthenticateShopAction $authShopAction The action for authenticating a shop.
      *
      * @return ViewView|\Illuminate\Http\RedirectResponse
      */
-    public function authenticate(AuthShop $request, AuthenticateShop $authShop)
+    public function authenticate(AuthShop $request, AuthenticateShopAction $authShop)
     {
         // Run the action
         $validated = $request->validated();
         $result = $authShop($validated['shop'], $validated['code']);
         if ($result->completed) {
+            // MARK: DO WEBHOOK, SCRIPTTAG, AFTERAUTH POST ACTIONS
             $return_to = Session::get('return_to');
             if ($return_to) {
                 Session::forget('return_to');

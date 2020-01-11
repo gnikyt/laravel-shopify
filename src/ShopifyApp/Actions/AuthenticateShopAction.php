@@ -8,6 +8,7 @@ use OhMyBrew\ShopifyApp\Services\ShopSession;
 use OhMyBrew\ShopifyApp\Interfaces\IShopQuery;
 use OhMyBrew\ShopifyApp\Services\AuthShopHandler;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use OhMyBrew\ShopifyApp\Services\IApiHelper;
 
 /**
  * Authenticates a shop via HTTP request.
@@ -29,6 +30,13 @@ class AuthenticateShopAction
     protected $authShopHandler;
 
     /**
+     * The API helper.
+     *
+     * @var IApiHelper
+     */
+    protected $apiHelper;
+
+    /**
      * The shop session handler.
      *
      * @var ShopSession
@@ -39,6 +47,7 @@ class AuthenticateShopAction
      * Setup.
      *
      * @param IShopQuery      $shopQuery       The querier for the shop.
+     * @param IApiHelper      $apiHelper       The API helper.
      * @param AuthShopHandler $authShopHandler The auth shop handler.
      * @param ShopSession     $shopSession     The shop session handler.
      *
@@ -46,10 +55,12 @@ class AuthenticateShopAction
      */
     public function __construct(
         IShopQuery $shopQuery,
+        IApiHelper $apiHelper,
         AuthShopHandler $authShopHandler,
         ShopSession $shopSession
     ) {
         $this->shopQuery = $shopQuery;
+        $this->apiHelper = $apiHelper;
         $this->authShopHandler = $authShopHandler;
         $this->shopSession = $shopSession;
     }
@@ -66,15 +77,16 @@ class AuthenticateShopAction
     {
         // Get the shop
         $shop = $this->shopQuery->getByDomain(ShopifyApp::sanitizeShopDomain($shopDomain));
+        $this->apiHelper->setInstance($shop->api());
 
         // Start the process
-        $auth = $this->authShopHandler->setShop($shop);
         if (empty($code)) {
             // We need the code first
-            $authUrl = $auth->buildAuthUrl(
+            $authUrl = $this->apiHelper->buildAuthUrl(
                 $shop->hasOfflineAccess() ?
                     Config::get('shopify-app.api_grant_mode') :
-                    $this->shopSession::GRANT_OFFLINE
+                    $this->apiHelper::MODE_OFFLINE,
+                Config::get('shopify-app.api_scopes')
             );
 
             // Call the partial callback with the shop and auth URL as params
@@ -87,14 +99,7 @@ class AuthenticateShopAction
         // We have a good code, get the access details
         $session = $this->shopSession->setShop($shop);
         $session->setDomain($shop->shopify_domain);
-        $session->setAccess($auth->getAccess($code));
-
-        // Do post processing and dispatch the jobs
-        $auth->postProcess();
-        $auth->dispatchJobs();
-
-        // Dispatch the events
-        $auth->dispatchEvent();
+        $session->setAccess($this->apiHelper->getAccessData($code));
 
         return (object) [
             'completed' => true,

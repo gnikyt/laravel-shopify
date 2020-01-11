@@ -5,12 +5,12 @@ namespace OhMyBrew\ShopifyApp\Actions;
 use Illuminate\Support\Facades\Config;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Interfaces\IShopQuery;
-use OhMyBrew\ShopifyApp\Jobs\ScripttagInstaller;
+use OhMyBrew\ShopifyApp\Jobs\WebhookInstaller;
 
 /**
- * Attempt to install script tags on a shop.
+ * Attempt to install webhooks on a shop.
  */
-class InstallScriptsAction
+class DispatchWebhooksAction
 {
     /**
      * Querier for shops.
@@ -35,24 +35,29 @@ class InstallScriptsAction
      * Execution.
      *
      * @param string $shopDomain The shop's domain.
+     * @param bool   $inline     Fire the job inlin e (now) or queue.
      *
      * @return bool
      */
-    public function __invoke(string $shopDomain): bool
+    public function __invoke(string $shopDomain, bool $inline = false): bool
     {
         // Get the shop
         $shop = $this->shopQuery->getByDomain(ShopifyApp::sanitizeShopDomain($shopDomain));
         
-        // Get the scripttags
-        $scripttags = Config::get('shopify-app.scripttags');
-        if (count($scripttags) === 0) {
+        // Get the webhooks
+        $webhooks = Config::get('shopify-app.webhooks');
+        if (count($webhooks) === 0) {
             // Nothing to do
             return false;
         }
 
         // Run the installer job
-        ScripttagInstaller::dispatch($this->shop, $scripttags)
-            ->onQueue(Config::get('shopify-app.job_queues.scripttags'));
+        if ($inline) {
+            WebhookInstaller::dispatchNow($shop);
+        } else {
+            WebhookInstaller::dispatch($shop)
+                ->onQueue(Config::get('shopify-app.job_queues.webhooks'));
+        }
 
         return true;
     }

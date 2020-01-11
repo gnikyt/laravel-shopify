@@ -3,6 +3,8 @@
 namespace OhMyBrew\ShopifyApp\Services;
 
 use OhMyBrew\BasicShopifyAPI;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Config;
 use GuzzleHttp\Exception\RequestException;
 use OhMyBrew\ShopifyApp\DTO\PlanDetailsDTO;
 
@@ -11,27 +13,6 @@ use OhMyBrew\ShopifyApp\DTO\PlanDetailsDTO;
  */
 class ApiHelper implements IApiHelper
 {
-    /**
-     * HTTP method: GET
-     *
-     * @var string
-     */
-    const METHOD_GET = self::METHOD_GET;
-
-    /**
-     * HTTP method: POST
-     *
-     * @var string
-     */
-    const METHOD_POST = self::METHOD_POST;
-
-    /**
-     * HTTP method: DELETE
-     *
-     * @var string
-     */
-    const METHOD_DELETE = 'DELETE';
-
     /**
      * The API instance.
      *
@@ -52,6 +33,34 @@ class ApiHelper implements IApiHelper
     /**
      * {@inheritDoc}
      */
+    public function buildAuthUrl(string $mode, string $scopes): string
+    {
+        return $this->api->getAuthUrl(
+            $scopes,
+            URL::secure(Config::get('shopify-app.api_redirect')),
+            $mode
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function verifyRequest(array $request): bool
+    {
+        return $this->api->verifyRequest($request);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getAccessData(string $code)
+    {
+        return $this->api->requestAccess($code);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getScriptTags(array $params = []): array
     {
         // Setup the params
@@ -64,7 +73,11 @@ class ApiHelper implements IApiHelper
         );
 
         // Fire the request
-        $response = $this->doRequest(self::METHOD_GET, '/admin/script_tags.json', $reqParams);
+        $response = $this->doRequest(
+            self::METHOD_GET,
+            '/admin/script_tags.json',
+            $reqParams
+        );
 
         return $response->body->script_tags;
     }
@@ -75,7 +88,11 @@ class ApiHelper implements IApiHelper
     public function createScriptTag(array $payload): object
     {
         // Fire the request
-        $response = $this->doRequest(self::METHOD_POST, '/admin/script_tags.json', ['script_tag' => $payload]);
+        $response = $this->doRequest(
+            self::METHOD_POST,
+            '/admin/script_tags.json',
+            ['script_tag' => $payload]
+        );
 
         return $response->body;
     }
@@ -86,7 +103,10 @@ class ApiHelper implements IApiHelper
     public function getCharge(string $chargeType, int $chargeId): object
     {
         // Fire the request
-        $response = $this->doRequest(self::METHOD_GET, "/admin/{$chargeType}/{$chargeId}.json");
+        $response = $this->doRequest(
+            self::METHOD_GET,
+            "/admin/{$chargeType}/{$chargeId}.json"
+        );
 
         return $response->body->{substr($chargeType, 0, -1)};
     }
@@ -97,7 +117,10 @@ class ApiHelper implements IApiHelper
     public function activateCharge(string $chargeType, int $chargeId): object
     {
         // Fire the request
-        $response = $this->doRequest(self::METHOD_POST, "/admin/{$chargeType}/{$chargeId}/activate.json");
+        $response = $this->doRequest(
+            self::METHOD_POST,
+            "/admin/{$chargeType}/{$chargeId}/activate.json"
+        );
 
         return $response->body->{substr($chargeType, 0, -1)};
     }
@@ -108,7 +131,11 @@ class ApiHelper implements IApiHelper
     public function createCharge(string $chargeType, PlanDetailsDTO $payload): object
     {
         // Fire the request
-        $response = $this->doRequest(self::METHOD_POST, "/admin/{$chargeType}.json", ['charge' => (array) $payload]);
+        $response = $this->doRequest(
+            self::METHOD_POST,
+            "/admin/{$chargeType}.json",
+            ['charge' => (array) $payload]
+        );
 
         return $response->body->{substr($chargeType, 0, -1)};
     }
@@ -128,7 +155,11 @@ class ApiHelper implements IApiHelper
         );
 
         // Fire the request
-        $response = $this->doRequest(self::METHOD_GET, '/admin/webhooks.json', $reqParams);
+        $response = $this->doRequest(
+            self::METHOD_GET,
+            '/admin/webhooks.json',
+            $reqParams
+        );
 
         return $response->body->webhooks;
     }
@@ -139,7 +170,11 @@ class ApiHelper implements IApiHelper
     public function createWebhook(array $payload): object
     {
         // Fire the request
-        $response = $this->doRequest(self::METHOD_POST, '/admin/webhooks.json', ['webhook' => $payload]);
+        $response = $this->doRequest(
+            self::METHOD_POST,
+            '/admin/webhooks.json',
+            ['webhook' => $payload]
+        );
 
         return $response->body->webhook;
     }
@@ -150,7 +185,10 @@ class ApiHelper implements IApiHelper
     public function deleteWebhook(int $webhookId): void
     {
         // Fire the request
-        $this->doRequest(self::METHOD_DELETE, "/admin/webhooks/{$webhookId}.json");
+        $this->doRequest(
+            self::METHOD_DELETE,
+            "/admin/webhooks/{$webhookId}.json"
+        );
     }
 
     /**

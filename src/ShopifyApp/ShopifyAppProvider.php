@@ -24,7 +24,8 @@ use OhMyBrew\ShopifyApp\Actions\AfterAuthenticateAction;
 use OhMyBrew\ShopifyApp\Console\WebhookJobMakeCommand;
 use OhMyBrew\ShopifyApp\Actions\AuthenticateShopAction;
 use OhMyBrew\ShopifyApp\Actions\CancelCurrentPlanAction;
-use OhMyBrew\ShopifyApp\Actions\InstallWebhooksAction;
+use OhMyBrew\ShopifyApp\Actions\DispatchScriptsAction;
+use OhMyBrew\ShopifyApp\Actions\DispatchWebhooksAction;
 use OhMyBrew\ShopifyApp\Services\ApiHelper;
 
 /**
@@ -182,8 +183,13 @@ class ShopifyAppProvider extends ServiceProvider
                     $app->make($this->createClassPath('Queries\ShopQuery'))
                 );
             }],
-            'Actions\InstallWebhooksAction' => [self::CBIND, function ($app) {
-                return new InstallWebhooksAction(
+            'Actions\DispatchWebhooksAction' => [self::CBIND, function ($app) {
+                return new DispatchWebhooksAction(
+                    $app->make($this->createClassPath('Queries\ShopQuery'))
+                );
+            }],
+            'Actions\DispatchScriptsAction' => [self::CBIND, function ($app) {
+                return new DispatchScriptsAction(
                     $app->make($this->createClassPath('Queries\ShopQuery'))
                 );
             }],
