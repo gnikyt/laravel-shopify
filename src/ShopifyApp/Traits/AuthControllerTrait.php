@@ -7,8 +7,11 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
+use OhMyBrew\ShopifyApp\Actions\AfterAuthenticateAction;
 use OhMyBrew\ShopifyApp\Requests\AuthShop;
 use OhMyBrew\ShopifyApp\Actions\AuthenticateShopAction;
+use OhMyBrew\ShopifyApp\Actions\DispatchScriptsAction;
+use OhMyBrew\ShopifyApp\Actions\DispatchWebhooksAction;
 
 /**
  * Responsible for authenticating the shop.
@@ -35,18 +38,31 @@ trait AuthControllerTrait
     /**
      * Authenticating a shop.
      *
-     * @param AuthShop               $request        The incoming request.
-     * @param AuthenticateShopAction $authShopAction The action for authenticating a shop.
+     * @param AuthShop               $request                The incoming request.
+     * @param AuthenticateShopAction $authShopAction         The action for authenticating a shop.
+     * @param DispatchScriptsAction  $dispatchScriptsAction  The action for dispatching scripttag installation.
+     * @param DispatchWebhooksAction $dispatchWebhooksAction The action for dispatching webhook installation.
      *
      * @return ViewView|\Illuminate\Http\RedirectResponse
      */
-    public function authenticate(AuthShop $request, AuthenticateShopAction $authShop)
-    {
+    public function authenticate(
+        AuthShop $request,
+        AuthenticateShopAction $authShopAction,
+        DispatchScriptsAction $dispatchScriptsAction,
+        DispatchWebhooksAction $dispatchWebhooksAction,
+        AfterAuthenticateAction $afterAuthenticateAction
+    ) {
         // Run the action
         $validated = $request->validated();
-        $result = $authShop($validated['shop'], $validated['code']);
+        $result = $authShopAction($validated['shop'], $validated['code']);
+
         if ($result->completed) {
-            // MARK: DO WEBHOOK, SCRIPTTAG, AFTERAUTH POST ACTIONS
+            // Fire the post processing jobs
+            $dispatchScriptsAction();
+            $dispatchWebhooksAction();
+            $afterAuthenticateAction();
+
+            // Determine if we need to redirect back somewhere
             $return_to = Session::get('return_to');
             if ($return_to) {
                 Session::forget('return_to');
@@ -57,6 +73,7 @@ trait AuthControllerTrait
             return Redirect::route('home');
         }
 
+        // No code, redirect to auth URL
         return View::make(
             'shopify-app::auth.fullpage_redirect',
             [
