@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Config;
 use GuzzleHttp\Exception\RequestException;
 use OhMyBrew\ShopifyApp\DTO\PlanDetailsDTO;
+use OhMyBrew\ShopifyApp\DTO\UsageChargeDetailsDTO;
+use OhMyBrew\ShopifyApp\Exceptions\ApiException;
 
 /**
  * Basic helper class for API calls to Shopify.
@@ -192,20 +194,41 @@ class ApiHelper implements IApiHelper
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function createUsageCharge(UsageChargeDetailsDTO $payload): object
+    {
+        // Fire the request
+        $response = $this->doRequest(
+            self::METHOD_POST,
+            "/admin/recurring_application_charges/{$payload->chargeId}/usage_charges.json",
+            [
+                'usage_charge' => [
+                    'price'       => $payload->price,
+                    'description' => $payload->description,
+                ],
+            ]
+        );
+            
+        return $response->body->usage_charge;
+    }
+
+    /**
      * Fire the request using the API instance.
      *
      * @param string $method  The HTTP method.
      * @param string $path    The endpoint path.
      * @param array  $payload The optional payload to send to the endpoint.
      *
+     * 
      * @return object|RequestException
      */
     protected function doRequest(string $method, string $path, array $payload = null)
     {
         $response = $this->api->rest($method, $path, $payload);
-        if ($response->errors === true) {
+        if (!$response || $response->errors === true) {
             // Request error somewhere, throw the exception
-            throw $response->exception;
+            throw new ApiException($response->exception);
         }
 
         return $response;

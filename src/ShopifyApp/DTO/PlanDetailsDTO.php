@@ -10,55 +10,6 @@ use OhMyBrew\ShopifyApp\DTO\AbstractDTO;
 class PlanDetailsDTO extends AbstractDTO
 {
     /**
-     * Plan name.
-     *
-     * @var string
-     */
-    private $name;
-
-    /**
-     * Plan price.
-     *
-     * @var float
-     */
-    private $price;
-
-    /**
-     * Plan test or real?
-     *
-     * @var bool
-     */
-    private $test;
-
-    /**
-     * Plan trial days.
-     *
-     * @var int
-     */
-    private $trialDays;
-
-    /**
-     * Capped amount value.
-     *
-     * @var float|null
-     */
-    private $cappedAmount;
-
-    /**
-     * Terms for capped amount.
-     *
-     * @var string|null
-     */
-    private $cappedTerms;
-
-    /**
-     * Plan return URL.
-     *
-     * @var string|null
-     */
-    private $returnURL;
-
-    /**
      * Constructor.
      *
      * @param string      $name         Plan name.
@@ -78,12 +29,12 @@ class PlanDetailsDTO extends AbstractDTO
         ?string $cappedTerms,
         ?string $returnURL
     ) {
-        $this->name = $name;
-        $this->price = $price;
-        $this->test = $test;
-        $this->trialDays = $trialDays;
-        $this->cappedAmount = $cappedAmount;
-        $this->cappedTerms = $cappedTerms;
-        $this->returnURL = $returnURL;
+        $this->data['name'] = $name;
+        $this->data['price'] = $price;
+        $this->data['test'] = $test;
+        $this->data['trialDays'] = $trialDays;
+        $this->data['cappedAmount'] = $cappedAmount;
+        $this->data['cappedTerms'] = $cappedTerms;
+        $this->data['returnURL'] = $returnURL;
     }
 }

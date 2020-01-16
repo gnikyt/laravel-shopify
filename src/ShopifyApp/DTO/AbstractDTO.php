@@ -2,13 +2,22 @@
 
 namespace OhMyBrew\ShopifyApp\DTO;
 
+use ArrayIterator;
 use Exception;
+use IteratorAggregate;
 
 /**
  * Reprecents the base for DTO.
  */
-abstract class AbstractDTO
+abstract class AbstractDTO implements IteratorAggregate
 {
+    /**
+     * The data container.
+     *
+     * @var array
+     */
+    protected $data = [];
+
     /**
      * Get a value from the object.
      *
@@ -18,9 +27,9 @@ abstract class AbstractDTO
      */
     public function __get(string $key)
     {
-        if (property_exists($this, $key)) {
+        if (array_key_exists($key, $this->data)) {
             // Get the value of the key
-            return $this->{$key};
+            return $this->data[$key];
         }
 
         // Does not exist, throw exception
@@ -29,15 +38,12 @@ abstract class AbstractDTO
     }
 
     /**
-     * Setting a value externally is disallowed.
+     * Iterator.
      *
-     * @param string $key   The key to use.
-     * @param mixed  $value The value for the key.
-     *
-     * @return Exception
+     * @return ArrayIterator
      */
-    public function __set($key, $value)
+    public function getIterator(): ArrayIterator
     {
-        throw new Exception('Setting a value on the DTO is disallowed');
+        return new ArrayIterator($this->data);
     }
 }

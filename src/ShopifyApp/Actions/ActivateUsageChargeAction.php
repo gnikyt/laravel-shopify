@@ -2,17 +2,27 @@
 
 namespace OhMyBrew\ShopifyApp\Actions;
 
-use OhMyBrew\ShopifyApp\Exceptions\ChargeNotRecurringException;
 use OhMyBrew\ShopifyApp\Models\Charge;
-use OhMyBrew\ShopifyApp\Interfaces\IShopModel;
-use OhMyBrew\ShopifyApp\Interfaces\IShopCommand;
+use OhMyBrew\ShopifyApp\DTO\UsageChargeDTO;
+use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
+use OhMyBrew\ShopifyApp\Services\IApiHelper;
+use OhMyBrew\ShopifyApp\Interfaces\IShopQuery;
+use OhMyBrew\ShopifyApp\DTO\UsageChargeDetailsDTO;
 use OhMyBrew\ShopifyApp\Interfaces\IChargeCommand;
+use OhMyBrew\ShopifyApp\Exceptions\ChargeNotRecurringException;
 
 /**
  * Activates a usage charge for a shop.
  */
 class ActivateUsageChargeAction
 {
+    /**
+     * The API helper.
+     *
+     * @var IApiHelper
+     */
+    protected $apiHelper;
+
     /**
      * Command for charges.
      *
@@ -21,48 +31,76 @@ class ActivateUsageChargeAction
     protected $chargeCommand;
 
     /**
-     * Command for shops.
+     * Querier for shops.
      *
-     * @var IShopCommand
+     * @var IShopQuery
      */
-    protected $shopCommand;
+    protected $shopQuery;
 
     /**
      * Setup.
      *
+     * @param IApiHelper     $apiHelper     The API helper.
      * @param IChargeCommand $chargeCommand The commands for charges.
-     * @param IShopCommand   $shopCommand   The commands for shops.
+     * @param IShopQuery     $shopQuery     The querier for shops.
      *
      * @return self
      */
-    public function __construct(IChargeCommand $chargeCommand, IShopCommand $shopCommand)
-    {
+    public function __construct(
+        IApiHelper $apiHelper,
+        IChargeCommand $chargeCommand,
+        IShopQuery $shopQuery
+    ) {
+        $this->apiHelper = $apiHelper;
         $this->chargeCommand = $chargeCommand;
-        $this->shopCommand = $shopCommand;
+        $this->shopQuery = $shopQuery;
     }
 
     /**
      * Execute.
      *
-     * @return void
+     * @param string $shopDomain  The shop's domain.
+     * @param float  $price       Usage charge price.
+     * @param string $description Usage charge description.
+     *
+     * @return int|ChargeNotRecurringException|Exception
      */
-    public function __invoke(IShopModel $shop)
+    public function __invoke(string $shopDomain, float $price, string $description): int
     {
+        // Get the shop
+        $shop = $this->shopQuery->getByDomain(ShopifyApp::sanitizeShopDomain($shopDomain));
+
         // Ensure we have a recurring charge
         $currentCharge = $shop->planCharge();
         if (!$currentCharge->isType(Charge::CHARGE_RECURRING)) {
             throw new ChargeNotRecurringException('Can only create usage charges for recurring charge.');
         }
 
-        $response = $shop->api()->rest(
-            'POST',
-            "/admin/recurring_application_charges/{$currentCharge->charge_id}/usage_charges.json",
-            [
-                'usage_charge' => [
-                    'price'       => $this->data['price'],
-                    'description' => $this->data['description'],
-                ],
-            ]
-        )->body->usage_charge;
+        // Create the usage charge details
+        $ucDetails = new UsageChargeDetailsDTO(
+            $currentCharge->charge_id,
+            $price,
+            $description
+        );
+
+        // Create the usage charge
+        $response = $this
+            ->apiHelper
+            ->setInstance($shop->api())
+            ->createUsageCharge($ucDetails);
+
+        // Save the usage charge
+        return $this->chargeCommand->createUsageCharge(
+            new UsageChargeDTO(
+                $shop->id,
+                $shop->plan->id,
+                $currentCharge->charge_id,
+                Charge::CHARGE_USAGE,
+                $response->status,
+                $ucDetails->price,
+                $ucDetails->description,
+                $response->billing_on,
+            )
+        );
     }
 }

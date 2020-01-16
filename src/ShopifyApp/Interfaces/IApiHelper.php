@@ -5,6 +5,7 @@ namespace OhMyBrew\ShopifyApp\Services;
 use OhMyBrew\BasicShopifyAPI;
 use GuzzleHttp\Exception\RequestException;
 use OhMyBrew\ShopifyApp\DTO\PlanDetailsDTO;
+use OhMyBrew\ShopifyApp\DTO\UsageChargeDetailsDTO;
 
 /**
  * Reprecents the API helper.
@@ -157,4 +158,13 @@ interface IApiHelper
      * @return void
      */
     public function deleteWebhook(int $webhookId): void;
+
+    /**
+     * Creates a usage charge for a recurring charge.
+     *
+     * @param UsageChargeDTO $payload The data for the usage charge creation.
+     *
+     * @return object
+     */
+    public function createUsageCharge(UsageChargeDetailsDTO $payload): object;
 }

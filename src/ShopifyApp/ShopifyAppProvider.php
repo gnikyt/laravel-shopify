@@ -20,6 +20,7 @@ use OhMyBrew\ShopifyApp\Actions\GetPlanUrlAction;
 use OhMyBrew\ShopifyApp\Services\AuthShopHandler;
 use OhMyBrew\ShopifyApp\Actions\RestoreShopAction;
 use OhMyBrew\ShopifyApp\Actions\ActivatePlanAction;
+use OhMyBrew\ShopifyApp\Actions\ActivateUsageChargeAction;
 use OhMyBrew\ShopifyApp\Actions\AfterAuthenticateAction;
 use OhMyBrew\ShopifyApp\Console\WebhookJobMakeCommand;
 use OhMyBrew\ShopifyApp\Actions\AuthenticateShopAction;
@@ -161,6 +162,7 @@ class ShopifyAppProvider extends ServiceProvider
             // Actions
             'Actions\AuthenticateShopAction' => [self::CBIND, function ($app) {
                 return new AuthenticateShopAction(
+                    new ApiHelper(),
                     $app->make($this->createClassPath('Queries\ShopQuery')),
                     new AuthShopHandler(),
                     new ShopSession()
@@ -202,11 +204,18 @@ class ShopifyAppProvider extends ServiceProvider
                 return new ActivatePlanAction(
                     new ApiHelper(),
                     $app->make($this->createClassPath('Actions\CancelCurrentPlanAction')),
-                    $app->make($this->createClassPath('Queryies\ShopQuery')),
+                    $app->make($this->createClassPath('Queries\ShopQuery')),
                     $app->make($this->createClassPath('Queries\ChargeQuery')),
                     $app->make($this->createClassPath('Queries\PlanQuery')),
                     $app->make($this->createClassPath('Commands\ChargeCommand')),
                     $app->make($this->createClassPath('Commands\ShopCommand'))
+                );
+            }],
+            'Actions\ActivateUsageChargeAction' => [self::CBIND, function ($app) {
+                return new ActivateUsageChargeAction(
+                    new ApiHelper(),
+                    $app->make($this->createClassPath('Commands\ChargeCommand')),
+                    $app->make($this->createClassPath('Queries\ShopQuery'))
                 );
             }],
         ];

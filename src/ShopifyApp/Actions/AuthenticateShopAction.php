@@ -46,21 +46,21 @@ class AuthenticateShopAction
     /**
      * Setup.
      *
-     * @param IShopQuery      $shopQuery       The querier for the shop.
      * @param IApiHelper      $apiHelper       The API helper.
+     * @param IShopQuery      $shopQuery       The querier for the shop.
      * @param AuthShopHandler $authShopHandler The auth shop handler.
      * @param ShopSession     $shopSession     The shop session handler.
      *
      * @return self
      */
     public function __construct(
-        IShopQuery $shopQuery,
         IApiHelper $apiHelper,
+        IShopQuery $shopQuery,
         AuthShopHandler $authShopHandler,
         ShopSession $shopSession
     ) {
-        $this->shopQuery = $shopQuery;
         $this->apiHelper = $apiHelper;
+        $this->shopQuery = $shopQuery;
         $this->authShopHandler = $authShopHandler;
         $this->shopSession = $shopSession;
     }
@@ -71,13 +71,19 @@ class AuthenticateShopAction
      * @param string $shopDomain The shop's domain.
      * @param string $code       The code from Shopify.
      *
-     * @return object|ModelNotFoundException
+     * @return object
      */
     public function __invoke(string $shopDomain, string $code): object
     {
         // Get the shop
         $shop = $this->shopQuery->getByDomain(ShopifyApp::sanitizeShopDomain($shopDomain));
         $this->apiHelper->setInstance($shop->api());
+
+        // Return data
+        $return = [
+            'completed' => false,
+            'url'       => null,
+        ];
 
         // Start the process
         if (empty($code)) {
@@ -90,19 +96,16 @@ class AuthenticateShopAction
             );
 
             // Call the partial callback with the shop and auth URL as params
-            return (object) [
-                'completed' => false,
-                'url'       => $authUrl,
-            ];
+            $return['url'] = $authUrl;
+        } else {
+            // We have a good code, get the access details
+            $session = $this->shopSession->setShop($shop);
+            $session->setDomain($shop->shopify_domain);
+            $session->setAccess($this->apiHelper->getAccessData($code));
+
+            $return['completed'] = true;
         }
 
-        // We have a good code, get the access details
-        $session = $this->shopSession->setShop($shop);
-        $session->setDomain($shop->shopify_domain);
-        $session->setAccess($this->apiHelper->getAccessData($code));
-
-        return (object) [
-            'completed' => true,
-        ];
+        return (object) $return;
     }
 }

@@ -2,10 +2,10 @@
 
 namespace OhMyBrew\ShopifyApp\Services;
 
+use stdClass;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
-use OhMyBrew\ShopifyApp\Models\Shop;
-use stdClass;
+use OhMyBrew\ShopifyApp\Interfaces\IShopModel;
 
 /**
  * Responsible for handling session retreival and storage.
@@ -50,18 +50,18 @@ class ShopSession
     /**
      * The shop.
      *
-     * @var \OhMyBrew\ShopifyApp\Models\Shop|null
+     * @var IShopModel|null
      */
     protected $shop;
 
     /**
      * Constructor for shop session class.
      *
-     * @param object|null $shop The shop.
+     * @param IShopModel|null $shop The shop.
      *
      * @return self
      */
-    public function __construct($shop = null)
+    public function __construct(IShopModel $shop = null)
     {
         $this->setShop($shop);
     }
@@ -69,11 +69,11 @@ class ShopSession
     /**
      * Sets the shop.
      *
-     * @param object|null $shop The shop.
+     * @param IShopModel $shop The shop.
      *
      * @return self
      */
-    public function setShop($shop = null)
+    public function setShop(IShopModel $shop): self
     {
         $this->shop = $shop;
 
@@ -85,7 +85,7 @@ class ShopSession
      *
      * @return string
      */
-    public function getType()
+    public function getType(): string
     {
         $config = Config::get('shopify-app.api_grant_mode');
         if ($config === self::GRANT_PERUSER) {
@@ -100,9 +100,9 @@ class ShopSession
      *
      * @param string $type The type of access to check.
      *
-     * @return string
+     * @return bool
      */
-    public function isType(string $type)
+    public function isType(string $type): bool
     {
         return $this->getType() === $type;
     }
@@ -115,7 +115,7 @@ class ShopSession
      *
      * @return self
      */
-    public function setDomain(string $shopDomain)
+    public function setDomain(string $shopDomain): self
     {
         $this->fixLifetime();
         Session::put(self::DOMAIN, $shopDomain);
@@ -126,9 +126,9 @@ class ShopSession
     /**
      * Gets the Shopify domain in session.
      *
-     * @return void
+     * @return string
      */
-    public function getDomain()
+    public function getDomain(): string
     {
         return Session::get(self::DOMAIN);
     }
