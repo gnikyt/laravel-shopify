@@ -18,4 +18,14 @@ interface IShopCommand
      * @return bool
      */
     public function setToPlan(int $shopId, int $planId): bool;
+
+    /**
+     * Sets the access token (offline) from Shopify to the shop.
+     *
+     * @param int    $shopId The shop's ID.
+     * @param string $token  The token from Shopify Oauth.
+     *
+     * @return bool
+     */
+    public function setAccessToken(int $shopId, string $token): bool;
 }

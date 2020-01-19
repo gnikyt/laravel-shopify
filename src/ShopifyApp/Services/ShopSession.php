@@ -5,13 +5,17 @@ namespace OhMyBrew\ShopifyApp\Services;
 use stdClass;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
+use OhMyBrew\ShopifyApp\Interfaces\IShopCommand;
 use OhMyBrew\ShopifyApp\Interfaces\IShopModel;
+use OhMyBrew\ShopifyApp\Traits\ShopAccessibleTrait;
 
 /**
  * Responsible for handling session retreival and storage.
  */
 class ShopSession
 {
+    use ShopAccessibleTrait;
+
     /**
      * The session key for Shopify domain.
      *
@@ -48,36 +52,22 @@ class ShopSession
     const GRANT_PERUSER = 'per-user';
 
     /**
-     * The shop.
+     * The commands for shop.
      *
-     * @var IShopModel|null
+     * @var IShopCommand
      */
-    protected $shop;
+    protected $shopCommand;
 
     /**
      * Constructor for shop session class.
      *
-     * @param IShopModel|null $shop The shop.
+     * @param IShopCommand $shopCommand The commands for shop.
      *
      * @return self
      */
-    public function __construct(IShopModel $shop = null)
+    public function __construct(IShopCommand $shopCommand)
     {
-        $this->setShop($shop);
-    }
-
-    /**
-     * Sets the shop.
-     *
-     * @param IShopModel $shop The shop.
-     *
-     * @return self
-     */
-    public function setShop(IShopModel $shop): self
-    {
-        $this->shop = $shop;
-
-        return $this;
+        $this->shopCommand = $shopCommand;
     }
 
     /**
@@ -137,11 +127,11 @@ class ShopSession
      * Stores the access token and user (if any).
      * Uses database for acess token if it was an offline authentication.
      *
-     * @param stdClass $access
+     * @param object $access
      *
      * @return self
      */
-    public function setAccess(stdClass $access)
+    public function setAccess(stdClass $access): self
     {
         // Grab the token
         $token = $access->access_token;
@@ -154,13 +144,10 @@ class ShopSession
             $this->fixLifetime();
             Session::put(self::USER, $this->user);
             Session::put(self::TOKEN, $token);
-
-            return $this;
+        } else {
+            // Offline
+            $this->shopCommand->setAccessToken($this->shop->id, $token);
         }
-
-        // Offline
-        $this->shop->{self::TOKEN} = $token;
-        $this->shop->save();
 
         return $this;
     }
@@ -172,7 +159,7 @@ class ShopSession
      *
      * @return string
      */
-    public function getToken(bool $strict = false)
+    public function getToken(bool $strict = false): string
     {
         // Tokens
         $tokens = [
@@ -192,9 +179,9 @@ class ShopSession
     /**
      * Gets the associated user (if any).
      *
-     * @return stfClass|null
+     * @return object|null
      */
-    public function getUser()
+    public function getUser(): ?object
     {
         return Session::get(self::USER);
     }
@@ -204,7 +191,7 @@ class ShopSession
      *
      * @return bool
      */
-    public function hasUser()
+    public function hasUser(): bool
     {
         return $this->getUser() !== null;
     }
@@ -214,7 +201,7 @@ class ShopSession
      *
      * @return self
      */
-    public function forget()
+    public function forget(): self
     {
         $keys = [self::DOMAIN, self::USER, self::TOKEN];
         foreach ($keys as $key) {
@@ -229,7 +216,7 @@ class ShopSession
      *
      * @return bool
      */
-    public function isValid()
+    public function isValid(): bool
     {
         // No token set or domain in session?
         $result = !empty($this->getToken(true))
@@ -244,7 +231,7 @@ class ShopSession
      *
      * @return void
      */
-    protected function fixLifetime()
+    protected function fixLifetime(): void
     {
         Config::set('session.expire_on_close', true);
     }

@@ -8,10 +8,7 @@ use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Redirect;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use Illuminate\Contracts\View\View as ViewView;
-use OhMyBrew\ShopifyApp\Actions\GetPlanUrlAction;
 use OhMyBrew\ShopifyApp\Requests\StoreUsageCharge;
-use OhMyBrew\ShopifyApp\Actions\ActivatePlanAction;
-use OhMyBrew\ShopifyApp\Actions\ActivateUsageChargeAction;
 
 /**
  * Responsible for billing a shop for plans and usage charges.
@@ -21,12 +18,12 @@ trait BillingControllerTrait
     /**
      * Redirects to billing screen for Shopify.
      *
-     * @param int              $planId     The plan's ID.
-     * @param GetPlanUrlAction $getPlanUrl The action for getting the plan URL.
+     * @param int      $planId     The plan's ID.
+     * @param callable $getPlanUrl The action for getting the plan URL.
      *
      * @return ViewView
      */
-    public function index(int $planId, GetPlanUrlAction $getPlanUrl): ViewView
+    public function index(int $planId, callable $getPlanUrl): ViewView
     {
         // Do a fullpage redirect
         return View::make(
@@ -40,16 +37,16 @@ trait BillingControllerTrait
     /**
      * Processes the response from the customer.
      *
-     * @param Request            $request      The HTTP request object.
-     * @param int                $planId       The plan's ID.
-     * @param ActivatePlanAction $activatePlan The action for activating the plan for a shop.
+     * @param Request  $request      The HTTP request object.
+     * @param int      $planId       The plan's ID.
+     * @param callable $activatePlan The action for activating the plan for a shop.
      *
      * @return RedirectResponse
      */
     public function process(
         Request $request,
         int $planId,
-        ActivatePlanAction $activatePlanAction
+        callable $activatePlanAction
     ): RedirectResponse {
         // Activate the plan and save
         $result = $activatePlanAction(
@@ -69,13 +66,13 @@ trait BillingControllerTrait
      * Allows for setting a usage charge.
      *
      * @param StoreUsageCharge          $request                   The verified request.
-     * @param ActivateUsageChargeAction $activateUsageChargeAction The action for activating a usage charge.
+     * @param callable $activateUsageChargeAction The action for activating a usage charge.
      *
      * @return RedirectResponse
      */
     public function usageCharge(
         StoreUsageCharge $request,
-        ActivateUsageChargeAction $activateUsageChargeAction
+        callable $activateUsageChargeAction
     ): RedirectResponse {
         $validated = $request->validated();
 

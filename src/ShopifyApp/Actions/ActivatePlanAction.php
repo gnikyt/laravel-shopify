@@ -12,7 +12,6 @@ use OhMyBrew\ShopifyApp\Interfaces\IShopQuery;
 use OhMyBrew\ShopifyApp\Interfaces\IChargeQuery;
 use OhMyBrew\ShopifyApp\Interfaces\IShopCommand;
 use OhMyBrew\ShopifyApp\Interfaces\IChargeCommand;
-use OhMyBrew\ShopifyApp\Actions\CancelCurrentPlanAction;
 
 /**
  * Activates a plan for a shop.
@@ -29,7 +28,7 @@ class ActivatePlanAction
     /**
      * Action which cancels the current plan.
      *
-     * @var CancelCurrentPlan
+     * @var callable
      */
     protected $cancelCurrentPlan;
 
@@ -71,19 +70,19 @@ class ActivatePlanAction
     /**
      * Setup.
      *
-     * @param IApiHelper              $apiHelper               The API helper.
-     * @param CancelCurrentPlanAction $cancelCurrentPlanAction Action which cancels the current plan.
-     * @param IChargeCommand          $chargeCommand           The commands for charges.
-     * @param IShopQuery              $shopQuery               The querier for shops.
-     * @param IChargeQuery            $chargeQuery             The querier for charges.
-     * @param IPlanQuery              $planQuery               The querier for plans.
-     * @param IShopCommand            $shopCommand             The commands for shops.
+     * @param IApiHelper     $apiHelper               The API helper.
+     * @param callable       $cancelCurrentPlanAction Action which cancels the current plan.
+     * @param IChargeCommand $chargeCommand           The commands for charges.
+     * @param IShopQuery     $shopQuery               The querier for shops.
+     * @param IChargeQuery   $chargeQuery             The querier for charges.
+     * @param IPlanQuery     $planQuery               The querier for plans.
+     * @param IShopCommand   $shopCommand             The commands for shops.
      *
      * @return self
      */
     public function __construct(
         IApiHelper $apiHelper,
-        CancelCurrentPlanAction $cancelCurrentPlanAction,
+        callable $cancelCurrentPlanAction,
         IShopQuery $shopQuery,
         IChargeQuery $chargeQuery,
         IPlanQuery $planQuery,

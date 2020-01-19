@@ -8,11 +8,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
-use OhMyBrew\ShopifyApp\Actions\AfterAuthenticateAction;
 use OhMyBrew\ShopifyApp\Requests\AuthShop;
-use OhMyBrew\ShopifyApp\Actions\AuthenticateShopAction;
-use OhMyBrew\ShopifyApp\Actions\DispatchScriptsAction;
-use OhMyBrew\ShopifyApp\Actions\DispatchWebhooksAction;
 
 /**
  * Responsible for authenticating the shop.
@@ -39,20 +35,20 @@ trait AuthControllerTrait
     /**
      * Authenticating a shop.
      *
-     * @param AuthShop                $request                 The incoming request.
-     * @param AuthenticateShopAction  $authShopAction          The action for authenticating a shop.
-     * @param DispatchScriptsAction   $dispatchScriptsAction   The action for dispatching scripttag installation.
-     * @param DispatchWebhooksAction  $dispatchWebhooksAction  The action for dispatching webhook installation.
-     * @param AfterAuthenticateAction $afterAuthenticateAction The action for dispatching custom actions after authentication.
+     * @param AuthShop $request                 The incoming request.
+     * @param callable $authShopAction          The action for authenticating a shop.
+     * @param callable $dispatchScriptsAction   The action for dispatching scripttag installation.
+     * @param callable $dispatchWebhooksAction  The action for dispatching webhook installation.
+     * @param callable $afterAuthenticateAction The action for dispatching custom actions after authentication.
      *
      * @return ViewView|RedirectResponse
      */
     public function authenticate(
         AuthShop $request,
-        AuthenticateShopAction $authShopAction,
-        DispatchScriptsAction $dispatchScriptsAction,
-        DispatchWebhooksAction $dispatchWebhooksAction,
-        AfterAuthenticateAction $afterAuthenticateAction
+        callable $authShopAction,
+        callable $dispatchScriptsAction,
+        callable $dispatchWebhooksAction,
+        callable $afterAuthenticateAction
     ) {
         // Run the action
         $validated = $request->validated();
@@ -77,16 +73,16 @@ trait AuthControllerTrait
     /**
      * Handles when authentication is successful.
      *
-     * @param DispatchScriptsAction   $dispatchScriptsAction   The action for dispatching scripttag installation.
-     * @param DispatchWebhooksAction  $dispatchWebhooksAction  The action for dispatching webhook installation.
-     * @param AfterAuthenticateAction $afterAuthenticateAction The action for dispatching custom actions after authentication.
+     * @param callable $dispatchScriptsAction   The action for dispatching scripttag installation.
+     * @param callable $dispatchWebhooksAction  The action for dispatching webhook installation.
+     * @param callable $afterAuthenticateAction The action for dispatching custom actions after authentication.
      *
      * @return RedirectResponse
      */
     protected function authenticateSuccess(
-        DispatchScriptsAction $dispatchScriptsAction,
-        DispatchWebhooksAction $dispatchWebhooksAction,
-        AfterAuthenticateAction $afterAuthenticateAction
+        callable $dispatchScriptsAction,
+        callable $dispatchWebhooksAction,
+        callable $afterAuthenticateAction
     ): RedirectResponse {
         // Fire the post processing jobs
         $dispatchScriptsAction();

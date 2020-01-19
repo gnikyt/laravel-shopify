@@ -3,6 +3,7 @@
 namespace OhMyBrew\ShopifyApp\Commands;
 
 use OhMyBrew\ShopifyApp\Interfaces\IShopCommand;
+use OhMyBrew\ShopifyApp\Interfaces\IShopModel;
 use OhMyBrew\ShopifyApp\Interfaces\IShopQuery;
 
 /**
@@ -30,10 +31,33 @@ class ShopCommand implements IShopCommand
      */
     public function setToPlan(int $shopId, int $planId): bool
     {
-        $shop = $this->query->getById($shopId);
+        $shop = $this->getShop($shopId);
         $shop->plan_id = $planId;
         $shop->freemium = false;
 
         return $shop->save();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setAccessToken(int $shopId, string $token): bool
+    {
+        $shop = $this->getShop($shopId);
+        $this->shop->shopify_token = $token;
+
+        return $this->shop->save();
+    }
+
+    /**
+     * Helper to get the shop.
+     *
+     * @param int $shopId The shop's ID.
+     *
+     * @return IShopModel
+     */
+    protected function getShop(int $shopId): IShopModel
+    {
+        return $this->query->getById($shopId);
     }
 }

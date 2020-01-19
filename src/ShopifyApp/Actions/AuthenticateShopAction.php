@@ -23,13 +23,6 @@ class AuthenticateShopAction
     protected $shopQuery;
 
     /**
-     * The auth shop handler.
-     *
-     * @var AuthShopHandler
-     */
-    protected $authShopHandler;
-
-    /**
      * The API helper.
      *
      * @var IApiHelper
@@ -46,22 +39,19 @@ class AuthenticateShopAction
     /**
      * Setup.
      *
-     * @param IApiHelper      $apiHelper       The API helper.
-     * @param IShopQuery      $shopQuery       The querier for the shop.
-     * @param AuthShopHandler $authShopHandler The auth shop handler.
-     * @param ShopSession     $shopSession     The shop session handler.
+     * @param IApiHelper  $apiHelper   The API helper.
+     * @param IShopQuery  $shopQuery   The querier for the shop.
+     * @param ShopSession $shopSession The shop session handler.
      *
      * @return self
      */
     public function __construct(
         IApiHelper $apiHelper,
         IShopQuery $shopQuery,
-        AuthShopHandler $authShopHandler,
         ShopSession $shopSession
     ) {
         $this->apiHelper = $apiHelper;
         $this->shopQuery = $shopQuery;
-        $this->authShopHandler = $authShopHandler;
         $this->shopSession = $shopSession;
     }
 

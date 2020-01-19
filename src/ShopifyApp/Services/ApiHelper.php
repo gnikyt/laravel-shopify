@@ -2,6 +2,7 @@
 
 namespace OhMyBrew\ShopifyApp\Services;
 
+use Closure;
 use OhMyBrew\BasicShopifyAPI;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Config;
@@ -30,6 +31,28 @@ class ApiHelper implements IApiHelper
         $this->api = $api;
 
         return $this;
+    }
+
+    /**
+     * Run a one-time function with an API instance.
+     * The instance state is reset to the previous state.
+     *
+     * @param BasicShopifyAPI $api The API instance.
+     * @param Closure         $fn  The function to call.
+     *
+     * @return void
+     */
+    public function withInstance(BasicShopifyAPI $api, Closure $fn): void
+    {
+        // Save current instance
+        $currentApi = $this->api;
+
+        // Run the function, inject the temporary instance
+        $this->api = $api;
+        $fn($this);
+
+        // Put the previous instance back
+        $this->api = $currentApi;
     }
 
     /**
