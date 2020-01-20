@@ -34,7 +34,7 @@ class SameSiteNone
      * If a null is passed for any of the variables, it will be loaded from the request.
      *
      * @param string|null $userAgent
-     * @param array|null $headers
+     * @param array|null  $headers
      *
      * @return bool True if compatible false if not
      */
