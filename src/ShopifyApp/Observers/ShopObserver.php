@@ -11,12 +11,13 @@ class ShopObserver
 {
     /**
      * Listen to the shop creating event.
+     * TODO: Move partial to command.
      *
      * @param object $shop An instance of a shop.
      *
      * @return void
      */
-    public function creating($shop)
+    public function creating($shop): void
     {
         if (!isset($shop->namespace)) {
             // Automatically add the current namespace to new records

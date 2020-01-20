@@ -65,7 +65,7 @@ trait BillingControllerTrait
     /**
      * Allows for setting a usage charge.
      *
-     * @param StoreUsageCharge          $request                   The verified request.
+     * @param StoreUsageCharge          $request  The verified request.
      * @param callable $activateUsageChargeAction The action for activating a usage charge.
      *
      * @return RedirectResponse

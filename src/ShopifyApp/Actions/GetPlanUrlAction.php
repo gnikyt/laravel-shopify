@@ -51,16 +51,17 @@ class GetPlanUrlAction
 
     /**
      * Execution.
+     * TODO: Rethrow an API exception.
      *
-     * @param string   $shopDomain The shop's domain.
-     * @param int|null $planId     The plan to present.
+     * @param int      $shopId The shop ID.
+     * @param int|null $planId The plan to present.
      *
-     * @return mixed
+     * @return string
      */
-    public function __invoke(string $shopDomain, ?int $planId)
+    public function __invoke(int $shopId, ?int $planId): string
     {
         // Get the shop
-        $shop = $this->shopQuery->getByDomain(ShopifyApp::sanitizeShopDomain($shopDomain));
+        $shop = $this->shopQuery->getById($shopId);
 
         // If the plan is null, get a plan
         if (is_null($planId)) {
@@ -70,7 +71,11 @@ class GetPlanUrlAction
         $api = $this
             ->apiHelper
             ->setInstance($shop->api())
-            ->createCharge($plan->getTypeAsString(true), $plan->chargeDetails($shop));
+            ->createCharge(
+                $plan->getTypeAsString(true),
+                $plan->chargeDetails($shop)
+            );
+
         return $api->confirmation_url;
     }
 }

@@ -3,9 +3,8 @@
 namespace OhMyBrew\ShopifyApp\Actions;
 
 use Illuminate\Support\Facades\Config;
-use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
+use OhMyBrew\ShopifyApp\Interfaces\IShopModel;
 use OhMyBrew\ShopifyApp\Interfaces\IShopQuery;
-use OhMyBrew\ShopifyApp\Jobs\WebhookInstaller;
 
 /**
  * Run after authentication jobs.
@@ -33,28 +32,30 @@ class AfterAuthenticateAction
 
     /**
      * Execution.
+     * TODO: Rethrow an API exception.
      *
-     * @param string $shopDomain The shop's domain.
+     * @param int $shopId The shop ID.
      *
      * @return bool
      */
-    public function __invoke(string $shopDomain): bool
+    public function __invoke(int $shopId): bool
     {
         /**
          * Fires the job.
          *
-         * @param array $config The job's configuration
+         * @param array      $config The job's configuration.
+         * @param IShopModel $shop   The shop instance.
          *
          * @return bool
          */
-        $fireJob = function ($config): bool {
+        $fireJob = function (array $config, IShopModel $shop): bool {
             $job = $config['job'];
             if (isset($config['inline']) && $config['inline'] === true) {
                 // Run this job immediately
-                $job::dispatchNow($this->shop);
+                $job::dispatchNow($shop);
             } else {
                 // Run later
-                $job::dispatch($this->shop)
+                $job::dispatch($shop)
                     ->onQueue(Config::get('shopify-app.job_queues.after_authenticate'));
             }
 
@@ -62,7 +63,7 @@ class AfterAuthenticateAction
         };
 
         // Get the shop
-        $shop = $this->shopQuery->getByDomain(ShopifyApp::sanitizeShopDomain($shopDomain));
+        $shop = $this->shopQuery->getById($shopId);
 
         // Grab the jobs config
         $jobsConfig = Config::get('shopify-app.after_authenticate_job');
@@ -71,7 +72,7 @@ class AfterAuthenticateAction
         if (isset($jobsConfig[0])) {
             foreach ($jobsConfig as $jobConfig) {
                 // We have a job, pass the shop object to the contructor
-                $fireJob($jobConfig);
+                $fireJob($jobConfig, $shop);
             }
 
             return true;
@@ -79,7 +80,7 @@ class AfterAuthenticateAction
 
         // We have a single job
         if (isset($jobsConfig['job'])) {
-            return $fireJob($jobsConfig);
+            return $fireJob($jobsConfig, $shop);
         }
 
         return false;

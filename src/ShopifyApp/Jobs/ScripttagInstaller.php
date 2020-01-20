@@ -7,9 +7,6 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use OhMyBrew\ShopifyApp\Services\APIHandler;
-use OhMyBrew\ShopifyApp\Services\IApiHelper;
-use OhMyBrew\ShopifyApp\Interfaces\IShopModel;
 
 /**
  * Webhook job responsible for handling installing scripttag.
@@ -19,40 +16,33 @@ class ScripttagInstaller implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
-     * The shop object.
+     * The shop's ID.
      *
-     * @var IShopModel
+     * @var int
      */
-    protected $shop;
+    protected $shopId;
 
     /**
-     * The API helper.
+     * Action for creating scripttags.
      *
-     * @var ApiHelper
+     * @var callable
      */
-    protected $apiHelper;
-
-    /**
-     * Scripttag list.
-     *
-     * @var array
-     */
-    protected $scripttags;
+    protected $createScriptsAction;
 
     /**
      * Create a new job instance.
      *
-     * @param IShopModel  $shop       The shop object.
-     * @param array       $scripttags The scripttag list.
-     * @param IAPIHelper  $apiHelper  The API helper.
+     * @param int        $shopId              The shop ID.
+     * @param callable   $createScriptsAction Action for creating scripttags.
      *
      * @return self
      */
-    public function __construct(IShopModel $shop, IApiHelper $apiHelper, array $scripttags)
-    {
-        $this->shop = $shop;
-        $this->apiHelper = $apiHelper;
-        $this->scripttags = $scripttags;
+    public function __construct(
+        int $shopId,
+        callable $createScriptsAction
+    ) {
+        $this->shopId = $shopId;
+        $this->createScriptsAction = $createScriptsAction;
     }
 
     /**
@@ -62,41 +52,6 @@ class ScripttagInstaller implements ShouldQueue
      */
     public function handle(): array
     {
-        // Get the current scripttags installed on the shop
-        $api = $this->apiHelper->setInstance($this->shop->api());
-        $shopScripttags = $api->getScriptTags();
-
-        // Keep track of whats created
-        $created = [];
-        foreach ($this->scripttags as $scripttag) {
-            // Check if the required scripttag exists on the shop
-            if (!$this->scripttagExists($shopScripttags, $scripttag)) {
-                // It does not... create the scripttag
-                $api->createScriptTag($scripttag);
-                $created[] = $scripttag;
-            }
-        }
-
-        return $created;
-    }
-
-    /**
-     * Check if scripttag is in the list.
-     *
-     * @param array $shopScripttags The scripttags installed on the shop
-     * @param array $scripttag      The scripttag
-     *
-     * @return bool
-     */
-    protected function scripttagExists(array $shopScripttags, array $scripttag): bool
-    {
-        foreach ($shopScripttags as $shopScripttag) {
-            if ($shopScripttag->src === $scripttag['src']) {
-                // Found the scripttag in our list
-                return true;
-            }
-        }
-
-        return false;
+        return call_user_func($this->createScriptsAction, $this->shopId);
     }
 }

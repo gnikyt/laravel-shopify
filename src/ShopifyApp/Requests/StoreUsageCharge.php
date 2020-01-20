@@ -16,7 +16,7 @@ class StoreUsageCharge extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -28,7 +28,7 @@ class StoreUsageCharge extends FormRequest
      *
      * @return void
      */
-    public function withValidator(Validator $validator)
+    public function withValidator(Validator $validator): void
     {
         // Determine if the HMAC is correct
         $validator->after(function (Validator $validator) {
@@ -59,7 +59,7 @@ class StoreUsageCharge extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'signature'   => 'required|string',

@@ -10,6 +10,7 @@ use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 
 /**
  * Responsible for ensuring the shop is being billed.
+ * TODO: Refactor
  */
 class Billable
 {

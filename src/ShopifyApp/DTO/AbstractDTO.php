@@ -23,7 +23,9 @@ abstract class AbstractDTO implements IteratorAggregate
      *
      * @param string $key The key to get.
      *
-     * @return mixed|Exception
+     * @throws Exception
+     *
+     * @return mixed
      */
     public function __get(string $key)
     {

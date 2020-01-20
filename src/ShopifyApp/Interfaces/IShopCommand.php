@@ -28,4 +28,33 @@ interface IShopCommand
      * @return bool
      */
     public function setAccessToken(int $shopId, string $token): bool;
+
+    /**
+     * Cleans the shop's properties (token, plan).
+     * Used for uninstalls.
+     *
+     * @param int $shopId The shop's ID.
+     *
+     * @return bool
+     */
+    public function clean(int $shopId): bool;
+
+    /**
+     * Soft deletes a shop.
+     * Used for uninstalls.
+     *
+     * @param int $shopId The shop's ID.
+     *
+     * @return bool
+     */
+    public function softDelete(int $shopId): bool;
+
+    /**
+     * Restore a soft-deleted shop.
+     *
+     * @param int $shopId The shop's ID.
+     *
+     * @return bool
+     */
+    public function restore(int $shopId): bool;
 }

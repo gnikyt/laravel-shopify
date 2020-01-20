@@ -2,7 +2,6 @@
 
 namespace OhMyBrew\ShopifyApp;
 
-use Closure;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
 use OhMyBrew\ShopifyApp\Queries\PlanQuery;
@@ -18,8 +17,6 @@ use OhMyBrew\ShopifyApp\Interfaces\ChargeQuery;
 use OhMyBrew\ShopifyApp\Middleware\AuthWebhook;
 use OhMyBrew\ShopifyApp\Observers\ShopObserver;
 use OhMyBrew\ShopifyApp\Actions\GetPlanUrlAction;
-use OhMyBrew\ShopifyApp\Services\AuthShopHandler;
-use OhMyBrew\ShopifyApp\Actions\RestoreShopAction;
 use OhMyBrew\ShopifyApp\Actions\ActivatePlanAction;
 use OhMyBrew\ShopifyApp\Actions\CreateWebhooksAction;
 use OhMyBrew\ShopifyApp\Actions\DeleteWebhooksAction;
@@ -30,7 +27,7 @@ use OhMyBrew\ShopifyApp\Actions\DispatchWebhooksAction;
 use OhMyBrew\ShopifyApp\Actions\AfterAuthenticateAction;
 use OhMyBrew\ShopifyApp\Actions\CancelCurrentPlanAction;
 use OhMyBrew\ShopifyApp\Actions\ActivateUsageChargeAction;
-use OhMyBrew\ShopifyApp\Services\WebhookManager;
+use OhMyBrew\ShopifyApp\Actions\CreateScriptsAction;
 
 /**
  * This package's provider for Laravel.
@@ -139,25 +136,16 @@ class ShopifyAppProvider extends ServiceProvider
                 return new ShopifyApp($app);
             },
 
-            // Services
+            // Services (start)
             ApiHelper::class => [self::CBIND, function () {
                 return new ApiHelper();
-            }],
-            ShopSession::class => [self::CBIND, function ($app) {
-                return new ShopSession(
-                    $app->make(ShopCommand::class)
-                );
-            }],
-            WebhookManager::class => [self::CSINGLETON, function ($app) {
-                return new WebhookManager(
-                    $app->make(CreateWebhooksAction::class),
-                    $app->make(DeleteWebhooksAction::class)
-                );
             }],
 
             // Queriers
             ShopQuery::class => [self::CSINGLETON, function () {
-                return new ShopQuery(Config::get('shopify-app.shop_model'));
+                return new ShopQuery(
+                    Config::get('shopify-app.shop_model')
+                );
             }],
             PlanQuery::class => [self::CSINGLETON, function () {
                 return new PlanQuery();
@@ -191,11 +179,6 @@ class ShopifyAppProvider extends ServiceProvider
                     $app->make(ApiHelper::class),
                     $app->make(PlanQuery::class),
                     $app->make(ShopQuery::class),
-                );
-            }],
-            RestoreShopAction::class => [self::CBIND, function ($app) {
-                return new RestoreShopAction(
-                    $app->make(ShopQuery::class)
                 );
             }],
             CancelCurrentPlanAction::class => [self::CBIND, function ($app) {
@@ -246,6 +229,19 @@ class ShopifyAppProvider extends ServiceProvider
                 return new CreateWebhooksAction(
                     $app->make(ApiHelper::class),
                     $app->make(ShopQuery::class)
+                );
+            }],
+            CreateScriptsAction::class => [self::CBIND, function ($app) {
+                return new CreateScriptsAction(
+                    $app->make(ApiHelper::class),
+                    $app->make(ShopQuery::class)
+                );
+            }],
+
+            // Services (end)
+            ShopSession::class => [self::CBIND, function ($app) {
+                return new ShopSession(
+                    $app->make(ShopCommand::class)
                 );
             }],
         ];

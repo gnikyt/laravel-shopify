@@ -44,9 +44,43 @@ class ShopCommand implements IShopCommand
     public function setAccessToken(int $shopId, string $token): bool
     {
         $shop = $this->getShop($shopId);
-        $this->shop->shopify_token = $token;
+        $shop->shopify_token = $token;
 
-        return $this->shop->save();
+        return $shop->save();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function clean(int $shopId): bool
+    {
+        $shop = $this->getShop($shopId);
+        $shop->shopify_token = null;
+        $shop->plan_id = null;
+        
+        return $shop->save();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function softDelete(int $shopId): bool
+    {
+        $shop = $this->getShop($shopId);
+        $shop->charges()->delete();
+        
+        return $shop->delete();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function restore(int $shopId): bool
+    {
+        $shop = $this->getShop($shopId);
+        $shop->charges()->restore();
+
+        return $shop->restore();
     }
 
     /**

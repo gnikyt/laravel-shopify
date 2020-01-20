@@ -16,6 +16,7 @@ use OhMyBrew\ShopifyApp\Services\ShopSession;
 
 /**
  * Response for ensuring an authenticated shop.
+ * TODO: Refactor.
  */
 class AuthShop
 {

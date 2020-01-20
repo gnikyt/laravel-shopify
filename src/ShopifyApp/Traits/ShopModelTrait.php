@@ -146,6 +146,7 @@ trait ShopModelTrait
 
     /**
      * Gets the last single or recurring charge for the shop.
+     * TODO: Move to command.
      *
      * @param int|null $planId The plan ID to check with.
      *

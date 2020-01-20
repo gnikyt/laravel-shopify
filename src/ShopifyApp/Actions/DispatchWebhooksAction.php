@@ -3,7 +3,6 @@
 namespace OhMyBrew\ShopifyApp\Actions;
 
 use Illuminate\Support\Facades\Config;
-use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Interfaces\IShopQuery;
 use OhMyBrew\ShopifyApp\Jobs\WebhookInstaller;
 
@@ -34,16 +33,16 @@ class DispatchWebhooksAction
     /**
      * Execution.
      *
-     * @param string $shopDomain The shop's domain.
-     * @param bool   $inline     Fire the job inlin e (now) or queue.
+     * @param int  $shopId The shop ID.
+     * @param bool $inline Fire the job inlin e (now) or queue.
      *
      * @return bool
      */
-    public function __invoke(string $shopDomain, bool $inline = false): bool
+    public function __invoke(int $shopId, bool $inline = false): bool
     {
         // Get the shop
-        $shop = $this->shopQuery->getByDomain(ShopifyApp::sanitizeShopDomain($shopDomain));
-        
+        $shop = $this->shopQuery->getById($shopId);
+
         // Get the webhooks
         $webhooks = Config::get('shopify-app.webhooks');
         if (count($webhooks) === 0) {

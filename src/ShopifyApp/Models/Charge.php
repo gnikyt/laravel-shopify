@@ -5,6 +5,7 @@ namespace OhMyBrew\ShopifyApp\Models;
 use Exception;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use OhMyBrew\ShopifyApp\Services\IApiHelper;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -15,16 +16,60 @@ class Charge extends Model
 {
     use SoftDeletes;
 
-    // Types of charges
+    /**
+     * Charge: Recurring
+     *
+     * @var int
+     */
     const CHARGE_RECURRING = 1;
+
+    /**
+     * Charge: One-time
+     *
+     * @var int
+     */
     const CHARGE_ONETIME = 2;
+
+    /**
+     * Charge: Usage
+     *
+     * @var int
+     */
     const CHARGE_USAGE = 3;
+
+    /**
+     * Charge: Credit
+     *
+     * @var int
+     */
     const CHARGE_CREDIT = 4;
 
-    // Types of statuses
+    /**
+     * Status: Active
+     *
+     * @var string
+     */
     const STATUS_ACTIVE = 'active';
+
+    /**
+     * Status: Accepted
+     *
+     * @var string
+     */
     const STATUS_ACCEPTED = 'accepted';
+
+    /**
+     * Status: Declines
+     *
+     * @var string
+     */
     const STATUS_DECLINED = 'declined';
+
+    /**
+     * Status: Cancelled
+     *
+     * @var string
+     */
     const STATUS_CANCELLED = 'cancelled';
 
     /**
@@ -64,9 +109,9 @@ class Charge extends Model
     /**
      * Gets the shop for the charge.
      *
-     * @return OhMyBrew\ShopifyApp\Models\Shop
+     * @return BelongsTo
      */
-    public function shop()
+    public function shop(): BelongsTo
     {
         return $this->belongsTo(Shop::class);
     }
@@ -74,9 +119,9 @@ class Charge extends Model
     /**
      * Gets the plan.
      *
-     * @return \OhMyBrew\ShopifyApp\Models\Plan
+     * @return BelongsTo
      */
-    public function plan()
+    public function plan(): BelongsTo
     {
         return $this->belongsTo(Plan::class);
     }
@@ -111,7 +156,7 @@ class Charge extends Model
      *
      * @return bool
      */
-    public function isTest()
+    public function isTest(): bool
     {
         return (bool) $this->test;
     }
@@ -123,7 +168,7 @@ class Charge extends Model
      *
      * @return bool
      */
-    public function isType(int $type)
+    public function isType(int $type): bool
     {
         return (int) $this->type === $type;
     }
@@ -133,7 +178,7 @@ class Charge extends Model
      *
      * @return bool
      */
-    public function isTrial()
+    public function isTrial(): bool
     {
         return !is_null($this->trial_ends_on);
     }
@@ -143,34 +188,37 @@ class Charge extends Model
      *
      * @return bool
      */
-    public function isActiveTrial()
+    public function isActiveTrial(): bool
     {
-        return $this->isTrial() && Carbon::today()->lte(Carbon::parse($this->trial_ends_on));
+        return $this->isTrial() &&
+            Carbon::today()->lte(Carbon::parse($this->trial_ends_on));
     }
 
     /**
      * Returns the remaining trial days.
      *
-     * @return int
+     * @return ?int
      */
-    public function remainingTrialDays()
+    public function remainingTrialDays(): ?int
     {
         if (!$this->isTrial()) {
-            return;
+            return null;
         }
 
-        return $this->isActiveTrial() ? Carbon::today()->diffInDays($this->trial_ends_on) : 0;
+        return $this->isActiveTrial() ?
+            Carbon::today()->diffInDays($this->trial_ends_on) :
+            0;
     }
 
     /**
      * Returns the remaining trial days from cancellation date.
      *
-     * @return int
+     * @return int|null
      */
-    public function remainingTrialDaysFromCancel()
+    public function remainingTrialDaysFromCancel(): ?int
     {
         if (!$this->isTrial()) {
-            return;
+            return null;
         }
 
         $cancelledDate = Carbon::parse($this->cancelled_on);
@@ -190,7 +238,7 @@ class Charge extends Model
      *
      * @return string
      */
-    public function periodBeginDate()
+    public function periodBeginDate(): string
     {
         $pastPeriods = (int) (Carbon::parse($this->activated_on)->diffInDays(Carbon::today()) / 30);
         $periodBeginDate = Carbon::parse($this->activated_on)->addDays(30 * $pastPeriods)->toDateString();
@@ -203,7 +251,7 @@ class Charge extends Model
      *
      * @return string
      */
-    public function periodEndDate()
+    public function periodEndDate(): string
     {
         return Carbon::parse($this->periodBeginDate())->addDays(30)->toDateString();
     }
@@ -213,7 +261,7 @@ class Charge extends Model
      *
      * @return int
      */
-    public function remainingDaysForPeriod()
+    public function remainingDaysForPeriod(): int
     {
         $pastDaysForPeriod = $this->pastDaysForPeriod();
         if (is_null($pastDaysForPeriod)) {
@@ -232,10 +280,13 @@ class Charge extends Model
      *
      * @return int|null
      */
-    public function pastDaysForPeriod()
+    public function pastDaysForPeriod(): ?int
     {
-        if ($this->cancelled_on && abs(Carbon::now()->diffInDays(Carbon::parse($this->cancelled_on))) > 30) {
-            return;
+        if (
+            $this->cancelled_on &&
+            abs(Carbon::now()->diffInDays(Carbon::parse($this->cancelled_on))) > 30
+        ) {
+            return null;
         }
 
         $pastDaysInPeriod = Carbon::parse($this->periodBeginDate())->diffInDays(Carbon::today());
@@ -248,7 +299,7 @@ class Charge extends Model
      *
      * @return bool
      */
-    public function hasExpired()
+    public function hasExpired(): bool
     {
         if ($this->isCancelled()) {
             return Carbon::parse($this->expires_on)->lte(Carbon::today());
@@ -262,10 +313,10 @@ class Charge extends Model
      *
      * @return int|null
      */
-    public function usedTrialDays()
+    public function usedTrialDays(): ?int
     {
         if (!$this->isTrial()) {
-            return;
+            return null;
         }
 
         return $this->trial_days - $this->remainingTrialDays();
@@ -278,7 +329,7 @@ class Charge extends Model
      *
      * @return bool
      */
-    public function isStatus(string $status)
+    public function isStatus(string $status): bool
     {
         return $this->status === $status;
     }
@@ -288,7 +339,7 @@ class Charge extends Model
      *
      * @return bool
      */
-    public function isActive()
+    public function isActive(): bool
     {
         return $this->isStatus(self::STATUS_ACTIVE);
     }
@@ -298,7 +349,7 @@ class Charge extends Model
      *
      * @return bool
      */
-    public function isAccepted()
+    public function isAccepted(): bool
     {
         return $this->isStatus(self::STATUS_ACCEPTED);
     }
@@ -308,7 +359,7 @@ class Charge extends Model
      *
      * @return bool
      */
-    public function isDeclined()
+    public function isDeclined(): bool
     {
         return $this->isStatus(self::STATUS_DECLINED);
     }
@@ -318,7 +369,7 @@ class Charge extends Model
      *
      * @return bool
      */
-    public function isCancelled()
+    public function isCancelled(): bool
     {
         return !is_null($this->cancelled_on) || $this->isStatus(self::STATUS_CANCELLED);
     }
@@ -328,19 +379,20 @@ class Charge extends Model
      *
      * @return bool
      */
-    public function isOngoing()
+    public function isOngoing(): bool
     {
         return $this->isActive() && !$this->isCancelled();
     }
 
     /**
      * Cancels this charge.
+     * TODO: Move to command.
      *
      * @throws Exception
      *
-     * @return self
+     * @return bool
      */
-    public function cancel()
+    public function cancel(): bool
     {
         if (!$this->isType(self::CHARGE_ONETIME) && !$this->isType(self::CHARGE_RECURRING)) {
             throw new Exception('Cancel may only be called for single and recurring charges.');

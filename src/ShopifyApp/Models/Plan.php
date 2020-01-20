@@ -5,6 +5,7 @@ namespace OhMyBrew\ShopifyApp\Models;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use OhMyBrew\ShopifyApp\DTO\PlanDetailsDTO;
 use OhMyBrew\ShopifyApp\Interfaces\IShopModel;
 
@@ -13,8 +14,18 @@ use OhMyBrew\ShopifyApp\Interfaces\IShopModel;
  */
 class Plan extends Model
 {
-    // Types of plans
+    /**
+     * Plan: Recurring
+     *
+     * @var int
+     */
     const PLAN_RECURRING = 1;
+
+    /**
+     * Plan: One-time
+     *
+     * @var int
+     */
     const PLAN_ONETIME = 2;
 
     /**
@@ -33,9 +44,9 @@ class Plan extends Model
     /**
      * Get charges.
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return HasMany
      */
-    public function charges()
+    public function charges(): HasMany
     {
         return $this->hasMany(Charge::class);
     }
@@ -47,7 +58,7 @@ class Plan extends Model
      *
      * @return bool
      */
-    public function isType(int $type)
+    public function isType(int $type): bool
     {
         return $this->type === $type;
     }
@@ -59,7 +70,7 @@ class Plan extends Model
      *
      * @return string
      */
-    public function typeAsString($plural = false)
+    public function typeAsString($plural = false): string
     {
         $type = null;
         switch ($this->type) {
@@ -80,7 +91,7 @@ class Plan extends Model
      *
      * @return bool
      */
-    public function hasTrial()
+    public function hasTrial(): bool
     {
         return $this->trial_days !== null && $this->trial_days > 0;
     }
@@ -90,7 +101,7 @@ class Plan extends Model
      *
      * @return bool
      */
-    public function isOnInstall()
+    public function isOnInstall(): bool
     {
         return (bool) $this->on_install;
     }
@@ -100,7 +111,7 @@ class Plan extends Model
      *
      * @return bool
      */
-    public function isTest()
+    public function isTest(): bool
     {
         return (bool) $this->test;
     }
@@ -135,7 +146,7 @@ class Plan extends Model
     /**
      * Determines the trial days for the plan.
      * Detects if reinstall is happening and properly adjusts.
-     * 
+     *
      * @param IShopModel $shop The shop the plan is for.
      *
      * @return int

@@ -3,7 +3,6 @@
 namespace OhMyBrew\ShopifyApp\Actions;
 
 use Illuminate\Support\Facades\Config;
-use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Interfaces\IShopQuery;
 use OhMyBrew\ShopifyApp\Jobs\ScripttagInstaller;
 
@@ -34,16 +33,16 @@ class DispatchScriptsAction
     /**
      * Execution.
      *
-     * @param string $shopDomain The shop's domain.
-     * @param bool   $inline     Fire the job inlin e (now) or queue.
+     * @param int  $shopId The shop ID.
+     * @param bool $inline Fire the job inlin e (now) or queue.
      *
      * @return bool
      */
-    public function __invoke(string $shopDomain, bool $inline = false): bool
+    public function __invoke(int $shopId, bool $inline = false): bool
     {
         // Get the shop
-        $shop = $this->shopQuery->getByDomain(ShopifyApp::sanitizeShopDomain($shopDomain));
-        
+        $shop = $this->shopQuery->getById($shopId);
+
         // Get the scripttags
         $scripttags = Config::get('shopify-app.scripttags');
         if (count($scripttags) === 0) {
@@ -53,9 +52,9 @@ class DispatchScriptsAction
 
         // Run the installer job
         if ($inline) {
-            ScripttagInstaller::dispatchNow($this->shop, $scripttags);
+            ScripttagInstaller::dispatchNow($shop, $scripttags);
         } else {
-            ScripttagInstaller::dispatch($this->shop, $scripttags)
+            ScripttagInstaller::dispatch($shop, $scripttags)
                 ->onQueue(Config::get('shopify-app.job_queues.scripttags'));
         }
 

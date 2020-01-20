@@ -4,7 +4,6 @@ namespace OhMyBrew\ShopifyApp\Actions;
 
 use OhMyBrew\ShopifyApp\Models\Charge;
 use OhMyBrew\ShopifyApp\DTO\UsageChargeDTO;
-use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Services\IApiHelper;
 use OhMyBrew\ShopifyApp\Interfaces\IShopQuery;
 use OhMyBrew\ShopifyApp\DTO\UsageChargeDetailsDTO;
@@ -58,17 +57,20 @@ class ActivateUsageChargeAction
 
     /**
      * Execute.
+     * TODO: Rethrow an API exception.
      *
-     * @param string $shopDomain  The shop's domain.
+     * @param int    $shopId      The shop ID.
      * @param float  $price       Usage charge price.
      * @param string $description Usage charge description.
      *
-     * @return int|ChargeNotRecurringException|Exception
+     * @throws ChargeNotRecurringException
+     *
+     * @return int
      */
-    public function __invoke(string $shopDomain, float $price, string $description): int
+    public function __invoke(int $shopId, float $price, string $description): int
     {
         // Get the shop
-        $shop = $this->shopQuery->getByDomain(ShopifyApp::sanitizeShopDomain($shopDomain));
+        $shop = $this->shopQuery->getById($shopId);
 
         // Ensure we have a recurring charge
         $currentCharge = $shop->planCharge();

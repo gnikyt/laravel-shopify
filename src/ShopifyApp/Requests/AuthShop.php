@@ -17,19 +17,20 @@ class AuthShop extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
 
     /**
      * Configure the validator instance.
+     * TODO: Adjust to use actions.
      *
      * @param \Illuminate\Validation\Validator $validator
      *
      * @return void
      */
-    public function withValidator(Validator $validator)
+    public function withValidator(Validator $validator): void
     {
         // Determine if the HMAC is correct
         $validator->after(function (Validator $validator) {
@@ -53,7 +54,7 @@ class AuthShop extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'shop'      => 'required|string',
@@ -72,7 +73,7 @@ class AuthShop extends FormRequest
      *
      * @codeCoverageIgnore
      */
-    protected function getRedirectUrl()
+    protected function getRedirectUrl(): string
     {
         return $this->redirector->getUrlGenerator()->route('login');
     }

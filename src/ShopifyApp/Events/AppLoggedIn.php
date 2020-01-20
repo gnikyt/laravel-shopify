@@ -4,6 +4,7 @@ namespace OhMyBrew\ShopifyApp\Events;
 
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use OhMyBrew\ShopifyApp\Interfaces\IShopModel;
 
 /**
  * Event fired when a shop passes through authentication.
@@ -22,11 +23,11 @@ class AppLoggedIn
     /**
      * Create a new evebt instance.
      *
-     * @param object $shop The shop.
+     * @param IShopModel $shop The shop.
      *
      * @return void
      */
-    public function __construct($shop)
+    public function __construct(IShopModel $shop)
     {
         $this->shop = $shop;
     }

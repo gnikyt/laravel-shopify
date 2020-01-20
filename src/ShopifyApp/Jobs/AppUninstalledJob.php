@@ -7,9 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Config;
-use OhMyBrew\ShopifyApp\Models\Charge;
-use OhMyBrew\ShopifyApp\Models\Shop;
+use OhMyBrew\ShopifyApp\Interfaces\IShopCommand;
 
 /**
  * Webhook job responsible for handling when the app is uninstalled.
@@ -19,18 +17,11 @@ class AppUninstalledJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
-     * Shop's instance.
+     * The shop ID.
      *
-     * @var string
+     * @var int
      */
-    protected $shop;
-
-    /**
-     * Shop's myshopify domain.
-     *
-     * @var string
-     */
-    protected $shopDomain;
+    protected $shopId;
 
     /**
      * The webhook data.
@@ -40,18 +31,39 @@ class AppUninstalledJob implements ShouldQueue
     protected $data;
 
     /**
+     * Commands for shops.
+     *
+     * @var IShopCommand
+     */
+    protected $shopCommand;
+
+    /**
+     * Action for cancelling current plan.
+     *
+     * @var callable
+     */
+    protected $cancelCurrentPlanAction;
+
+    /**
      * Create a new job instance.
      *
-     * @param string $shopDomain The shop's myshopify domain
-     * @param object $data       The webhook data (JSON decoded)
+     * @param int          $shopId                  The shop ID.
+     * @param object       $data                    The webhook data (JSON decoded).
+     * @param IShopCommand $shopCommand             The commands for shops.
+     * @param callable     $cancelCurrentPlanAction Action for cancelling current plan.
      *
-     * @return void
+     * @return self
      */
-    public function __construct($shopDomain, $data)
-    {
+    public function __construct(
+        int $shopId,
+        object $data,
+        IShopCommand $shopCommand,
+        callable $cancelCurrentPlanAction
+    ) {
+        $this->shopId = $shopId;
         $this->data = $data;
-        $this->shopDomain = $shopDomain;
-        $this->shop = $this->findShop();
+        $this->shopCommand = $shopCommand;
+        $this->cancelCurrentPlanAction = $cancelCurrentPlanAction;
     }
 
     /**
@@ -59,64 +71,12 @@ class AppUninstalledJob implements ShouldQueue
      *
      * @return bool
      */
-    public function handle()
+    public function handle(): bool
     {
-        if (!$this->shop) {
-            return false;
-        }
-
-        $this->cancelCharge();
-        $this->cleanShop();
-        $this->softDeleteShop();
+        call_user_func($this->cancelCurrentPlanAction, $this->shopId);
+        $this->shopCommand->clean($this->shopId);
+        $this->shopCommand->softDelete($this->shopId);
 
         return true;
-    }
-
-    /**
-     * Clean the shop data on uninstall.
-     *
-     * @return void
-     */
-    protected function cleanShop()
-    {
-        $this->shop->shopify_token = null;
-        $this->shop->plan_id = null;
-        $this->shop->save();
-    }
-
-    /**
-     * Soft deletes the shop in the database.
-     *
-     * @return void
-     */
-    protected function softDeleteShop()
-    {
-        $this->shop->delete();
-        $this->shop->charges()->delete();
-    }
-
-    /**
-     * Cancels a recurring or one-time charge.
-     *
-     * @return void
-     */
-    protected function cancelCharge()
-    {
-        $planCharge = $this->shop->planCharge();
-        if ($planCharge && !$planCharge->isDeclined() && !$planCharge->isCancelled()) {
-            $planCharge->cancel();
-        }
-    }
-
-    /**
-     * Finds the shop based on domain from the webhook.
-     *
-     * @return Shop|null
-     */
-    protected function findShop()
-    {
-        $shopModel = Config::get('shopify-app.shop_model');
-
-        return $shopModel::where(['shopify_domain' => $this->shopDomain])->first();
     }
 }

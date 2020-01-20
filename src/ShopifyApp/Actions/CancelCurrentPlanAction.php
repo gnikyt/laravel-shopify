@@ -2,7 +2,6 @@
 
 namespace OhMyBrew\ShopifyApp\Actions;
 
-use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Interfaces\IShopQuery;
 
 /**
@@ -25,19 +24,20 @@ class CancelCurrentPlanAction
     /**
      * Execution.
      *
-     * @param string $shopDomain The shop's domain.
+     * @param int $shopId The shop ID.
      *
      * @return bool
      */
-    public function __invoke(string $shopDomain): bool
+    public function __invoke(int $shopId): bool
     {
         // Get the shop
-        $shop = $this->shopQuery->getByDomain(ShopifyApp::sanitizeShopDomain($shopDomain));
+        $shop = $this->shopQuery->getById($shopId);
 
         // Cancel the last charge
         $planCharge = $shop->planCharge();
         if ($planCharge && !$planCharge->isDeclined() && !$planCharge->isCancelled()) {
             $planCharge->cancel();
+
             return true;
         }
 

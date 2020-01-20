@@ -10,6 +10,7 @@ use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 
 /**
  * Responsible for ensuring a proper app proxy request.
+ * TODO: Refactor?
  */
 class AuthProxy
 {

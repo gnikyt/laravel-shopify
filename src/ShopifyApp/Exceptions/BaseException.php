@@ -16,9 +16,9 @@ abstract class BaseException extends Exception
     /**
      * Render the exception into an HTTP response.
      *
-     * @param \Illuminate\Http\Request The incoming request.
+     * @param Request The incoming request.
      *
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\RedirectResponse|void
      */
     public function render(Request $request)
     {

@@ -7,9 +7,9 @@ use OhMyBrew\ShopifyApp\Services\IApiHelper;
 use OhMyBrew\ShopifyApp\Interfaces\IShopQuery;
 
 /**
- * Create webhooks for this app on the shop.
+ * Create scripttags for this app on the shop.
  */
-class CreateWebhooksAction
+class CreateScriptsAction
 {
     /**
      * The API helper.
@@ -50,21 +50,21 @@ class CreateWebhooksAction
     public function __invoke(int $shopId): array
     {
         /**
-         * Checks if a webhooks exists already in the shop.
+         * Checks if a scripttag exists already in the shop.
          *
-         * @param array $webhook  The webhook config.
-         * @param array $webhooks The current webhooks to search.
+         * @param array $script  The scripttag config.
+         * @param array $scripts The current scripttags to search.
          *
          * @return bool
          */
-        $exists = function (array $webhook, array $webhooks): bool {
-            foreach ($webhooks as $shopWebhook) {
-                if ($shopWebhook->address === $webhook['address']) {
-                    // Found the webhook in our list
+        $exists = function (array $script, array $scripts): bool {
+            foreach ($scripts as $shopScript) {
+                if ($shopScript->src === $script['src']) {
+                    // Found the scripttag in our list
                     return true;
                 }
             }
-    
+
             return false;
         };
 
@@ -74,21 +74,22 @@ class CreateWebhooksAction
         // Set the API instance
         $this->apiHelper->setInstance($shop->api());
 
-        // Get the webhooks in config
-        $configWebhooks = Config::get('shopify-app.webhooks');
+        // Get the scripttags in config
+        $configScripts = Config::get('shopify-app.scripttags');
 
-        // Get the webhooks existing in for the shop
-        $webhooks = $this->apiHelper->getWebhooks();
+        // Get the scripts existing in for the shop
+        $scripts = $this->apiHelper->getScriptTags();
 
+        // Keep track of whats created
         $created = [];
-        foreach ($configWebhooks as $webhook) {
-            // Check if the required webhook exists on the shop
-            if (!$exists($webhook, $webhooks)) {
-                // It does not... create the webhook
-                $this->api->createWebhook($webhook);
+        foreach ($configScripts as $scripttag) {
+            // Check if the required scripttag exists on the shop
+            if (!$exists($scripttag, $scripts)) {
+                // It does not... create the scripttag
+                $this->apiHelper->createScriptTag($scripttag);
 
                 // Keep track of what was created
-                $created[] = $webhook;
+                $created[] = $scripttag;
             }
         }
 

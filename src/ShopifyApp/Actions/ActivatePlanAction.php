@@ -5,7 +5,6 @@ namespace OhMyBrew\ShopifyApp\Actions;
 use Illuminate\Support\Carbon;
 use OhMyBrew\ShopifyApp\Models\Plan;
 use OhMyBrew\ShopifyApp\DTO\ChargeDTO;
-use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Services\IApiHelper;
 use OhMyBrew\ShopifyApp\Interfaces\IPlanQuery;
 use OhMyBrew\ShopifyApp\Interfaces\IShopQuery;
@@ -100,17 +99,18 @@ class ActivatePlanAction
 
     /**
      * Execution.
+     * TODO: Rethrow an API exception.
      *
-     * @param string     $shopDomain The shop's domain.
-     * @param int        $planId     The plan to use.
-     * @param int        $chargeId   The charge ID from Shopify.
+     * @param int $shopId   The shop ID.
+     * @param int $planId   The plan to use.
+     * @param int $chargeId The charge ID from Shopify.
      *
-     * @return bool|Exception
+     * @return bool
      */
-    public function __invoke(string $shopDomain, int $planId, int $chargeId)
+    public function __invoke(int $shopId, int $planId, int $chargeId): bool
     {
         // Get the shop
-        $shop = $this->shopQuery->getByDomain(ShopifyApp::sanitizeShopDomain($shopDomain));
+        $shop = $this->shopQuery->getById($shopId);
 
         // Get the plan and activate
         $plan = $this->planQuery->getById($planId);

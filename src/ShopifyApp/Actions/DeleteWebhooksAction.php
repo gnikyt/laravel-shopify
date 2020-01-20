@@ -41,15 +41,16 @@ class DeleteWebhooksAction
 
     /**
      * Execution.
+     * TODO: Rethrow an API exception.
      *
-     * @param string $shopDomain The shop's domain.
+     * @param int $shopId The shop ID.
      *
      * @return array
      */
-    public function __invoke(string $shopDomain): array
+    public function __invoke(int $shopId): array
     {
         // Get the shop
-        $shop = $this->shopQuery->getByDomain(ShopifyApp::sanitizeShopDomain($shopDomain));
+        $shop = $this->shopQuery->getById($shopId);
 
         // Set the API instance
         $this->apiHelper->setInstance($shop->api());

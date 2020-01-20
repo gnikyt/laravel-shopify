@@ -7,7 +7,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use OhMyBrew\ShopifyApp\Services\WebhookManager;
 
 /**
  * Webhook job responsible for handling installation of webhook listeners.
@@ -17,22 +16,31 @@ class WebhookInstaller implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
-     * The shop object.
+     * The shop's ID.
      *
-     * @var object
+     * @var int
      */
-    protected $shop;
+    protected $shopId;
+
+    /**
+     * Action for creating webhooks.
+     *
+     * @var callable
+     */
+    protected $createWebhooksAction;
 
     /**
      * Create a new job instance.
      *
-     * @param object $shop The shop object
+     * @param int      $shopId               The shop's ID.
+     * @param callable $createWebhooksAction Action for creating webhooks.
      *
-     * @return void
+     * @return self
      */
-    public function __construct($shop)
+    public function __construct(int $shopId, callable $createWebhooksAction)
     {
-        $this->shop = $shop;
+        $this->shopId = $shopId;
+        $this->createWebhooksAction = $createWebhooksAction;
     }
 
     /**
@@ -40,8 +48,8 @@ class WebhookInstaller implements ShouldQueue
      *
      * @return array
      */
-    public function handle()
+    public function handle(): array
     {
-        return (new WebhookManager($this->shop))->createWebhooks();
+        return call_user_func($this->createWebhooksAction, $this->shopId);
     }
 }

@@ -3,11 +3,8 @@
 namespace OhMyBrew\ShopifyApp\Actions;
 
 use Illuminate\Support\Facades\Config;
-use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Services\ShopSession;
 use OhMyBrew\ShopifyApp\Interfaces\IShopQuery;
-use OhMyBrew\ShopifyApp\Services\AuthShopHandler;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use OhMyBrew\ShopifyApp\Services\IApiHelper;
 
 /**
@@ -57,16 +54,17 @@ class AuthenticateShopAction
 
     /**
      * Execution.
+     * TODO: Rethrow an API exception.
      *
-     * @param string $shopDomain The shop's domain.
-     * @param string $code       The code from Shopify.
+     * @param int    $shopId The shop ID.
+     * @param string $code   The code from Shopify.
      *
      * @return object
      */
-    public function __invoke(string $shopDomain, string $code): object
+    public function __invoke(int $shopId, string $code): object
     {
         // Get the shop
-        $shop = $this->shopQuery->getByDomain(ShopifyApp::sanitizeShopDomain($shopDomain));
+        $shop = $this->shopQuery->getById($shopId);
         $this->apiHelper->setInstance($shop->api());
 
         // Return data
@@ -79,9 +77,7 @@ class AuthenticateShopAction
         if (empty($code)) {
             // We need the code first
             $authUrl = $this->apiHelper->buildAuthUrl(
-                $shop->hasOfflineAccess() ?
-                    Config::get('shopify-app.api_grant_mode') :
-                    $this->apiHelper::MODE_OFFLINE,
+                $shop->hasOfflineAccess() ? Config::get('shopify-app.api_grant_mode') : $this->apiHelper::MODE_OFFLINE,
                 Config::get('shopify-app.api_scopes')
             );
 
@@ -89,9 +85,13 @@ class AuthenticateShopAction
             $return['url'] = $authUrl;
         } else {
             // We have a good code, get the access details
-            $session = $this->shopSession->setShop($shop);
-            $session->setDomain($shop->shopify_domain);
-            $session->setAccess($this->apiHelper->getAccessData($code));
+            $this
+                ->shopSession
+                ->setShop($shop)
+                ->setDomain($shop->shopify_domain)
+                ->setAccess(
+                    $this->apiHelper->getAccessData($code)
+                );
 
             $return['completed'] = true;
         }

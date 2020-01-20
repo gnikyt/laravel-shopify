@@ -2,11 +2,9 @@
 
 namespace OhMyBrew\ShopifyApp\Services;
 
-use stdClass;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
 use OhMyBrew\ShopifyApp\Interfaces\IShopCommand;
-use OhMyBrew\ShopifyApp\Interfaces\IShopModel;
 use OhMyBrew\ShopifyApp\Traits\ShopAccessibleTrait;
 
 /**
@@ -131,7 +129,7 @@ class ShopSession
      *
      * @return self
      */
-    public function setAccess(stdClass $access): self
+    public function setAccess(object $access): self
     {
         // Grab the token
         $token = $access->access_token;

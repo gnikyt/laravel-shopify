@@ -9,6 +9,7 @@ use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 
 /**
  * Response for ensuring a proper webhook request.
+ * TODO: Refactor
  */
 class AuthWebhook
 {
