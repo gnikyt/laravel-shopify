@@ -8,6 +8,7 @@ use OhMyBrew\ShopifyApp\Console\WebhookJobMakeCommand;
 use OhMyBrew\ShopifyApp\Middleware\AuthProxy;
 use OhMyBrew\ShopifyApp\Middleware\AuthShop;
 use OhMyBrew\ShopifyApp\Middleware\AuthWebhook;
+use OhMyBrew\ShopifyApp\Middleware\SameSiteNone;
 use OhMyBrew\ShopifyApp\Middleware\Billable;
 use OhMyBrew\ShopifyApp\Observers\ShopObserver;
 
@@ -64,6 +65,7 @@ class ShopifyAppProvider extends ServiceProvider
         $this->app['router']->aliasMiddleware('auth.webhook', AuthWebhook::class);
         $this->app['router']->aliasMiddleware('auth.proxy', AuthProxy::class);
         $this->app['router']->aliasMiddleware('billable', Billable::class);
+        $this->app['router']->aliasMiddleware('samesitenone', SameSiteNone::class);
     }
 
     /**
