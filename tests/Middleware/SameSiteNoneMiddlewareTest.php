@@ -5,7 +5,7 @@ namespace OhMyBrew\ShopifyApp\Test\Middleware;
 use OhMyBrew\ShopifyApp\Middleware\SameSiteNone;
 use OhMyBrew\ShopifyApp\Test\TestCase;
 
-class SameSiteNoneTest extends TestCase
+class SameSiteNoneMiddlewareTest extends TestCase
 {
     public function testCanDetectIncompatibleBrowser()
     {

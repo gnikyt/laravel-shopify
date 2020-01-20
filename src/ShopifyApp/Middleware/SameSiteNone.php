@@ -10,8 +10,9 @@ class SameSiteNone
     /**
      * Sets SameSite=None while checking for incompatible browsers.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \Closure                 $next
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure                 $next
+     *
      * @return mixed
      */
     public function handle($request, Closure $next)
@@ -30,12 +31,12 @@ class SameSiteNone
 
     /**
      * Checks using the user agent if the browser is compatible with SameSite None.
-     * If a null is passed for any of the variables,
+     * If a null is passed for any of the variables, it will be loaded from the request.
      *
-     * @param  string|null  $userAgent
-     * @param  array|null  $headers
+     * @param string|null $userAgent
+     * @param array|null $headers
      *
-     * @return boolean True if compatible false if not
+     * @return bool True if compatible false if not
      */
     public function isBrowserSameSiteNoneCompatible($userAgent, $headers)
     {
