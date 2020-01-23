@@ -2,12 +2,12 @@
 
 namespace OhMyBrew\ShopifyApp\DTO;
 
-use OhMyBrew\ShopifyApp\DTO\AbstractDTO;
+use OhMyBrew\ShopifyApp\Objects\Transfers\AbstractTransfer;
 
 /**
  * Reprecents details for a plan.
  */
-class PlanDetailsDTO extends AbstractDTO
+class PlanDetails extends AbstractTransfer
 {
     /**
      * Constructor.

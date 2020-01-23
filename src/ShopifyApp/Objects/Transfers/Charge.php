@@ -1,15 +1,15 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\DTO;
+namespace OhMyBrew\ShopifyApp\Objects\Transfers;
 
 use Illuminate\Support\Carbon;
-use OhMyBrew\ShopifyApp\DTO\AbstractDTO;
-use OhMyBrew\ShopifyApp\DTO\PlanDetailsDTO;
+use OhMyBrew\ShopifyApp\Objects\Transfers\AbstractTransfer;
+use OhMyBrew\ShopifyApp\Objects\Transfers\PlanDetails;
 
 /**
  * Reprecents create charge.
  */
-class ChargeDTO extends AbstractDTO
+class ChargeDTO extends AbstractTransfer
 {
     /**
      * Constructor.

@@ -130,6 +130,8 @@ class ShopifyAppProvider extends ServiceProvider
         ]);
 
         // Binds
+
+        // TODO: USE CONTRACT MAPPING NOT DIRECT
         $binds = [
             // Facades
             'shopifyapp' => function ($app) {

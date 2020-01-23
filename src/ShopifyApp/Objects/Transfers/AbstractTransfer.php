@@ -1,6 +1,6 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\DTO;
+namespace OhMyBrew\ShopifyApp\Objects\Transfers;
 
 use ArrayIterator;
 use Exception;
@@ -9,7 +9,7 @@ use IteratorAggregate;
 /**
  * Reprecents the base for DTO.
  */
-abstract class AbstractDTO implements IteratorAggregate
+abstract class AbstractTransfer implements IteratorAggregate
 {
     /**
      * The data container.
@@ -36,7 +36,22 @@ abstract class AbstractDTO implements IteratorAggregate
 
         // Does not exist, throw exception
         $className = get_class($this);
-        throw new Exception("Property {$key} does not exist on {$className}");
+        throw new Exception("Property {$key} does not exist on transfer class {$className}");
+    }
+
+    /**
+     * Disable setting abilities to make object immutable.
+     *
+     * @param string $key   The key attempting to set.
+     * @param mixed  $value The value attempting to set.
+     *
+     * @return void
+     */
+    public function __set(string $key, $value): void
+    {
+        // Not allowed, throw exception
+        $className = get_class($this);
+        throw new Exception("Setting properties for transfer class {$className}");
     }
 
     /**
