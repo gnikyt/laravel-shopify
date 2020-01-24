@@ -3,8 +3,12 @@
 namespace OhMyBrew\ShopifyApp\Objects\Transfers;
 
 use Illuminate\Support\Carbon;
+use OhMyBrew\ShopifyApp\Contracts\Objects\Values\PlanId;
 use OhMyBrew\ShopifyApp\Objects\Transfers\AbstractTransfer;
 use OhMyBrew\ShopifyApp\Models\Charge;
+use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
 /**
  * Reprecents create usage charge.
@@ -14,9 +18,9 @@ class UsageCharge extends AbstractTransfer
     /**
      * Constructor.
      *
-     * @param int       $shopId       Shop ID.
-     * @param int       $planId       Plan ID.
-     * @param int       $chargeId     Charge ID from Shopify.
+     * @param ShopId    $shopId       Shop ID.
+     * @param PlanId    $planId       Plan ID.
+     * @param ChargeId  $chargeId     Charge ID from Shopify.
      * @param string    $chargeStatus Usage charge status.
      * @param float     $price        Usage charge price.
      * @param string    $description  Usage charge description.
@@ -25,9 +29,9 @@ class UsageCharge extends AbstractTransfer
      * @return self
      */
     public function __construct(
-        int $shopId,
-        int $planId,
-        int $chargeId,
+        ShopId $shopId,
+        PlanId $planId,
+        ChargeId $chargeId,
         string $chargeStatus,
         float $price,
         string $description,
@@ -36,7 +40,7 @@ class UsageCharge extends AbstractTransfer
         $this->data['shopId'] = $shopId;
         $this->data['planId'] = $planId;
         $this->data['referenceCharge'] = $chargeId;
-        $this->data['chargeType'] = Charge::CHARGE_USAGE;
+        $this->data['chargeType'] = ChargeType::USAGE();
         $this->data['chargeStatus'] = $chargeStatus;
         $this->data['billingOn'] = $billingOn;
         $this->data['price'] = $price;

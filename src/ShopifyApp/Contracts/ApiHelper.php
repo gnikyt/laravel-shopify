@@ -1,52 +1,18 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Services;
+namespace OhMyBrew\ShopifyApp\Contracts;
 
 use OhMyBrew\BasicShopifyAPI;
 use GuzzleHttp\Exception\RequestException;
-use OhMyBrew\ShopifyApp\DTO\PlanDetailsDTO;
-use OhMyBrew\ShopifyApp\DTO\UsageChargeDetailsDTO;
+use OhMyBrew\ShopifyApp\Objects\Transfers\PlanDetails;
+use OhMyBrew\ShopifyApp\Objects\Transfers\UsageChargeDetails;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
 
 /**
  * Reprecents the API helper.
  */
-interface IApiHelper
+interface ApiHelper
 {
-    /**
-     * HTTP method: GET
-     *
-     * @var string
-     */
-    const METHOD_GET = self::METHOD_GET;
-
-    /**
-     * HTTP method: POST
-     *
-     * @var string
-     */
-    const METHOD_POST = self::METHOD_POST;
-
-    /**
-     * HTTP method: DELETE
-     *
-     * @var string
-     */
-    const METHOD_DELETE = 'DELETE';
-
-    /**
-     * Offline auth mode.
-     *
-     * @var string
-     */
-    const MODE_OFFLINE = 'offline';
-
-    /**
-     * Per-user auth mode.
-     *
-     * @var string
-     */
-    const MODE_PERUSER = 'per-user';
-
     /**
      * Set the API instance.
      *
@@ -105,32 +71,32 @@ interface IApiHelper
     /**
      * Get the charge record.
      *
-     * @param string $chargeType The type of charge (plural).
-     * @param int    $chargeId   The charge ID.
+     * @param string   $chargeType The type of charge (plural).
+     * @param ChargeId $chargeId   The charge ID.
      *
      * @return object|RequestException
      */
-    public function getCharge(string $chargeType, int $chargeId): object;
+    public function getCharge(string $chargeType, ChargeId $chargeId): object;
 
     /**
      * Activate a charge.
      *
-     * @param string $chargeType The type of charge (plural).
-     * @param int    $chargeId   The charge ID.
+     * @param string   $chargeType The type of charge (plural).
+     * @param ChargeId $chargeId   The charge ID.
      *
      * @return object|RequestException
      */
-    public function activateCharge(string $chargeType, int $chargeId): object;
+    public function activateCharge(string $chargeType, ChargeId $chargeId): object;
 
     /**
      * Create a charge.
      *
-     * @param string         $chargeType The type of charge (plural).
-     * @param PlanDetailsDTO $payload    The data for the charge creation.
+     * @param string      $chargeType The type of charge (plural).
+     * @param PlanDetails $payload    The data for the charge creation.
      *
      * @return object
      */
-    public function createCharge(string $chargeType, PlanDetailsDTO $payload): object;
+    public function createCharge(string $chargeType, PlanDetails $payload): object;
 
     /**
      * Get webhooks for the shop.
@@ -162,9 +128,9 @@ interface IApiHelper
     /**
      * Creates a usage charge for a recurring charge.
      *
-     * @param UsageChargeDTO $payload The data for the usage charge creation.
+     * @param UsageChargeDetails $payload The data for the usage charge creation.
      *
      * @return object
      */
-    public function createUsageCharge(UsageChargeDetailsDTO $payload): object;
+    public function createUsageCharge(UsageChargeDetails $payload): object;
 }

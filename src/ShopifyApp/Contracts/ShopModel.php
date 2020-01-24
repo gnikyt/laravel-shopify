@@ -1,15 +1,16 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Interfaces;
+namespace OhMyBrew\ShopifyApp\Contracts;
 
 use OhMyBrew\BasicShopifyAPI;
 use OhMyBrew\ShopifyApp\Models\Charge;
+use OhMyBrew\ShopifyApp\Objects\Values\NullablePlanId;
 use OhMyBrew\ShopifyApp\Services\ShopSession;
 
 /**
  * Reprecents the shop model.
  */
-interface IShopModel
+interface ShopModel
 {
     /**
      * Creates or returns an instance of session for the shop.
@@ -49,9 +50,9 @@ interface IShopModel
     /**
      * Gets the last single or recurring charge for the shop.
      *
-     * @param int|null $planId The plan ID to check with.
+     * @param NullablePlanId|null $planId The plan ID to check with.
      *
      * @return Charge
      */
-    public function planCharge(int $planId = null): ?Charge;
+    public function planCharge(NullablePlanId $planId = null): ?Charge;
 }

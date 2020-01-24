@@ -3,39 +3,42 @@
 namespace OhMyBrew\ShopifyApp\Objects\Transfers;
 
 use Illuminate\Support\Carbon;
+use OhMyBrew\ShopifyApp\Contracts\Objects\Values\PlanId;
+use OhMyBrew\ShopifyApp\DTO\PlanDetails;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 use OhMyBrew\ShopifyApp\Objects\Transfers\AbstractTransfer;
-use OhMyBrew\ShopifyApp\Objects\Transfers\PlanDetails;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
 
 /**
  * Reprecents create charge.
  */
-class ChargeDTO extends AbstractTransfer
+final class Charge extends AbstractTransfer
 {
     /**
      * Constructor.
      *
-     * @param int            $shopId       Shop ID.
-     * @param int            $planId       Plan ID.
-     * @param int            $chargeId     Charge ID from Shopify.
-     * @param string         $chargeType   Charge type (recurring or single).
-     * @param string         $chargeStatus Charge status.
-     * @param Carbon|null    $activatedOn  When the charge was activated.
-     * @param Carbon|null    $billingOn    When the charge will be billed on.
-     * @param Carbon|null    $trialEndsOn  When the trial ends on.
-     * @param PlanDetailsDTO $planDetails  Plan details for reference.
+     * @param ShopId      $shopId       Shop ID.
+     * @param PlanId      $planId       Plan ID.
+     * @param ChargeId    $chargeId     Charge ID from Shopify.
+     * @param string      $chargeType   Charge type (recurring or single).
+     * @param string      $chargeStatus Charge status.
+     * @param Carbon|null $activatedOn  When the charge was activated.
+     * @param Carbon|null $billingOn    When the charge will be billed on.
+     * @param Carbon|null $trialEndsOn  When the trial ends on.
+     * @param PlanDetails $planDetails  Plan details for reference.
      *
      * @return self
      */
     public function __construct(
-        int $shopId,
-        int $planId,
-        int $chargeId,
+        ShopId $shopId,
+        PlanId $planId,
+        ChargeId $chargeId,
         string $chargeType,
         string $chargeStatus,
         ?Carbon $activatedOn,
         ?Carbon $billingOn,
         ?Carbon $trialEndsOn,
-        PlanDetailsDTO $planDetails
+        PlanDetails $planDetails
     ) {
         $this->data['shopId'] = $shopId;
         $this->data['planId'] = $planId;

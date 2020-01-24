@@ -2,26 +2,29 @@
 
 namespace OhMyBrew\ShopifyApp\Commands;
 
-use OhMyBrew\ShopifyApp\Interfaces\IShopCommand;
-use OhMyBrew\ShopifyApp\Interfaces\IShopModel;
-use OhMyBrew\ShopifyApp\Interfaces\IShopQuery;
+use OhMyBrew\ShopifyApp\Contracts\ShopModel;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
+use OhMyBrew\ShopifyApp\Contracts\Objects\Values\PlanId;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
+use OhMyBrew\ShopifyApp\Contracts\Commands\Shop as ShopCommand;
+use OhMyBrew\ShopifyApp\Objects\Values\AccessToken;
 
 /**
  * Reprecents the commands for shops.
  */
-class ShopCommand implements IShopCommand
+class Shop implements ShopCommand
 {
     /**
      * The querier.
      *
-     * @var IShopQuery
+     * @var ShopQuery
      */
     protected $query;
 
     /**
      * Init for shop command.
      */
-    public function __construct(IShopQuery $query)
+    public function __construct(ShopQuery $query)
     {
         $this->query = $query;
     }
@@ -29,7 +32,7 @@ class ShopCommand implements IShopCommand
     /**
      * {@inheritDoc}
      */
-    public function setToPlan(int $shopId, int $planId): bool
+    public function setToPlan(ShopId $shopId, PlanId $planId): bool
     {
         $shop = $this->getShop($shopId);
         $shop->plan_id = $planId;
@@ -41,7 +44,7 @@ class ShopCommand implements IShopCommand
     /**
      * {@inheritDoc}
      */
-    public function setAccessToken(int $shopId, string $token): bool
+    public function setAccessToken(ShopId $shopId, AccessToken $token): bool
     {
         $shop = $this->getShop($shopId);
         $shop->shopify_token = $token;
@@ -52,7 +55,7 @@ class ShopCommand implements IShopCommand
     /**
      * {@inheritDoc}
      */
-    public function clean(int $shopId): bool
+    public function clean(ShopId $shopId): bool
     {
         $shop = $this->getShop($shopId);
         $shop->shopify_token = null;
@@ -64,7 +67,7 @@ class ShopCommand implements IShopCommand
     /**
      * {@inheritDoc}
      */
-    public function softDelete(int $shopId): bool
+    public function softDelete(ShopId $shopId): bool
     {
         $shop = $this->getShop($shopId);
         $shop->charges()->delete();
@@ -75,7 +78,7 @@ class ShopCommand implements IShopCommand
     /**
      * {@inheritDoc}
      */
-    public function restore(int $shopId): bool
+    public function restore(ShopId $shopId): bool
     {
         $shop = $this->getShop($shopId);
         $shop->charges()->restore();
@@ -88,9 +91,9 @@ class ShopCommand implements IShopCommand
      *
      * @param int $shopId The shop's ID.
      *
-     * @return IShopModel
+     * @return ShopModel|null
      */
-    protected function getShop(int $shopId): IShopModel
+    protected function getShop(ShopId $shopId): ?ShopModel
     {
         return $this->query->getById($shopId);
     }

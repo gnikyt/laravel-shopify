@@ -2,13 +2,15 @@
 
 namespace OhMyBrew\ShopifyApp\Interfaces;
 
-use OhMyBrew\ShopifyApp\Models\Charge;
-use OhMyBrew\ShopifyApp\Interfaces\IChargeQuery;
+use OhMyBrew\ShopifyApp\Models\Charge as ChargeModel;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Charge as ChargeQuery;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
 /**
  * Reprecents a queries for charges.
  */
-class ChargeQuery implements IChargeQuery
+class Charge implements ChargeQuery
 {
     /**
      * Get by shop ID and charge ID.
@@ -16,11 +18,11 @@ class ChargeQuery implements IChargeQuery
      * @param int $shopId   The shop's ID for the charge.
      * @param int $chargeId The charge ID from Shopify.
      *
-     * @return Charge|null
+     * @return ChargeModel|null
      */
-    public function getByShopIdAndChargeId(int $shopId, int $chargeId): ?Charge
+    public function getByShopIdAndChargeId(ShopId $shopId, ChargeId $chargeId): ?ChargeModel
     {
-        return Charge::where(
+        return ChargeModel::where(
             [
                 'shop_id'   => $shopId,
                 'charge_id' => $chargeId,

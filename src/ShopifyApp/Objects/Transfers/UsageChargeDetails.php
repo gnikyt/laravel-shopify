@@ -2,6 +2,7 @@
 
 namespace OhMyBrew\ShopifyApp\DTO;
 
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
 use OhMyBrew\ShopifyApp\Objects\Transfers\AbstractTransfer;
 
 /**
@@ -12,13 +13,13 @@ class UsageChargeDetails extends AbstractTransfer
     /**
      * Constructor.
      *
-     * @param int    $chargeId    The Shopify charge ID.
-     * @param float  $price       Usage charge price.
-     * @param string $description Usage charge description.
+     * @param ChargeId $chargeId    The Shopify charge ID.
+     * @param float    $price       Usage charge price.
+     * @param string   $description Usage charge description.
      *
      * @return self
      */
-    public function __construct(int $chargeId, float $price, string $description)
+    public function __construct(ChargeId $chargeId, float $price, string $description)
     {
         $this->data['chargeId'] = $chargeId;
         $this->data['price'] = $price;

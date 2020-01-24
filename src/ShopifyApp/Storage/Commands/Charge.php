@@ -2,28 +2,30 @@
 
 namespace OhMyBrew\ShopifyApp\Commands;
 
-use OhMyBrew\ShopifyApp\DTO\ChargeDTO;
-use OhMyBrew\ShopifyApp\Models\Charge;
-use OhMyBrew\ShopifyApp\DTO\UsageChargeDTO;
-use OhMyBrew\ShopifyApp\Interfaces\IChargeQuery;
-use OhMyBrew\ShopifyApp\Interfaces\IChargeCommand;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
+use OhMyBrew\ShopifyApp\Models\Charge as ChargeModel;
+use OhMyBrew\ShopifyApp\Objects\Transfers\UsageCharge as UsageChargeTransfer;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Charge as ChargeQuery;
+use OhMyBrew\ShopifyApp\Contracts\Commands\Charge as ChargeCommand;
+use OhMyBrew\ShopifyApp\Objects\Transfers\Charge as ChargeTransfer;
 
 /**
  * Reprecents the commands for charges.
  */
-class ChargeCommand implements IChargeCommand
+class Charge implements ChargeCommand
 {
     /**
      * The querier.
      *
-     * @var IChargeQuery
+     * @var ChargeQuery
      */
     protected $query;
 
     /**
      * Init for charge command.
      */
-    public function __construct(IChargeQuery $query)
+    public function __construct(ChargeQuery $query)
     {
         $this->query = $query;
     }
@@ -31,9 +33,9 @@ class ChargeCommand implements IChargeCommand
     /**
      * {@inheritDoc}
      */
-    public function createCharge(ChargeDTO $chargeObj): int
+    public function createCharge(ChargeTransfer $chargeObj): int
     {
-        $charge = new Charge();
+        $charge = new ChargeModel();
         $charge->shop_id = $chargeObj->shopId;
         $charge->charge_id = $chargeObj->chargeId;
         $charge->type = $chargeObj->chargeType;
@@ -57,7 +59,7 @@ class ChargeCommand implements IChargeCommand
     /**
      * {@inheritDoc}
      */
-    public function deleteCharge(int $shopId, int $chargeId): bool
+    public function deleteCharge(ShopId $shopId, ChargeId $chargeId): bool
     {
         $charge = $this->chargeQuery->getByShopIdAndChargeId($shopId, $chargeId);
         if (!$charge) {
@@ -71,10 +73,10 @@ class ChargeCommand implements IChargeCommand
     /**
      * {@inheritDoc}
      */
-    public function createUsageCharge(UsageChargeDTO $chargeObj): int
+    public function createUsageCharge(UsageChargeTransfer $chargeObj): int
     {
         // Create the charge
-        $charge = new Charge();
+        $charge = new ChargeModel();
         $charge->shop_id = $chargeObj->shopId;
         $charge->charge_id = $chargeObj->chargeId;
         $charge->type = $chargeObj->chargeType;

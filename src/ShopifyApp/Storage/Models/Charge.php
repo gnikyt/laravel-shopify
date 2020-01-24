@@ -17,62 +17,6 @@ class Charge extends Model
     use SoftDeletes;
 
     /**
-     * Charge: Recurring
-     *
-     * @var int
-     */
-    const CHARGE_RECURRING = 1;
-
-    /**
-     * Charge: One-time
-     *
-     * @var int
-     */
-    const CHARGE_ONETIME = 2;
-
-    /**
-     * Charge: Usage
-     *
-     * @var int
-     */
-    const CHARGE_USAGE = 3;
-
-    /**
-     * Charge: Credit
-     *
-     * @var int
-     */
-    const CHARGE_CREDIT = 4;
-
-    /**
-     * Status: Active
-     *
-     * @var string
-     */
-    const STATUS_ACTIVE = 'active';
-
-    /**
-     * Status: Accepted
-     *
-     * @var string
-     */
-    const STATUS_ACCEPTED = 'accepted';
-
-    /**
-     * Status: Declines
-     *
-     * @var string
-     */
-    const STATUS_DECLINED = 'declined';
-
-    /**
-     * Status: Cancelled
-     *
-     * @var string
-     */
-    const STATUS_CANCELLED = 'cancelled';
-
-    /**
      * The attributes that are mass assignable.
      *
      * @var array

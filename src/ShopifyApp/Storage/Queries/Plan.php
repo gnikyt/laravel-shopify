@@ -2,21 +2,22 @@
 
 namespace OhMyBrew\ShopifyApp\Queries;
 
-use OhMyBrew\ShopifyApp\Models\Plan;
-use OhMyBrew\ShopifyApp\Interfaces\IPlanQuery;
+use OhMyBrew\ShopifyApp\Contracts\Objects\Values\PlanId;
+use OhMyBrew\ShopifyApp\Models\Plan as PlanModel;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Plan as PlanQuery;
 
 
 /**
  * Reprecents plan queries.
  */
-class PlanQuery implements IPlanQuery
+class Plan implements PlanQuery
 {
     /**
      * {@inheritDoc}
      */
-    public function getByID(int $id, array $with = []): ?Plan
+    public function getByID(PlanId $id, array $with = []): ?Plan
     {
-        return Plan::with($with)
+        return PlanModel::with($with)
             ->get()
             ->where('id', $id)
             ->first();
@@ -27,7 +28,7 @@ class PlanQuery implements IPlanQuery
      */
     public function getDefault(array $with = []): ?Plan
     {
-        return Plan::with($with)
+        return PlanModel::with($with)
             ->get()
             ->where('on_install', true)
             ->first();
@@ -38,7 +39,7 @@ class PlanQuery implements IPlanQuery
      */
     public function getAll(array $with = []): array
     {
-        return Plan::with($with)
+        return PlanModel::with($with)
             ->get()
             ->all();
     }

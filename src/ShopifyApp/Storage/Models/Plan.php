@@ -15,20 +15,6 @@ use OhMyBrew\ShopifyApp\Interfaces\IShopModel;
 class Plan extends Model
 {
     /**
-     * Plan: Recurring
-     *
-     * @var int
-     */
-    const PLAN_RECURRING = 1;
-
-    /**
-     * Plan: One-time
-     *
-     * @var int
-     */
-    const PLAN_ONETIME = 2;
-
-    /**
      * The attributes that should be casted to native types.
      *
      * @var array

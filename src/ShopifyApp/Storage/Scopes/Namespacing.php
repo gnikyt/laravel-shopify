@@ -10,13 +10,13 @@ use Illuminate\Support\Facades\Config;
 /**
  * Responsible for scoping to the current namesapce.
  */
-class NamespaceScope implements Scope
+class Namespacing implements Scope
 {
     /**
      * Apply the scope to a given Eloquent query builder.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $builder
-     * @param \Illuminate\Database\Eloquent\Model   $model
+     * @param Builder $builder
+     * @param Model   $model
      *
      * @return void
      */

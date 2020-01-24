@@ -6,9 +6,9 @@ use Funeralzone\ValueObjects\ValueObject;
 use Funeralzone\ValueObjects\Scalars\IntegerTrait;
 
 /**
- * Value object for shop's ID.
+ * Value object for charge's ID.
  */
-final class ShopId implements ValueObject
+final class ChargeId implements ValueObject
 {
     use IntegerTrait;
 }

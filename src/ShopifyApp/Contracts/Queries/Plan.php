@@ -1,33 +1,34 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Interfaces;
+namespace OhMyBrew\ShopifyApp\Contracts\Queries;
 
 use Illuminate\Support\Collection;
-use OhMyBrew\ShopifyApp\Models\Plan;
+use OhMyBrew\ShopifyApp\Models\Plan as PlanModel;
+use OhMyBrew\ShopifyApp\Objects\Values\PlanId;
 
 /**
  * Reprecents a queries for plans.
  */
-interface IPlanQuery
+interface Plan
 {
     /**
      * Get by ID.
      *
-     * @param int   $id   The plan ID.
-     * @param array $with The relations to eager load.
+     * @param PlanId $id   The plan ID.
+     * @param array  $with The relations to eager load.
      *
-     * @return Plan|null
+     * @return PlanModel|null
      */
-    public function getById(int $id, array $with = []): ?Plan;
+    public function getById(PlanId $id, array $with = []): ?PlanModel;
 
     /**
      * Get default on-install plan.
      *
      * @param array $with The relations to eager load.
      *
-     * @return Plan|null
+     * @return PlanModel|null
      */
-    public function getDefault(array $with = []): ?Plan;
+    public function getDefault(array $with = []): ?PlanModel;
 
     /**
      * Get all records.

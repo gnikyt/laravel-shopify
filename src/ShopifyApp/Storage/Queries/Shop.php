@@ -2,25 +2,25 @@
 
 namespace OhMyBrew\ShopifyApp\Queries;
 
-use Illuminate\Support\Facades\Config;
-use OhMyBrew\ShopifyApp\Interfaces\IShopModel;
-use OhMyBrew\ShopifyApp\Interfaces\IShopQuery;
+use OhMyBrew\ShopifyApp\Contracts\ShopModel;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
 
 /**
  * Reprecents shop queries.
  */
-class ShopQuery implements IShopQuery
+class Shop implements ShopQuery
 {
     /**
      * The shop model (configurable).
      *
-     * @var IShopModel
+     * @var ShopModel
      */
     protected $model;
 
     /**
      * Setup.
-     * 
+     *
      * @param string $model The configurable model for the shop.
      *
      * @return self
@@ -33,7 +33,7 @@ class ShopQuery implements IShopQuery
     /**
      * {@inheritDoc}
      */
-    public function getByID(int $id, array $with = []): ?IShopModel
+    public function getByID(int $id, array $with = []): ?ShopModel
     {
         return $this->model::with($with)
             ->get()
@@ -45,7 +45,7 @@ class ShopQuery implements IShopQuery
     /**
      * {@inheritDoc}
      */
-    public function getByDomain(string $domain, array $with = []): ?IShopModel
+    public function getByDomain(ShopDomain $domain, array $with = []): ?ShopModel
     {
         return $this->model::with($with)
             ->get()
