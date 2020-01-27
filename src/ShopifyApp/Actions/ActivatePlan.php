@@ -3,24 +3,27 @@
 namespace OhMyBrew\ShopifyApp\Actions;
 
 use Illuminate\Support\Carbon;
-use OhMyBrew\ShopifyApp\Models\Plan;
-use OhMyBrew\ShopifyApp\DTO\ChargeDTO;
-use OhMyBrew\ShopifyApp\Services\IApiHelper;
-use OhMyBrew\ShopifyApp\Interfaces\IPlanQuery;
-use OhMyBrew\ShopifyApp\Interfaces\IShopQuery;
-use OhMyBrew\ShopifyApp\Interfaces\IChargeQuery;
-use OhMyBrew\ShopifyApp\Interfaces\IShopCommand;
-use OhMyBrew\ShopifyApp\Interfaces\IChargeCommand;
+use OhMyBrew\ShopifyApp\Objects\Transfers\Charge as ChargeTransfer;
+use OhMyBrew\ShopifyApp\Contracts\ApiHelper;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Plan as PlanQuery;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Charge as ChargeQuery;
+use OhMyBrew\ShopifyApp\Contracts\Commands\Shop as ShopCommand;
+use OhMyBrew\ShopifyApp\Contracts\Commands\Charge as ChargeCommand;
+use OhMyBrew\ShopifyApp\Contracts\Objects\Values\PlanId;
+use OhMyBrew\ShopifyApp\Objects\Enums\PlanType;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
 /**
  * Activates a plan for a shop.
  */
-class ActivatePlanAction
+class ActivatePlan
 {
     /**
      * The API helper.
      *
-     * @var IApiHelper
+     * @var ApiHelper
      */
     protected $apiHelper;
 
@@ -34,59 +37,59 @@ class ActivatePlanAction
     /**
      * Querier for shops.
      *
-     * @var IShopQuery
+     * @var ShopQuery
      */
     protected $shopQuery;
 
     /**
      * Command for charges.
      *
-     * @var IChargeCommand
+     * @var ChargeCommand
      */
     protected $chargeCommand;
 
     /**
      * Querier for charges.
      *
-     * @var IChargeQuery
+     * @var ChargeQuery
      */
     protected $chargeQuery;
 
     /**
      * Command for shops.
      *
-     * @var IShopCommand
+     * @var ShopCommand
      */
     protected $shopCommand;
 
     /**
      * Querier for plans.
      *
-     * @var IPlanQuery
+     * @var PlanQuery
      */
     protected $planQuery;
 
     /**
      * Setup.
      *
-     * @param IApiHelper     $apiHelper               The API helper.
+     * @param ApiHelper     $apiHelper               The API helper.
      * @param callable       $cancelCurrentPlanAction Action which cancels the current plan.
-     * @param IChargeCommand $chargeCommand           The commands for charges.
-     * @param IShopQuery     $shopQuery               The querier for shops.
-     * @param IChargeQuery   $chargeQuery             The querier for charges.
-     * @param IPlanQuery     $planQuery               The querier for plans.
-     * @param IShopCommand   $shopCommand             The commands for shops.
+     * @param ChargeCommand $chargeCommand           The commands for charges.
+     * @param ShopQuery     $shopQuery               The querier for shops.
+     * @param ChargeQuery   $chargeQuery             The querier for charges.
+     * @param PlanQuery     $planQuery               The querier for plans.
+     * @param ShopCommand   $shopCommand             The commands for shops.
      *
      * @return self
      */
     public function __construct(
-        IApiHelper $apiHelper,
+        ApiHelper $apiHelper,
         callable $cancelCurrentPlanAction,
-        IShopQuery $shopQuery,
-        IChargeQuery $chargeQuery,
-        IPlanQuery $planQuery,
-        IChargeCommand $chargeCommand,
-        IShopCommand $shopCommand
+        ShopQuery $shopQuery,
+        ChargeQuery $chargeQuery,
+        PlanQuery $planQuery,
+        ChargeCommand $chargeCommand,
+        ShopCommand $shopCommand
     ) {
         $this->apiHelper = $apiHelper;
         $this->cancelCurrentPlan = $cancelCurrentPlanAction;
@@ -101,13 +104,13 @@ class ActivatePlanAction
      * Execution.
      * TODO: Rethrow an API exception.
      *
-     * @param int $shopId   The shop ID.
-     * @param int $planId   The plan to use.
-     * @param int $chargeId The charge ID from Shopify.
+     * @param ShopId   $shopId   The shop ID.
+     * @param PlanId   $planId   The plan to use.
+     * @param ChargeId $chargeId The charge ID from Shopify.
      *
      * @return bool
      */
-    public function __invoke(int $shopId, int $planId, int $chargeId): bool
+    public function __invoke(ShopId $shopId, PlanId $planId, ChargeId $chargeId): bool
     {
         // Get the shop
         $shop = $this->shopQuery->getById($shopId);
@@ -127,16 +130,17 @@ class ActivatePlanAction
         }
 
         // Create the charge
+        $planRecurring = PlanType::RECURRING()->toNative();
         $charge = $this->chargeCommand->createCharge(
-            new ChargeDTO(
+            new ChargeTransfer(
                 $shop->id,
                 $plan->id,
                 $chargeId,
                 $plan->type,
                 $response->status,
                 $response->activated_on ?? Carbon::today()->format('Y-m-d'),
-                $plan->isType(Plan::PLAN_RECURRING) ? $response->billing_on : null,
-                $plan->isType(Plan::PLAN_RECURRING) ? $response->trial_ends_on : null,
+                $plan->isType($planRecurring) ? $response->billing_on : null,
+                $plan->isType($planRecurring) ? $response->trial_ends_on : null,
                 $plan->chargeDetails($shop)
             )
         );

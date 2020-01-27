@@ -3,46 +3,48 @@
 namespace OhMyBrew\ShopifyApp\Actions;
 
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
-use OhMyBrew\ShopifyApp\Services\IApiHelper;
-use OhMyBrew\ShopifyApp\Interfaces\IPlanQuery;
-use OhMyBrew\ShopifyApp\Interfaces\IShopQuery;
+use OhMyBrew\ShopifyApp\Contracts\ApiHelper;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Plan as PlanQuery;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
+use OhMyBrew\ShopifyApp\Objects\Values\NullablePlanId;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
 /**
  * Retrieve the a billing plan's URL.
  */
-class GetPlanUrlAction
+class GetPlanUrl
 {
     /**
      * The API helper.
      *
-     * @var IApiHelper
+     * @var ApiHelper
      */
     protected $apiHelper;
 
     /**
      * Querier for plans.
      *
-     * @var IPlanQuery
+     * @var PlanQuery
      */
     protected $planQuery;
 
     /**
      * Querier for shops.
      *
-     * @var IShopQuery
+     * @var ShopQuery
      */
     protected $shopQuery;
 
     /**
      * Setup.
      *
-     * @param IApiHelper $apiHelper The API helper.
-     * @param IPlanQuery $planQuery The querier for the plans.
-     * @param IShopQuery $shopQuery The querier for shops.
+     * @param ApiHelper $apiHelper The API helper.
+     * @param PlanQuery $planQuery The querier for the plans.
+     * @param ShopQuery $shopQuery The querier for shops.
      *
      * @return self
      */
-    public function __construct(IApiHelper $apiHelper, IPlanQuery $planQuery, IShopQuery $shopQuery)
+    public function __construct(ApiHelper $apiHelper, PlanQuery $planQuery, ShopQuery $shopQuery)
     {
         $this->apiHelper = $apiHelper;
         $this->planQuery = $planQuery;
@@ -53,12 +55,12 @@ class GetPlanUrlAction
      * Execution.
      * TODO: Rethrow an API exception.
      *
-     * @param int      $shopId The shop ID.
-     * @param int|null $planId The plan to present.
+     * @param ShopId         $shopId The shop ID.
+     * @param NullablePlanId $planId The plan to present.
      *
      * @return string
      */
-    public function __invoke(int $shopId, ?int $planId): string
+    public function __invoke(ShopId $shopId, NullablePlanId $planId): string
     {
         // Get the shop
         $shop = $this->shopQuery->getById($shopId);

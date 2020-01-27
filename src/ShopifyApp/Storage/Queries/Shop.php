@@ -2,6 +2,7 @@
 
 namespace OhMyBrew\ShopifyApp\Queries;
 
+use Illuminate\Support\Facades\Config;
 use OhMyBrew\ShopifyApp\Contracts\ShopModel;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
@@ -21,13 +22,11 @@ class Shop implements ShopQuery
     /**
      * Setup.
      *
-     * @param string $model The configurable model for the shop.
-     *
      * @return self
      */
-    public function __construct(string $model)
+    public function __construct()
     {
-        $this->model = $model;
+        $this->model = Config::get('auth.providers.users.model');
     }
 
     /**

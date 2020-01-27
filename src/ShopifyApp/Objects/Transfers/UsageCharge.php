@@ -5,7 +5,6 @@ namespace OhMyBrew\ShopifyApp\Objects\Transfers;
 use Illuminate\Support\Carbon;
 use OhMyBrew\ShopifyApp\Contracts\Objects\Values\PlanId;
 use OhMyBrew\ShopifyApp\Objects\Transfers\AbstractTransfer;
-use OhMyBrew\ShopifyApp\Models\Charge;
 use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
 use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;

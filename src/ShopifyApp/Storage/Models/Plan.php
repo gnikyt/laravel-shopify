@@ -5,9 +5,11 @@ namespace OhMyBrew\ShopifyApp\Models;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Eloquent\Model;
+use OhMyBrew\ShopifyApp\Contracts\ShopModel;
+use OhMyBrew\ShopifyApp\Objects\Enums\PlanType;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use OhMyBrew\ShopifyApp\DTO\PlanDetailsDTO;
-use OhMyBrew\ShopifyApp\Interfaces\IShopModel;
+use OhMyBrew\ShopifyApp\Objects\Transfers\PlanDetails as PlanDetailsTransfer;
+use OhMyBrew\ShopifyApp\Objects\Values\PlanId;
 
 /**
  * Responsible for reprecenting a plan record.
@@ -60,11 +62,11 @@ class Plan extends Model
     {
         $type = null;
         switch ($this->type) {
-            case self::PLAN_ONETIME:
+            case PlanType::ONETIME()->toNative():
                 $type = 'application_charge';
                 break;
             default:
-            case self::PLAN_RECURRING:
+            case PlanType::RECURRING()->toNative():
                 $type = 'recurring_application_charge';
                 break;
         }
@@ -105,17 +107,17 @@ class Plan extends Model
     /**
      * Returns the charge params sent with the post request.
      *
-     * @param IShopModel $shop The shop the plan is for.
+     * @param ShopModel $shop The shop the plan is for.
      *
-     * @return PlanDetailsDTO
+     * @return PlanDetailsTransfer
      */
-    public function chargeDetails(IShopModel $shop): PlanDetailsDTO
+    public function chargeDetails(ShopModel $shop): PlanDetailsTransfer
     {
         // Handle capped amounts for UsageCharge API
         $isCapped = isset($this->capped_amount) && $this->capped_amount > 0;
 
         // Build the details object
-        return new PlanDetailsDTO(
+        return new PlanDetailsTransfer(
             $this->name,
             $this->price,
             $this->isTest(),
@@ -133,11 +135,11 @@ class Plan extends Model
      * Determines the trial days for the plan.
      * Detects if reinstall is happening and properly adjusts.
      *
-     * @param IShopModel $shop The shop the plan is for.
+     * @param ShopModel $shop The shop the plan is for.
      *
      * @return int
      */
-    public function determineTrialDaysForShop(IShopModel $shop): int
+    public function determineTrialDaysForShop(ShopModel $shop): int
     {
         if (!$this->hasTrial()) {
             // Not a trial-type plan, return none
@@ -146,7 +148,7 @@ class Plan extends Model
 
         // See if the shop has been charged for this plan before..
         // If they have, its a good chance its a reinstall
-        $pc = $shop->planCharge($this->plan->id);
+        $pc = $shop->planCharge(new PlanId($this->plan->id));
         if ($pc !== null) {
             return $pc->remainingTrialDaysFromCancel();
         }

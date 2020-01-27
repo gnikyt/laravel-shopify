@@ -9,7 +9,7 @@ use OhMyBrew\BasicShopifyAPI;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Models\Charge;
 use OhMyBrew\ShopifyApp\Models\Plan;
-use OhMyBrew\ShopifyApp\Scopes\NamespaceScope;
+use OhMyBrew\ShopifyApp\Scopes\Namespacing;
 use OhMyBrew\ShopifyApp\Services\ShopSession;
 
 /**
@@ -34,16 +34,21 @@ trait ShopModelTrait
     protected $session;
 
     /**
-     * Constructor for the model.
+     * The attributes that should be casted to native types.
      *
-     * @param array $attributes The model attribues to pass in.
-     *
-     * @return self
+     * @var array
      */
-    public function __construct(array $attributes = [])
-    {
-        parent::__construct($attributes);
-    }
+    protected $casts = [
+        'grandfathered' => 'bool',
+        'freemium'      => 'bool',
+    ];
+
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['deleted_at'];
 
     /**
      * The "booting" method of the model.
@@ -54,23 +59,7 @@ trait ShopModelTrait
     {
         parent::boot();
 
-        static::addGlobalScope(new NamespaceScope());
-    }
-
-    /**
-     * Creates or returns an instance of session for the shop.
-     *
-     * @return ShopSession
-     */
-    public function session(): ShopSession
-    {
-        if (!$this->session) {
-            // Create new session instance
-            $this->session = new ShopSession($this);
-        }
-
-        // Return existing instance
-        return $this->session;
+        static::addGlobalScope(new Namespacing());
     }
 
     /**
@@ -78,12 +67,12 @@ trait ShopModelTrait
      *
      * @return BasicShopifyAPI
      */
-    public function api(): BasicShopifyAPI
+    public function api($session = ShopSession::class): BasicShopifyAPI
     {
         if (!$this->api) {
             // Get the domain and token
-            $shopDomain = $this->shopify_domain;
-            $token = $this->session()->getToken();
+            $shopDomain = $this->username;
+            $token = (new $session)->getToken();
 
             // Create new API instance
             $this->api = ShopifyApp::api();

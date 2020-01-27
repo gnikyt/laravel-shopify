@@ -3,29 +3,30 @@
 namespace OhMyBrew\ShopifyApp\Actions;
 
 use Illuminate\Support\Facades\Config;
-use OhMyBrew\ShopifyApp\Interfaces\IShopModel;
-use OhMyBrew\ShopifyApp\Interfaces\IShopQuery;
+use OhMyBrew\ShopifyApp\Contracts\ShopModel;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
 /**
  * Run after authentication jobs.
  */
-class AfterAuthenticateAction
+class AfterAuthenticate
 {
     /**
      * Querier for shops.
      *
-     * @var IShopQuery
+     * @var ShopQuery
      */
     protected $shopQuery;
 
     /**
      * Setup.
      *
-     * @param IShopQuery $shopQuery The querier for the shop.
+     * @param ShopQuery $shopQuery The querier for the shop.
      *
      * @return self
      */
-    public function __construct(IShopQuery $shopQuery)
+    public function __construct(ShopQuery $shopQuery)
     {
         $this->shopQuery = $shopQuery;
     }
@@ -34,21 +35,21 @@ class AfterAuthenticateAction
      * Execution.
      * TODO: Rethrow an API exception.
      *
-     * @param int $shopId The shop ID.
+     * @param ShopId $shopId The shop ID.
      *
      * @return bool
      */
-    public function __invoke(int $shopId): bool
+    public function __invoke(ShopId $shopId): bool
     {
         /**
          * Fires the job.
          *
-         * @param array      $config The job's configuration.
-         * @param IShopModel $shop   The shop instance.
+         * @param array     $config The job's configuration.
+         * @param ShopModel $shop   The shop instance.
          *
          * @return bool
          */
-        $fireJob = function (array $config, IShopModel $shop): bool {
+        $fireJob = function (array $config, ShopModel $shop): bool {
             $job = $config['job'];
             if (isset($config['inline']) && $config['inline'] === true) {
                 // Run this job immediately

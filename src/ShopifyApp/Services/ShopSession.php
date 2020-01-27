@@ -4,66 +4,54 @@ namespace OhMyBrew\ShopifyApp\Services;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
-use OhMyBrew\ShopifyApp\Interfaces\IShopCommand;
-use OhMyBrew\ShopifyApp\Traits\ShopAccessibleTrait;
+use OhMyBrew\ShopifyApp\Contracts\Commands\Shop as ShopCommand;
+use OhMyBrew\ShopifyApp\Objects\Enums\AuthMode;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
+use OhMyBrew\ShopifyApp\Traits\ShopAccessible;
 
 /**
  * Responsible for handling session retreival and storage.
  */
 class ShopSession
 {
-    use ShopAccessibleTrait;
+    use ShopAccessible;
 
     /**
      * The session key for Shopify domain.
      *
      * @var string
      */
-    const DOMAIN = 'shopify_domain';
+    public const DOMAIN = 'shopify_domain';
 
     /**
      * The session key for Shopify associated user.
      *
      * @var string
      */
-    const USER = 'shopify_user';
+    public const USER = 'shopify_user';
 
     /**
      * The (session/database) key for Shopify access token.
      *
      * @var string
      */
-    const TOKEN = 'shopify_token';
-
-    /**
-     * The offline grant key.
-     *
-     * @var string
-     */
-    const GRANT_OFFLINE = 'offline';
-
-    /**
-     * The per-user grant key.
-     *
-     * @var string
-     */
-    const GRANT_PERUSER = 'per-user';
+    public const TOKEN = 'shopify_token';
 
     /**
      * The commands for shop.
      *
-     * @var IShopCommand
+     * @var ShopCommand
      */
     protected $shopCommand;
 
     /**
      * Constructor for shop session class.
      *
-     * @param IShopCommand $shopCommand The commands for shop.
+     * @param ShopCommand $shopCommand The commands for shop.
      *
      * @return self
      */
-    public function __construct(IShopCommand $shopCommand)
+    public function __construct(ShopCommand $shopCommand)
     {
         $this->shopCommand = $shopCommand;
     }
@@ -76,11 +64,11 @@ class ShopSession
     public function getType(): string
     {
         $config = Config::get('shopify-app.api_grant_mode');
-        if ($config === self::GRANT_PERUSER) {
-            return self::GRANT_PERUSER;
+        if ($config === AuthMode::PERUSER()->toNative()) {
+            return AuthMode::PERUSER()->toNative();
         }
 
-        return self::GRANT_OFFLINE;
+        return AuthMode::OFFLINE()->toNative();
     }
 
     /**
@@ -99,11 +87,11 @@ class ShopSession
      * Sets the Shopify domain to session.
      * `expire_on_close` must be set to avoid issue of cookies being deleted too early.
      *
-     * @param string $shopDomain The Shopify domain.
+     * @param ShopDomain $shopDomain The Shopify domain.
      *
      * @return self
      */
-    public function setDomain(string $shopDomain): self
+    public function setDomain(ShopDomain $shopDomain): self
     {
         $this->fixLifetime();
         Session::put(self::DOMAIN, $shopDomain);
@@ -160,9 +148,12 @@ class ShopSession
     public function getToken(bool $strict = false): string
     {
         // Tokens
+        $peruser = AuthMode::PERUSER()->toNative();
+        $offline = AuthMode::OFFLINE()->toNative();
+
         $tokens = [
-            self::GRANT_PERUSER => Session::get(self::TOKEN),
-            self::GRANT_OFFLINE => $this->shop->{self::TOKEN},
+            $peruser => Session::get(self::TOKEN),
+            $offline => $this->shop->{self::TOKEN},
         ];
 
         if ($strict) {
@@ -171,7 +162,7 @@ class ShopSession
         }
 
         // We need a token either way...
-        return $tokens[self::GRANT_PERUSER] ?? $tokens[self::GRANT_OFFLINE];
+        return $tokens[$peruser] ?? $tokens[$offline];
     }
 
     /**

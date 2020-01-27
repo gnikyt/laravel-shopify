@@ -5,9 +5,12 @@ namespace OhMyBrew\ShopifyApp\Models;
 use Exception;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use OhMyBrew\ShopifyApp\Services\IApiHelper;
+use OhMyBrew\ShopifyApp\Contracts\ApiHelper;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Config;
+use OhMyBrew\ShopifyApp\Objects\Enums\ChargeStatus;
+use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
 
 /**
  * Responsible for reprecenting a charge record.
@@ -57,7 +60,7 @@ class Charge extends Model
      */
     public function shop(): BelongsTo
     {
-        return $this->belongsTo(Shop::class);
+        return $this->belongsTo(Config::get('auth.providers.users.model'));
     }
 
     /**
@@ -73,18 +76,18 @@ class Charge extends Model
     /**
      * Gets the charge's data from Shopify.
      *
-     * @param IApiHelper $apiHelper The API helper.
+     * @param ApiHelper $apiHelper The API helper.
      *
      * @return object
      */
-    public function retrieve(IApiHelper $apiHelper): object
+    public function retrieve(ApiHelper $apiHelper): object
     {
         $path = '';
         switch ($this->type) {
-            case self::CHARGE_CREDIT:
+            case ChargeType::CREDIT()->toNative():
                 $path = 'application_credits';
                 break;
-            case self::CHARGE_ONETIME:
+            case ChargeType::ONETIME()->toNative():
                 $path = 'application_charges';
                 break;
             default:
@@ -285,7 +288,7 @@ class Charge extends Model
      */
     public function isActive(): bool
     {
-        return $this->isStatus(self::STATUS_ACTIVE);
+        return $this->isStatus(ChargeStatus::ACTIVE()->toNative());
     }
 
     /**
@@ -295,7 +298,7 @@ class Charge extends Model
      */
     public function isAccepted(): bool
     {
-        return $this->isStatus(self::STATUS_ACCEPTED);
+        return $this->isStatus(ChargeStatus::ACCEPTED()->toNative());
     }
 
     /**
@@ -305,7 +308,7 @@ class Charge extends Model
      */
     public function isDeclined(): bool
     {
-        return $this->isStatus(self::STATUS_DECLINED);
+        return $this->isStatus(ChargeStatus::DECLINED()->toNative());
     }
 
     /**
@@ -315,7 +318,7 @@ class Charge extends Model
      */
     public function isCancelled(): bool
     {
-        return !is_null($this->cancelled_on) || $this->isStatus(self::STATUS_CANCELLED);
+        return !is_null($this->cancelled_on) || $this->isStatus(ChargeStatus::CANCELLED()->toNative());
     }
 
     /**
@@ -338,11 +341,11 @@ class Charge extends Model
      */
     public function cancel(): bool
     {
-        if (!$this->isType(self::CHARGE_ONETIME) && !$this->isType(self::CHARGE_RECURRING)) {
+        if (!$this->isType(ChargeType::ONETIME()->toNative()) && !$this->isType(ChargeType::RECURRING()->toNative())) {
             throw new Exception('Cancel may only be called for single and recurring charges.');
         }
 
-        $this->status = self::STATUS_CANCELLED;
+        $this->status = ChargeStatus::CANCELLED()->toNative();
         $this->cancelled_on = Carbon::today()->format('Y-m-d');
         $this->expires_on = Carbon::today()->addDays($this->remainingDaysForPeriod())->format('Y-m-d');
 

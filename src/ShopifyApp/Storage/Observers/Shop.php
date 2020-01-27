@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Config;
 use OhMyBrew\ShopifyApp\Contracts\ShopModel;
 
 /**
- * Responsible for observing changes to the shop model.
+ * Responsible for observing changes to the shop (user) model.
  */
 class Shop
 {
@@ -20,14 +20,14 @@ class Shop
      */
     public function creating(ShopModel $shop): void
     {
-        if (!isset($shop->namespace)) {
+        if (!isset($shop->shopify_namespace)) {
             // Automatically add the current namespace to new records
-            $shop->namespace = Config::get('shopify-app.namespace');
+            $shop->shopify_namespace = Config::get('shopify-app.namespace');
         }
 
-        if (Config::get('shopify-app.billing_freemium_enabled') === true && !isset($shop->freemium)) {
+        if (Config::get('shopify-app.billing_freemium_enabled') === true && !isset($shop->shopify_freemium)) {
             // Add the freemium flag to the shop
-            $shop->freemium = true;
+            $shop->shopify_freemium = true;
         }
     }
 }

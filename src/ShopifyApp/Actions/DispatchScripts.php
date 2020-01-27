@@ -3,29 +3,30 @@
 namespace OhMyBrew\ShopifyApp\Actions;
 
 use Illuminate\Support\Facades\Config;
-use OhMyBrew\ShopifyApp\Interfaces\IShopQuery;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
 use OhMyBrew\ShopifyApp\Jobs\ScripttagInstaller;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
 /**
  * Attempt to install script tags on a shop.
  */
-class DispatchScriptsAction
+class DispatchScripts
 {
     /**
      * Querier for shops.
      *
-     * @var IShopQuery
+     * @var ShopQuery
      */
     protected $shopQuery;
 
     /**
      * Setup.
      *
-     * @param IShopQuery $shopQuery The querier for the shop.
+     * @param ShopQuery $shopQuery The querier for the shop.
      *
      * @return self
      */
-    public function __construct(IShopQuery $shopQuery)
+    public function __construct(ShopQuery $shopQuery)
     {
         $this->shopQuery = $shopQuery;
     }
@@ -33,12 +34,12 @@ class DispatchScriptsAction
     /**
      * Execution.
      *
-     * @param int  $shopId The shop ID.
-     * @param bool $inline Fire the job inlin e (now) or queue.
+     * @param ShopId $shopId The shop ID.
+     * @param bool   $inline Fire the job inlin e (now) or queue.
      *
      * @return bool
      */
-    public function __invoke(int $shopId, bool $inline = false): bool
+    public function __invoke(ShopId $shopId, bool $inline = false): bool
     {
         // Get the shop
         $shop = $this->shopQuery->getById($shopId);

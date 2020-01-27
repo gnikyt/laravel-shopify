@@ -22,6 +22,6 @@ class Namespacing implements Scope
      */
     public function apply(Builder $builder, Model $model)
     {
-        $builder->where('namespace', Config::get('shopify-app.namespace'));
+        $builder->where('shopify_namespace', Config::get('shopify-app.namespace'));
     }
 }

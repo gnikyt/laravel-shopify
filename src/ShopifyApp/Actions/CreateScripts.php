@@ -3,37 +3,38 @@
 namespace OhMyBrew\ShopifyApp\Actions;
 
 use Illuminate\Support\Facades\Config;
-use OhMyBrew\ShopifyApp\Services\IApiHelper;
-use OhMyBrew\ShopifyApp\Interfaces\IShopQuery;
+use OhMyBrew\ShopifyApp\Contracts\ApiHelper;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
 /**
  * Create scripttags for this app on the shop.
  */
-class CreateScriptsAction
+class CreateScripts
 {
     /**
      * The API helper.
      *
-     * @var IApiHelper
+     * @var ApiHelper
      */
     protected $apiHelper;
 
     /**
      * Querier for shops.
      *
-     * @var IShopQuery
+     * @var ShopQuery
      */
     protected $shopQuery;
 
     /**
      * Setup.
      *
-     * @param IApiHelper $apiHelper The API helper.
-     * @param IShopQuery $shopQuery The querier for the shop.
+     * @param ApiHelper $apiHelper The API helper.
+     * @param ShopQuery $shopQuery The querier for the shop.
      *
      * @return self
      */
-    public function __construct(IApiHelper $apiHelper, IShopQuery $shopQuery)
+    public function __construct(ApiHelper $apiHelper, ShopQuery $shopQuery)
     {
         $this->apiHelper = $apiHelper;
         $this->shopQuery = $shopQuery;
@@ -43,11 +44,11 @@ class CreateScriptsAction
      * Execution.
      * TODO: Rethrow an API exception.
      *
-     * @param int $shopId The shop ID.
+     * @param ShopId $shopId The shop ID.
      *
      * @return array
      */
-    public function __invoke(int $shopId): array
+    public function __invoke(ShopId $shopId): array
     {
         /**
          * Checks if a scripttag exists already in the shop.

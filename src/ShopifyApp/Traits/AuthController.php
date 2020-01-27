@@ -8,12 +8,13 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
 use OhMyBrew\ShopifyApp\Requests\AuthShop;
 
 /**
  * Responsible for authenticating the shop.
  */
-trait AuthControllerTrait
+trait AuthController
 {
     /**
      * Index route which displays the login page.
@@ -35,59 +36,59 @@ trait AuthControllerTrait
     /**
      * Authenticating a shop.
      *
-     * @param AuthShop $request                 The incoming request.
-     * @param callable $authShopAction          The action for authenticating a shop.
-     * @param callable $dispatchScriptsAction   The action for dispatching scripttag installation.
-     * @param callable $dispatchWebhooksAction  The action for dispatching webhook installation.
-     * @param callable $afterAuthenticateAction The action for dispatching custom actions after authentication.
+     * @param AuthShop $request           The incoming request.
+     * @param callable $authShop          The action for authenticating a shop.
+     * @param callable $dispatchScripts   The action for dispatching scripttag installation.
+     * @param callable $dispatchWebhooks  The action for dispatching webhook installation.
+     * @param callable $afterAuthenticate The action for dispatching custom actions after authentication.
      *
      * @return ViewView|RedirectResponse
      */
     public function authenticate(
         AuthShop $request,
-        callable $authShopAction,
-        callable $dispatchScriptsAction,
-        callable $dispatchWebhooksAction,
-        callable $afterAuthenticateAction
+        callable $authShop,
+        callable $dispatchScripts,
+        callable $dispatchWebhooks,
+        callable $afterAuthenticate
     ) {
         // Run the action
         $validated = $request->validated();
-        $result = $authShopAction($validated['shop'], $validated['code']);
+        $result = $authShop($validated['shop'], $validated['code']);
 
         if ($result->completed) {
             // All good, handle the redirect
             return $this->authenticateSuccess(
-                $dispatchScriptsAction,
-                $dispatchWebhooksAction,
-                $afterAuthenticateAction
+                $dispatchScripts,
+                $dispatchWebhooks,
+                $afterAuthenticate
             );
         }
 
         // No code, redirect to auth URL
         return $this->authenticateFail(
             $result->url,
-            $validated['shop']
+            new ShopDomain($validated['shop'])
         );
     }
 
     /**
      * Handles when authentication is successful.
      *
-     * @param callable $dispatchScriptsAction   The action for dispatching scripttag installation.
-     * @param callable $dispatchWebhooksAction  The action for dispatching webhook installation.
-     * @param callable $afterAuthenticateAction The action for dispatching custom actions after authentication.
+     * @param callable $dispatchScripts   The action for dispatching scripttag installation.
+     * @param callable $dispatchWebhooks  The action for dispatching webhook installation.
+     * @param callable $afterAuthenticate The action for dispatching custom actions after authentication.
      *
      * @return RedirectResponse
      */
     protected function authenticateSuccess(
-        callable $dispatchScriptsAction,
-        callable $dispatchWebhooksAction,
-        callable $afterAuthenticateAction
+        callable $dispatchScripts,
+        callable $dispatchWebhooks,
+        callable $afterAuthenticate
     ): RedirectResponse {
         // Fire the post processing jobs
-        $dispatchScriptsAction();
-        $dispatchWebhooksAction();
-        $afterAuthenticateAction();
+        $dispatchScripts();
+        $dispatchWebhooks();
+        $afterAuthenticate();
 
         // Determine if we need to redirect back somewhere
         $return_to = Session::get('return_to');
@@ -103,12 +104,12 @@ trait AuthControllerTrait
     /**
      * Handles when authentication is unsuccessful
      *
-     * @param string $authUrl    The auth URl to redirect the user to get the code.
-     * @param string $shopDomain The shop's domain.
+     * @param string     $authUrl    The auth URl to redirect the user to get the code.
+     * @param ShopDomain $shopDomain The shop's domain.
      *
      * @return ViewView
      */
-    protected function authenticateFail(string $authUrl, string $shopDomain): ViewView
+    protected function authenticateFail(string $authUrl, ShopDomain $shopDomain): ViewView
     {
         return View::make(
             'shopify-app::auth.fullpage_redirect',

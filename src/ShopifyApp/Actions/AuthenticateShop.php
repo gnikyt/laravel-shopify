@@ -3,9 +3,11 @@
 namespace OhMyBrew\ShopifyApp\Actions;
 
 use Illuminate\Support\Facades\Config;
+use OhMyBrew\ShopifyApp\Contracts\ApiHelper;
 use OhMyBrew\ShopifyApp\Services\ShopSession;
-use OhMyBrew\ShopifyApp\Interfaces\IShopQuery;
-use OhMyBrew\ShopifyApp\Services\IApiHelper;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
+use OhMyBrew\ShopifyApp\Objects\Enums\AuthMode;
 
 /**
  * Authenticates a shop via HTTP request.
@@ -15,14 +17,14 @@ class AuthenticateShopAction
     /**
      * Querier for shops.
      *
-     * @var IShopQuery
+     * @var ShopQuery
      */
     protected $shopQuery;
 
     /**
      * The API helper.
      *
-     * @var IApiHelper
+     * @var ApiHelper
      */
     protected $apiHelper;
 
@@ -36,15 +38,15 @@ class AuthenticateShopAction
     /**
      * Setup.
      *
-     * @param IApiHelper  $apiHelper   The API helper.
-     * @param IShopQuery  $shopQuery   The querier for the shop.
+     * @param ApiHelper  $apiHelper   The API helper.
+     * @param ShopQuery  $shopQuery   The querier for the shop.
      * @param ShopSession $shopSession The shop session handler.
      *
      * @return self
      */
     public function __construct(
-        IApiHelper $apiHelper,
-        IShopQuery $shopQuery,
+        ApiHelper $apiHelper,
+        ShopQuery $shopQuery,
         ShopSession $shopSession
     ) {
         $this->apiHelper = $apiHelper;
@@ -56,12 +58,12 @@ class AuthenticateShopAction
      * Execution.
      * TODO: Rethrow an API exception.
      *
-     * @param int    $shopId The shop ID.
+     * @param ShopId $shopId The shop ID.
      * @param string $code   The code from Shopify.
      *
      * @return object
      */
-    public function __invoke(int $shopId, string $code): object
+    public function __invoke(ShopId $shopId, string $code): object
     {
         // Get the shop
         $shop = $this->shopQuery->getById($shopId);
@@ -77,7 +79,7 @@ class AuthenticateShopAction
         if (empty($code)) {
             // We need the code first
             $authUrl = $this->apiHelper->buildAuthUrl(
-                $shop->hasOfflineAccess() ? Config::get('shopify-app.api_grant_mode') : $this->apiHelper::MODE_OFFLINE,
+                $shop->hasOfflineAccess() ? Config::get('shopify-app.api_grant_mode') : AuthMode::OFFLINE()->toNative(),
                 Config::get('shopify-app.api_scopes')
             );
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\DTO;
+namespace OhMyBrew\ShopifyApp\Objects\Transfers;
 
 use OhMyBrew\ShopifyApp\Objects\Transfers\AbstractTransfer;
 

@@ -7,9 +7,11 @@ use OhMyBrew\BasicShopifyAPI;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Config;
 use GuzzleHttp\Exception\RequestException;
-use OhMyBrew\ShopifyApp\DTO\PlanDetailsDTO;
-use OhMyBrew\ShopifyApp\DTO\UsageChargeDetailsDTO;
+use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
+use OhMyBrew\ShopifyApp\Objects\Transfers\PlanDetails as PlanDetailsTransfer;
+use OhMyBrew\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
 use OhMyBrew\ShopifyApp\Exceptions\ApiException;
+use OhMyBrew\ShopifyApp\Objects\Enums\ApiMethod;
 
 /**
  * Basic helper class for API calls to Shopify.
@@ -99,7 +101,7 @@ class ApiHelper implements IApiHelper
 
         // Fire the request
         $response = $this->doRequest(
-            self::METHOD_GET,
+            ApiMethod::GET()->toNative(),
             '/admin/script_tags.json',
             $reqParams
         );
@@ -114,7 +116,7 @@ class ApiHelper implements IApiHelper
     {
         // Fire the request
         $response = $this->doRequest(
-            self::METHOD_POST,
+            ApiMethod::POST()->toNative(),
             '/admin/script_tags.json',
             ['script_tag' => $payload]
         );
@@ -129,7 +131,7 @@ class ApiHelper implements IApiHelper
     {
         // Fire the request
         $response = $this->doRequest(
-            self::METHOD_GET,
+            ApiMethod::GET()->toNative(),
             "/admin/{$chargeType}/{$chargeId}.json"
         );
 
@@ -143,7 +145,7 @@ class ApiHelper implements IApiHelper
     {
         // Fire the request
         $response = $this->doRequest(
-            self::METHOD_POST,
+            ApiMethod::POST()->toNative(),
             "/admin/{$chargeType}/{$chargeId}/activate.json"
         );
 
@@ -153,11 +155,11 @@ class ApiHelper implements IApiHelper
     /**
      * {@inheritDoc}
      */
-    public function createCharge(string $chargeType, PlanDetailsDTO $payload): object
+    public function createCharge(string $chargeType, PlanDetailsTransfer $payload): object
     {
         // Fire the request
         $response = $this->doRequest(
-            self::METHOD_POST,
+            ApiMethod::POST()->toNative(),
             "/admin/{$chargeType}.json",
             ['charge' => (array) $payload]
         );
@@ -181,7 +183,7 @@ class ApiHelper implements IApiHelper
 
         // Fire the request
         $response = $this->doRequest(
-            self::METHOD_GET,
+            ApiMethod::GET()->toNative(),
             '/admin/webhooks.json',
             $reqParams
         );
@@ -196,7 +198,7 @@ class ApiHelper implements IApiHelper
     {
         // Fire the request
         $response = $this->doRequest(
-            self::METHOD_POST,
+            ApiMethod::POST()->toNative(),
             '/admin/webhooks.json',
             ['webhook' => $payload]
         );
@@ -211,7 +213,7 @@ class ApiHelper implements IApiHelper
     {
         // Fire the request
         $this->doRequest(
-            self::METHOD_DELETE,
+            ApiMethod::DELETE()->toNative(),
             "/admin/webhooks/{$webhookId}.json"
         );
     }
@@ -219,11 +221,11 @@ class ApiHelper implements IApiHelper
     /**
      * {@inheritDoc}
      */
-    public function createUsageCharge(UsageChargeDetailsDTO $payload): object
+    public function createUsageCharge(UsageChargeDetailsTransfer $payload): object
     {
         // Fire the request
         $response = $this->doRequest(
-            self::METHOD_POST,
+            ApiMethod::POST()->toNative(),
             "/admin/recurring_application_charges/{$payload->chargeId}/usage_charges.json",
             [
                 'usage_charge' => [
