@@ -44,9 +44,14 @@ class Shop implements ShopQuery
     /**
      * {@inheritDoc}
      */
-    public function getByDomain(ShopDomain $domain, array $with = []): ?ShopModel
+    public function getByDomain(ShopDomain $domain, array $with = [], bool $withTrashed = false): ?ShopModel
     {
-        return $this->model::with($with)
+        $result = $this->model::with($with);
+        if ($withTrashed) {
+            $result = $result::withTrashed();
+        }
+
+        return $result
             ->get()
             ->where('shopify_domain', $domain)
             ->first();

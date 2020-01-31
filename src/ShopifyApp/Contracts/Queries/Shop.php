@@ -25,12 +25,13 @@ interface Shop
     /**
      * Get by domain.
      *
-     * @param ShopDomain $domain The shop domain.
-     * @param array      $with   The relations to eager load.
+     * @param ShopDomain $domain       The shop domain.
+     * @param array      $with         The relations to eager load.
+     * @param bool       $withTrashed  Include trashed shops?
      *
      * @return IShopModel|null
      */
-    public function getByDomain(ShopDomain $domain, array $with = []): ?IShopModel;
+    public function getByDomain(ShopDomain $domain, array $with = [], bool $withTrashed = false): ?IShopModel;
 
     /**
      * Get all records.

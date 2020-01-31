@@ -4,21 +4,21 @@ namespace OhMyBrew\ShopifyApp\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Response;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
 
 /**
  * Responsible for ensuring a proper app proxy request.
- * TODO: Refactor?
  */
 class AuthProxy
 {
     /**
      * Handle an incoming request to ensure it is valid.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure                 $next
+     * @param Request  $request The request object.
+     * @param \Closure $next    The next action.
      *
      * @return mixed
      */
@@ -37,7 +37,7 @@ class AuthProxy
         }
 
         // Save shop domain to session
-        Session::put('shopify_domain', ShopifyApp::sanitizeShopDomain($request->get('shop')));
+        Session::put('shopify_domain', new ShopDomain($request->get('shop')));
 
         // All good, process proxy request
         return $next($request);

@@ -5,26 +5,64 @@ namespace OhMyBrew\ShopifyApp\Middleware;
 use Closure;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Redirect;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Redirect;
+use OhMyBrew\ShopifyApp\Services\ShopSession;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
+use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
+use OhMyBrew\ShopifyApp\Objects\Values\NullableShopDomain;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use OhMyBrew\ShopifyApp\Exceptions\MissingShopDomainException;
 use OhMyBrew\ShopifyApp\Exceptions\SignatureVerificationException;
-use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
-use OhMyBrew\ShopifyApp\Services\ShopSession;
 
 /**
  * Response for ensuring an authenticated shop.
- * TODO: Refactor.
  */
 class AuthShop
 {
     /**
+     * The API helper.
+     *
+     * @var IApiHelper
+     */
+    protected $apiHelper;
+
+    /**
+     * The querier for shops.
+     *
+     * @var IShopQuery
+     */
+    protected $shopQuery;
+
+    /**
+     * Shop session service.
+     *
+     * @var ShopSession
+     */
+    protected $shopSession;
+
+    /**
+     * Constructor.
+     *
+     * @param IApiHelper  $apiHelper   The API helper.
+     * @param IShopQuery  $shopQuery   The querier for shops.
+     * @param ShopSession $shopSession Shop session service.
+     *
+     * @return self
+     */
+    public function __construct(IApiHelper $apiHelper, IShopQuery $shopQuery, ShopSession $shopSession)
+    {
+        $this->apiHelper = $apiHelper;
+        $this->shopQuery = $shopQuery;
+        $this->shopSession = $shopSession;
+    }
+
+    /**
      * Handle an incoming request.
      *
-     * @param \Illuminate\Http\Request $request The request object.
-     * @param \Closure                 $next    The "next" action to take.
+     * @param Request  $request The request object.
+     * @param \Closure $next    The next action.
      *
      * @return mixed
      */
@@ -41,32 +79,25 @@ class AuthShop
     /**
      * Checks we have a valid shop.
      *
-     * @param \Illuminate\Http\Request $request The request object.
+     * @param Request $request The request object.
      *
-     * @return bool|\Illuminate\Http\RedirectResponse
+     * @return bool|RedirectResponse
      */
     protected function validateShop(Request $request)
     {
-        // Setup the session service
-        $session = new ShopSession();
-
         // Grab the shop's myshopify domain from query or session
-        $shopDomain = $this->getShopDomain($request, $session);
+        $shopDomain = $this->getShopDomainFromRequest($request);
 
         // Get the shop based on domain and update the session service
-        $shopModel = Config::get('shopify-app.shop_model');
-        $shop = $shopModel::withTrashed()
-            ->where(['shopify_domain' => $shopDomain])
-            ->first();
-        $session->setShop($shop);
+        $shop = $this->shopQuery->getByDomain($shopDomain, [], true);
+        $this->shopSession->setShop($shop);
 
         // We need to do a full flow if no shop or it is deleted
-        if ($shop === null || $shop->trashed() || !$session->isValid()) {
+        if ($shop === null || $shop->trashed() || !$this->shopSession->isValid()) {
             // We have a bad session
             return $this->handleBadSession(
-                $session,
                 $request,
-                $shopDomain
+                new NullableShopDomain($shopDomain)
             );
         }
 
@@ -96,26 +127,25 @@ class AuthShop
      *  - Headers
      *  - Session
      *
-     * @param \Illuminate\Http\Request                  $request The request object.
-     * @param \OhMyBrew\ShopifyApp\Services\ShopSession $session The shop session instance.
+     * @param Request $request The request object.
      *
-     * @throws Exception
+     * @throws MissingShopDomainException
      *
-     * @return bool|string
+     * @return ShopDomain
      */
-    private function getShopDomain(Request $request, ShopSession $session)
+    private function getShopDomainFromRequest(Request $request): ShopDomain
     {
         // Query variable is highest priority
         $shopDomainParam = $this->getQueryDomain($request);
         if ($shopDomainParam) {
-            return ShopifyApp::sanitizeShopDomain($shopDomainParam);
+            return new ShopDomain($shopDomainParam);
         }
 
         // Then the value in the referer header (if validated)
         // See issue https://github.com/ohmybrew/laravel-shopify/issues/295
         $shopRefererParam = $this->getRefererDomain($request);
         if ($shopRefererParam) {
-            return ShopifyApp::sanitizeShopDomain($shopRefererParam);
+            return new ShopDomain($shopRefererParam);
         }
 
         // Grab the shop's myshopify domain from headers
@@ -124,13 +154,13 @@ class AuthShop
         // See issue https://github.com/ohmybrew/laravel-shopify/issues/295
         $shopHeaderParam = $this->getHeaderDomain($request);
         if ($shopHeaderParam) {
-            return ShopifyApp::sanitizeShopDomain($shopHeaderParam);
+            return new ShopDomain($shopHeaderParam);
         }
 
         // If none of the above are available then pull from the session
         $shopDomainSession = $session->getDomain();
         if ($shopDomainSession) {
-            return ShopifyApp::sanitizeShopDomain($shopDomainSession);
+            return new ShopDomain($shopDomainSession);
         }
 
         // No domain :(
@@ -144,18 +174,18 @@ class AuthShop
      * check and confirm the validity upfront before we return the
      * value to anything.
      *
-     * @param \Illuminate\Http\Request $request The request object.
+     * @param Request $request The request object.
      *
-     * @throws Exception
+     * @throws SignatureVerificationException
      *
-     * @return bool|string
+     * @return string|null
      */
-    private function getQueryDomain(Request $request)
+    private function getQueryDomain(Request $request): ?string
     {
         // Extract the referer
         $shop = $request->input('shop');
         if (!$shop) {
-            return false;
+            return null;
         }
 
         // Verify
@@ -165,7 +195,7 @@ class AuthShop
         }
 
         // Make sure there is no param spoofing attempt
-        if (ShopifyApp::api()->verifyRequest($verify)) {
+        if ($this->apiHelper->verifyRequest($verify)) {
             return $shop;
         }
 
@@ -179,28 +209,30 @@ class AuthShop
      * check and confirm the validity upfront before we return the
      * value to anything.
      *
-     * @param \Illuminate\Http\Request $request The request object.
+     * @param Request $request The request object.
      *
-     * @return bool|string
+     * @throws SignatureVerificationException
+     *
+     * @return string|null
      */
-    private function getRefererDomain(Request $request)
+    private function getRefererDomain(Request $request): ?string
     {
         // Extract the referer
         $referer = $request->header('referer');
         if (!$referer) {
-            return false;
+            return null;
         }
 
         // Get the values of the referer query params as an array
         $url = parse_url($referer, PHP_URL_QUERY);
         parse_str($url, $refererQueryParams);
         if (!$refererQueryParams) {
-            return false;
+            return null;
         }
 
         // These 3 must always be present
         if (!isset($refererQueryParams['shop']) || !isset($refererQueryParams['hmac']) || !isset($refererQueryParams['timestamp'])) {
-            return false;
+            return null;
         }
 
         // Verify
@@ -210,7 +242,7 @@ class AuthShop
         }
 
         // Make sure there is no param spoofing attempt
-        if (ShopifyApp::api()->verifyRequest($verify)) {
+        if ($this->apiHelper->verifyRequest($verify)) {
             return $refererQueryParams['shop'];
         }
 
@@ -224,18 +256,18 @@ class AuthShop
      * check and confirm the validity upfront before we return the
      * value to anything.
      *
-     * @param \Illuminate\Http\Request $request The request object.
+     * @param Request $request The request object.
      *
-     * @throws Exception
+     * @throws SignatureVerificationException
      *
-     * @return bool|string
+     * @return string|null
      */
-    private function getHeaderDomain(Request $request)
+    private function getHeaderDomain(Request $request): ?string
     {
         // Extract the referer
         $shop = $request->header('X-Shop-Domain');
         if (!$shop) {
-            return false;
+            return null;
         }
 
         // Always present
@@ -262,7 +294,7 @@ class AuthShop
         }
 
         // Make sure there is no param spoofing attempt
-        if (ShopifyApp::api()->verifyRequest($verify)) {
+        if ($this->apiHelper->verifyRequest($verify)) {
             return $shop;
         }
 
@@ -272,19 +304,17 @@ class AuthShop
     /**
      * Handles a bad shop session.
      *
-     * @param \OhMyBrew\ShopifyApp\Services\ShopSession $session    The shop session instance.
-     * @param \Illuminate\Http\Request                  $request    The request object.
-     * @param string|null                               $shopDomain The incoming shop domain.
+     * @param Request            $request    The request object.
+     * @param NullableShopDomain $shopDomain The incoming shop domain.
      *
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     protected function handleBadSession(
-        ShopSession $session,
         Request $request,
-        string $shopDomain = null
-    ) {
+        NullableShopDomain $shopDomain
+    ): RedirectResponse {
         // Clear all session variables (domain, token, user, etc)
-        $session->forget();
+        $this->shopSession->forget();
 
         // Set the return-to path so we can redirect after successful authentication
         Session::put('return_to', $request->fullUrl());

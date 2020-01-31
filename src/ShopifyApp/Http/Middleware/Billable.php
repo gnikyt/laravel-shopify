@@ -10,15 +10,14 @@ use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 
 /**
  * Responsible for ensuring the shop is being billed.
- * TODO: Refactor
  */
 class Billable
 {
     /**
      * Checks if a shop has paid for access.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure                 $next
+     * @param Request  $request The request object.
+     * @param \Closure $next The next action.
      *
      * @return mixed
      */
