@@ -327,6 +327,7 @@ class ShopSession
     {
         $version = $this->agent->version($this->agent->browser());
         $pieces = explode('.', str_replace('_', '.', $version));
+
         return [
             'major' => $pieces[0],
             'minor' => $pieces[1],
@@ -343,6 +344,7 @@ class ShopSession
     {
         $version = $this->agent->version($this->agent->platform());
         $pieces = explode('.', str_replace('_', '.', $version));
+
         return [
             'major' => $pieces[0],
             'minor' => $pieces[1],
