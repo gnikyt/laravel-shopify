@@ -41,8 +41,8 @@ trait ShopModelTrait
      * @var array
      */
     protected $casts = [
-        'grandfathered' => 'bool',
-        'freemium'      => 'bool',
+        'shopify_grandfathered' => 'bool',
+        'shopify_freemium'      => 'bool',
     ];
 
     /**
@@ -92,7 +92,7 @@ trait ShopModelTrait
      */
     public function isGrandfathered(): bool
     {
-        return ((bool) $this->grandfathered) === true;
+        return ((bool) $this->shopify_grandfathered) === true;
     }
 
     /**
@@ -132,7 +132,7 @@ trait ShopModelTrait
      */
     public function isFreemium(): bool
     {
-        return ((bool) $this->freemium) === true;
+        return ((bool) $this->shopify_freemium) === true;
     }
 
     /**

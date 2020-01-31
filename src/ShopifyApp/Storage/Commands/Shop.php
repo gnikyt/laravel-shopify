@@ -36,7 +36,7 @@ class Shop implements ShopCommand
     {
         $shop = $this->getShop($shopId);
         $shop->plan_id = $planId;
-        $shop->freemium = false;
+        $shop->shopify_freemium = false;
 
         return $shop->save();
     }

@@ -18,10 +18,10 @@ class CreateChargesTable extends Migration
             $table->increments('id');
 
             // Filled in when the charge is created, provided by shopify, unique makes it indexed
-            $table->integer('charge_id')->unique();
+            $table->bigInteger('charge_id')->unique();
 
             // Test mode or real
-            $table->boolean('test');
+            $table->boolean('test')->default(false);
 
             $table->string('status')->nullable();
 
@@ -58,6 +58,18 @@ class CreateChargesTable extends Migration
             // Not supported on Shopify's initial billing screen, but good for future use
             $table->timestamp('cancelled_on')->nullable();
 
+            // Expires on
+            $table->timestamp('expires_on')->nullable();
+
+            // Plan ID for the charge
+            $table->integer('plan_id')->unsigned()->nullable();
+
+            // Description support
+            $table->string('description')->nullable();
+
+            // Linking to charge_id
+            $table->bigInteger('reference_charge')->nullable();
+
             // Provides created_at && updated_at columns
             $table->timestamps();
 
@@ -66,7 +78,9 @@ class CreateChargesTable extends Migration
 
             // Linking
             $table->integer('shop_id')->unsigned();
-            $table->foreign('shop_id')->references('id')->on('shops')->onDelete('cascade');
+            $table->foreign('shop_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('plan_id')->references('id')->on('plans');
+            $table->foreign('reference_charge')->references('charge_id')->on('charges')->onDelete('cascade');
         });
     }
 
