@@ -2,14 +2,14 @@
 
 namespace OhMyBrew\ShopifyApp\Traits;
 
-use Illuminate\Contracts\View\View as ViewView;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
 use OhMyBrew\ShopifyApp\Requests\AuthShop;
+use Illuminate\Contracts\View\View as ViewView;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
 
 /**
  * Responsible for authenticating the shop.
@@ -18,7 +18,7 @@ trait AuthController
 {
     /**
      * Index route which displays the login page.
-     * 
+     *
      * @param Request $request The HTTP request.
      *
      * @return ViewView
@@ -53,7 +53,8 @@ trait AuthController
     ) {
         // Run the action
         $validated = $request->validated();
-        $result = $authShop($validated['shop'], $validated['code']);
+        $shopDomain = new ShopDomain($validated['shop']);
+        $result = $authShop($shopDomain, $validated['code']);
 
         if ($result->completed) {
             // All good, handle the redirect
@@ -67,7 +68,7 @@ trait AuthController
         // No code, redirect to auth URL
         return $this->authenticateFail(
             $result->url,
-            new ShopDomain($validated['shop'])
+            $shopDomain
         );
     }
 

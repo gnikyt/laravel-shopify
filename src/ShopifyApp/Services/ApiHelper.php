@@ -7,11 +7,11 @@ use OhMyBrew\BasicShopifyAPI;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Config;
 use GuzzleHttp\Exception\RequestException;
+use OhMyBrew\ShopifyApp\Exceptions\ApiException;
+use OhMyBrew\ShopifyApp\Objects\Enums\ApiMethod;
 use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use OhMyBrew\ShopifyApp\Objects\Transfers\PlanDetails as PlanDetailsTransfer;
 use OhMyBrew\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
-use OhMyBrew\ShopifyApp\Exceptions\ApiException;
-use OhMyBrew\ShopifyApp\Objects\Enums\ApiMethod;
 
 /**
  * Basic helper class for API calls to Shopify.
@@ -245,7 +245,6 @@ class ApiHelper implements IApiHelper
      * @param string $path    The endpoint path.
      * @param array  $payload The optional payload to send to the endpoint.
      *
-     * 
      * @return object|RequestException
      */
     protected function doRequest(string $method, string $path, array $payload = null)

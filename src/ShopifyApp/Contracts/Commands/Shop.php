@@ -59,4 +59,23 @@ interface Shop
      * @return bool
      */
     public function restore(ShopId $shopId): bool;
+
+    /**
+     * Set a shop as freemium.
+     *
+     * @param ShopId $shopId The shop's ID.
+     *
+     * @return bool
+     */
+    public function setAsFreemium(ShopId $shopId): bool;
+
+    /**
+     * Set a shop to a namespace.
+     *
+     * @param ShopId $shopId    The shop's ID.
+     * @param string $namespace The namespace.
+     *
+     * @return bool
+     */
+    public function setNamespace(ShopId $shopId, string $namespace): bool;
 }

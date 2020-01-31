@@ -2,9 +2,9 @@
 
 namespace OhMyBrew\ShopifyApp\Events;
 
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use OhMyBrew\ShopifyApp\Interfaces\IShopModel;
+use Illuminate\Foundation\Events\Dispatchable;
+use OhMyBrew\ShopifyApp\Contracts\ShopModel as IShopModel;
 
 /**
  * Event fired when a shop passes through authentication.
@@ -25,7 +25,7 @@ class AppLoggedIn
      *
      * @param IShopModel $shop The shop.
      *
-     * @return void
+     * @return self
      */
     public function __construct(IShopModel $shop)
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Interfaces;
+namespace OhMyBrew\ShopifyApp\Storage\Queries;
 
 use OhMyBrew\ShopifyApp\Models\Charge as ChargeModel;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Charge as ChargeQuery;

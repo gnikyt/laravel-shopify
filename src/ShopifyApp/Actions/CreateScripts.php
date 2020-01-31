@@ -3,8 +3,8 @@
 namespace OhMyBrew\ShopifyApp\Actions;
 
 use Illuminate\Support\Facades\Config;
-use OhMyBrew\ShopifyApp\Contracts\ApiHelper;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
+use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
 /**
@@ -15,26 +15,26 @@ class CreateScripts
     /**
      * The API helper.
      *
-     * @var ApiHelper
+     * @var IApiHelper
      */
     protected $apiHelper;
 
     /**
      * Querier for shops.
      *
-     * @var ShopQuery
+     * @var IShopQuery
      */
     protected $shopQuery;
 
     /**
      * Setup.
      *
-     * @param ApiHelper $apiHelper The API helper.
-     * @param ShopQuery $shopQuery The querier for the shop.
+     * @param IApiHelper $apiHelper The API helper.
+     * @param IShopQuery $shopQuery The querier for the shop.
      *
      * @return self
      */
-    public function __construct(ApiHelper $apiHelper, ShopQuery $shopQuery)
+    public function __construct(IApiHelper $apiHelper, IShopQuery $shopQuery)
     {
         $this->apiHelper = $apiHelper;
         $this->shopQuery = $shopQuery;

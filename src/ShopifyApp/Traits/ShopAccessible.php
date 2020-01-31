@@ -2,12 +2,12 @@
 
 namespace OhMyBrew\ShopifyApp\Traits;
 
-use OhMyBrew\ShopifyApp\Interfaces\IShopModel;
+use OhMyBrew\ShopifyApp\Contracts\ShopModel as IShopModel;
 
 /**
  * Allows for setting of a shop and accessing it.
  */
-trait ShopAccessibleTrait
+trait ShopAccessible
 {
     /**
      * The shop.

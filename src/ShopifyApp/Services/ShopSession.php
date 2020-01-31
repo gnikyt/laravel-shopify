@@ -4,10 +4,10 @@ namespace OhMyBrew\ShopifyApp\Services;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
-use OhMyBrew\ShopifyApp\Contracts\Commands\Shop as ShopCommand;
+use OhMyBrew\ShopifyApp\Traits\ShopAccessible;
 use OhMyBrew\ShopifyApp\Objects\Enums\AuthMode;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
-use OhMyBrew\ShopifyApp\Traits\ShopAccessible;
+use OhMyBrew\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
 
 /**
  * Responsible for handling session retreival and storage.
@@ -40,18 +40,18 @@ class ShopSession
     /**
      * The commands for shop.
      *
-     * @var ShopCommand
+     * @var IShopCommand
      */
     protected $shopCommand;
 
     /**
      * Constructor for shop session class.
      *
-     * @param ShopCommand $shopCommand The commands for shop.
+     * @param IShopCommand $shopCommand The commands for shop.
      *
      * @return self
      */
-    public function __construct(ShopCommand $shopCommand)
+    public function __construct(IShopCommand $shopCommand)
     {
         $this->shopCommand = $shopCommand;
     }

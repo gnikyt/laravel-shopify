@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
 /**
  * Webhook job responsible for handling installation of webhook listeners.
@@ -50,6 +51,6 @@ class WebhookInstaller implements ShouldQueue
      */
     public function handle(): array
     {
-        return call_user_func($this->createWebhooksAction, $this->shopId);
+        return call_user_func($this->createWebhooksAction, new ShopId($this->shopId));
     }
 }

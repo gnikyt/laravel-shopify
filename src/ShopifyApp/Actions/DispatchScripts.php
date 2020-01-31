@@ -3,9 +3,9 @@
 namespace OhMyBrew\ShopifyApp\Actions;
 
 use Illuminate\Support\Facades\Config;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
-use OhMyBrew\ShopifyApp\Jobs\ScripttagInstaller;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
+use OhMyBrew\ShopifyApp\Jobs\ScripttagInstaller;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 
 /**
  * Attempt to install script tags on a shop.
@@ -15,18 +15,18 @@ class DispatchScripts
     /**
      * Querier for shops.
      *
-     * @var ShopQuery
+     * @var IShopQuery
      */
     protected $shopQuery;
 
     /**
      * Setup.
      *
-     * @param ShopQuery $shopQuery The querier for the shop.
+     * @param IShopQuery $shopQuery The querier for the shop.
      *
      * @return self
      */
-    public function __construct(ShopQuery $shopQuery)
+    public function __construct(IShopQuery $shopQuery)
     {
         $this->shopQuery = $shopQuery;
     }

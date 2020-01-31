@@ -3,9 +3,9 @@
 namespace OhMyBrew\ShopifyApp\Actions;
 
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
-use OhMyBrew\ShopifyApp\Contracts\ApiHelper;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
+use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 
 /**
  * Delete webhooks for this app on the shop.
@@ -15,7 +15,7 @@ class DeleteWebhooks
     /**
      * The API helper.
      *
-     * @var ApiHelper
+     * @var IApiHelper
      */
     protected $apiHelper;
 
@@ -29,12 +29,12 @@ class DeleteWebhooks
     /**
      * Setup.
      *
-     * @param ApiHelper $apiHelper The API helper.
-     * @param ShopQuery $shopQuery The querier for the shop.
+     * @param IApiHelper $apiHelper The API helper.
+     * @param IShopQuery $shopQuery The querier for the shop.
      *
      * @return self
      */
-    public function __construct(ApiHelper $apiHelper, ShopQuery $shopQuery)
+    public function __construct(IApiHelper $apiHelper, IShopQuery $shopQuery)
     {
         $this->apiHelper = $apiHelper;
         $this->shopQuery = $shopQuery;

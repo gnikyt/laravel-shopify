@@ -7,6 +7,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
 /**
  * Webhook job responsible for handling installing scripttag.
@@ -52,6 +53,6 @@ class ScripttagInstaller implements ShouldQueue
      */
     public function handle(): array
     {
-        return call_user_func($this->createScriptsAction, $this->shopId);
+        return call_user_func($this->createScriptsAction, new ShopId($this->shopId));
     }
 }

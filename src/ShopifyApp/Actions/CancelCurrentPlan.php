@@ -2,7 +2,7 @@
 
 namespace OhMyBrew\ShopifyApp\Actions;
 
-use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
 /**
@@ -13,11 +13,11 @@ class CancelCurrentPlan
     /**
      * Setup.
      *
-     * @param ShopQuery $shopQuery The querier for shops.
+     * @param IShopQuery $shopQuery The querier for shops.
      *
      * @return self
      */
-    public function __construct(ShopQuery $shopQuery)
+    public function __construct(IShopQuery $shopQuery)
     {
         $this->shopQuery = $shopQuery;
     }

@@ -3,11 +3,11 @@
 namespace OhMyBrew\ShopifyApp\Actions;
 
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
-use OhMyBrew\ShopifyApp\Contracts\ApiHelper;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Plan as PlanQuery;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
-use OhMyBrew\ShopifyApp\Objects\Values\NullablePlanId;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
+use OhMyBrew\ShopifyApp\Objects\Values\NullablePlanId;
+use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Plan as IPlanQuery;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 
 /**
  * Retrieve the a billing plan's URL.
@@ -17,34 +17,34 @@ class GetPlanUrl
     /**
      * The API helper.
      *
-     * @var ApiHelper
+     * @var IApiHelper
      */
     protected $apiHelper;
 
     /**
      * Querier for plans.
      *
-     * @var PlanQuery
+     * @var IPlanQuery
      */
     protected $planQuery;
 
     /**
      * Querier for shops.
      *
-     * @var ShopQuery
+     * @var IShopQuery
      */
     protected $shopQuery;
 
     /**
      * Setup.
      *
-     * @param ApiHelper $apiHelper The API helper.
-     * @param PlanQuery $planQuery The querier for the plans.
-     * @param ShopQuery $shopQuery The querier for shops.
+     * @param IApiHelper $apiHelper The API helper.
+     * @param IPlanQuery $planQuery The querier for the plans.
+     * @param IShopQuery $shopQuery The querier for shops.
      *
      * @return self
      */
-    public function __construct(ApiHelper $apiHelper, PlanQuery $planQuery, ShopQuery $shopQuery)
+    public function __construct(IApiHelper $apiHelper, IPlanQuery $planQuery, IShopQuery $shopQuery)
     {
         $this->apiHelper = $apiHelper;
         $this->planQuery = $planQuery;

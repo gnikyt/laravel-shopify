@@ -3,28 +3,28 @@
 namespace OhMyBrew\ShopifyApp\Actions;
 
 use Illuminate\Support\Facades\Config;
-use OhMyBrew\ShopifyApp\Contracts\ApiHelper;
 use OhMyBrew\ShopifyApp\Services\ShopSession;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
 use OhMyBrew\ShopifyApp\Objects\Enums\AuthMode;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
+use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 
 /**
  * Authenticates a shop via HTTP request.
  */
-class AuthenticateShopAction
+class AuthenticateShop
 {
     /**
      * Querier for shops.
      *
-     * @var ShopQuery
+     * @var IShopQuery
      */
     protected $shopQuery;
 
     /**
      * The API helper.
      *
-     * @var ApiHelper
+     * @var IApiHelper
      */
     protected $apiHelper;
 
@@ -38,15 +38,15 @@ class AuthenticateShopAction
     /**
      * Setup.
      *
-     * @param ApiHelper  $apiHelper   The API helper.
-     * @param ShopQuery  $shopQuery   The querier for the shop.
+     * @param IApiHelper  $apiHelper   The API helper.
+     * @param IShopQuery  $shopQuery   The querier for the shop.
      * @param ShopSession $shopSession The shop session handler.
      *
      * @return self
      */
     public function __construct(
-        ApiHelper $apiHelper,
-        ShopQuery $shopQuery,
+        IApiHelper $apiHelper,
+        IShopQuery $shopQuery,
         ShopSession $shopSession
     ) {
         $this->apiHelper = $apiHelper;
@@ -58,15 +58,15 @@ class AuthenticateShopAction
      * Execution.
      * TODO: Rethrow an API exception.
      *
-     * @param ShopId $shopId The shop ID.
-     * @param string $code   The code from Shopify.
+     * @param ShopDomain $shopDomain The shop ID.
+     * @param string     $code   The code from Shopify.
      *
      * @return object
      */
-    public function __invoke(ShopId $shopId, string $code): object
+    public function __invoke(ShopDomain $shopDomain, string $code): object
     {
         // Get the shop
-        $shop = $this->shopQuery->getById($shopId);
+        $shop = $this->shopQuery->getByDomain($shopDomain);
         $this->apiHelper->setInstance($shop->api());
 
         // Return data

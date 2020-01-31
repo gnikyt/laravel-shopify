@@ -1,6 +1,6 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Queries;
+namespace OhMyBrew\ShopifyApp\Storage\Queries;
 
 use Illuminate\Support\Facades\Config;
 use OhMyBrew\ShopifyApp\Contracts\ShopModel;

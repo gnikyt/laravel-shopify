@@ -1,6 +1,6 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Commands;
+namespace OhMyBrew\ShopifyApp\Storage\Commands;
 
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;

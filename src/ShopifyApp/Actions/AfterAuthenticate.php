@@ -3,8 +3,8 @@
 namespace OhMyBrew\ShopifyApp\Actions;
 
 use Illuminate\Support\Facades\Config;
-use OhMyBrew\ShopifyApp\Contracts\ShopModel;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
+use OhMyBrew\ShopifyApp\Contracts\ShopModel as IShopModel;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
 /**
@@ -15,18 +15,18 @@ class AfterAuthenticate
     /**
      * Querier for shops.
      *
-     * @var ShopQuery
+     * @var IShopQuery
      */
     protected $shopQuery;
 
     /**
      * Setup.
      *
-     * @param ShopQuery $shopQuery The querier for the shop.
+     * @param IShopQuery $shopQuery The querier for the shop.
      *
      * @return self
      */
-    public function __construct(ShopQuery $shopQuery)
+    public function __construct(IShopQuery $shopQuery)
     {
         $this->shopQuery = $shopQuery;
     }
@@ -44,12 +44,12 @@ class AfterAuthenticate
         /**
          * Fires the job.
          *
-         * @param array     $config The job's configuration.
-         * @param ShopModel $shop   The shop instance.
+         * @param array      $config The job's configuration.
+         * @param IShopModel $shop   The shop instance.
          *
          * @return bool
          */
-        $fireJob = function (array $config, ShopModel $shop): bool {
+        $fireJob = function (array $config, IShopModel $shop): bool {
             $job = $config['job'];
             if (isset($config['inline']) && $config['inline'] === true) {
                 // Run this job immediately

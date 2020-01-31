@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\View;
 /**
  * Responsible for showing the main homescreen for the app.
  */
-trait HomeControllerTrait
+trait HomeController
 {
     /**
      * Index route which displays the home page of the app.

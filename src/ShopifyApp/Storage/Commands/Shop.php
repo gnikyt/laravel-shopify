@@ -1,6 +1,6 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Commands;
+namespace OhMyBrew\ShopifyApp\Storage\Commands;
 
 use OhMyBrew\ShopifyApp\Contracts\ShopModel;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
@@ -84,6 +84,28 @@ class Shop implements ShopCommand
         $shop->charges()->restore();
 
         return $shop->restore();
+    }
+
+    /**
+     * {@inheritDoc}
+    */
+    public function setAsFreemium(ShopId $shopId): bool
+    {
+        $shop = $this->getShop($shopId);
+        $shop->shopify_freemium = true;
+
+        return $shop->save();
+    }
+
+    /**
+     * {@inheritDoc}
+    */
+    public function setNamespace(ShopId $shopId, string $namespace): bool
+    {
+        $shop = $this->getShop($shopId);
+        $shop->shopify_namespace = $namespace;
+
+        return $shop->save();
     }
 
     /**

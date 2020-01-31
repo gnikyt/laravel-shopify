@@ -1,6 +1,6 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Queries;
+namespace OhMyBrew\ShopifyApp\Storage\Queries;
 
 use OhMyBrew\ShopifyApp\Contracts\Objects\Values\PlanId;
 use OhMyBrew\ShopifyApp\Models\Plan as PlanModel;

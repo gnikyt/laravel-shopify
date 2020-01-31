@@ -3,17 +3,17 @@
 namespace OhMyBrew\ShopifyApp\Actions;
 
 use Illuminate\Support\Carbon;
-use OhMyBrew\ShopifyApp\Objects\Transfers\Charge as ChargeTransfer;
-use OhMyBrew\ShopifyApp\Contracts\ApiHelper;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Plan as PlanQuery;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Charge as ChargeQuery;
-use OhMyBrew\ShopifyApp\Contracts\Commands\Shop as ShopCommand;
-use OhMyBrew\ShopifyApp\Contracts\Commands\Charge as ChargeCommand;
-use OhMyBrew\ShopifyApp\Contracts\Objects\Values\PlanId;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 use OhMyBrew\ShopifyApp\Objects\Enums\PlanType;
 use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
+use OhMyBrew\ShopifyApp\Contracts\Objects\Values\PlanId;
+use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Plan as IPlanQuery;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use OhMyBrew\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Charge as IChargeQuery;
+use OhMyBrew\ShopifyApp\Objects\Transfers\Charge as ChargeTransfer;
+use OhMyBrew\ShopifyApp\Contracts\Commands\Charge as IChargeCommand;
 
 /**
  * Activates a plan for a shop.
@@ -23,7 +23,7 @@ class ActivatePlan
     /**
      * The API helper.
      *
-     * @var ApiHelper
+     * @var IApiHelper
      */
     protected $apiHelper;
 
@@ -37,59 +37,59 @@ class ActivatePlan
     /**
      * Querier for shops.
      *
-     * @var ShopQuery
+     * @var IShopQuery
      */
     protected $shopQuery;
 
     /**
      * Command for charges.
      *
-     * @var ChargeCommand
+     * @var IChargeCommand
      */
     protected $chargeCommand;
 
     /**
      * Querier for charges.
      *
-     * @var ChargeQuery
+     * @var IChargeQuery
      */
     protected $chargeQuery;
 
     /**
      * Command for shops.
      *
-     * @var ShopCommand
+     * @var IShopCommand
      */
     protected $shopCommand;
 
     /**
      * Querier for plans.
      *
-     * @var PlanQuery
+     * @var IPlanQuery
      */
     protected $planQuery;
 
     /**
      * Setup.
      *
-     * @param ApiHelper     $apiHelper               The API helper.
+     * @param IApiHelper     $apiHelper               The API helper.
      * @param callable       $cancelCurrentPlanAction Action which cancels the current plan.
-     * @param ChargeCommand $chargeCommand           The commands for charges.
-     * @param ShopQuery     $shopQuery               The querier for shops.
-     * @param ChargeQuery   $chargeQuery             The querier for charges.
-     * @param PlanQuery     $planQuery               The querier for plans.
-     * @param ShopCommand   $shopCommand             The commands for shops.
+     * @param IChargeCommand $chargeCommand           The commands for charges.
+     * @param IShopQuery     $shopQuery               The querier for shops.
+     * @param IChargeQuery   $chargeQuery             The querier for charges.
+     * @param IPlanQuery     $planQuery               The querier for plans.
+     * @param IShopCommand   $shopCommand             The commands for shops.
      *
      * @return self
      */
     public function __construct(
-        ApiHelper $apiHelper,
+        IApiHelper $apiHelper,
         callable $cancelCurrentPlanAction,
-        ShopQuery $shopQuery,
-        ChargeQuery $chargeQuery,
-        PlanQuery $planQuery,
-        ChargeCommand $chargeCommand,
-        ShopCommand $shopCommand
+        IShopQuery $shopQuery,
+        IChargeQuery $chargeQuery,
+        IPlanQuery $planQuery,
+        IChargeCommand $chargeCommand,
+        IShopCommand $shopCommand
     ) {
         $this->apiHelper = $apiHelper;
         $this->cancelCurrentPlan = $cancelCurrentPlanAction;

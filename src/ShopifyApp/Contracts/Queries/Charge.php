@@ -2,9 +2,9 @@
 
 namespace OhMyBrew\ShopifyApp\Contracts\Queries;
 
-use OhMyBrew\ShopifyApp\Models\Charge as ChargeModel;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
+use OhMyBrew\ShopifyApp\Storage\Models\Charge as ChargeModel;
 
 /**
  * Reprecents a queries for charges.

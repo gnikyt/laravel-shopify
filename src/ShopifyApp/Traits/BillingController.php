@@ -8,12 +8,15 @@ use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Redirect;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use Illuminate\Contracts\View\View as ViewView;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
+use OhMyBrew\ShopifyApp\Objects\Values\PlanId;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
 use OhMyBrew\ShopifyApp\Requests\StoreUsageCharge;
 
 /**
  * Responsible for billing a shop for plans and usage charges.
  */
-trait BillingControllerTrait
+trait BillingController
 {
     /**
      * Redirects to billing screen for Shopify.
@@ -29,7 +32,7 @@ trait BillingControllerTrait
         return View::make(
             'shopify-app::billing.fullpage_redirect',
             [
-                'url' => $getPlanUrl($planId),
+                'url' => $getPlanUrl(new PlanId($planId))
             ]
         );
     }
@@ -51,8 +54,8 @@ trait BillingControllerTrait
         // Activate the plan and save
         $result = $activatePlanAction(
             ShopifyApp::shop()->shopify_domain,
-            $planId,
-            $request->query('charge_id')
+            new PlanId($planId),
+            new ChargeId($request->query('charge_id'))
         );
 
         // Go to homepage of app
@@ -78,7 +81,7 @@ trait BillingControllerTrait
 
         // Activate and save the usage charge
         $activateUsageChargeAction(
-            ShopifyApp::shop()->shopify_domain,
+            new ShopDomain(ShopifyApp::shop()->shopify_domain),
             $validated['price'],
             $validated['description']
         );

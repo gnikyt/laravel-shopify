@@ -2,6 +2,7 @@
 
 namespace OhMyBrew\ShopifyApp\Objects\Values;
 
+use Funeralzone\ValueObjects\NullTrait;
 use OhMyBrew\ShopifyApp\Contracts\Objects\Values\PlanId as PlanIdValue;
 
 /**

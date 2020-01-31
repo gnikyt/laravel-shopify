@@ -2,15 +2,17 @@
 
 namespace OhMyBrew\ShopifyApp\Traits;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use OhMyBrew\BasicShopifyAPI;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
-use OhMyBrew\ShopifyApp\Models\Charge;
-use OhMyBrew\ShopifyApp\Models\Plan;
-use OhMyBrew\ShopifyApp\Scopes\Namespacing;
+use OhMyBrew\ShopifyApp\Storage\Scopes\Namespacing;
+use OhMyBrew\ShopifyApp\Storage\Models\Plan;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use OhMyBrew\ShopifyApp\Services\ShopSession;
+use OhMyBrew\ShopifyApp\Storage\Models\Charge;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
+use OhMyBrew\ShopifyApp\Objects\Values\NullablePlanId;
 
 /**
  * Responsible for reprecenting a shop record.
@@ -137,16 +139,16 @@ trait ShopModelTrait
      * Gets the last single or recurring charge for the shop.
      * TODO: Move to command.
      *
-     * @param int|null $planId The plan ID to check with.
+     * @param NullablePlanId $planId The plan ID to check with.
      *
      * @return null|Charge
      */
-    public function planCharge(int $planId = null)
+    public function planCharge(NullablePlanId $planId = null)
     {
         return $this
             ->charges()
             ->withTrashed()
-            ->whereIn('type', [Charge::CHARGE_RECURRING, Charge::CHARGE_ONETIME])
+            ->whereIn('type', [ChargeType::RECURRING()->toNative(), ChargeType::ONETIME()->toNative()])
             ->where('plan_id', $planId ?? $this->plan_id)
             ->orderBy('created_at', 'desc')
             ->first();

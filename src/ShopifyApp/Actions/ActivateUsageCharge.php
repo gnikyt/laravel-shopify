@@ -2,16 +2,16 @@
 
 namespace OhMyBrew\ShopifyApp\Actions;
 
-use OhMyBrew\ShopifyApp\Contracts\ApiHelper;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
-use OhMyBrew\ShopifyApp\Exceptions\ChargeNotRecurringException;
-use OhMyBrew\ShopifyApp\Contracts\Commands\Charge as ChargeCommand;
-use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
-use OhMyBrew\ShopifyApp\Objects\Transfers\UsageCharge as UsageChargeTransfer;
-use OhMyBrew\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
 use OhMyBrew\ShopifyApp\Objects\Values\PlanId;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
+use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
+use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use OhMyBrew\ShopifyApp\Exceptions\ChargeNotRecurringException;
+use OhMyBrew\ShopifyApp\Contracts\Commands\Charge as UChargeCommand;
+use OhMyBrew\ShopifyApp\Objects\Transfers\UsageCharge as UsageChargeTransfer;
+use OhMyBrew\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
 
 /**
  * Activates a usage charge for a shop.
@@ -21,37 +21,37 @@ class ActivateUsageCharge
     /**
      * The API helper.
      *
-     * @var ApiHelper
+     * @var IApiHelper
      */
     protected $apiHelper;
 
     /**
      * Command for charges.
      *
-     * @var ChargeCommand
+     * @var IChargeCommand
      */
     protected $chargeCommand;
 
     /**
      * Querier for shops.
      *
-     * @var ShopQuery
+     * @var IShopQuery
      */
     protected $shopQuery;
 
     /**
      * Setup.
      *
-     * @param ApiHelper     $apiHelper     The API helper.
-     * @param ChargeCommand $chargeCommand The commands for charges.
-     * @param ShopQuery     $shopQuery     The querier for shops.
+     * @param IApiHelper     $apiHelper     The API helper.
+     * @param IChargeCommand $chargeCommand The commands for charges.
+     * @param IShopQuery     $shopQuery     The querier for shops.
      *
      * @return self
      */
     public function __construct(
-        ApiHelper $apiHelper,
-        ChargeCommand $chargeCommand,
-        ShopQuery $shopQuery
+        IApiHelper $apiHelper,
+        IChargeCommand $chargeCommand,
+        IShopQuery $shopQuery
     ) {
         $this->apiHelper = $apiHelper;
         $this->chargeCommand = $chargeCommand;

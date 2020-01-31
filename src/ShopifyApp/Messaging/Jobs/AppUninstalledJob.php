@@ -3,11 +3,12 @@
 namespace OhMyBrew\ShopifyApp\Jobs;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
-use OhMyBrew\ShopifyApp\Interfaces\IShopCommand;
+use OhMyBrew\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
 /**
  * Webhook job responsible for handling when the app is uninstalled.
@@ -73,9 +74,11 @@ class AppUninstalledJob implements ShouldQueue
      */
     public function handle(): bool
     {
-        call_user_func($this->cancelCurrentPlanAction, $this->shopId);
-        $this->shopCommand->clean($this->shopId);
-        $this->shopCommand->softDelete($this->shopId);
+        $shopId = new ShopId($this->shopId);
+
+        call_user_func($this->cancelCurrentPlanAction, $shopId);
+        $this->shopCommand->clean($shopId);
+        $this->shopCommand->softDelete($shopId);
 
         return true;
     }

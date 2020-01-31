@@ -4,9 +4,9 @@ namespace OhMyBrew\ShopifyApp\Contracts;
 
 use OhMyBrew\BasicShopifyAPI;
 use GuzzleHttp\Exception\RequestException;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
 use OhMyBrew\ShopifyApp\Objects\Transfers\PlanDetails;
 use OhMyBrew\ShopifyApp\Objects\Transfers\UsageChargeDetails;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
 
 /**
  * Reprecents the API helper.

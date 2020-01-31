@@ -1,6 +1,6 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Models;
+namespace OhMyBrew\ShopifyApp\Storage\Models;
 
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Config;

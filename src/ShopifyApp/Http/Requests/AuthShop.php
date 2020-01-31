@@ -5,10 +5,10 @@ namespace OhMyBrew\ShopifyApp\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
-use OhMyBrew\ShopifyApp\Services\AuthShopHandler;
 
 /**
  * Handles validating a shop trying to authenticate.
+ * TODO: Inject iApiHelper somehow
  */
 class AuthShop extends FormRequest
 {
@@ -41,9 +41,7 @@ class AuthShop extends FormRequest
 
             // Determine if the HMAC is correct
             $shop = ShopifyApp::shop($this->request->get('shop'));
-            $authHandler = new AuthShopHandler($shop);
-
-            if (!$authHandler->verifyRequest($this->request->all())) {
+            if (!$this->apiHelper->verifyRequest($this->request->all())) {
                 $validator->errors()->add('signature', 'Not a valid signature.');
             }
         });
