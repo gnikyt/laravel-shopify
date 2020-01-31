@@ -317,7 +317,7 @@ class ShopSession
             }
 
             return $compatible;
-        } Catch (\Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
     }
