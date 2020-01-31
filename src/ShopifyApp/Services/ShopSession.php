@@ -291,31 +291,35 @@ class ShopSession
 
         $this->agent = new Agent();
 
-        $browser = $this->getBrowserDetails();
-        $platform = $this->getPlatformDetails();
+        try {
+            $browser = $this->getBrowserDetails();
+            $platform = $this->getPlatformDetails();
 
-        if ($this->agent->is('Chrome') && $browser['major'] >= 67) {
-            $compatible = true;
+            if ($this->agent->is('Chrome') && $browser['major'] >= 67) {
+                $compatible = true;
+            }
+
+            if ($this->agent->is('iOS') && $platform['major'] > 12) {
+                $compatible = true;
+            }
+
+            if ($this->agent->is('OS X') &&
+                ($this->agent->is('Safari') && !$this->agent->is('iOS')) &&
+                $platform['float'] > 10.14
+            ) {
+                $compatible = true;
+            }
+
+            if ($this->agent->is('UCBrowser') &&
+                $browser['float'] > 12.13
+            ) {
+                $compatible = true;
+            }
+
+            return $compatible;
+        } Catch (\Exception $e) {
+            return false;
         }
-
-        if ($this->agent->is('iOS') && $platform['major'] > 12) {
-            $compatible = true;
-        }
-
-        if ($this->agent->is('OS X') &&
-            ($this->agent->is('Safari') && !$this->agent->is('iOS')) &&
-            $platform['float'] > 10.14
-        ) {
-            $compatible = true;
-        }
-
-        if ($this->agent->is('UCBrowser') &&
-            $browser['float'] > 12.13
-        ) {
-            $compatible = true;
-        }
-
-        return $compatible;
     }
 
     /**
