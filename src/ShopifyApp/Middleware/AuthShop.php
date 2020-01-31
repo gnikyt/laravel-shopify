@@ -9,8 +9,9 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
+use OhMyBrew\ShopifyApp\Exceptions\MissingShopDomainException;
+use OhMyBrew\ShopifyApp\Exceptions\SignatureVerificationException;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
-use OhMyBrew\ShopifyApp\Services\AuthShopHandler;
 use OhMyBrew\ShopifyApp\Services\ShopSession;
 
 /**
@@ -21,8 +22,8 @@ class AuthShop
     /**
      * Handle an incoming request.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure                 $next
+     * @param \Illuminate\Http\Request $request The request object.
+     * @param \Closure                 $next    The "next" action to take.
      *
      * @return mixed
      */
@@ -39,7 +40,7 @@ class AuthShop
     /**
      * Checks we have a valid shop.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request The request object.
      *
      * @return bool|\Illuminate\Http\RedirectResponse
      */
@@ -48,7 +49,7 @@ class AuthShop
         // Setup the session service
         $session = new ShopSession();
 
-        // Get the shop domain
+        // Grab the shop's myshopify domain from query or session
         $shopDomain = $this->getShopDomain($request, $session);
 
         // Get the shop based on domain and update the session service
@@ -58,11 +59,10 @@ class AuthShop
             ->first();
         $session->setShop($shop);
 
-        $flowType = $this->getFlowType($shop, $session);
-        if ($flowType) {
+        // We need to do a full flow if no shop or it is deleted
+        if ($shop === null || $shop->trashed() || !$session->isValid()) {
             // We have a bad session
             return $this->handleBadSession(
-                $flowType,
                 $session,
                 $request,
                 $shopDomain
@@ -95,8 +95,8 @@ class AuthShop
      *  - Headers
      *  - Session
      *
-     * @param \Illuminate\Http\Request                  $request
-     * @param \OhMyBrew\ShopifyApp\Services\ShopSession $session
+     * @param \Illuminate\Http\Request                  $request The request object.
+     * @param \OhMyBrew\ShopifyApp\Services\ShopSession $session The shop session instance.
      *
      * @throws Exception
      *
@@ -133,7 +133,7 @@ class AuthShop
         }
 
         // No domain :(
-        throw new Exception('Unable to get shop domain.');
+        throw new MissingShopDomainException('Unable to get shop domain.');
     }
 
     /**
@@ -143,7 +143,7 @@ class AuthShop
      * check and confirm the validity upfront before we return the
      * value to anything.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request The request object.
      *
      * @throws Exception
      *
@@ -157,21 +157,18 @@ class AuthShop
             return false;
         }
 
-        $signature = $request->input('hmac');
-        $timestamp = $request->input('timestamp');
-        $code = $request->input('code');
+        // Verify
+        $verify = [];
+        foreach ($request->all() as $key => $value) {
+            $verify[$key] = is_array($value) ? '["'.implode('", "', $value).'"]' : $value;
+        }
 
         // Make sure there is no param spoofing attempt
-        if (ShopifyApp::api()->verifyRequest([
-            'shop' => $shop,
-            'hmac' => $signature,
-            'timestamp' => $timestamp,
-            'code' => $code,
-        ])) {
+        if (ShopifyApp::api()->verifyRequest($verify)) {
             return $shop;
         }
 
-        throw new Exception('Unable to verify signature.');
+        throw new SignatureVerificationException('Unable to verify signature.');
     }
 
     /**
@@ -181,7 +178,7 @@ class AuthShop
      * check and confirm the validity upfront before we return the
      * value to anything.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request The request object.
      *
      * @return bool|string
      */
@@ -200,16 +197,23 @@ class AuthShop
             return false;
         }
 
-        if (!isset($refererQueryParams['shop']) || !isset($refererQueryParams['hmac']) || !isset($refererQueryParams['timestamp']) || !isset($refererQueryParams['code'])) {
+        // These 3 must always be present
+        if (!isset($refererQueryParams['shop']) || !isset($refererQueryParams['hmac']) || !isset($refererQueryParams['timestamp'])) {
             return false;
         }
 
+        // Verify
+        $verify = [];
+        foreach ($refererQueryParams as $key => $value) {
+            $verify[$key] = is_array($value) ? '["'.implode('", "', $value).'"]' : $value;
+        }
+
         // Make sure there is no param spoofing attempt
-        if (ShopifyApp::api()->verifyRequest($refererQueryParams)) {
+        if (ShopifyApp::api()->verifyRequest($verify)) {
             return $refererQueryParams['shop'];
         }
 
-        throw new Exception('Unable to verify signature.');
+        throw new SignatureVerificationException('Unable to verify signature.');
     }
 
     /**
@@ -219,7 +223,7 @@ class AuthShop
      * check and confirm the validity upfront before we return the
      * value to anything.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request The request object.
      *
      * @throws Exception
      *
@@ -233,65 +237,47 @@ class AuthShop
             return false;
         }
 
+        // Always present
         $signature = $request->header('X-Shop-Signature');
         $timestamp = $request->header('X-Shop-Time');
-        $code = $request->header('X-Shop-Code');
+
+        $verify = [
+            'shop'      => $shop,
+            'hmac'      => $signature,
+            'timestamp' => $timestamp,
+        ];
+
+        // Sometimes present
+        $code = $request->header('X-Shop-Code') ?? null;
+        $locale = $request->header('X-Shop-Locale') ?? null;
+        $state = $request->header('X-Shop-State') ?? null;
+        $id = $request->header('X-Shop-ID') ?? null;
+        $ids = $request->header('X-Shop-IDs') ?? null;
+
+        foreach (compact('code', 'locale', 'state', 'id', 'ids') as $key => $value) {
+            if ($value) {
+                $verify[$key] = is_array($value) ? '["'.implode('", "', $value).'"]' : $value;
+            }
+        }
 
         // Make sure there is no param spoofing attempt
-        if (ShopifyApp::api()->verifyRequest([
-            'shop' => $shop,
-            'hmac' => $signature,
-            'timestamp' => $timestamp,
-            'code' => $code,
-        ])) {
+        if (ShopifyApp::api()->verifyRequest($verify)) {
             return $shop;
         }
 
-        throw new Exception('Unable to verify signature.');
-    }
-
-    /**
-     * Gets the appropriate flow type. It either returns full, partial,
-     * or false. If it returns false it means that everything is fine.
-     *
-     * @param                                           $shop    The shop model.
-     * @param \OhMyBrew\ShopifyApp\Services\ShopSession $session The session service for the shop.
-     *
-     * @return bool|string
-     */
-    private function getFlowType($shop, $session)
-    {
-        // We need to do a full flow if no shop or it is deleted
-        if ($shop === null || $shop->trashed()) {
-            return AuthShopHandler::FLOW_FULL;
-        }
-
-        // Do nothing if the session is valid
-        if ($session->isValid()) {
-            return false;
-        }
-
-        // We need to do a full flow if it grant per user
-        if ($session->isType(ShopSession::GRANT_PERUSER)) {
-            return AuthShopHandler::FLOW_FULL;
-        }
-
-        // Default is the partial flow
-        return AuthShopHandler::FLOW_PARTIAL;
+        throw new SignatureVerificationException('Unable to verify signature.');
     }
 
     /**
      * Handles a bad shop session.
      *
-     * @param string                                    $type       The auth flow to perform.
-     * @param \OhMyBrew\ShopifyApp\Services\ShopSession $session    The session service for the shop.
-     * @param \Illuminate\Http\Request                  $request    The incoming request.
+     * @param \OhMyBrew\ShopifyApp\Services\ShopSession $session    The shop session instance.
+     * @param \Illuminate\Http\Request                  $request    The request object.
      * @param string|null                               $shopDomain The incoming shop domain.
      *
      * @return \Illuminate\Http\RedirectResponse
      */
     protected function handleBadSession(
-        string $type,
         ShopSession $session,
         Request $request,
         string $shopDomain = null
@@ -307,10 +293,7 @@ class AuthShop
             'authenticate',
             array_merge(
                 $request->all(),
-                [
-                    'type' => $type,
-                    'shop' => $shopDomain,
-                ]
+                ['shop' => $shopDomain]
             )
         );
     }

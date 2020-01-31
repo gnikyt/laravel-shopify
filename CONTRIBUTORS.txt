@@ -1,0 +1,20 @@
+# [...document.getElementsByClassName('contrib-person')].map(n => n.getElementsByClassName('avatar')[0].alt).join('\n');
+ohmybrew
+darrynten
+amosmos
+ilamp
+jedimdan
+tuimz
+oanhnn
+seka19
+msonowal
+bilfeldt
+ncpope
+ericnkatz
+dellow
+c4l3b
+mat-dropshipspy
+dhritimanrick
+baorv
+awebartisan
+ImgBotApp"

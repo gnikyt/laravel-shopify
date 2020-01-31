@@ -4,7 +4,6 @@ namespace OhMyBrew\ShopifyApp\Test\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
@@ -35,7 +34,7 @@ class AuthProxyMiddlewareTest extends TestCase
         // Remove shop from params
         $query = $this->queryParams;
         unset($query['shop']);
-        Input::merge($query);
+        Request::merge($query);
 
         // Run the middleware
         $result = $this->runAuthProxy();
@@ -47,7 +46,7 @@ class AuthProxyMiddlewareTest extends TestCase
 
     public function testRuns()
     {
-        Input::merge($this->queryParams);
+        Request::merge($this->queryParams);
 
         // Confirm no shop
         $this->assertNull(Session::get('shopify_domain'));
@@ -71,7 +70,7 @@ class AuthProxyMiddlewareTest extends TestCase
         // Make the signature invalid
         $query = $this->queryParams;
         $query['oops'] = 'i-did-it-again';
-        Input::merge($query);
+        Request::merge($query);
 
         // Run the middleware
         $result = $this->runAuthProxy();

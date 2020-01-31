@@ -17,7 +17,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | This option option allows you to use:
-    | `php artisan vendor:publish --tag=migrations` to push migrations
+    | `php artisan vendor:publish --tag=shopify-migrations` to push migrations
     | to your app's folder so you're free to modify before migrating.
     |
     */
@@ -35,6 +35,18 @@ return [
     */
 
     'namespace' => env('SHOPIFY_APP_NAMESPACE', null),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Shopify Jobs Namespace
+    |--------------------------------------------------------------------------
+    |
+    | This option option allows you to change out the default job namespace
+    | which is \App\Jobs. This option is mainly used if any custom configuration
+    | is done in autoload and does not need to be changed unless required.
+    |
+    */
+    'job_namespace' => env('SHOPIFY_JOB_NAMESPACE', '\\App\\Jobs\\'),
 
     /*
     |--------------------------------------------------------------------------
@@ -70,6 +82,10 @@ return [
     */
 
     'appbridge_enabled' => (bool) env('SHOPIFY_APPBRIDGE_ENABLED', true),
+
+    // Use semver range to link to a major or minor version number.
+    // Leaving empty will use the latest verison - not recommended in production.
+    'appbridge_version' => env('SHOPIFY_APPBRIDGE_VERSION', '1'),
 
     /*
     |--------------------------------------------------------------------------

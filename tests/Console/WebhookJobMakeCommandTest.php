@@ -28,7 +28,7 @@ class WebhookJobMakeCommandTest extends TestCase
 
             $commandTester->execute([
                 'command' => $command->getName(),
-                'name'    => 'OrdersCreateJob',
+                'name'    => 'OrdersCreate',
                 'topic'   => 'orders/create',
             ]);
 
@@ -42,7 +42,7 @@ class WebhookJobMakeCommandTest extends TestCase
             $this->artisan(
                 'shopify-app:make:webhook',
                 [
-                    'name'  => 'OrdersCreateJob',
+                    'name'  => 'OrdersCreate',
                     'topic' => 'orders/create',
                 ]
             )

@@ -33,8 +33,7 @@ class AuthShop extends FormRequest
     {
         // Determine if the HMAC is correct
         $validator->after(function (Validator $validator) {
-            $type = $this->request->get('type', AuthShopHandler::FLOW_FULL);
-            if ($type === AuthShopHandler::FLOW_FULL && !$this->request->has('code')) {
+            if (!$this->request->has('code')) {
                 // No code, continue...
                 return;
             }
@@ -70,6 +69,8 @@ class AuthShop extends FormRequest
      * Get the URL to redirect to on a validation error.
      *
      * @return string
+     *
+     * @codeCoverageIgnore
      */
     protected function getRedirectUrl()
     {

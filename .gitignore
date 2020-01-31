@@ -3,7 +3,7 @@
 composer.lock
 vendor/
 build/
-bin/
+bin/*
 tests/tmp/
 .phpunit.result*
 
@@ -23,3 +23,9 @@ Icon?
 ehthumbs.db
 Thumbs.db
 *.mo
+
+# Custom bin files #
+####################
+!bin/tnc
+!bin/twc
+!bin/twcs
