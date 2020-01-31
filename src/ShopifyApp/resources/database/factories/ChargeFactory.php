@@ -2,7 +2,8 @@
 
 use Faker\Generator as Faker;
 use Illuminate\Support\Carbon;
-use OhMyBrew\ShopifyApp\Models\Charge;
+use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
+use OhMyBrew\ShopifyApp\Storage\Models\Charge;
 
 $factory->define(Charge::class, function (Faker $faker) {
     return [
@@ -17,19 +18,19 @@ $factory->state(Charge::class, 'test', [
 ]);
 
 $factory->state(Charge::class, 'type_recurring', [
-    'type' => Charge::CHARGE_RECURRING,
+    'type' => ChargeType::RECURRING()->toNative(),
 ]);
 
 $factory->state(Charge::class, 'type_onetime', [
-    'type' => Charge::CHARGE_ONETIME,
+    'type' => ChargeType::ONETIME()->toNative(),
 ]);
 
 $factory->state(Charge::class, 'type_usage', [
-    'type' => Charge::CHARGE_USAGE,
+    'type' => ChargeType::USAGE()->toNative(),
 ]);
 
 $factory->state(Charge::class, 'type_credit', [
-    'type' => Charge::CHARGE_CREDIT,
+    'type' => ChargeType::CREDIT()->toNative(),
 ]);
 
 $factory->state(Charge::class, 'trial', function ($faker) {

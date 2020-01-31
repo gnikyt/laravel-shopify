@@ -5,6 +5,7 @@ namespace OhMyBrew\ShopifyApp\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
 
 /**
  * Handles validating a shop trying to authenticate.
@@ -40,7 +41,7 @@ class AuthShop extends FormRequest
             }
 
             // Determine if the HMAC is correct
-            $shop = ShopifyApp::shop($this->request->get('shop'));
+            $shop = ShopifyApp::shop(new ShopDomain($this->request->get('shop')));
             if (!$this->apiHelper->verifyRequest($this->request->all())) {
                 $validator->errors()->add('signature', 'Not a valid signature.');
             }

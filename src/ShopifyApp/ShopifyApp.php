@@ -6,7 +6,9 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use OhMyBrew\BasicShopifyAPI;
-use OhMyBrew\ShopifyApp\Interfaces\IShopModel;
+use OhMyBrew\ShopifyApp\Contracts\Objects\Values\ShopDomain;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use OhMyBrew\ShopifyApp\Contracts\ShopModel as IShopModel;
 use OhMyBrew\ShopifyApp\Services\ShopSession;
 
 /**
@@ -17,7 +19,7 @@ class ShopifyApp
     /**
      * Laravel application.
      *
-     * @var \Illuminate\Foundation\Application
+     * @var Application
      */
     public $app;
 
@@ -29,35 +31,47 @@ class ShopifyApp
     public $shop;
 
     /**
+     * The querier for shops.
+     *
+     * @var IShopQuery
+     */
+    public $shopQuery;
+
+    /**
      * Create a new confide instance.
      *
      * @param Application $app
      *
      * @return self
      */
-    public function __construct(Application $app)
+    public function __construct(Application $app, IShopQuery $shopQuery)
     {
         $this->app = $app;
+        $this->shopQuery = $shopQuery;
     }
 
     /**
      * Gets/sets the current shop.
-     * TODO: Move if logic to a querier
      *
-     * @param string|null $shopDomain
+     * @param ShopDomain|null $shopDomain The shop's domain.
      *
      * @return IShopModel
      */
-    public function shop(string $shopDomain = null): IShopModel
+    public function shop(ShopDomain $shopDomain = null): IShopModel
     {
-        $shopifyDomain = $shopDomain ?
-            $this->sanitizeShopDomain($shopDomain) :
+        $shopifyDomain = $shopDomain ??
             ($this->app->make(ShopSession::class))->getDomain();
 
         if (!$this->shop && $shopifyDomain) {
             // Grab shop from database here
-            $shopModel = Config::get('shopify-app.shop_model');
-            $shop = $shopModel::withTrashed()->firstOrCreate(['shopify_domain' => $shopifyDomain]);
+            $shop = $this->shopQuery->getByDomain($shopifyDomain, [], true);
+            if (!$shop) {
+                // Create the shop
+                $model = Config::get('auth.providers.users.model');
+                $shop = new $model();
+                $shop->shopify_domain = $shopifyDomain;
+                $shop->save();
+            }
 
             // Update shop instance
             $this->shop = $shop;

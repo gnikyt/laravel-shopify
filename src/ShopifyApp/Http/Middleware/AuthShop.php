@@ -158,9 +158,9 @@ class AuthShop
         }
 
         // If none of the above are available then pull from the session
-        $shopDomainSession = $session->getDomain();
-        if ($shopDomainSession) {
-            return new ShopDomain($shopDomainSession);
+        $shopDomainSession = $this->session->getDomain();
+        if (!$shopDomainSession->isNull()) {
+            return new ShopDomain($shopDomainSession->toNative());
         }
 
         // No domain :(

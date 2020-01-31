@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
 use OhMyBrew\ShopifyApp\Objects\Values\NullablePlanId;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
 
 /**
  * Responsible for reprecenting a shop record.
@@ -73,12 +74,12 @@ trait ShopModelTrait
     {
         if (!$this->api) {
             // Get the domain and token
-            $shopDomain = $this->username;
-            $token = (new $session)->getToken();
+            $shopDomain = new ShopDomain($this->username);
+            $token = (new $session())->getToken();
 
             // Create new API instance
             $this->api = ShopifyApp::api();
-            $this->api->setSession($shopDomain, $token);
+            $this->api->setSession($shopDomain->toNative(), $token->toNative());
         }
 
         // Return existing instance

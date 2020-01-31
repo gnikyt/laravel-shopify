@@ -83,14 +83,7 @@ class ShopifyAppProvider extends ServiceProvider
         ]);
 
         // Binds
-
-        // TODO: USE CONTRACT MAPPING NOT DIRECT
         $binds = [
-            // Facades
-            'shopifyapp' => function ($app) {
-                return new ShopifyApp($app);
-            },
-
             // Services (start)
             IApiHelper::class => [self::CBIND, function () {
                 return new ApiHelper();
@@ -98,8 +91,11 @@ class ShopifyAppProvider extends ServiceProvider
 
             // Queriers
             IShopQuery::class => [self::CSINGLETON, function () {
+                $model = Config::get('auth.providers.users.model');
+                $modelInstance = new $model();
+
                 return new ShopQuery(
-                    Config::get('auth.providers.users.model')
+                    $modelInstance
                 );
             }],
             IPlanQuery::class => [self::CSINGLETON, function () {
@@ -206,6 +202,14 @@ class ShopifyAppProvider extends ServiceProvider
                     $app->make(IShopCommand::class)
                 );
             }],
+
+            // Facades
+            'shopifyapp' => function ($app) {
+                return new ShopifyApp(
+                    $app,
+                    $app->make(IShopQuery::class)
+                );
+            },
         ];
         foreach ($binds as $key => $fn) {
             $this->app->{$fn[0]}($key, $fn[1]);

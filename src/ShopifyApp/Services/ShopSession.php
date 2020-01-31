@@ -7,7 +7,11 @@ use Illuminate\Support\Facades\Session;
 use OhMyBrew\ShopifyApp\Traits\ShopAccessible;
 use OhMyBrew\ShopifyApp\Objects\Enums\AuthMode;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
+use OhMyBrew\ShopifyApp\Objects\Values\NullableShopDomain;
 use OhMyBrew\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
+use OhMyBrew\ShopifyApp\Objects\Values\AccessToken;
+use OhMyBrew\ShopifyApp\Objects\Values\NullableAccessToken;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
 /**
  * Responsible for handling session retreival and storage.
@@ -102,11 +106,13 @@ class ShopSession
     /**
      * Gets the Shopify domain in session.
      *
-     * @return string
+     * @return NullableShopDomain
      */
-    public function getDomain(): string
+    public function getDomain(): NullableShopDomain
     {
-        return Session::get(self::DOMAIN);
+        return new NullableShopDomain(
+            Session::get(self::DOMAIN)
+        );
     }
 
     /**
@@ -132,7 +138,7 @@ class ShopSession
             Session::put(self::TOKEN, $token);
         } else {
             // Offline
-            $this->shopCommand->setAccessToken($this->shop->id, $token);
+            $this->shopCommand->setAccessToken(new ShopId($this->shop->id), new AccessToken($token));
         }
 
         return $this;
@@ -143,17 +149,17 @@ class ShopSession
      *
      * @param bool $strict Return the token matching the grant type (default: use either).
      *
-     * @return string
+     * @return AccessToken
      */
-    public function getToken(bool $strict = false): string
+    public function getToken(bool $strict = false): AccessToken
     {
         // Tokens
         $peruser = AuthMode::PERUSER()->toNative();
         $offline = AuthMode::OFFLINE()->toNative();
 
         $tokens = [
-            $peruser => Session::get(self::TOKEN),
-            $offline => $this->shop->{self::TOKEN},
+            $peruser => new AccessToken(Session::get(self::TOKEN)),
+            $offline => new AccessToken($this->shop->{self::TOKEN}),
         ];
 
         if ($strict) {
@@ -162,7 +168,7 @@ class ShopSession
         }
 
         // We need a token either way...
-        return $tokens[$peruser] ?? $tokens[$offline];
+        return $tokens[$peruser]->isNull() ? $tokens[$offline] : $tokens[$peruser];
     }
 
     /**
@@ -208,9 +214,9 @@ class ShopSession
     public function isValid(): bool
     {
         // No token set or domain in session?
-        $result = !empty($this->getToken(true))
-            && $this->getDomain() !== null
-            && $this->getDomain() == $this->shop->shopify_domain;
+        $result = !empty($this->getToken(true)->toNative())
+            && !$this->getDomain()->isNull()
+            && $this->getDomain()->toNative() == $this->shop->shopify_domain;
 
         return $result;
     }

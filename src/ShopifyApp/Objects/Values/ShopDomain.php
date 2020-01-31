@@ -2,14 +2,14 @@
 
 namespace OhMyBrew\ShopifyApp\Objects\Values;
 
-use Funeralzone\ValueObjects\ValueObject;
-use Funeralzone\ValueObjects\Scalars\StringTrait;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
+use Funeralzone\ValueObjects\Scalars\StringTrait;
+use OhMyBrew\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
 
 /**
  * Value object for shop's domain.
  */
-final class ShopDomain implements ValueObject
+final class ShopDomain implements ShopDomainValue
 {
     use StringTrait;
 
