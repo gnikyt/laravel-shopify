@@ -273,7 +273,7 @@ class ShopSession
     {
         if ($this->checkSameSiteNoneCompatible()) {
             config([
-                'session.secure' => true,
+                'session.secure'    => true,
                 'session.same_site' => 'none',
             ]);
         }
