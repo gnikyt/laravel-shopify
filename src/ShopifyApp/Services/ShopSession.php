@@ -4,6 +4,7 @@ namespace OhMyBrew\ShopifyApp\Services;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
+use Jenssegers\Agent\Agent;
 use OhMyBrew\ShopifyApp\Models\Shop;
 use stdClass;
 
@@ -64,6 +65,7 @@ class ShopSession
     public function __construct($shop = null)
     {
         $this->setShop($shop);
+        $this->setCookiePolicy();
     }
 
     /**
@@ -247,5 +249,110 @@ class ShopSession
     protected function fixLifetime()
     {
         Config::set('session.expire_on_close', true);
+    }
+
+    /**
+     * Sets the cookie policy.
+     *
+     * From Chrome 80+ there is a new requirement that the SameSite
+     * cookie flag be set to `none` and the cookies be marked with
+     * `secure`.
+     *
+     * Reference: https://www.chromium.org/updates/same-site/incompatible-clients
+     *
+     * Enables SameSite none and Secure cookies on:
+     *
+     * - Chrome v67+
+     * - Safari on OSX 10.14+
+     * - iOS 13+
+     * - UCBrowser 12.13+
+     *
+     * @return null
+     */
+    public function setCookiePolicy()
+    {
+        if ($this->checkSameSiteNoneCompatible()) {
+            config([
+                'session.secure'    => true,
+                'session.same_site' => 'none',
+            ]);
+        }
+    }
+
+    /**
+     * Checks to see if the current browser session should be
+     * using the SameSite=none cookie policy.
+     *
+     * @return bool
+     */
+    private function checkSameSiteNoneCompatible()
+    {
+        $compatible = false;
+
+        $this->agent = new Agent();
+
+        try {
+            $browser = $this->getBrowserDetails();
+            $platform = $this->getPlatformDetails();
+
+            if ($this->agent->is('Chrome') && $browser['major'] >= 67) {
+                $compatible = true;
+            }
+
+            if ($this->agent->is('iOS') && $platform['major'] > 12) {
+                $compatible = true;
+            }
+
+            if ($this->agent->is('OS X') &&
+                ($this->agent->is('Safari') && !$this->agent->is('iOS')) &&
+                $platform['float'] > 10.14
+            ) {
+                $compatible = true;
+            }
+
+            if ($this->agent->is('UCBrowser') &&
+                $browser['float'] > 12.13
+            ) {
+                $compatible = true;
+            }
+
+            return $compatible;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Returns details about the current web browser.
+     *
+     * @return array
+     */
+    private function getBrowserDetails()
+    {
+        $version = $this->agent->version($this->agent->browser());
+        $pieces = explode('.', str_replace('_', '.', $version));
+
+        return [
+            'major' => $pieces[0],
+            'minor' => $pieces[1],
+            'float' => (float) sprintf('%s.%s', $pieces[0], $pieces[1]),
+        ];
+    }
+
+    /**
+     * Returns details about the current operating system.
+     *
+     * @return array
+     */
+    private function getPlatformDetails()
+    {
+        $version = $this->agent->version($this->agent->platform());
+        $pieces = explode('.', str_replace('_', '.', $version));
+
+        return [
+            'major' => $pieces[0],
+            'minor' => $pieces[1],
+            'float' => (float) sprintf('%s.%s', $pieces[0], $pieces[1]),
+        ];
     }
 }
