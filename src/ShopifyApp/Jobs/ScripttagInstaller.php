@@ -13,8 +13,10 @@ use Illuminate\Queue\SerializesModels;
  */
 class ScripttagInstaller implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
     /**
      * The shop object.
      *

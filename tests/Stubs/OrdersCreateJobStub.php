@@ -10,8 +10,10 @@ use Illuminate\Queue\SerializesModels;
 
 class OrdersCreateJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
     public $shopDomain;
     public $data;
 
