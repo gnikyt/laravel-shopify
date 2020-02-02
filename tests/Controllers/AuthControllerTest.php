@@ -11,7 +11,7 @@ use ReflectionMethod;
 
 class AuthControllerTest extends TestCase
 {
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
         $this->withoutExceptionHandling();

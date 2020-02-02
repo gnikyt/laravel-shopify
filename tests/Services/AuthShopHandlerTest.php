@@ -19,7 +19,7 @@ require_once __DIR__.'/../Stubs/AfterAuthenticateJobStub.php';
 
 class AuthShopHandlerTest extends TestCase
 {
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 
