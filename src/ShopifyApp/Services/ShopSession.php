@@ -4,14 +4,13 @@ namespace OhMyBrew\ShopifyApp\Services;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 use OhMyBrew\ShopifyApp\Traits\ShopAccessible;
 use OhMyBrew\ShopifyApp\Objects\Enums\AuthMode;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
+use OhMyBrew\ShopifyApp\Objects\Values\AccessToken;
 use OhMyBrew\ShopifyApp\Objects\Values\NullableShopDomain;
 use OhMyBrew\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
-use OhMyBrew\ShopifyApp\Objects\Values\AccessToken;
-use OhMyBrew\ShopifyApp\Objects\Values\NullableAccessToken;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
 /**
  * Responsible for handling session retreival and storage.
@@ -49,15 +48,24 @@ class ShopSession
     protected $shopCommand;
 
     /**
+     * The cookie helper.
+     *
+     * @var CookieHelper
+     */
+    protected $cookieHelper;
+
+    /**
      * Constructor for shop session class.
      *
-     * @param IShopCommand $shopCommand The commands for shop.
+     * @param IShopCommand $shopCommand  The commands for shop.
+     * @param CookieHelper $cookieHelper The cookie helper.
      *
      * @return self
      */
-    public function __construct(IShopCommand $shopCommand)
+    public function __construct(IShopCommand $shopCommand, CookieHelper $cookieHelper)
     {
         $this->shopCommand = $shopCommand;
+        $this->cookieHelper = $cookieHelper;
     }
 
     /**
@@ -97,10 +105,7 @@ class ShopSession
      */
     public function setDomain(ShopDomain $shopDomain): self
     {
-        $this->fixLifetime();
-        Session::put(self::DOMAIN, $shopDomain);
-
-        return $this;
+        return $this->sessionSet(self::DOMAIN, $shopDomain);
     }
 
     /**
@@ -133,9 +138,8 @@ class ShopSession
             // We have a user, so access will live only in session
             $this->user = $access->associated_user;
 
-            $this->fixLifetime();
-            Session::put(self::USER, $this->user);
-            Session::put(self::TOKEN, $token);
+            $this->sessionSet(self::USER, $this->user);
+            $this->sessionSet(self::TOKEN, $this->token);
         } else {
             // Offline
             $this->shopCommand->setAccessToken(new ShopId($this->shop->id), new AccessToken($token));
@@ -222,12 +226,18 @@ class ShopSession
     }
 
     /**
-     * Fixes the lifetime of the session.
+     * Set a session key/value and fix cookie issues.
      *
-     * @return void
+     * @param string $key   The key.
+     * @param mixed  $value The value.
+     *
+     * @return self
      */
-    protected function fixLifetime(): void
+    protected function sessionSet(string $key, $value): self
     {
-        Config::set('session.expire_on_close', true);
+        $this->cookieHelper->setCookiePolicy();
+        Session::put($key, $value);
+
+        return $this;
     }
 }

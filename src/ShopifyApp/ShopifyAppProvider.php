@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
 use OhMyBrew\ShopifyApp\Services\ApiHelper;
 use OhMyBrew\ShopifyApp\Services\ShopSession;
+use OhMyBrew\ShopifyApp\Services\CookieHelper;
 use OhMyBrew\ShopifyApp\Console\WebhookJobMakeCommand;
 use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use OhMyBrew\ShopifyApp\Storage\Queries\Plan as PlanQuery;
@@ -20,6 +21,7 @@ use OhMyBrew\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Charge as IChargeQuery;
 use OhMyBrew\ShopifyApp\Storage\Commands\Charge as ChargeCommand;
 use OhMyBrew\ShopifyApp\Actions\ActivatePlan as ActivatePlanAction;
+use OhMyBrew\ShopifyApp\Actions\CancelCharge as CancelChargeAction;
 use OhMyBrew\ShopifyApp\Contracts\Commands\Charge as IChargeCommand;
 use OhMyBrew\ShopifyApp\Actions\CreateScripts as CreateScriptsAction;
 use OhMyBrew\ShopifyApp\Actions\CreateWebhooks as CreateWebhooksAction;
@@ -30,6 +32,7 @@ use OhMyBrew\ShopifyApp\Actions\DispatchWebhooks as DispatchWebhooksAction;
 use OhMyBrew\ShopifyApp\Actions\AfterAuthenticate as AfterAuthenticateAction;
 use OhMyBrew\ShopifyApp\Actions\CancelCurrentPlan as CancelCurrentPlanAction;
 use OhMyBrew\ShopifyApp\Actions\ActivateUsageCharge as ActivateUsageChargeAction;
+use OhMyBrew\ShopifyApp\Services\ChargeHelper;
 
 /**
  * This package's provider for Laravel.
@@ -188,6 +191,12 @@ class ShopifyAppProvider extends ServiceProvider
                     $app->make(IShopQuery::class)
                 );
             }],
+            CancelChargeAction::class => [self::CBIND, function ($app) {
+                return new CancelChargeAction(
+                    $app->make(IChargeCommand::class),
+                    $app->make(ChargeHelper::class),
+                );
+            }],
 
             // Observers
             ShopObserver::class => [self::CBIND, function ($app) {
@@ -199,7 +208,17 @@ class ShopifyAppProvider extends ServiceProvider
             // Services (end)
             ShopSession::class => [self::CBIND, function ($app) {
                 return new ShopSession(
-                    $app->make(IShopCommand::class)
+                    $app->make(IShopCommand::class),
+                    $app->make(CookieHelper::class)
+                );
+            }],
+            CookieHelper::class => [self::CBIND, function () {
+                return new CookieHelper();
+            }],
+            ChargeHelper::class => [self::CBIND, function ($app) {
+                return new ChargeHelper(
+                    $app->make(IApiHelper::class),
+                    $app->make(IChargeCommand::class),
                 );
             }],
 
