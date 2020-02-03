@@ -49,12 +49,12 @@ class Shop implements ShopQuery
     {
         $result = $this->model::with($with);
         if ($withTrashed) {
-            $result = $result::withTrashed();
+            $result = $result->withTrashed();
         }
 
         return $result
             ->get()
-            ->where('shopify_domain', $domain->toNative())
+            ->where('name', $domain->toNative())
             ->first();
     }
 

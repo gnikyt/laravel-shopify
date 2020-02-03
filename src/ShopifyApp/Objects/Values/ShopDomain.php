@@ -17,11 +17,11 @@ final class ShopDomain implements ShopDomainValue
      * Contructor.
      *
      * @param string $domain The shop's domain.
+     *
+     * @return self
      */
     public function __construct(string $domain)
     {
-        parent::__construct($domain);
-
         $this->string = ShopifyApp::sanitizeShopDomain($domain);
     }
 }

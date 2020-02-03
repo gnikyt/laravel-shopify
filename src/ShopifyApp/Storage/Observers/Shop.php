@@ -4,8 +4,7 @@ namespace OhMyBrew\ShopifyApp\Storage\Observers;
 
 use Illuminate\Support\Facades\Config;
 use OhMyBrew\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
-use OhMyBrew\ShopifyApp\Contracts\ShopModel;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
+use OhMyBrew\ShopifyApp\Contracts\ShopModel as IShopModel;
 
 /**
  * Responsible for observing changes to the shop (user) model.
@@ -35,22 +34,23 @@ class Shop
      * Listen to the shop creating event.
      * TODO: Move partial to command.
      *
-     * @param ShopModel $shop An instance of a shop.
+     * @param IShopModel $shop An instance of a shop.
      *
      * @return void
      */
-    public function creating(ShopModel $shop): void
+    public function creating(IShopModel $shop): void
     {
-        $shopId = new ShopId($shop->id);
+        $namespace = Config::get('shopify-app.namespace');
+        $freemium = Config::get('shopify-app.billing_freemium_enabled');
 
-        if (!isset($shop->shopify_namespace)) {
+        if (!empty($namespace) && !isset($shop->shopify_namespace)) {
             // Automatically add the current namespace to new records
-            $this->shopCommand->setNamespace($shopId, Config::get('shopify-app.namespace'));
+            $this->shopCommand->setNamespaceByRef($shop, $namespace);
         }
 
-        if (Config::get('shopify-app.billing_freemium_enabled') === true && !isset($shop->shopify_freemium)) {
+        if ($freemium === true && !isset($shop->shopify_freemium)) {
             // Add the freemium flag to the shop
-            $this->shopCommand->setAsFreemium($shopId);
+            $this->shopCommand->setAsFreemium($shop);
         }
     }
 }

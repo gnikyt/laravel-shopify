@@ -115,7 +115,7 @@ class ShopSession
      */
     public function getDomain(): NullableShopDomain
     {
-        return new NullableShopDomain(
+        return NullableShopDomain::fromNative(
             Session::get(self::DOMAIN)
         );
     }
@@ -220,7 +220,7 @@ class ShopSession
         // No token set or domain in session?
         $result = !empty($this->getToken(true)->toNative())
             && !$this->getDomain()->isNull()
-            && $this->getDomain()->toNative() == $this->shop->shopify_domain;
+            && $this->getDomain()->toNative() == $this->shop->name;
 
         return $result;
     }

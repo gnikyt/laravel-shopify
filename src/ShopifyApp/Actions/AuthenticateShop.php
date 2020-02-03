@@ -90,7 +90,7 @@ class AuthenticateShop
             $this
                 ->shopSession
                 ->setShop($shop)
-                ->setDomain(new ShopDomain($shop->shopify_domain))
+                ->setDomain(new ShopDomain($shop->name))
                 ->setAccess(
                     $this->apiHelper->getAccessData($code)
                 );

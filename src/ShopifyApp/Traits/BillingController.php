@@ -53,7 +53,7 @@ trait BillingController
     ): RedirectResponse {
         // Activate the plan and save
         $result = $activatePlanAction(
-            new ShopDomain(ShopifyApp::shop()->shopify_domain),
+            new ShopDomain(ShopifyApp::shop()->name),
             new PlanId($planId),
             new ChargeId($request->query('charge_id'))
         );
@@ -81,7 +81,7 @@ trait BillingController
 
         // Activate and save the usage charge
         $activateUsageChargeAction(
-            new ShopDomain(ShopifyApp::shop()->shopify_domain),
+            new ShopDomain(ShopifyApp::shop()->name),
             $validated['price'],
             $validated['description']
         );

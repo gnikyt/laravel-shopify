@@ -2,14 +2,14 @@
 
 namespace OhMyBrew\ShopifyApp;
 
+use OhMyBrew\BasicShopifyAPI;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Log;
-use OhMyBrew\BasicShopifyAPI;
-use OhMyBrew\ShopifyApp\Contracts\Objects\Values\ShopDomain;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
-use OhMyBrew\ShopifyApp\Contracts\ShopModel as IShopModel;
 use OhMyBrew\ShopifyApp\Services\ShopSession;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
+use OhMyBrew\ShopifyApp\Contracts\ShopModel as IShopModel;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 
 /**
  * The base "helper" class for this package.
@@ -55,21 +55,27 @@ class ShopifyApp
      *
      * @param ShopDomain|null $shopDomain The shop's domain.
      *
-     * @return IShopModel
+     * @return IShopModel|null
      */
-    public function shop(ShopDomain $shopDomain = null): IShopModel
+    public function shop(ShopDomain $shopDomain = null): ?IShopModel
     {
+        // Get the shop domain from params or from shop session
         $shopifyDomain = $shopDomain ??
-            ($this->app->make(ShopSession::class))->getDomain();
+            ($this->app->make(ShopSession::class))
+                ->getDomain();
 
-        if (!$this->shop && $shopifyDomain) {
+        if (!$this->shop && !$shopifyDomain->isNull()) {
             // Grab shop from database here
-            $shop = $this->shopQuery->getByDomain($shopifyDomain, [], true);
+            $domain = new ShopDomain($shopifyDomain->toNative());
+            $shop = $this->shopQuery->getByDomain($domain, [], true);
+
             if (!$shop) {
                 // Create the shop
                 $model = Config::get('auth.providers.users.model');
                 $shop = new $model();
-                $shop->shopify_domain = $shopifyDomain;
+                $shop->name = $domain->toNative();
+                $shop->password = '';
+                $shop->email = '';
                 $shop->save();
             }
 

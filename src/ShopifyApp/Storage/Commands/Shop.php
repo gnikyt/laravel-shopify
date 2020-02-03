@@ -47,7 +47,7 @@ class Shop implements ShopCommand
     public function setAccessToken(ShopId $shopId, AccessToken $token): bool
     {
         $shop = $this->getShop($shopId);
-        $shop->shopify_token = $token->toNative();
+        $shop->password = $token->toNative();
 
         return $shop->save();
     }
@@ -58,7 +58,7 @@ class Shop implements ShopCommand
     public function clean(ShopId $shopId): bool
     {
         $shop = $this->getShop($shopId);
-        $shop->shopify_token = null;
+        $shop->password = '';
         $shop->plan_id = null;
 
         return $shop->save();
@@ -92,7 +92,7 @@ class Shop implements ShopCommand
     public function setAsFreemium(ShopId $shopId): bool
     {
         $shop = $this->getShop($shopId);
-        $shop->shopify_freemium = true;
+        $this->setAsFreemiumByRef($shop);
 
         return $shop->save();
     }
@@ -103,9 +103,34 @@ class Shop implements ShopCommand
     public function setNamespace(ShopId $shopId, string $namespace): bool
     {
         $shop = $this->getShop($shopId);
-        $shop->shopify_namespace = $namespace;
+        $this->setNamespaceByRef($shop, $namespace);
 
         return $shop->save();
+    }
+
+    /**
+     * Sets a shop as freemium.
+     *
+     * @param ShopModel $shop The shop model (reference).
+     *
+     * @return void
+     */
+    public function setAsFreemiumByRef(ShopModel &$shop): void
+    {
+        $shop->shopify_freemium = true;
+    }
+
+    /**
+     * Sets a shop namespace.
+     *
+     * @param ShopModel $shop      The shop model (reference).
+     * @param string    $namespace The namespace.
+     *
+     * @return void
+     */
+    public function setNamespaceByRef(ShopModel &$shop, string $namespace): void
+    {
+        $shop->shopify_namespace = $namespace;
     }
 
     /**

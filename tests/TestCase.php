@@ -57,11 +57,11 @@ abstract class TestCase extends OrchestraTestCase
 
     protected function setupDatabase($app)
     {
-        // Path to our migrations to load
-        $this->loadMigrationsFrom([
-            realpath(__DIR__.'/resources/database/migrations'),
-            realpath(__DIR__.'/../src/ShopifyApp/resources/database/migrations'),
-        ]);
+        // Run Laravel migrations
+        $this->loadLaravelMigrations();
+
+        // Run package migration
+        $this->artisan('migrate')->run();
     }
 
     protected function swapEnvironment(string $env, Closure $fn)

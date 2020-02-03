@@ -1,14 +1,14 @@
 <?php
 
 use Faker\Generator as Faker;
-use League\Flysystem\Config;
+use Illuminate\Support\Facades\Config;
 
 $model = Config::get('auth.providers.users.model');
 
 $factory->define($model, function (Faker $faker) {
     return [
-        'shopify_domain' => "{$faker->domainWord}.myshopify.com",
-        'shopify_token'  => str_replace('-', '', $faker->uuid),
+        'name'     => "{$faker->domainWord}.myshopify.com",
+        'password' => str_replace('-', '', $faker->uuid),
     ];
 });
 

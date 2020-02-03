@@ -2,18 +2,19 @@
 
 namespace OhMyBrew\ShopifyApp\Traits;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use OhMyBrew\BasicShopifyAPI;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
-use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
-use OhMyBrew\ShopifyApp\Objects\Values\NullablePlanId;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
+use OhMyBrew\ShopifyApp\Storage\Models\Plan;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use OhMyBrew\ShopifyApp\Services\ShopSession;
 use OhMyBrew\ShopifyApp\Storage\Models\Charge;
-use OhMyBrew\ShopifyApp\Storage\Models\Plan;
+use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use OhMyBrew\ShopifyApp\Storage\Scopes\Namespacing;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use OhMyBrew\ShopifyApp\Storage\Models\Charge as ChargeModel;
+use OhMyBrew\ShopifyApp\Objects\Values\NullablePlanId;
 
 /**
  * Responsible for reprecenting a shop record.
@@ -37,23 +38,6 @@ trait ShopModel
     protected $session;
 
     /**
-     * The attributes that should be casted to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'shopify_grandfathered' => 'bool',
-        'shopify_freemium'      => 'bool',
-    ];
-
-    /**
-     * The attributes that should be mutated to dates.
-     *
-     * @var array
-     */
-    protected $dates = ['deleted_at'];
-
-    /**
      * The "booting" method of the model.
      *
      * @return void
@@ -66,9 +50,7 @@ trait ShopModel
     }
 
     /**
-     * Creates or returns an instance of API for the shop.
-     *
-     * @return BasicShopifyAPI
+     * {@inheritDoc}
      */
     public function api($session = ShopSession::class): BasicShopifyAPI
     {
@@ -87,9 +69,7 @@ trait ShopModel
     }
 
     /**
-     * Checks is shop is grandfathered in.
-     *
-     * @return bool
+     * {@inheritDoc}
      */
     public function isGrandfathered(): bool
     {
@@ -97,9 +77,7 @@ trait ShopModel
     }
 
     /**
-     * Get charges.
-     *
-     * @return HasMany
+     * {@inheritDoc}
      */
     public function charges(): HasMany
     {
@@ -107,9 +85,7 @@ trait ShopModel
     }
 
     /**
-     * Checks if charges have been applied to the shop.
-     *
-     * @return bool
+     * {@inheritDoc}
      */
     public function hasCharges(): bool
     {
@@ -117,9 +93,7 @@ trait ShopModel
     }
 
     /**
-     * Gets the plan.
-     *
-     * @return BelongsTo
+     * {@inheritDoc}
      */
     public function plan(): BelongsTo
     {
@@ -127,9 +101,7 @@ trait ShopModel
     }
 
     /**
-     * Checks if the shop is freemium.
-     *
-     * @return bool
+     * {@inheritDoc}
      */
     public function isFreemium(): bool
     {
@@ -137,14 +109,9 @@ trait ShopModel
     }
 
     /**
-     * Gets the last single or recurring charge for the shop.
-     * TODO: Move to command.
-     *
-     * @param NullablePlanId $planId The plan ID to check with.
-     *
-     * @return null|Charge
+     * {@inheritDoc}
      */
-    public function planCharge(NullablePlanId $planId = null)
+    public function planCharge(NullablePlanId $planId = null): ?ChargeModel
     {
         return $this
             ->charges()
@@ -156,12 +123,10 @@ trait ShopModel
     }
 
     /**
-     * Checks if the access token is filled.
-     *
-     * @return bool
+     * {@inheritDoc}
      */
     public function hasOfflineAccess(): bool
     {
-        return !empty($this->shopify_token);
+        return !empty($this->password);
     }
 }
