@@ -7,7 +7,7 @@
 
 **Note: (structure-change) Is a complete library rewrite. The package has grown significantly, and with it has come challenges in maintaining. The goal of this branch is to seperate logic into bits, confirm to SOLID, CQR, DRY, etc. where applicable.**
 
-**This rewrite introduces the use of using the user model provided by Laravel instead of its own shop model. Laravel's IoC will be used everywhere it can, and more logic moved into small services and action classes.
+**This rewrite introduces the use of using the user model provided by Laravel instead of its own shop model. Laravel's IoC will be used everywhere it can, and more logic moved into small services and action classes.**
 
 **The current status of the rewrite is completed and rewriting of the unit tests are underway.**
 
