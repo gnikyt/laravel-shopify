@@ -9,7 +9,7 @@ use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
 
 /**
  * Handles validating a shop trying to authenticate.
- * TODO: Inject iApiHelper somehow
+ * TODO: Inject iApiHelper somehow.
  */
 class AuthShop extends FormRequest
 {

@@ -3,10 +3,10 @@
 namespace OhMyBrew\ShopifyApp\Messaging\Jobs;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
 /**
@@ -14,8 +14,10 @@ use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
  */
 class ScripttagInstaller implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
     /**
      * The shop's ID.
      *
@@ -33,8 +35,8 @@ class ScripttagInstaller implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param int        $shopId              The shop ID.
-     * @param callable   $createScriptsAction Action for creating scripttags.
+     * @param int      $shopId              The shop ID.
+     * @param callable $createScriptsAction Action for creating scripttags.
      *
      * @return self
      */

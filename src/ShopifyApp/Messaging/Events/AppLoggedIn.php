@@ -2,8 +2,8 @@
 
 namespace OhMyBrew\ShopifyApp\Messaging\Events;
 
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 use OhMyBrew\ShopifyApp\Contracts\ShopModel as IShopModel;
 
 /**
@@ -11,8 +11,8 @@ use OhMyBrew\ShopifyApp\Contracts\ShopModel as IShopModel;
  */
 class AppLoggedIn
 {
-    use Dispatchable, SerializesModels;
-
+    use Dispatchable;
+    use SerializesModels;
     /**
      * Shop's instance.
      *

@@ -2,8 +2,8 @@
 
 namespace OhMyBrew\ShopifyApp\Storage\Queries;
 
-use OhMyBrew\ShopifyApp\Models\Charge as ChargeModel;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Charge as ChargeQuery;
+use OhMyBrew\ShopifyApp\Models\Charge as ChargeModel;
 use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
@@ -13,7 +13,7 @@ use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 class Charge implements ChargeQuery
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getById(ChargeId $chargeId, array $with = []): ?ChargeModel
     {
@@ -22,7 +22,7 @@ class Charge implements ChargeQuery
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getByShopIdAndChargeId(ShopId $shopId, ChargeId $chargeId): ?ChargeModel
     {

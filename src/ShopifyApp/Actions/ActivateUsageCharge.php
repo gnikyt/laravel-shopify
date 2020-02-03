@@ -2,16 +2,15 @@
 
 namespace OhMyBrew\ShopifyApp\Actions;
 
-use OhMyBrew\ShopifyApp\Objects\Values\PlanId;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
-use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
 use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use OhMyBrew\ShopifyApp\Exceptions\ChargeNotRecurringException;
-use OhMyBrew\ShopifyApp\Contracts\Commands\Charge as UChargeCommand;
+use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
 use OhMyBrew\ShopifyApp\Objects\Transfers\UsageCharge as UsageChargeTransfer;
 use OhMyBrew\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
+use OhMyBrew\ShopifyApp\Objects\Values\PlanId;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
 /**
  * Activates a usage charge for a shop.

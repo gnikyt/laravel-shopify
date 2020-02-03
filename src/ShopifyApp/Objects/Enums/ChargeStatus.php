@@ -17,28 +17,28 @@ final class ChargeStatus
     use EnumTrait;
 
     /**
-     * Status: Active
+     * Status: Active.
      *
      * @var string
      */
     public const ACTIVE = 'active';
 
     /**
-     * Status: Accepted
+     * Status: Accepted.
      *
      * @var string
      */
     public const ACCEPTED = 'accepted';
 
     /**
-     * Status: Declines
+     * Status: Declines.
      *
      * @var string
      */
     public const DECLINED = 'declined';
 
     /**
-     * Status: Cancelled
+     * Status: Cancelled.
      *
      * @var string
      */

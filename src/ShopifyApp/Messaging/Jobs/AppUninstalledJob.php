@@ -3,10 +3,10 @@
 namespace OhMyBrew\ShopifyApp\Messaging\Jobs;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use OhMyBrew\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
@@ -15,8 +15,10 @@ use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
  */
 class AppUninstalledJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
     /**
      * The shop ID.
      *

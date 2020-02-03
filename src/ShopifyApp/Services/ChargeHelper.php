@@ -3,10 +3,10 @@
 namespace OhMyBrew\ShopifyApp\Services;
 
 use Illuminate\Support\Carbon;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
 use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
-use OhMyBrew\ShopifyApp\Storage\Models\Charge as ChargeModel;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Charge as IChargeQuery;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
+use OhMyBrew\ShopifyApp\Storage\Models\Charge as ChargeModel;
 
 /**
  * Basic helper class for charges which encapsulates
@@ -87,7 +87,6 @@ class ChargeHelper
             $this->charge->id
         );
     }
-
 
     /**
      * Checks if the charge is currently in trial.

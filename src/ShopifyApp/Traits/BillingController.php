@@ -2,12 +2,12 @@
 
 namespace OhMyBrew\ShopifyApp\Traits;
 
-use Illuminate\Support\Facades\View;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Request;
-use Illuminate\Support\Facades\Redirect;
-use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use Illuminate\Contracts\View\View as ViewView;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\View;
+use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
 use OhMyBrew\ShopifyApp\Objects\Values\PlanId;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
@@ -32,7 +32,7 @@ trait BillingController
         return View::make(
             'shopify-app::billing.fullpage_redirect',
             [
-                'url' => $getPlanUrl(new PlanId($planId))
+                'url' => $getPlanUrl(new PlanId($planId)),
             ]
         );
     }
@@ -68,8 +68,8 @@ trait BillingController
     /**
      * Allows for setting a usage charge.
      *
-     * @param StoreUsageCharge          $request  The verified request.
-     * @param callable $activateUsageChargeAction The action for activating a usage charge.
+     * @param StoreUsageCharge $request                   The verified request.
+     * @param callable         $activateUsageChargeAction The action for activating a usage charge.
      *
      * @return RedirectResponse
      */

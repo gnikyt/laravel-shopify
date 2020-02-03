@@ -15,14 +15,14 @@ final class PlanType
     use EnumTrait;
 
     /**
-     * Plan: Recurring
+     * Plan: Recurring.
      *
      * @var int
      */
     public const RECURRING = 1;
 
     /**
-     * Plan: One-time
+     * Plan: One-time.
      *
      * @var int
      */

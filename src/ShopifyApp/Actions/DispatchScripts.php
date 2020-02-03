@@ -3,9 +3,9 @@
 namespace OhMyBrew\ShopifyApp\Actions;
 
 use Illuminate\Support\Facades\Config;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
-use OhMyBrew\ShopifyApp\Jobs\ScripttagInstaller;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use OhMyBrew\ShopifyApp\Jobs\ScripttagInstaller;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
 /**
  * Attempt to install script tags on a shop.

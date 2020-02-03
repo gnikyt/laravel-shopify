@@ -3,8 +3,6 @@
 namespace OhMyBrew\ShopifyApp\Objects\Values;
 
 use Funeralzone\ValueObjects\Nullable;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
-use OhMyBrew\ShopifyApp\Objects\Values\NullShopDomain;
 use OhMyBrew\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
 
 /**

@@ -3,17 +3,17 @@
 namespace OhMyBrew\ShopifyApp\Actions;
 
 use Illuminate\Support\Carbon;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
-use OhMyBrew\ShopifyApp\Objects\Enums\PlanType;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
-use OhMyBrew\ShopifyApp\Contracts\Objects\Values\PlanId;
 use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
+use OhMyBrew\ShopifyApp\Contracts\Commands\Charge as IChargeCommand;
+use OhMyBrew\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
+use OhMyBrew\ShopifyApp\Contracts\Objects\Values\PlanId;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Charge as IChargeQuery;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Plan as IPlanQuery;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
-use OhMyBrew\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Charge as IChargeQuery;
+use OhMyBrew\ShopifyApp\Objects\Enums\PlanType;
 use OhMyBrew\ShopifyApp\Objects\Transfers\Charge as ChargeTransfer;
-use OhMyBrew\ShopifyApp\Contracts\Commands\Charge as IChargeCommand;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
 /**
  * Activates a plan for a shop.

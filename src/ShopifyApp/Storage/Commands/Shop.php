@@ -2,12 +2,12 @@
 
 namespace OhMyBrew\ShopifyApp\Storage\Commands;
 
-use OhMyBrew\ShopifyApp\Contracts\ShopModel;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
+use OhMyBrew\ShopifyApp\Contracts\Commands\Shop as ShopCommand;
 use OhMyBrew\ShopifyApp\Contracts\Objects\Values\PlanId;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
-use OhMyBrew\ShopifyApp\Contracts\Commands\Shop as ShopCommand;
+use OhMyBrew\ShopifyApp\Contracts\ShopModel;
 use OhMyBrew\ShopifyApp\Objects\Values\AccessToken;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
 /**
  * Reprecents the commands for shops.
@@ -30,7 +30,7 @@ class Shop implements ShopCommand
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setToPlan(ShopId $shopId, PlanId $planId): bool
     {
@@ -42,7 +42,7 @@ class Shop implements ShopCommand
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setAccessToken(ShopId $shopId, AccessToken $token): bool
     {
@@ -53,30 +53,30 @@ class Shop implements ShopCommand
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function clean(ShopId $shopId): bool
     {
         $shop = $this->getShop($shopId);
         $shop->shopify_token = null;
         $shop->plan_id = null;
-        
+
         return $shop->save();
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function softDelete(ShopId $shopId): bool
     {
         $shop = $this->getShop($shopId);
         $shop->charges()->delete();
-        
+
         return $shop->delete();
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function restore(ShopId $shopId): bool
     {
@@ -87,8 +87,8 @@ class Shop implements ShopCommand
     }
 
     /**
-     * {@inheritDoc}
-    */
+     * {@inheritdoc}
+     */
     public function setAsFreemium(ShopId $shopId): bool
     {
         $shop = $this->getShop($shopId);
@@ -98,8 +98,8 @@ class Shop implements ShopCommand
     }
 
     /**
-     * {@inheritDoc}
-    */
+     * {@inheritdoc}
+     */
     public function setNamespace(ShopId $shopId, string $namespace): bool
     {
         $shop = $this->getShop($shopId);

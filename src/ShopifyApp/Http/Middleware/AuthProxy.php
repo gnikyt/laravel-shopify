@@ -4,8 +4,8 @@ namespace OhMyBrew\ShopifyApp\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Session;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
 

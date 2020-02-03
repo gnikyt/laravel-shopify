@@ -3,9 +3,9 @@
 namespace OhMyBrew\ShopifyApp\Actions;
 
 use Illuminate\Support\Facades\Config;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use OhMyBrew\ShopifyApp\Jobs\WebhookInstaller;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 
 /**
  * Attempt to install webhooks on a shop.

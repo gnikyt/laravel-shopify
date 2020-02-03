@@ -3,8 +3,8 @@
 namespace OhMyBrew\ShopifyApp\Storage\Queries;
 
 use Illuminate\Support\Facades\Config;
-use OhMyBrew\ShopifyApp\Contracts\ShopModel;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
+use OhMyBrew\ShopifyApp\Contracts\ShopModel;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
@@ -31,7 +31,7 @@ class Shop implements ShopQuery
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getByID(ShopId $shopId, array $with = []): ?ShopModel
     {
@@ -41,9 +41,8 @@ class Shop implements ShopQuery
             ->first();
     }
 
-
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getByDomain(ShopDomain $domain, array $with = [], bool $withTrashed = false): ?ShopModel
     {
@@ -59,7 +58,7 @@ class Shop implements ShopQuery
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getAll(array $with = []): array
     {

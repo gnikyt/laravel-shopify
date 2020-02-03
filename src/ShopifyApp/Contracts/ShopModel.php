@@ -3,9 +3,9 @@
 namespace OhMyBrew\ShopifyApp\Contracts;
 
 use OhMyBrew\BasicShopifyAPI;
-use OhMyBrew\ShopifyApp\Storage\Models\Charge;
-use OhMyBrew\ShopifyApp\Services\ShopSession;
 use OhMyBrew\ShopifyApp\Objects\Values\NullablePlanId;
+use OhMyBrew\ShopifyApp\Services\ShopSession;
+use OhMyBrew\ShopifyApp\Storage\Models\Charge;
 
 /**
  * Reprecents the shop model.

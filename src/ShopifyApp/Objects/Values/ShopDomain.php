@@ -2,9 +2,9 @@
 
 namespace OhMyBrew\ShopifyApp\Objects\Values;
 
-use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 use Funeralzone\ValueObjects\Scalars\StringTrait;
 use OhMyBrew\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
+use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
 
 /**
  * Value object for shop's domain.

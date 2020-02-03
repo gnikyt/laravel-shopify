@@ -3,11 +3,11 @@
 namespace OhMyBrew\ShopifyApp\Actions;
 
 use Illuminate\Support\Facades\Config;
-use OhMyBrew\ShopifyApp\Services\ShopSession;
-use OhMyBrew\ShopifyApp\Objects\Enums\AuthMode;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
 use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use OhMyBrew\ShopifyApp\Objects\Enums\AuthMode;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
+use OhMyBrew\ShopifyApp\Services\ShopSession;
 
 /**
  * Authenticates a shop via HTTP request.
@@ -59,7 +59,7 @@ class AuthenticateShop
      * TODO: Rethrow an API exception.
      *
      * @param ShopDomain $shopDomain The shop ID.
-     * @param string     $code   The code from Shopify.
+     * @param string     $code       The code from Shopify.
      *
      * @return object
      */

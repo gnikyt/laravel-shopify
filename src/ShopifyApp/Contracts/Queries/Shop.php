@@ -3,9 +3,9 @@
 namespace OhMyBrew\ShopifyApp\Contracts\Queries;
 
 use Illuminate\Support\Collection;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
 use OhMyBrew\ShopifyApp\Contracts\ShopModel as IShopModel;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
 /**
  * Reprecents a queries for shops.
@@ -25,9 +25,9 @@ interface Shop
     /**
      * Get by domain.
      *
-     * @param ShopDomain $domain       The shop domain.
-     * @param array      $with         The relations to eager load.
-     * @param bool       $withTrashed  Include trashed shops?
+     * @param ShopDomain $domain      The shop domain.
+     * @param array      $with        The relations to eager load.
+     * @param bool       $withTrashed Include trashed shops?
      *
      * @return IShopModel|null
      */

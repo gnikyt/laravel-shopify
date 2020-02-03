@@ -4,11 +4,10 @@ namespace OhMyBrew\ShopifyApp\Actions;
 
 use Exception;
 use Illuminate\Support\Carbon;
-use OhMyBrew\ShopifyApp\Services\ChargeHelper;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
-use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
-use OhMyBrew\ShopifyApp\Objects\Enums\ChargeStatus;
 use OhMyBrew\ShopifyApp\Contracts\Commands\Charge as IChargeCommand;
+use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
+use OhMyBrew\ShopifyApp\Services\ChargeHelper;
 
 /**
  * Cancels a charge for a shop.
