@@ -1,6 +1,6 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Middleware;
+namespace OhMyBrew\ShopifyApp\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;

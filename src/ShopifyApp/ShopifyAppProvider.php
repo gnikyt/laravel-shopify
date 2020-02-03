@@ -2,7 +2,6 @@
 
 namespace OhMyBrew\ShopifyApp;
 
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
 use OhMyBrew\ShopifyApp\Actions\ActivatePlan as ActivatePlanAction;
 use OhMyBrew\ShopifyApp\Actions\ActivateUsageCharge as ActivateUsageChargeAction;
@@ -33,6 +32,10 @@ use OhMyBrew\ShopifyApp\Storage\Observers\Shop as ShopObserver;
 use OhMyBrew\ShopifyApp\Storage\Queries\Charge as ChargeQuery;
 use OhMyBrew\ShopifyApp\Storage\Queries\Plan as PlanQuery;
 use OhMyBrew\ShopifyApp\Storage\Queries\Shop as ShopQuery;
+use OhMyBrew\ShopifyApp\Http\Middleware\AuthProxy;
+use OhMyBrew\ShopifyApp\Http\Middleware\AuthShop;
+use OhMyBrew\ShopifyApp\Http\Middleware\AuthWebhook;
+use OhMyBrew\ShopifyApp\Http\Middleware\Billable;
 
 /**
  * This package's provider for Laravel.
@@ -94,7 +97,7 @@ class ShopifyAppProvider extends ServiceProvider
 
             // Queriers
             IShopQuery::class => [self::CSINGLETON, function () {
-                $model = Config::get('auth.providers.users.model');
+                $model = $this->app['config']->get('auth.providers.users.model');
                 $modelInstance = new $model();
 
                 return new ShopQuery(
@@ -223,12 +226,12 @@ class ShopifyAppProvider extends ServiceProvider
             }],
 
             // Facades
-            'shopifyapp' => function ($app) {
+            'shopifyapp' => [self::CBIND, function ($app) {
                 return new ShopifyApp(
                     $app,
                     $app->make(IShopQuery::class)
                 );
-            },
+            }],
         ];
         foreach ($binds as $key => $fn) {
             $this->app->{$fn[0]}($key, $fn[1]);
@@ -291,7 +294,7 @@ class ShopifyAppProvider extends ServiceProvider
     private function bootDatabase(): void
     {
         // Database migrations
-        if (Config::get('shopify-app.manual_migrations')) {
+        if ($this->app['config']->get('shopify-app.manual_migrations')) {
             $this->publishes(
                 [
                     __DIR__.'/resources/database/migrations' => "{$this->app->databasePath()}/migrations",
@@ -326,8 +329,8 @@ class ShopifyAppProvider extends ServiceProvider
      */
     private function bootObservers(): void
     {
-        $model = Config::get('auth.providers.users.model');
-        $model::observe($this->app->make('ShopObserver'));
+        $model = $this->app['config']->get('auth.providers.users.model');
+        $model::observe($this->app->make(ShopObserver::class));
     }
 
     /**

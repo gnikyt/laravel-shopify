@@ -2,6 +2,7 @@
 
 namespace OhMyBrew\ShopifyApp\Storage\Queries;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
 use OhMyBrew\ShopifyApp\Contracts\ShopModel;
@@ -60,7 +61,7 @@ class Shop implements ShopQuery
     /**
      * {@inheritdoc}
      */
-    public function getAll(array $with = []): array
+    public function getAll(array $with = []): Collection
     {
         return $this->model::with($with)
             ->get()

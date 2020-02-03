@@ -8,19 +8,18 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class OrdersCreateJob implements ShouldQueue
+class AfterAuthenticateJob implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;
     use SerializesModels;
-    public $shopDomain;
-    public $data;
 
-    public function __construct($shopDomain, $data)
+    public $shop;
+
+    public function __construct($shop)
     {
-        $this->shopDomain = $shopDomain;
-        $this->data = $data;
+        $this->shop = $shop;
     }
 
     public function handle()

@@ -6,16 +6,16 @@ use ErrorException;
 use Exception;
 use OhMyBrew\BasicShopifyAPI;
 
-class ApiStub extends BasicShopifyAPI
+class Api extends BasicShopifyAPI
 {
     public static $stubFiles = [];
 
-    public static function stubResponses(array $stubFiles)
+    public static function stubResponses(array $stubFiles): void
     {
         self::$stubFiles = $stubFiles;
     }
 
-    public function rest(string $method, string $path, array $params = null, array $headers = [], bool $sync = true)
+    public function rest(string $method, string $path, array $params = null, array $headers = [], bool $sync = true): object
     {
         try {
             $filename = array_shift(self::$stubFiles);
@@ -30,7 +30,7 @@ class ApiStub extends BasicShopifyAPI
         ];
     }
 
-    public function requestAccess(string $code)
+    public function requestAccess(string $code): object
     {
         return json_decode(file_get_contents(__DIR__.'/../fixtures/access_token.json'));
     }
