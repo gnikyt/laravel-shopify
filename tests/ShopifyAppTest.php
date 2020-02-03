@@ -2,11 +2,11 @@
 
 namespace OhMyBrew\ShopifyApp\Test;
 
-use OhMyBrew\ShopifyApp\ShopifyApp;
 use Illuminate\Support\Facades\Session;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
 use OhMyBrew\ShopifyApp\Services\ShopSession;
+use OhMyBrew\ShopifyApp\ShopifyApp;
 
 class ShopifyAppTest extends TestCase
 {

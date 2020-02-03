@@ -2,13 +2,13 @@
 
 namespace OhMyBrew\ShopifyApp;
 
-use OhMyBrew\BasicShopifyAPI;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Foundation\Application;
-use OhMyBrew\ShopifyApp\Services\ShopSession;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
-use OhMyBrew\ShopifyApp\Contracts\ShopModel as IShopModel;
+use Illuminate\Support\Facades\Log;
+use OhMyBrew\BasicShopifyAPI;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use OhMyBrew\ShopifyApp\Contracts\ShopModel as IShopModel;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
+use OhMyBrew\ShopifyApp\Services\ShopSession;
 use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
 
 /**

@@ -5,8 +5,8 @@ namespace OhMyBrew\ShopifyApp\Test;
 use Closure;
 use Illuminate\Support\Facades\App;
 use OhMyBrew\ShopifyApp\ShopifyAppProvider;
-use Orchestra\Database\ConsoleServiceProvider;
 use OhMyBrew\ShopifyApp\Test\Stubs\User as UserStub;
+use Orchestra\Database\ConsoleServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 abstract class TestCase extends OrchestraTestCase

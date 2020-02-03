@@ -33,7 +33,7 @@ trait ConfigAccessible
                 ]
             );
         }
-        
+
         return $this->config[$key];
     }
 
@@ -41,7 +41,7 @@ trait ConfigAccessible
      * Sets a config value for a key.
      *
      * @param string $key   The key to use.
-     * @param mixed $value  The value to set.
+     * @param mixed  $value The value to set.
      *
      * @return void
      */

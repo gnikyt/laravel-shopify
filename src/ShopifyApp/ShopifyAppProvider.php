@@ -22,6 +22,10 @@ use OhMyBrew\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Charge as IChargeQuery;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Plan as IPlanQuery;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use OhMyBrew\ShopifyApp\Http\Middleware\AuthProxy;
+use OhMyBrew\ShopifyApp\Http\Middleware\AuthShop;
+use OhMyBrew\ShopifyApp\Http\Middleware\AuthWebhook;
+use OhMyBrew\ShopifyApp\Http\Middleware\Billable;
 use OhMyBrew\ShopifyApp\Services\ApiHelper;
 use OhMyBrew\ShopifyApp\Services\ChargeHelper;
 use OhMyBrew\ShopifyApp\Services\CookieHelper;
@@ -32,10 +36,6 @@ use OhMyBrew\ShopifyApp\Storage\Observers\Shop as ShopObserver;
 use OhMyBrew\ShopifyApp\Storage\Queries\Charge as ChargeQuery;
 use OhMyBrew\ShopifyApp\Storage\Queries\Plan as PlanQuery;
 use OhMyBrew\ShopifyApp\Storage\Queries\Shop as ShopQuery;
-use OhMyBrew\ShopifyApp\Http\Middleware\AuthProxy;
-use OhMyBrew\ShopifyApp\Http\Middleware\AuthShop;
-use OhMyBrew\ShopifyApp\Http\Middleware\AuthWebhook;
-use OhMyBrew\ShopifyApp\Http\Middleware\Billable;
 
 /**
  * This package's provider for Laravel.
