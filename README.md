@@ -1,9 +1,15 @@
 # Laravel Shopify App
 
-[![Build Status](https://secure.travis-ci.org/ohmybrew/laravel-shopify.png?branch=master)](http://travis-ci.org/ohmybrew/laravel-shopify)
-[![Coverage Status](https://coveralls.io/repos/github/ohmybrew/laravel-shopify/badge.svg?branch=master)](https://coveralls.io/github/ohmybrew/laravel-shopify?branch=master)
-[![StyleCI](https://styleci.io/repos/96462257/shield?branch=master)](https://styleci.io/repos/96462257)
+[![Build Status](https://secure.travis-ci.org/ohmybrew/laravel-shopify.png?branch=structure-change)](http://travis-ci.org/ohmybrew/laravel-shopify)
+[![Coverage Status](https://coveralls.io/repos/github/ohmybrew/laravel-shopify/badge.svg?branch=structure-change)](https://coveralls.io/github/ohmybrew/laravel-shopify?branch=structure-change)
+[![StyleCI](https://styleci.io/repos/96462257/shield?branch=structure-change)](https://styleci.io/repos/96462257)
 [![License](https://poser.pugx.org/ohmybrew/laravel-shopify/license)](https://packagist.org/packages/ohmybrew/laravel-shopify)
+
+**Note: (structure-change) Is a complete library rewrite. The package has grown significantly, and with it has come challenges in maintaining. The goal of this branch is to seperate logic into bits, confirm to SOLID, CQR, DRY, etc. where applicable.
+
+This rewrite introduces the use of using the user model provided by Laravel instead of its own shop model. Laravel's IoC will be used everywhere it can, and more logic moved into small services and action classes.
+
+The current status of the rewrite is completed and rewriting of the unit tests are underway.**
 
 A full-featured Laravel package for aiding in Shopify App development, similar to `shopify_app` for Rails. Works for Laravel 5.6+
 
@@ -63,4 +69,3 @@ Contibutors are updated each release, pulled from Github API. See `CONTRIBUTORS.
 ### Special Note
 
 I develop this package in my spare time, with a busy family/work life like many of you! So, I would like to thank everyone who's helped me out from submitting PRs, to assisting on issues, and plain using the package (I hope its useful). Cheers.
-
