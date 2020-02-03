@@ -2,11 +2,13 @@
 
 namespace OhMyBrew\ShopifyApp\Test;
 
-use Illuminate\Support\Facades\Session;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
-use OhMyBrew\ShopifyApp\Services\ShopSession;
+use OhMyBrew\BasicShopifyAPI;
 use OhMyBrew\ShopifyApp\ShopifyApp;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Session;
+use OhMyBrew\ShopifyApp\Services\ShopSession;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 
 class ShopifyAppTest extends TestCase
 {
@@ -64,5 +66,77 @@ class ShopifyAppTest extends TestCase
 
         // Shop should now exist
         $this->assertNotNull($this->shopQuery->getByDomain($domain));
+    }
+
+    public function testReturnsApiInstance(): void
+    {
+        $this->assertEquals(BasicShopifyAPI::class, get_class($this->shopifyApp->api()));
+    }
+
+    public function testReturnsApiInstanceWithRateLimiting(): void
+    {
+        Config::set('shopify-app.api_rate_limiting_enabled', true);
+
+        $this->assertTrue($this->shopifyApp->api()->isRateLimitingEnabled());
+    }
+
+    public function testShopSanitize(): void
+    {
+        $domains = ['my-shop', 'my-shop.myshopify.com', 'MY-shOp.myshopify.com', 'https://my-shop.myshopify.com/abc/xyz', 'https://my-shop.myshopify.com', 'http://my-shop.myshopify.com'];
+        $domains_2 = ['my-shop', 'my-shop.myshopify.io', 'https://my-shop.myshopify.io', 'http://my-shop.myshopify.io'];
+        $domains_3 = ['', false, null];
+
+        // Test for standard myshopify.com
+        foreach ($domains as $domain) {
+            $this->assertEquals('my-shop.myshopify.com', $this->shopifyApp->sanitizeShopDomain($domain));
+        }
+
+        // Test if someone changed the domain
+        Config::set('shopify-app.myshopify_domain', 'myshopify.io');
+        foreach ($domains_2 as $domain) {
+            $this->assertEquals('my-shop.myshopify.io', $this->shopifyApp->sanitizeShopDomain($domain));
+        }
+
+        // Test for empty shops
+        foreach ($domains_3 as $domain) {
+            $this->assertNull($this->shopifyApp->sanitizeShopDomain($domain));
+        }
+    }
+
+    public function testHmacCreator()
+    {
+        // Set the secret to use for HMAC creations
+        $secret = 'hello';
+        Config::set('shopify-app.api_secret', $secret);
+
+        // Raw data
+        $data = 'one-two-three';
+        $this->assertEquals(
+            hash_hmac('sha256', $data, $secret, true),
+            $this->shopifyApp->createHmac(['data' => $data, 'raw' => true])
+        );
+
+        // Raw data encoded
+        $data = 'one-two-three';
+        $this->assertEquals(
+            base64_encode(hash_hmac('sha256', $data, $secret, true)),
+            $this->shopifyApp->createHmac(['data' => $data, 'raw' => true, 'encode' => true])
+        );
+
+        // Query build (sorts array and builds query string)
+        $data = ['one' => 1, 'two' => 2, 'three' => 3];
+        $this->assertEquals(
+            hash_hmac('sha256', 'one=1three=3two=2', $secret, false),
+            $this->shopifyApp->createHmac(['data' => $data, 'buildQuery' => true])
+        );
+    }
+
+    public function testDebugger()
+    {
+        $this->shopifyApp->debug('test');
+        $this->assertFalse($this->shopifyApp->debug('test'));
+
+        Config::set('shopify-app.debug', true);
+        $this->assertTrue($this->shopifyApp->debug('test'));
     }
 }

@@ -10,13 +10,6 @@ use Illuminate\Support\Facades\Config;
 trait ConfigAccessible
 {
     /**
-     * Cached config values.
-     *
-     * @var array
-     */
-    private $config;
-
-    /**
      * Get the config value for a key.
      *
      * @param string $key The key to lookup.
@@ -25,14 +18,12 @@ trait ConfigAccessible
      */
     public function getConfig(string $key)
     {
-        if ($this->config === null) {
-            $this->config = array_merge(
-                Config::get('shopify-app'),
-                [
-                    'user_model' => Config::get('auth.providers.users.model'),
-                ]
-            );
-        }
+        $this->config = array_merge(
+            Config::get('shopify-app'),
+            [
+                'user_model' => Config::get('auth.providers.users.model'),
+            ]
+        );
 
         return $this->config[$key];
     }
@@ -48,7 +39,6 @@ trait ConfigAccessible
     public function setConfig(string $key, $value): void
     {
         Config::set($key, $value);
-        $this->config = null;
     }
 
     public function setConfigArray(array $kvs): void
@@ -56,7 +46,5 @@ trait ConfigAccessible
         foreach ($kvs as $key => $value) {
             Config::set($key, $value);
         }
-
-        $this->config = null;
     }
 }
