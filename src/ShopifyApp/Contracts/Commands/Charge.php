@@ -37,4 +37,15 @@ interface Charge
      * @return integer
      */
     public function createUsageCharge(UsageChargeTransfer $chargeObj): int;
+
+    /**
+     * Cancels a charge for a shop.
+     *
+     * @param ChargeId    $chargeId    The charge Id
+     * @param string|null $expiresOn   YYYY-MM-DD of expiration.
+     * @param string|null $trialEndsOn YYYY-MM-DD of when trial ends on based on remaining.
+     *
+     * @return bool
+     */
+    public function cancelCharge(ChargeId $chargeId, ?string $expiresOn, ?string $trialEndsOn): bool;
 }

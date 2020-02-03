@@ -13,19 +13,23 @@ use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 class Charge implements ChargeQuery
 {
     /**
-     * Get by shop ID and charge ID.
-     *
-     * @param int $shopId   The shop's ID for the charge.
-     * @param int $chargeId The charge ID from Shopify.
-     *
-     * @return ChargeModel|null
+     * {@inheritDoc}
+     */
+    public function getById(ChargeId $chargeId, array $with = []): ?ChargeModel
+    {
+        return ChargeModel::with($with)
+            ->where('charge_id', $chargeId->toNative());
+    }
+
+    /**
+     * {@inheritDoc}
      */
     public function getByShopIdAndChargeId(ShopId $shopId, ChargeId $chargeId): ?ChargeModel
     {
         return ChargeModel::where(
             [
-                'shop_id'   => $shopId,
-                'charge_id' => $chargeId,
+                'shop_id'   => $shopId->toNative(),
+                'charge_id' => $chargeId->toNative(),
             ]
         )->get();
     }

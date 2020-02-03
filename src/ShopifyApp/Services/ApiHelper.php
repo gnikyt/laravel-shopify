@@ -12,6 +12,7 @@ use OhMyBrew\ShopifyApp\Objects\Enums\ApiMethod;
 use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use OhMyBrew\ShopifyApp\Objects\Transfers\PlanDetails as PlanDetailsTransfer;
 use OhMyBrew\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
 
 /**
  * Basic helper class for API calls to Shopify.
@@ -127,12 +128,12 @@ class ApiHelper implements IApiHelper
     /**
      * {@inheritDoc}
      */
-    public function getCharge(string $chargeType, int $chargeId): object
+    public function getCharge(string $chargeType, ChargeId $chargeId): object
     {
         // Fire the request
         $response = $this->doRequest(
             ApiMethod::GET()->toNative(),
-            "/admin/{$chargeType}/{$chargeId}.json"
+            "/admin/{$chargeType}/{$chargeId->toNative()}.json"
         );
 
         return $response->body->{substr($chargeType, 0, -1)};
@@ -141,12 +142,12 @@ class ApiHelper implements IApiHelper
     /**
      * {@inheritDoc}
      */
-    public function activateCharge(string $chargeType, int $chargeId): object
+    public function activateCharge(string $chargeType, ChargeId $chargeId): object
     {
         // Fire the request
         $response = $this->doRequest(
             ApiMethod::POST()->toNative(),
-            "/admin/{$chargeType}/{$chargeId}/activate.json"
+            "/admin/{$chargeType}/{$chargeId->toNative()}/activate.json"
         );
 
         return $response->body->{substr($chargeType, 0, -1)};

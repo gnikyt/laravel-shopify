@@ -2,15 +2,12 @@
 
 namespace OhMyBrew\ShopifyApp\Storage\Models;
 
-use Exception;
-use Illuminate\Support\Carbon;
-use Illuminate\Database\Eloquent\Model;
-use OhMyBrew\ShopifyApp\Contracts\ApiHelper;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Config;
-use OhMyBrew\ShopifyApp\Objects\Enums\ChargeStatus;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
+use OhMyBrew\ShopifyApp\Objects\Enums\ChargeStatus;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Responsible for reprecenting a charge record.
@@ -74,28 +71,28 @@ class Charge extends Model
     }
 
     /**
-     * Gets the charge's data from Shopify.
+     * Returns the charge type as a string (for API).
      *
-     * @param ApiHelper $apiHelper The API helper.
+     * @param bool $plural Return the plural form or not.
      *
-     * @return object
+     * @return string
      */
-    public function retrieve(ApiHelper $apiHelper): object
+    public function typeAsString($plural = false): string
     {
-        $path = '';
+        $type = '';
         switch ($this->type) {
             case ChargeType::CREDIT()->toNative():
-                $path = 'application_credits';
+                $type = 'application_credit';
                 break;
             case ChargeType::ONETIME()->toNative():
-                $path = 'application_charges';
+                $type = 'application_charge';
                 break;
             default:
-                $path = 'recurring_application_charges';
+                $type = 'recurring_application_charge';
                 break;
         }
 
-        return $apiHelper->getCharge($path, $this->chargeId);
+        return $plural ? "{$type}s" : $type;
     }
 
     /**
@@ -128,145 +125,6 @@ class Charge extends Model
     public function isTrial(): bool
     {
         return !is_null($this->trial_ends_on);
-    }
-
-    /**
-     * Checks if the charge is currently in trial.
-     *
-     * @return bool
-     */
-    public function isActiveTrial(): bool
-    {
-        return $this->isTrial() &&
-            Carbon::today()->lte(Carbon::parse($this->trial_ends_on));
-    }
-
-    /**
-     * Returns the remaining trial days.
-     *
-     * @return ?int
-     */
-    public function remainingTrialDays(): ?int
-    {
-        if (!$this->isTrial()) {
-            return null;
-        }
-
-        return $this->isActiveTrial() ?
-            Carbon::today()->diffInDays($this->trial_ends_on) :
-            0;
-    }
-
-    /**
-     * Returns the remaining trial days from cancellation date.
-     *
-     * @return int|null
-     */
-    public function remainingTrialDaysFromCancel(): ?int
-    {
-        if (!$this->isTrial()) {
-            return null;
-        }
-
-        $cancelledDate = Carbon::parse($this->cancelled_on);
-        $trialEndsDate = Carbon::parse($this->trial_ends_on);
-
-        // Ensure cancelled date happened before the trial was supposed to end
-        if ($this->isCancelled() && $cancelledDate->lte($trialEndsDate)) {
-            // Diffeence the two dates and subtract from the total trial days to get whats remaining
-            return $this->trial_days - ($this->trial_days - $cancelledDate->diffInDays($trialEndsDate));
-        }
-
-        return 0;
-    }
-
-    /**
-     * return the date when the current period has begun.
-     *
-     * @return string
-     */
-    public function periodBeginDate(): string
-    {
-        $pastPeriods = (int) (Carbon::parse($this->activated_on)->diffInDays(Carbon::today()) / 30);
-        $periodBeginDate = Carbon::parse($this->activated_on)->addDays(30 * $pastPeriods)->toDateString();
-
-        return $periodBeginDate;
-    }
-
-    /**
-     * return the end date of the current period.
-     *
-     * @return string
-     */
-    public function periodEndDate(): string
-    {
-        return Carbon::parse($this->periodBeginDate())->addDays(30)->toDateString();
-    }
-
-    /**
-     * Returns the remaining days for the current recurring charge.
-     *
-     * @return int
-     */
-    public function remainingDaysForPeriod(): int
-    {
-        $pastDaysForPeriod = $this->pastDaysForPeriod();
-        if (is_null($pastDaysForPeriod)) {
-            return 0;
-        }
-
-        if ($pastDaysForPeriod == 0 && Carbon::parse($this->cancelled_on)->lt(Carbon::today())) {
-            return 0;
-        }
-
-        return 30 - $pastDaysForPeriod;
-    }
-
-    /**
-     * Returns the past days for the current recurring charge.
-     *
-     * @return int|null
-     */
-    public function pastDaysForPeriod(): ?int
-    {
-        if (
-            $this->cancelled_on &&
-            abs(Carbon::now()->diffInDays(Carbon::parse($this->cancelled_on))) > 30
-        ) {
-            return null;
-        }
-
-        $pastDaysInPeriod = Carbon::parse($this->periodBeginDate())->diffInDays(Carbon::today());
-
-        return $pastDaysInPeriod;
-    }
-
-    /**
-     * Checks if plan was cancelled and is expired.
-     *
-     * @return bool
-     */
-    public function hasExpired(): bool
-    {
-        if ($this->isCancelled()) {
-            return Carbon::parse($this->expires_on)->lte(Carbon::today());
-        }
-
-        return false;
-    }
-
-    /**
-     * Returns the used trial days.
-     *
-     * @return int|null
-     */
-    public function usedTrialDays(): ?int
-    {
-        if (!$this->isTrial()) {
-            return null;
-        }
-
-        return $this->trial_days - $this->remainingTrialDays();
     }
 
     /**
@@ -329,26 +187,5 @@ class Charge extends Model
     public function isOngoing(): bool
     {
         return $this->isActive() && !$this->isCancelled();
-    }
-
-    /**
-     * Cancels this charge.
-     * TODO: Move to command.
-     *
-     * @throws Exception
-     *
-     * @return bool
-     */
-    public function cancel(): bool
-    {
-        if (!$this->isType(ChargeType::ONETIME()->toNative()) && !$this->isType(ChargeType::RECURRING()->toNative())) {
-            throw new Exception('Cancel may only be called for single and recurring charges.');
-        }
-
-        $this->status = ChargeStatus::CANCELLED()->toNative();
-        $this->cancelled_on = Carbon::today()->format('Y-m-d');
-        $this->expires_on = Carbon::today()->addDays($this->remainingDaysForPeriod())->format('Y-m-d');
-
-        return $this->save();
     }
 }

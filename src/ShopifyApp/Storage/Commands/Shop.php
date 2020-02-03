@@ -35,7 +35,7 @@ class Shop implements ShopCommand
     public function setToPlan(ShopId $shopId, PlanId $planId): bool
     {
         $shop = $this->getShop($shopId);
-        $shop->plan_id = $planId;
+        $shop->plan_id = $planId->toNative();
         $shop->shopify_freemium = false;
 
         return $shop->save();
@@ -47,7 +47,7 @@ class Shop implements ShopCommand
     public function setAccessToken(ShopId $shopId, AccessToken $token): bool
     {
         $shop = $this->getShop($shopId);
-        $shop->shopify_token = $token;
+        $shop->shopify_token = $token->toNative();
 
         return $shop->save();
     }

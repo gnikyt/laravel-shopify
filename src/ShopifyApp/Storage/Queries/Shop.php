@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Config;
 use OhMyBrew\ShopifyApp\Contracts\ShopModel;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
 /**
  * Reprecents shop queries.
@@ -32,11 +33,11 @@ class Shop implements ShopQuery
     /**
      * {@inheritDoc}
      */
-    public function getByID(int $id, array $with = []): ?ShopModel
+    public function getByID(ShopId $shopId, array $with = []): ?ShopModel
     {
         return $this->model::with($with)
             ->get()
-            ->where('id', $id)
+            ->where('id', $shopId->toNative())
             ->first();
     }
 
@@ -53,7 +54,7 @@ class Shop implements ShopQuery
 
         return $result
             ->get()
-            ->where('shopify_domain', $domain)
+            ->where('shopify_domain', $domain->toNative())
             ->first();
     }
 

@@ -2,13 +2,15 @@
 
 namespace OhMyBrew\ShopifyApp\Storage\Commands;
 
+use Illuminate\Support\Carbon;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
+use OhMyBrew\ShopifyApp\Objects\Enums\ChargeStatus;
 use OhMyBrew\ShopifyApp\Models\Charge as ChargeModel;
-use OhMyBrew\ShopifyApp\Objects\Transfers\UsageCharge as UsageChargeTransfer;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Charge as ChargeQuery;
 use OhMyBrew\ShopifyApp\Contracts\Commands\Charge as ChargeCommand;
 use OhMyBrew\ShopifyApp\Objects\Transfers\Charge as ChargeTransfer;
+use OhMyBrew\ShopifyApp\Objects\Transfers\UsageCharge as UsageChargeTransfer;
 
 /**
  * Reprecents the commands for charges.
@@ -36,8 +38,8 @@ class Charge implements ChargeCommand
     public function createCharge(ChargeTransfer $chargeObj): int
     {
         $charge = new ChargeModel();
-        $charge->shop_id = $chargeObj->shopId;
-        $charge->charge_id = $chargeObj->chargeId;
+        $charge->shop_id = $chargeObj->shopId->toNative();
+        $charge->charge_id = $chargeObj->chargeId->toNative();
         $charge->type = $chargeObj->chargeType;
         $charge->status = $chargeObj->chargeStatus;
         $charge->billing_on = $chargeObj->billingOn;
@@ -77,8 +79,8 @@ class Charge implements ChargeCommand
     {
         // Create the charge
         $charge = new ChargeModel();
-        $charge->shop_id = $chargeObj->shopId;
-        $charge->charge_id = $chargeObj->chargeId;
+        $charge->shop_id = $chargeObj->shopId->toNative();
+        $charge->charge_id = $chargeObj->chargeId->toNative();
         $charge->type = $chargeObj->chargeType;
         $charge->status = $chargeObj->chargeStatus;
         $charge->billing_on = $chargeObj->billingOn;
@@ -90,5 +92,18 @@ class Charge implements ChargeCommand
         $charge->save();
         
         return $charge->id;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function cancelCharge(ChargeId $chargeId, ?string $expiresOn, ?string $trialEndsOn): bool
+    {
+        $charge = $this->query->getById($chargeId);
+        $charge->status = ChargeStatus::CANCELLED()->toNative();
+        $charge->cancelled_on = $expiresOn === null ? Carbon::today()->format('Y-m-d') : $expiresOn;
+        $charge->expires_on = $trialEndsOn === null ? Carbon::today()->format('Y-m-d') : $trialEndsOn;
+
+        return $charge->save();
     }
 }

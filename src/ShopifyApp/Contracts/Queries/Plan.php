@@ -14,12 +14,12 @@ interface Plan
     /**
      * Get by ID.
      *
-     * @param PlanId $id   The plan ID.
-     * @param array  $with The relations to eager load.
+     * @param PlanId $planId The plan ID.
+     * @param array  $with   The relations to eager load.
      *
      * @return PlanModel|null
      */
-    public function getById(PlanId $id, array $with = []): ?PlanModel;
+    public function getById(PlanId $planId, array $with = []): ?PlanModel;
 
     /**
      * Get default on-install plan.

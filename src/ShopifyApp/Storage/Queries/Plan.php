@@ -15,11 +15,11 @@ class Plan implements PlanQuery
     /**
      * {@inheritDoc}
      */
-    public function getByID(PlanId $id, array $with = []): ?Plan
+    public function getByID(PlanId $planId, array $with = []): ?Plan
     {
         return PlanModel::with($with)
             ->get()
-            ->where('id', $id)
+            ->where('id', $planId->toNative())
             ->first();
     }
 
