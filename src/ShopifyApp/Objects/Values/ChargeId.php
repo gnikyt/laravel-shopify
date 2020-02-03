@@ -2,8 +2,8 @@
 
 namespace OhMyBrew\ShopifyApp\Objects\Values;
 
-use Funeralzone\ValueObjects\ValueObject;
 use Funeralzone\ValueObjects\Scalars\IntegerTrait;
+use Funeralzone\ValueObjects\ValueObject;
 
 /**
  * Value object for charge's ID.

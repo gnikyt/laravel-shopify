@@ -3,9 +3,9 @@
 namespace OhMyBrew\ShopifyApp\Traits;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response as ResponseResponse;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Response;
-use Illuminate\Http\Response as ResponseResponse;
 
 /**
  * Responsible for handling incoming webhook requests.

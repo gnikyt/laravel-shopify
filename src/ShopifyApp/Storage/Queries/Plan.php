@@ -3,9 +3,8 @@
 namespace OhMyBrew\ShopifyApp\Storage\Queries;
 
 use OhMyBrew\ShopifyApp\Contracts\Objects\Values\PlanId;
-use OhMyBrew\ShopifyApp\Models\Plan as PlanModel;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Plan as PlanQuery;
-
+use OhMyBrew\ShopifyApp\Models\Plan as PlanModel;
 
 /**
  * Reprecents plan queries.
@@ -13,9 +12,9 @@ use OhMyBrew\ShopifyApp\Contracts\Queries\Plan as PlanQuery;
 class Plan implements PlanQuery
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function getByID(PlanId $planId, array $with = []): ?Plan
+    public function getByID(PlanId $planId, array $with = []): ?self
     {
         return PlanModel::with($with)
             ->get()
@@ -24,9 +23,9 @@ class Plan implements PlanQuery
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function getDefault(array $with = []): ?Plan
+    public function getDefault(array $with = []): ?self
     {
         return PlanModel::with($with)
             ->get()
@@ -35,7 +34,7 @@ class Plan implements PlanQuery
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getAll(array $with = []): array
     {

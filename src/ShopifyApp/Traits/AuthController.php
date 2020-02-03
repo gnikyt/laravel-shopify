@@ -2,14 +2,14 @@
 
 namespace OhMyBrew\ShopifyApp\Traits;
 
-use Illuminate\Support\Facades\View;
+use Illuminate\Contracts\View\View as ViewView;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Redirect;
-use OhMyBrew\ShopifyApp\Requests\AuthShop;
-use Illuminate\Contracts\View\View as ViewView;
+use Illuminate\Support\Facades\View;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
+use OhMyBrew\ShopifyApp\Requests\AuthShop;
 
 /**
  * Responsible for authenticating the shop.
@@ -95,6 +95,7 @@ trait AuthController
         $return_to = Session::get('return_to');
         if ($return_to) {
             Session::forget('return_to');
+
             return Redirect::to($return_to);
         }
 
@@ -103,7 +104,7 @@ trait AuthController
     }
 
     /**
-     * Handles when authentication is unsuccessful
+     * Handles when authentication is unsuccessful.
      *
      * @param string     $authUrl    The auth URl to redirect the user to get the code.
      * @param ShopDomain $shopDomain The shop's domain.

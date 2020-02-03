@@ -2,8 +2,6 @@
 
 namespace OhMyBrew\ShopifyApp\Objects\Transfers;
 
-use OhMyBrew\ShopifyApp\Objects\Transfers\AbstractTransfer;
-
 /**
  * Reprecents details for a plan.
  */
@@ -14,7 +12,7 @@ class PlanDetails extends AbstractTransfer
      *
      * @param string      $name         Plan name.
      * @param float       $price        Plan price.
-     * @param boolean     $test         Plan test or real?
+     * @param bool        $test         Plan test or real?
      * @param int         $trialDays    Plan trial days.
      * @param float|null  $cappedAmount Capped amount value.
      * @param string|null $cappedTerms  Terms for capped amount.

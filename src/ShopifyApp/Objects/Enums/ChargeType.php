@@ -17,28 +17,28 @@ final class ChargeType
     use EnumTrait;
 
     /**
-     * Charge: Recurring
+     * Charge: Recurring.
      *
      * @var int
      */
     public const RECURRING = 1;
 
     /**
-     * Charge: One-time
+     * Charge: One-time.
      *
      * @var int
      */
     public const ONETIME = 2;
 
     /**
-     * Charge: Usage
+     * Charge: Usage.
      *
      * @var int
      */
     public const USAGE = 3;
 
     /**
-     * Charge: Credit
+     * Charge: Credit.
      *
      * @var int
      */

@@ -2,10 +2,10 @@
 
 namespace OhMyBrew\ShopifyApp\Contracts\Commands;
 
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 use OhMyBrew\ShopifyApp\Objects\Transfers\Charge as ChargeTransfer;
 use OhMyBrew\ShopifyApp\Objects\Transfers\UsageCharge as UsageChargeTransfer;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
 /**
  * Reprecents commands for charges.
@@ -34,7 +34,7 @@ interface Charge
      *
      * @param UsageChargeTransfer $chargeObj The usage charge object.
      *
-     * @return integer
+     * @return int
      */
     public function createUsageCharge(UsageChargeTransfer $chargeObj): int;
 

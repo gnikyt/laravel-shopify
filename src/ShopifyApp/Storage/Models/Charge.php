@@ -2,12 +2,12 @@
 
 namespace OhMyBrew\ShopifyApp\Storage\Models;
 
-use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
-use OhMyBrew\ShopifyApp\Objects\Enums\ChargeStatus;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Config;
+use OhMyBrew\ShopifyApp\Objects\Enums\ChargeStatus;
+use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
 
 /**
  * Responsible for reprecenting a charge record.

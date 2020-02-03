@@ -36,6 +36,7 @@ abstract class AbstractTransfer implements IteratorAggregate
 
         // Does not exist, throw exception
         $className = get_class($this);
+
         throw new Exception("Property {$key} does not exist on transfer class {$className}");
     }
 
@@ -51,6 +52,7 @@ abstract class AbstractTransfer implements IteratorAggregate
     {
         // Not allowed, throw exception
         $className = get_class($this);
+
         throw new Exception("Setting properties for transfer class {$className}");
     }
 

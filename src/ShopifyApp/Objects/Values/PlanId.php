@@ -2,8 +2,8 @@
 
 namespace OhMyBrew\ShopifyApp\Objects\Values;
 
-use OhMyBrew\ShopifyApp\Contracts\Objects\Values\PlanId as PlanIdValue;
 use Funeralzone\ValueObjects\Scalars\IntegerTrait;
+use OhMyBrew\ShopifyApp\Contracts\Objects\Values\PlanId as PlanIdValue;
 
 /**
  * Value object for plan's ID.

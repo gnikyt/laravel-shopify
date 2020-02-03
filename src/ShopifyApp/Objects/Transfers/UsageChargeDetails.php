@@ -3,7 +3,6 @@
 namespace OhMyBrew\ShopifyApp\Objects\Transfers;
 
 use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
-use OhMyBrew\ShopifyApp\Objects\Transfers\AbstractTransfer;
 
 /**
  * Reprecents details for a usage charge.

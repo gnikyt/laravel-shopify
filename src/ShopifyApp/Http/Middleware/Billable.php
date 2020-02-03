@@ -17,7 +17,7 @@ class Billable
      * Checks if a shop has paid for access.
      *
      * @param Request  $request The request object.
-     * @param \Closure $next The next action.
+     * @param \Closure $next    The next action.
      *
      * @return mixed
      */

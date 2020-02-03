@@ -3,8 +3,6 @@
 namespace OhMyBrew\ShopifyApp\Objects\Values;
 
 use Funeralzone\ValueObjects\Nullable;
-use OhMyBrew\ShopifyApp\Objects\Values\PlanId;
-use OhMyBrew\ShopifyApp\Objects\Values\NullPlanId;
 use OhMyBrew\ShopifyApp\Contracts\Objects\Values\PlanId as PlanIdValue;
 
 /**

@@ -1,7 +1,7 @@
 <?php
 
-use League\Flysystem\Config;
 use Faker\Generator as Faker;
+use League\Flysystem\Config;
 
 $model = Config::get('auth.providers.users.model');
 

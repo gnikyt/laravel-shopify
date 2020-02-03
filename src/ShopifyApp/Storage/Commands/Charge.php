@@ -3,14 +3,14 @@
 namespace OhMyBrew\ShopifyApp\Storage\Commands;
 
 use Illuminate\Support\Carbon;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
-use OhMyBrew\ShopifyApp\Objects\Enums\ChargeStatus;
-use OhMyBrew\ShopifyApp\Models\Charge as ChargeModel;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Charge as ChargeQuery;
 use OhMyBrew\ShopifyApp\Contracts\Commands\Charge as ChargeCommand;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Charge as ChargeQuery;
+use OhMyBrew\ShopifyApp\Models\Charge as ChargeModel;
+use OhMyBrew\ShopifyApp\Objects\Enums\ChargeStatus;
 use OhMyBrew\ShopifyApp\Objects\Transfers\Charge as ChargeTransfer;
 use OhMyBrew\ShopifyApp\Objects\Transfers\UsageCharge as UsageChargeTransfer;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
 /**
  * Reprecents the commands for charges.
@@ -33,7 +33,7 @@ class Charge implements ChargeCommand
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function createCharge(ChargeTransfer $chargeObj): int
     {
@@ -54,12 +54,12 @@ class Charge implements ChargeCommand
 
         // Save the charge
         $charge->save();
-        
+
         return $charge->id;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function deleteCharge(ShopId $shopId, ChargeId $chargeId): bool
     {
@@ -71,9 +71,8 @@ class Charge implements ChargeCommand
         return $charge->delete();
     }
 
-
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function createUsageCharge(UsageChargeTransfer $chargeObj): int
     {
@@ -90,12 +89,12 @@ class Charge implements ChargeCommand
 
         // Save the charge
         $charge->save();
-        
+
         return $charge->id;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function cancelCharge(ChargeId $chargeId, ?string $expiresOn, ?string $trialEndsOn): bool
     {

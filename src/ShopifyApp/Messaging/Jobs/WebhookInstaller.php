@@ -14,8 +14,10 @@ use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
  */
 class WebhookInstaller implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
     /**
      * The shop's ID.
      *

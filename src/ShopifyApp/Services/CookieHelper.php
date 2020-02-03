@@ -3,8 +3,8 @@
 namespace OhMyBrew\ShopifyApp\Services;
 
 use Exception;
-use Jenssegers\Agent\Agent;
 use Illuminate\Support\Facades\Config;
+use Jenssegers\Agent\Agent;
 
 /**
  * Helper for dealing with cookie and cookie issues.

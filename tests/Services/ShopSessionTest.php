@@ -10,7 +10,7 @@ use OhMyBrew\ShopifyApp\Test\TestCase;
 
 class ShopSessionTest extends TestCase
 {
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 

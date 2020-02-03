@@ -17,28 +17,28 @@ final class ApiMethod
     use EnumTrait;
 
     /**
-     * HTTP method: GET
+     * HTTP method: GET.
      *
      * @var string
      */
     public const GET = 'GET';
 
     /**
-     * HTTP method: POST
+     * HTTP method: POST.
      *
      * @var string
      */
     public const POST = 'POST';
 
     /**
-     * HTTP method: PUT
+     * HTTP method: PUT.
      *
      * @var string
      */
     public const PUT = 'PUT';
 
     /**
-     * HTTP method: DELETE
+     * HTTP method: DELETE.
      *
      * @var string
      */

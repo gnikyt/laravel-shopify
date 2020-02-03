@@ -3,9 +3,9 @@
 namespace OhMyBrew\ShopifyApp\Actions;
 
 use Illuminate\Support\Facades\Config;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
 /**
  * Create webhooks for this app on the shop.
@@ -65,7 +65,7 @@ class CreateWebhooks
                     return true;
                 }
             }
-    
+
             return false;
         };
 

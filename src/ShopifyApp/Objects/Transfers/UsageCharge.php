@@ -3,11 +3,10 @@
 namespace OhMyBrew\ShopifyApp\Objects\Transfers;
 
 use Illuminate\Support\Carbon;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
-use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
 use OhMyBrew\ShopifyApp\Contracts\Objects\Values\PlanId;
-use OhMyBrew\ShopifyApp\Objects\Transfers\AbstractTransfer;
+use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
 /**
  * Reprecents create usage charge.
@@ -17,13 +16,13 @@ class UsageCharge extends AbstractTransfer
     /**
      * Constructor.
      *
-     * @param ShopId    $shopId       Shop ID.
-     * @param PlanId    $planId       Plan ID.
-     * @param ChargeId  $chargeId     Charge ID from Shopify.
-     * @param string    $chargeStatus Usage charge status.
-     * @param float     $price        Usage charge price.
-     * @param string    $description  Usage charge description.
-     * @param Carbon    $billingOn    When the charge will be billed on.
+     * @param ShopId   $shopId       Shop ID.
+     * @param PlanId   $planId       Plan ID.
+     * @param ChargeId $chargeId     Charge ID from Shopify.
+     * @param string   $chargeStatus Usage charge status.
+     * @param float    $price        Usage charge price.
+     * @param string   $description  Usage charge description.
+     * @param Carbon   $billingOn    When the charge will be billed on.
      *
      * @return self
      */

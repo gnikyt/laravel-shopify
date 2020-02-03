@@ -3,18 +3,17 @@
 namespace OhMyBrew\ShopifyApp\Middleware;
 
 use Closure;
-use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
-use OhMyBrew\ShopifyApp\Services\ShopSession;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
+use Illuminate\Support\Facades\Session;
 use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
-use OhMyBrew\ShopifyApp\Objects\Values\NullableShopDomain;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use OhMyBrew\ShopifyApp\Exceptions\MissingShopDomainException;
 use OhMyBrew\ShopifyApp\Exceptions\SignatureVerificationException;
+use OhMyBrew\ShopifyApp\Objects\Values\NullableShopDomain;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
+use OhMyBrew\ShopifyApp\Services\ShopSession;
 
 /**
  * Response for ensuring an authenticated shop.

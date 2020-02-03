@@ -2,7 +2,6 @@
 
 namespace OhMyBrew\ShopifyApp\Objects\Values;
 
-use Funeralzone\ValueObjects\ValueObject;
 use Funeralzone\ValueObjects\Scalars\StringTrait;
 use OhMyBrew\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
 
