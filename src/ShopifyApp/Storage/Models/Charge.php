@@ -5,9 +5,9 @@ namespace OhMyBrew\ShopifyApp\Storage\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Config;
 use OhMyBrew\ShopifyApp\Objects\Enums\ChargeStatus;
 use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
+use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Responsible for reprecenting a charge record.
@@ -15,6 +15,7 @@ use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
 class Charge extends Model
 {
     use SoftDeletes;
+    use ConfigAccessible;
 
     /**
      * The attributes that are mass assignable.
@@ -57,7 +58,7 @@ class Charge extends Model
      */
     public function shop(): BelongsTo
     {
-        return $this->belongsTo(Config::get('auth.providers.users.model'));
+        return $this->belongsTo($this->getConfig('user_model'));
     }
 
     /**

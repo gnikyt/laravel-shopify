@@ -2,16 +2,18 @@
 
 namespace OhMyBrew\ShopifyApp\Actions;
 
-use Illuminate\Support\Facades\Config;
 use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
+use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Create webhooks for this app on the shop.
  */
 class CreateWebhooks
 {
+    use ConfigAccessible;
+
     /**
      * The API helper.
      *
@@ -76,7 +78,7 @@ class CreateWebhooks
         $this->apiHelper->setInstance($shop->api());
 
         // Get the webhooks in config
-        $configWebhooks = Config::get('shopify-app.webhooks');
+        $configWebhooks = $this->getConfig('webhooks');
 
         // Get the webhooks existing in for the shop
         $webhooks = $this->apiHelper->getWebhooks();

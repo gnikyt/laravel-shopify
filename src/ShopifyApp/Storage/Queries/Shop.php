@@ -3,17 +3,19 @@
 namespace OhMyBrew\ShopifyApp\Storage\Queries;
 
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Config;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
 use OhMyBrew\ShopifyApp\Contracts\ShopModel;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
+use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Reprecents shop queries.
  */
 class Shop implements ShopQuery
 {
+    use ConfigAccessible;
+
     /**
      * The shop model (configurable).
      *
@@ -28,7 +30,7 @@ class Shop implements ShopQuery
      */
     public function __construct()
     {
-        $this->model = Config::get('auth.providers.users.model');
+        $this->model = $this->getConfig('user_model');
     }
 
     /**

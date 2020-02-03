@@ -2,16 +2,18 @@
 
 namespace OhMyBrew\ShopifyApp\Actions;
 
-use Illuminate\Support\Facades\Config;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use OhMyBrew\ShopifyApp\Jobs\ScripttagInstaller;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
+use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Attempt to install script tags on a shop.
  */
 class DispatchScripts
 {
+    use ConfigAccessible;
+
     /**
      * Querier for shops.
      *
@@ -45,7 +47,7 @@ class DispatchScripts
         $shop = $this->shopQuery->getById($shopId);
 
         // Get the scripttags
-        $scripttags = Config::get('shopify-app.scripttags');
+        $scripttags = $this->getConfig('scripttags');
         if (count($scripttags) === 0) {
             // Nothing to do
             return false;
@@ -56,7 +58,7 @@ class DispatchScripts
             ScripttagInstaller::dispatchNow($shop, $scripttags);
         } else {
             ScripttagInstaller::dispatch($shop, $scripttags)
-                ->onQueue(Config::get('shopify-app.job_queues.scripttags'));
+                ->onQueue($this->getConfig('job_queues')['scripttags']);
         }
 
         return true;

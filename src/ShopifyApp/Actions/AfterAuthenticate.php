@@ -2,16 +2,18 @@
 
 namespace OhMyBrew\ShopifyApp\Actions;
 
-use Illuminate\Support\Facades\Config;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use OhMyBrew\ShopifyApp\Contracts\ShopModel as IShopModel;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
+use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Run after authentication jobs.
  */
 class AfterAuthenticate
 {
+    use ConfigAccessible;
+
     /**
      * Querier for shops.
      *
@@ -57,7 +59,7 @@ class AfterAuthenticate
             } else {
                 // Run later
                 $job::dispatch($shop)
-                    ->onQueue(Config::get('shopify-app.job_queues.after_authenticate'));
+                    ->onQueue($this->getConfig('job_queues')['after_authenticate']);
             }
 
             return true;
@@ -67,7 +69,7 @@ class AfterAuthenticate
         $shop = $this->shopQuery->getById($shopId);
 
         // Grab the jobs config
-        $jobsConfig = Config::get('shopify-app.after_authenticate_job');
+        $jobsConfig = $this->getConfig('after_authenticate_job');
 
         // We have multi-jobs
         if (isset($jobsConfig[0])) {

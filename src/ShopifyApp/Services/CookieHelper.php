@@ -3,14 +3,16 @@
 namespace OhMyBrew\ShopifyApp\Services;
 
 use Exception;
-use Illuminate\Support\Facades\Config;
 use Jenssegers\Agent\Agent;
+use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Helper for dealing with cookie and cookie issues.
  */
 class CookieHelper
 {
+    use ConfigAccessible;
+
     /**
      * The HTTP agent helper.
      *
@@ -48,11 +50,13 @@ class CookieHelper
      */
     public function setCookiePolicy(): void
     {
-        Config::set('session.expire_on_close', true);
+        $this->setConfig('session.expire_on_close', true);
 
         if ($this->checkSameSiteNoneCompatible()) {
-            Config::set('session.secure', true);
-            Config::set('session.same_site', 'none');
+            $this->setConfigArray([
+                'session.secure'    => true,
+                'session.same_site' => 'none',
+            ]);
         }
     }
 

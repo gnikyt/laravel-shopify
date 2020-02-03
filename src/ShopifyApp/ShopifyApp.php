@@ -5,17 +5,19 @@ namespace OhMyBrew\ShopifyApp;
 use OhMyBrew\BasicShopifyAPI;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Config;
 use OhMyBrew\ShopifyApp\Services\ShopSession;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
 use OhMyBrew\ShopifyApp\Contracts\ShopModel as IShopModel;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * The base "helper" class for this package.
  */
 class ShopifyApp
 {
+    use ConfigAccessible;
+
     /**
      * Laravel application.
      *
@@ -28,26 +30,38 @@ class ShopifyApp
      *
      * @var IShopModel
      */
-    public $shop;
+    protected $shop;
 
     /**
      * The querier for shops.
      *
      * @var IShopQuery
      */
-    public $shopQuery;
+    protected $shopQuery;
+
+    /**
+     * The shop session helper.
+     *
+     * @var ShopSession
+     */
+    protected $shopSession;
 
     /**
      * Create a new confide instance.
      *
-     * @param Application $app
+     * @param Application $app         The Laravel application instance.
+     * @param ShopSession $shopSession The shop session helper.
      *
      * @return self
      */
-    public function __construct(Application $app, IShopQuery $shopQuery)
-    {
+    public function __construct(
+        Application $app,
+        IShopQuery $shopQuery,
+        ShopSession $shopSession
+    ) {
         $this->app = $app;
         $this->shopQuery = $shopQuery;
+        $this->shopSession = $shopSession;
     }
 
     /**
@@ -60,18 +74,16 @@ class ShopifyApp
     public function shop(ShopDomain $shopDomain = null): ?IShopModel
     {
         // Get the shop domain from params or from shop session
-        $shopifyDomain = $shopDomain ??
-            ($this->app->make(ShopSession::class))
-                ->getDomain();
+        $shopifyDomain = $shopDomain ?? $this->shopSession->getDomain();
 
-        if (!$this->shop && !$shopifyDomain->isNull()) {
+        if ($this->shop === null && !$shopifyDomain->isNull()) {
             // Grab shop from database here
             $domain = new ShopDomain($shopifyDomain->toNative());
             $shop = $this->shopQuery->getByDomain($domain, [], true);
 
-            if (!$shop) {
+            if ($shop === null) {
                 // Create the shop
-                $model = Config::get('auth.providers.users.model');
+                $model = $this->getConfig('user_model');
                 $shop = new $model();
                 $shop->name = $domain->toNative();
                 $shop->password = '';
@@ -93,22 +105,18 @@ class ShopifyApp
      */
     public function api(): BasicShopifyAPI
     {
-        $apiClass = Config::get('shopify-app.api_class');
+        // Create the instance
+        $apiClass = $this->getConfig('api_class');
         $api = new $apiClass();
-        $api->setApiKey(Config::get('shopify-app.api_key'));
-        $api->setApiSecret(Config::get('shopify-app.api_secret'));
-
-        // Add versioning?
-        $version = Config::get('shopify-app.api_version');
-        if ($version !== null) {
-            $api->setVersion($version);
-        }
+        $api->setApiKey($this->getConfig('api_class'))
+            ->setApiSecret($this->getConfig('api_secret'))
+            ->setVersion($this->getConfig('api_version'));
 
         // Enable basic rate limiting?
-        if (Config::get('shopify-app.api_rate_limiting_enabled') === true) {
+        if ($this->getConfig('api_rate_limiting_enabled') === true) {
             $api->enableRateLimiting(
-                Config::get('shopify-app.api_rate_limit_cycle'),
-                Config::get('shopify-app.api_rate_limit_cycle_buffer')
+                $this->getConfig('api_rate_limit_cycle'),
+                $this->getConfig('api_rate_limit_cycle_buffer')
             );
         }
 
@@ -118,17 +126,17 @@ class ShopifyApp
     /**
      * Ensures shop domain meets the specs.
      *
-     * @param string $domain The shopify domain
+     * @param string|null $domain The shopify domain
      *
      * @return string|null
      */
-    public function sanitizeShopDomain($domain): ?string
+    public function sanitizeShopDomain(?string $domain): ?string
     {
         if (empty($domain)) {
             return null;
         }
 
-        $configEndDomain = Config::get('shopify-app.myshopify_domain');
+        $configEndDomain = $this->getConfig('myshopify_domain');
         $domain = strtolower(preg_replace('/https?:\/\//i', '', trim($domain)));
 
         if (strpos($domain, $configEndDomain) === false && strpos($domain, '.') === false) {
@@ -155,7 +163,7 @@ class ShopifyApp
         $buildQuery = $opts['buildQuery'] ?? false;
         $buildQueryWithJoin = $opts['buildQueryWithJoin'] ?? false;
         $encode = $opts['encode'] ?? false;
-        $secret = $opts['secret'] ?? Config::get('shopify-app.api_secret');
+        $secret = $opts['secret'] ?? $this->getConfig('api_secret');
 
         if ($buildQuery) {
             //Query params must be sorted and compiled
@@ -186,7 +194,7 @@ class ShopifyApp
      */
     public function debug(string $message): bool
     {
-        if (!Config::get('shopify-app.debug')) {
+        if (!$this->getConfig('debug')) {
             return false;
         }
 

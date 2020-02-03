@@ -2,16 +2,18 @@
 
 namespace OhMyBrew\ShopifyApp\Actions;
 
-use Illuminate\Support\Facades\Config;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use OhMyBrew\ShopifyApp\Jobs\WebhookInstaller;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
+use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Attempt to install webhooks on a shop.
  */
 class DispatchWebhooks
 {
+    use ConfigAccessible;
+
     /**
      * Querier for shops.
      *
@@ -45,7 +47,7 @@ class DispatchWebhooks
         $shop = $this->shopQuery->getById($shopId);
 
         // Get the webhooks
-        $webhooks = Config::get('shopify-app.webhooks');
+        $webhooks = $this->getConfig('webhooks');
         if (count($webhooks) === 0) {
             // Nothing to do
             return false;
@@ -56,7 +58,7 @@ class DispatchWebhooks
             WebhookInstaller::dispatchNow($shop);
         } else {
             WebhookInstaller::dispatch($shop)
-                ->onQueue(Config::get('shopify-app.job_queues.webhooks'));
+                ->onQueue($this->getConfig('job_queues')['webhooks']);
         }
 
         return true;

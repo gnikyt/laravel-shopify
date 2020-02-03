@@ -2,15 +2,17 @@
 
 namespace OhMyBrew\ShopifyApp\Storage\Observers;
 
-use Illuminate\Support\Facades\Config;
 use OhMyBrew\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
 use OhMyBrew\ShopifyApp\Contracts\ShopModel as IShopModel;
+use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Responsible for observing changes to the shop (user) model.
  */
 class Shop
 {
+    use ConfigAccessible;
+
     /**
      * The commands for shop.
      *
@@ -40,8 +42,8 @@ class Shop
      */
     public function creating(IShopModel $shop): void
     {
-        $namespace = Config::get('shopify-app.namespace');
-        $freemium = Config::get('shopify-app.billing_freemium_enabled');
+        $namespace = $this->getConfig('namespace');
+        $freemium = $this->getConfig('billing_freemium_enabled');
 
         if (!empty($namespace) && !isset($shop->shopify_namespace)) {
             // Automatically add the current namespace to new records

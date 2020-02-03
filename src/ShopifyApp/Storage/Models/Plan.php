@@ -4,17 +4,19 @@ namespace OhMyBrew\ShopifyApp\Storage\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\URL;
 use OhMyBrew\ShopifyApp\Contracts\ShopModel;
 use OhMyBrew\ShopifyApp\Objects\Enums\PlanType;
 use OhMyBrew\ShopifyApp\Objects\Transfers\PlanDetails as PlanDetailsTransfer;
+use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Responsible for reprecenting a plan record.
  */
 class Plan extends Model
 {
+    use ConfigAccessible;
+
     /**
      * The attributes that should be casted to native types.
      *
@@ -124,7 +126,7 @@ class Plan extends Model
             $isCapped ? $this->capped_amount : null,
             $isCapped ? $this->terms : null,
             URL::secure(
-                Config::get('shopify-app.billing_redirect'),
+                $this->getConfig('billing_redirect'),
                 ['plan_id' => $this->id]
             )
         );

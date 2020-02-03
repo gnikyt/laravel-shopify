@@ -2,7 +2,6 @@
 
 namespace OhMyBrew\ShopifyApp\Services;
 
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
 use OhMyBrew\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
 use OhMyBrew\ShopifyApp\Objects\Enums\AuthMode;
@@ -10,6 +9,7 @@ use OhMyBrew\ShopifyApp\Objects\Values\AccessToken;
 use OhMyBrew\ShopifyApp\Objects\Values\NullableShopDomain;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
+use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
 use OhMyBrew\ShopifyApp\Traits\ShopAccessible;
 
 /**
@@ -18,6 +18,7 @@ use OhMyBrew\ShopifyApp\Traits\ShopAccessible;
 class ShopSession
 {
     use ShopAccessible;
+    use ConfigAccessible;
 
     /**
      * The session key for Shopify domain.
@@ -75,7 +76,7 @@ class ShopSession
      */
     public function getType(): string
     {
-        $config = Config::get('shopify-app.api_grant_mode');
+        $config = $this->getConfig('api_grant_mode');
         if ($config === AuthMode::PERUSER()->toNative()) {
             return AuthMode::PERUSER()->toNative();
         }

@@ -4,7 +4,6 @@ namespace OhMyBrew\ShopifyApp\Services;
 
 use Closure;
 use GuzzleHttp\Exception\RequestException;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\URL;
 use OhMyBrew\BasicShopifyAPI;
 use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
@@ -13,12 +12,15 @@ use OhMyBrew\ShopifyApp\Objects\Enums\ApiMethod;
 use OhMyBrew\ShopifyApp\Objects\Transfers\PlanDetails as PlanDetailsTransfer;
 use OhMyBrew\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
 use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
+use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Basic helper class for API calls to Shopify.
  */
 class ApiHelper implements IApiHelper
 {
+    use ConfigAccessible;
+
     /**
      * The API instance.
      *
@@ -65,7 +67,7 @@ class ApiHelper implements IApiHelper
     {
         return $this->api->getAuthUrl(
             $scopes,
-            URL::secure(Config::get('shopify-app.api_redirect')),
+            URL::secure($this->getConfig('api_redirect')),
             $mode
         );
     }

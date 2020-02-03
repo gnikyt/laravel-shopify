@@ -6,6 +6,7 @@ use OhMyBrew\ShopifyApp\ShopifyApp;
 use Illuminate\Support\Facades\Session;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
+use OhMyBrew\ShopifyApp\Services\ShopSession;
 
 class ShopifyAppTest extends TestCase
 {
@@ -22,7 +23,8 @@ class ShopifyAppTest extends TestCase
         // ShopApp instance
         $this->shopifyApp = new ShopifyApp(
             $this->app,
-            $this->shopQuery
+            $this->shopQuery,
+            $this->app->make(ShopSession::class)
         );
     }
 

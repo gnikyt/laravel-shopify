@@ -2,18 +2,20 @@
 
 namespace OhMyBrew\ShopifyApp\Actions;
 
-use Illuminate\Support\Facades\Config;
 use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use OhMyBrew\ShopifyApp\Objects\Enums\AuthMode;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
 use OhMyBrew\ShopifyApp\Services\ShopSession;
+use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Authenticates a shop via HTTP request.
  */
 class AuthenticateShop
 {
+    use ConfigAccessible;
+
     /**
      * Querier for shops.
      *
@@ -79,8 +81,8 @@ class AuthenticateShop
         if (empty($code)) {
             // We need the code first
             $authUrl = $this->apiHelper->buildAuthUrl(
-                $shop->hasOfflineAccess() ? Config::get('shopify-app.api_grant_mode') : AuthMode::OFFLINE()->toNative(),
-                Config::get('shopify-app.api_scopes')
+                $shop->hasOfflineAccess() ? $this->getConfig('api_grant_mode') : AuthMode::OFFLINE()->toNative(),
+                $this->getConfig('api_scopes')
             );
 
             // Call the partial callback with the shop and auth URL as params

@@ -2,16 +2,18 @@
 
 namespace OhMyBrew\ShopifyApp\Actions;
 
-use Illuminate\Support\Facades\Config;
 use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
+use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Create scripttags for this app on the shop.
  */
 class CreateScripts
 {
+    use ConfigAccessible;
+
     /**
      * The API helper.
      *
@@ -76,7 +78,7 @@ class CreateScripts
         $this->apiHelper->setInstance($shop->api());
 
         // Get the scripttags in config
-        $configScripts = Config::get('shopify-app.scripttags');
+        $configScripts = $this->getConfig('scripttags');
 
         // Get the scripts existing in for the shop
         $scripts = $this->apiHelper->getScriptTags();

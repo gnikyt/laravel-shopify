@@ -229,7 +229,8 @@ class ShopifyAppProvider extends ServiceProvider
             'shopifyapp' => [self::CBIND, function ($app) {
                 return new ShopifyApp(
                     $app,
-                    $app->make(IShopQuery::class)
+                    $app->make(IShopQuery::class),
+                    $app->make(ShopSession::class)
                 );
             }],
         ];
