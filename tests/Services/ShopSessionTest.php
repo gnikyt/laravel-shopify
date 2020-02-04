@@ -155,8 +155,8 @@ class ShopSessionTest extends TestCase
             $_SERVER['HTTP_USER_AGENT'] = $agent;
             $response = $this->get('/');
 
-            $this->assertNull($response->baseResponse->headers->getCookies()[0]->getSameSite());
-            $this->assertFalse($response->baseResponse->headers->getCookies()[0]->isSecure());
+            $this->assertEquals('none', $response->baseResponse->headers->getCookies()[0]->getSameSite());
+            $this->assertTrue($response->baseResponse->headers->getCookies()[0]->isSecure());
         }
 
         foreach ($incompatibleUserAgents as $agent) {

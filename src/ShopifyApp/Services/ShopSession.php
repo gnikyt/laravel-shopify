@@ -287,7 +287,7 @@ class ShopSession
      */
     private function checkSameSiteNoneCompatible()
     {
-        $compatible = false;
+        $compatible = true;
 
         $this->agent = new Agent();
 
@@ -295,30 +295,30 @@ class ShopSession
             $browser = $this->getBrowserDetails();
             $platform = $this->getPlatformDetails();
 
-            if ($this->agent->is('Chrome') && $browser['float'] >= 67) {
-                $compatible = true;
+            if ($this->agent->is('Chrome') && $browser['float'] < 67) {
+                $compatible = false;
             }
 
-            if ($this->agent->is('iOS') && $platform['float'] >= 13) {
-                $compatible = true;
+            if ($this->agent->is('iOS') && $platform['float'] < 13) {
+                $compatible = false;
             }
 
             if ($this->agent->is('OS X') &&
                 ($this->agent->is('Safari') && !$this->agent->is('iOS')) &&
-                $platform['float'] >= 10.15
+                $platform['float'] < 10.15
             ) {
-                $compatible = true;
+                $compatible = false;
             }
 
             if ($this->agent->is('UCBrowser') &&
-                $browser['float'] >= 12.132
+                $browser['float'] < 12.132
             ) {
-                $compatible = true;
+                $compatible = false;
             }
 
             return $compatible;
         } catch (\Exception $e) {
-            return false;
+            return true;
         }
     }
 
@@ -332,7 +332,7 @@ class ShopSession
         $version = $this->agent->version($this->agent->browser(), Agent::VERSION_TYPE_FLOAT);
 
         return [
-            'float' => $version,
+            'float' => ($version ?: 0),
         ];
     }
 
@@ -346,7 +346,7 @@ class ShopSession
         $version = $this->agent->version($this->agent->platform(), Agent::VERSION_TYPE_FLOAT);
 
         return [
-            'float' => $version,
+            'float' => ($version ?: 0),
         ];
     }
 }
