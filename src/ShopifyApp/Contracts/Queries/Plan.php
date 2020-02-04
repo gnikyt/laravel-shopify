@@ -3,7 +3,7 @@
 namespace OhMyBrew\ShopifyApp\Contracts\Queries;
 
 use Illuminate\Support\Collection;
-use OhMyBrew\ShopifyApp\Objects\Values\PlanId;
+use OhMyBrew\ShopifyApp\Contracts\Objects\Values\PlanId;
 use OhMyBrew\ShopifyApp\Storage\Models\Plan as PlanModel;
 
 /**

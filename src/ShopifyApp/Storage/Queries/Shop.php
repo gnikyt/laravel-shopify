@@ -3,7 +3,7 @@
 namespace OhMyBrew\ShopifyApp\Storage\Queries;
 
 use Illuminate\Support\Collection;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use OhMyBrew\ShopifyApp\Contracts\ShopModel;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
@@ -12,7 +12,7 @@ use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
 /**
  * Reprecents shop queries.
  */
-class Shop implements ShopQuery
+class Shop implements IShopQuery
 {
     use ConfigAccessible;
 
@@ -66,7 +66,6 @@ class Shop implements ShopQuery
     public function getAll(array $with = []): Collection
     {
         return $this->model::with($with)
-            ->get()
-            ->all();
+            ->get();
     }
 }

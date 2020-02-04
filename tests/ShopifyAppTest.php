@@ -4,8 +4,7 @@ namespace OhMyBrew\ShopifyApp\Test;
 
 use OhMyBrew\BasicShopifyAPI;
 use OhMyBrew\ShopifyApp\ShopifyApp;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Session;
+use OhMyBrew\ShopifyApp\Test\TestCase;
 use OhMyBrew\ShopifyApp\Services\ShopSession;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
@@ -39,7 +38,7 @@ class ShopifyAppTest extends TestCase
     public function testShopWithSession(): void
     {
         // Set the session
-        Session::put('shopify_domain', 'example.myshopify.com');
+        $this->app['session']->put('shopify_domain', 'example.myshopify.com');
 
         // First run should store the shop object to shop var
         $run1 = $this->shopifyApp->shop();
@@ -56,7 +55,7 @@ class ShopifyAppTest extends TestCase
         $domain = new ShopDomain('example-nonexistant.myshopify.com');
 
         // Set the session
-        Session::put('shopify_domain', $domain->toNative());
+        $this->app['session']->put('shopify_domain', $domain->toNative());
 
         // Shop should not exist
         $this->assertNull($this->shopQuery->getByDomain($domain));
@@ -75,7 +74,7 @@ class ShopifyAppTest extends TestCase
 
     public function testReturnsApiInstanceWithRateLimiting(): void
     {
-        Config::set('shopify-app.api_rate_limiting_enabled', true);
+        $this->app['config']->set('shopify-app.api_rate_limiting_enabled', true);
 
         $this->assertTrue($this->shopifyApp->api()->isRateLimitingEnabled());
     }
@@ -92,7 +91,7 @@ class ShopifyAppTest extends TestCase
         }
 
         // Test if someone changed the domain
-        Config::set('shopify-app.myshopify_domain', 'myshopify.io');
+        $this->app['config']->set('shopify-app.myshopify_domain', 'myshopify.io');
         foreach ($domains_2 as $domain) {
             $this->assertEquals('my-shop.myshopify.io', $this->shopifyApp->sanitizeShopDomain($domain));
         }
@@ -107,7 +106,7 @@ class ShopifyAppTest extends TestCase
     {
         // Set the secret to use for HMAC creations
         $secret = 'hello';
-        Config::set('shopify-app.api_secret', $secret);
+        $this->app['config']->set('shopify-app.api_secret', $secret);
 
         // Raw data
         $data = 'one-two-three';
@@ -136,7 +135,7 @@ class ShopifyAppTest extends TestCase
         $this->shopifyApp->debug('test');
         $this->assertFalse($this->shopifyApp->debug('test'));
 
-        Config::set('shopify-app.debug', true);
+        $this->app['config']->set('shopify-app.debug', true);
         $this->assertTrue($this->shopifyApp->debug('test'));
     }
 }

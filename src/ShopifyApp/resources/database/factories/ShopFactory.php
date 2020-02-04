@@ -9,6 +9,7 @@ $factory->define($model, function (Faker $faker) {
     return [
         'name'     => "{$faker->domainWord}.myshopify.com",
         'password' => str_replace('-', '', $faker->uuid),
+        'email'    => '',
     ];
 });
 
