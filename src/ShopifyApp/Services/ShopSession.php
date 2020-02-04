@@ -299,19 +299,19 @@ class ShopSession
                 $compatible = true;
             }
 
-            if ($this->agent->is('iOS') && $platform['float'] > 12) {
+            if ($this->agent->is('iOS') && $platform['float'] >= 13) {
                 $compatible = true;
             }
 
             if ($this->agent->is('OS X') &&
                 ($this->agent->is('Safari') && !$this->agent->is('iOS')) &&
-                $platform['float'] > 10.14
+                $platform['float'] >= 10.15
             ) {
                 $compatible = true;
             }
 
             if ($this->agent->is('UCBrowser') &&
-                $browser['float'] > 12.13
+                $browser['float'] >= 12.132
             ) {
                 $compatible = true;
             }
