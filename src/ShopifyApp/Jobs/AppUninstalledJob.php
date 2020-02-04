@@ -16,8 +16,10 @@ use OhMyBrew\ShopifyApp\Models\Shop;
  */
 class AppUninstalledJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
     /**
      * Shop's instance.
      *

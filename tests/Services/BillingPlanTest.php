@@ -14,7 +14,7 @@ use OhMyBrew\ShopifyApp\Test\TestCase;
 
 class BillingPlanTest extends TestCase
 {
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 

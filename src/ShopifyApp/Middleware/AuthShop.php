@@ -157,26 +157,10 @@ class AuthShop
             return false;
         }
 
-        // Always
-        $signature = $request->input('hmac');
-        $timestamp = $request->input('timestamp');
-
-        $verify = [
-            'shop'      => $shop,
-            'hmac'      => $signature,
-            'timestamp' => $timestamp,
-        ];
-
-        // Sometimes
-        $code = $request->input('code') ?? null;
-        $locale = $request->input('locale') ?? null;
-        $state = $request->input('state') ?? null;
-        $id = $request->input('id') ?? null;
-
-        foreach (compact('code', 'locale', 'state', 'id') as $key => $value) {
-            if ($value) {
-                $verify[$key] = $value;
-            }
+        // Verify
+        $verify = [];
+        foreach ($request->all() as $key => $value) {
+            $verify[$key] = is_array($value) ? '["'.implode('", "', $value).'"]' : $value;
         }
 
         // Make sure there is no param spoofing attempt
@@ -218,22 +202,10 @@ class AuthShop
             return false;
         }
 
-        $verify = [
-            'shop'      => $refererQueryParams['shop'],
-            'hmac'      => $refererQueryParams['hmac'],
-            'timestamp' => $refererQueryParams['timestamp'],
-        ];
-
-        // Sometimes present
-        $code = $refererQueryParams['code'] ?? null;
-        $locale = $refererQueryParams['locale'] ?? null;
-        $state = $refererQueryParams['state'] ?? null;
-        $id = $refererQueryParams['id'] ?? null;
-
-        foreach (compact('code', 'locale', 'state', 'id') as $key => $value) {
-            if ($value) {
-                $verify[$key] = $value;
-            }
+        // Verify
+        $verify = [];
+        foreach ($refererQueryParams as $key => $value) {
+            $verify[$key] = is_array($value) ? '["'.implode('", "', $value).'"]' : $value;
         }
 
         // Make sure there is no param spoofing attempt
@@ -280,10 +252,11 @@ class AuthShop
         $locale = $request->header('X-Shop-Locale') ?? null;
         $state = $request->header('X-Shop-State') ?? null;
         $id = $request->header('X-Shop-ID') ?? null;
+        $ids = $request->header('X-Shop-IDs') ?? null;
 
-        foreach (compact('code', 'locale', 'state', 'id') as $key => $value) {
+        foreach (compact('code', 'locale', 'state', 'id', 'ids') as $key => $value) {
             if ($value) {
-                $verify[$key] = $value;
+                $verify[$key] = is_array($value) ? '["'.implode('", "', $value).'"]' : $value;
             }
         }
 

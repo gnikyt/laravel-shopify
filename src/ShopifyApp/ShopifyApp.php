@@ -112,7 +112,7 @@ class ShopifyApp
         }
 
         // Return the host after cleaned up
-        return parse_url("http://{$domain}", PHP_URL_HOST);
+        return parse_url("https://{$domain}", PHP_URL_HOST);
     }
 
     /**

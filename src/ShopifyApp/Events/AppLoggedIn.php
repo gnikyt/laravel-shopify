@@ -10,8 +10,8 @@ use Illuminate\Queue\SerializesModels;
  */
 class AppLoggedIn
 {
-    use Dispatchable, SerializesModels;
-
+    use Dispatchable;
+    use SerializesModels;
     /**
      * Shop's instance.
      *

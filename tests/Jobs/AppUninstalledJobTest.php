@@ -11,7 +11,7 @@ use ReflectionObject;
 
 class AppUninstalledJobTest extends TestCase
 {
-    public function setup() : void
+    public function setup(): void
     {
         parent::setup();
 

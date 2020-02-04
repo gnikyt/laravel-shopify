@@ -15,7 +15,7 @@ class ApiStub extends BasicShopifyAPI
         self::$stubFiles = $stubFiles;
     }
 
-    public function rest(string $method, string $path, array $params = null)
+    public function rest(string $method, string $path, array $params = null, array $headers = [], bool $sync = true)
     {
         try {
             $filename = array_shift(self::$stubFiles);
