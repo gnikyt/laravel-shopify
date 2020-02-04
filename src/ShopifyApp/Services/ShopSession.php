@@ -295,7 +295,7 @@ class ShopSession
             $browser = $this->getBrowserDetails();
             $platform = $this->getPlatformDetails();
 
-            if ($this->agent->is('Chrome') && $browser['float'] < 67) {
+            if ($this->agent->browser() == 'Chrome' && $browser['float'] < 67) {
                 $compatible = false;
             }
 
@@ -304,13 +304,13 @@ class ShopSession
             }
 
             if ($this->agent->is('OS X') &&
-                ($this->agent->is('Safari') && !$this->agent->is('iOS')) &&
+                ($this->agent->browser() == 'Safari' && !$this->agent->is('iOS')) &&
                 $platform['float'] < 10.15
             ) {
                 $compatible = false;
             }
 
-            if ($this->agent->is('UCBrowser') &&
+            if ($this->agent->browser() == 'UCBrowser' &&
                 $browser['float'] < 12.132
             ) {
                 $compatible = false;
