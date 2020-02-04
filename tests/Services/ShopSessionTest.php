@@ -152,6 +152,12 @@ class ShopSessionTest extends TestCase
         $shop = factory(Shop::class)->create();
 
         foreach ($badUserAgents as $agent) {
+            // reset sessions before each test
+            config([
+                'session.secure'    => false,
+                'session.same_site' => null,
+            ]);
+
             $_SERVER['HTTP_USER_AGENT'] = $agent;
             $response = $this->get('/');
 
@@ -160,6 +166,12 @@ class ShopSessionTest extends TestCase
         }
 
         foreach ($incompatibleUserAgents as $agent) {
+            // reset sessions before each test
+            config([
+                'session.secure'    => false,
+                'session.same_site' => null,
+            ]);
+
             $_SERVER['HTTP_USER_AGENT'] = $agent;
             $response = $this->get('/');
 
@@ -168,6 +180,12 @@ class ShopSessionTest extends TestCase
         }
 
         foreach ($compatibleUserAgents as $agent) {
+            // reset sessions before each test
+            config([
+                'session.secure'    => false,
+                'session.same_site' => null,
+            ]);
+
             $_SERVER['HTTP_USER_AGENT'] = $agent;
             $response = $this->get('/');
 
