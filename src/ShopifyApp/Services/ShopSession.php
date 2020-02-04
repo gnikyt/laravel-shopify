@@ -333,9 +333,9 @@ class ShopSession
         $pieces = explode('.', str_replace('_', '.', $version));
 
         return [
-            'major' => $pieces[0],
-            'minor' => $pieces[1],
-            'float' => (float) sprintf('%s.%s', $pieces[0], $pieces[1]),
+            'major' => $pieces[0] ?? 0,
+            'minor' => $pieces[1] ?? 0,
+            'float' => (float) sprintf('%s.%s', $pieces[0] ?? 0, $pieces[1] ?? 0),
         ];
     }
 
@@ -350,9 +350,9 @@ class ShopSession
         $pieces = explode('.', str_replace('_', '.', $version));
 
         return [
-            'major' => $pieces[0],
-            'minor' => $pieces[1],
-            'float' => (float) sprintf('%s.%s', $pieces[0], $pieces[1]),
+            'major' => $pieces[0] ?? 0,
+            'minor' => $pieces[1] ?? 0,
+            'float' => (float) sprintf('%s.%s', $pieces[0] ?? 0, $pieces[1] ?? 0),
         ];
     }
 }
