@@ -140,6 +140,10 @@ class ShopSessionTest extends TestCase
             'Mozilla/5.0 (Linux; U; Android 7.1.2; en-US; GT-N5110 Build/NJH47F) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/57.0.2987.108 UCBrowser/12.14.0.1221 Mobile Safari/537.36',
             'Mozilla/5.0 (Linux; U; Android 9; zh-CN; Nokia X7 Build/PPR1.180610.011) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/57.0.2987.108 UCBrowser/12.14.0.1020 Mobile Safari/537.36',
             'UCWEB/2.0 (Java; U; MIDP-2.0; en-US; generic) U2/1.0.0 UCBrowser/12.15.0.449 U2/2.0.0 Mobile',
+            'Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0',
+            'Mozilla/5.0 zgrab/0.x',
+            'AWS Security Scanner',
+            'Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)',
         ];
 
         $badUserAgents = [
