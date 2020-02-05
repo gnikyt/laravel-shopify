@@ -3,6 +3,7 @@
 namespace OhMyBrew\ShopifyApp\Objects\Enums;
 
 use Funeralzone\ValueObjects\Enums\EnumTrait;
+use Funeralzone\ValueObjects\ValueObject;
 
 /**
  * API call method types.
@@ -12,35 +13,35 @@ use Funeralzone\ValueObjects\Enums\EnumTrait;
  * @method static ApiMethod PUT()
  * @method static ApiMethod DELEE()
  */
-final class ApiMethod
+final class ApiMethod implements ValueObject
 {
     use EnumTrait;
 
     /**
      * HTTP method: GET.
      *
-     * @var string
+     * @var int
      */
-    public const GET = 'GET';
+    public const GET = 0;
 
     /**
      * HTTP method: POST.
      *
-     * @var string
+     * @var int
      */
-    public const POST = 'POST';
+    public const POST = 1;
 
     /**
      * HTTP method: PUT.
      *
-     * @var string
+     * @var int
      */
-    public const PUT = 'PUT';
+    public const PUT = 2;
 
     /**
      * HTTP method: DELETE.
      *
-     * @var string
+     * @var int
      */
-    public const DELETE = 'DELETE';
+    public const DELETE = 3;
 }

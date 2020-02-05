@@ -11,4 +11,12 @@ use OhMyBrew\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue
 final class NullAccessToken implements AccessTokenValue
 {
     use NullTrait;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isEmpty(): bool
+    {
+        return true
+    }
 }

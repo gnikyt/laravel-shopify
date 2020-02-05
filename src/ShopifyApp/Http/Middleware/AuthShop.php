@@ -87,12 +87,11 @@ class AuthShop
         // Grab the shop's myshopify domain from query or session
         $shopDomain = $this->getShopDomainFromRequest($request);
 
-        // Get the shop based on domain and update the session service
+        // Get the shop based on domain
         $shop = $this->shopQuery->getByDomain($shopDomain, [], true);
-        $this->shopSession->setShop($shop);
 
         // We need to do a full flow if no shop or it is deleted
-        if ($shop === null || $shop->trashed() || !$this->shopSession->isValid()) {
+        if ($shop === null || $shop->trashed() || !$this->shopSession->isValid($shop)) {
             // We have a bad session
             return $this->handleBadSession(
                 $request,

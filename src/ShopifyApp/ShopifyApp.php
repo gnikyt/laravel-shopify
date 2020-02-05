@@ -2,14 +2,13 @@
 
 namespace OhMyBrew\ShopifyApp;
 
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Log;
 use OhMyBrew\BasicShopifyAPI;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
-use OhMyBrew\ShopifyApp\Contracts\ShopModel as IShopModel;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
+use Illuminate\Support\Facades\Log;
 use OhMyBrew\ShopifyApp\Services\ShopSession;
 use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
+use OhMyBrew\ShopifyApp\Contracts\ShopModel as IShopModel;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 
 /**
  * The base "helper" class for this package.
@@ -17,13 +16,6 @@ use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
 class ShopifyApp
 {
     use ConfigAccessible;
-
-    /**
-     * Laravel application.
-     *
-     * @var Application
-     */
-    public $app;
 
     /**
      * The current shop.
@@ -49,17 +41,12 @@ class ShopifyApp
     /**
      * Create a new confide instance.
      *
-     * @param Application $app         The Laravel application instance.
      * @param ShopSession $shopSession The shop session helper.
      *
      * @return self
      */
-    public function __construct(
-        Application $app,
-        IShopQuery $shopQuery,
-        ShopSession $shopSession
-    ) {
-        $this->app = $app;
+    public function __construct(IShopQuery $shopQuery, ShopSession $shopSession)
+    {
         $this->shopQuery = $shopQuery;
         $this->shopSession = $shopSession;
     }
@@ -74,18 +61,17 @@ class ShopifyApp
     public function shop(ShopDomain $shopDomain = null): ?IShopModel
     {
         // Get the shop domain from params or from shop session
-        $shopifyDomain = $shopDomain ?? $this->shopSession->getDomain();
+        $shopifyDomain = $shopDomain ?? $this->shopSession->getShop()->getDomain();
 
         if ($this->shop === null && !$shopifyDomain->isNull()) {
             // Grab shop from database here
-            $domain = new ShopDomain($shopifyDomain->toNative());
-            $shop = $this->shopQuery->getByDomain($domain, [], true);
+            $shop = $this->shopQuery->getByDomain($shopifyDomain, [], true);
 
             if ($shop === null) {
                 // Create the shop
                 $model = $this->getConfig('user_model');
                 $shop = new $model();
-                $shop->name = $domain->toNative();
+                $shop->name = $shopifyDomain->toNative();
                 $shop->password = '';
                 $shop->email = '';
                 $shop->save();
@@ -121,31 +107,6 @@ class ShopifyApp
         }
 
         return $api;
-    }
-
-    /**
-     * Ensures shop domain meets the specs.
-     *
-     * @param string|null $domain The shopify domain
-     *
-     * @return string|null
-     */
-    public function sanitizeShopDomain(?string $domain): ?string
-    {
-        if (empty($domain)) {
-            return null;
-        }
-
-        $configEndDomain = $this->getConfig('myshopify_domain');
-        $domain = strtolower(preg_replace('/https?:\/\//i', '', trim($domain)));
-
-        if (strpos($domain, $configEndDomain) === false && strpos($domain, '.') === false) {
-            // No myshopify.com ($configEndDomain) in shop's name
-            $domain .= ".{$configEndDomain}";
-        }
-
-        // Return the host after cleaned up
-        return parse_url("https://{$domain}", PHP_URL_HOST);
     }
 
     /**

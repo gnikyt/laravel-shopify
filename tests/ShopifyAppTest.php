@@ -23,7 +23,6 @@ class ShopifyAppTest extends TestCase
 
         // ShopApp instance
         $this->shopifyApp = new ShopifyApp(
-            $this->app,
             $this->shopQuery,
             $this->app->make(ShopSession::class)
         );
@@ -77,29 +76,6 @@ class ShopifyAppTest extends TestCase
         $this->app['config']->set('shopify-app.api_rate_limiting_enabled', true);
 
         $this->assertTrue($this->shopifyApp->api()->isRateLimitingEnabled());
-    }
-
-    public function testShopSanitize(): void
-    {
-        $domains = ['my-shop', 'my-shop.myshopify.com', 'MY-shOp.myshopify.com', 'https://my-shop.myshopify.com/abc/xyz', 'https://my-shop.myshopify.com', 'http://my-shop.myshopify.com'];
-        $domains_2 = ['my-shop', 'my-shop.myshopify.io', 'https://my-shop.myshopify.io', 'http://my-shop.myshopify.io'];
-        $domains_3 = ['', false, null];
-
-        // Test for standard myshopify.com
-        foreach ($domains as $domain) {
-            $this->assertEquals('my-shop.myshopify.com', $this->shopifyApp->sanitizeShopDomain($domain));
-        }
-
-        // Test if someone changed the domain
-        $this->app['config']->set('shopify-app.myshopify_domain', 'myshopify.io');
-        foreach ($domains_2 as $domain) {
-            $this->assertEquals('my-shop.myshopify.io', $this->shopifyApp->sanitizeShopDomain($domain));
-        }
-
-        // Test for empty shops
-        foreach ($domains_3 as $domain) {
-            $this->assertNull($this->shopifyApp->sanitizeShopDomain($domain));
-        }
     }
 
     public function testHmacCreator()

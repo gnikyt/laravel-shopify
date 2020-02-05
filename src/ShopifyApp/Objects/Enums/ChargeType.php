@@ -3,6 +3,7 @@
 namespace OhMyBrew\ShopifyApp\Objects\Enums;
 
 use Funeralzone\ValueObjects\Enums\EnumTrait;
+use Funeralzone\ValueObjects\ValueObject;
 
 /**
  * API types for charges.
@@ -12,7 +13,7 @@ use Funeralzone\ValueObjects\Enums\EnumTrait;
  * @method static ChargeType USAGE()
  * @method static ChargeType CREDIT()
  */
-final class ChargeType
+final class ChargeType implements ValueObject
 {
     use EnumTrait;
 

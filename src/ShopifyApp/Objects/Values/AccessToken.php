@@ -11,4 +11,12 @@ use OhMyBrew\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue
 final class AccessToken implements AccessTokenValue
 {
     use StringTrait;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isEmpty(): bool
+    {
+        return empty($this->toNative());
+    }
 }

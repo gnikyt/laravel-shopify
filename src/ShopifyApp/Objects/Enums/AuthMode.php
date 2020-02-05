@@ -3,6 +3,7 @@
 namespace OhMyBrew\ShopifyApp\Objects\Enums;
 
 use Funeralzone\ValueObjects\Enums\EnumTrait;
+use Funeralzone\ValueObjects\ValueObject;
 
 /**
  * API auth modes.
@@ -10,21 +11,21 @@ use Funeralzone\ValueObjects\Enums\EnumTrait;
  * @method static AuthMode OFFLINE()
  * @method static AuthMode PERUSER()
  */
-final class AuthMode
+final class AuthMode implements ValueObject
 {
     use EnumTrait;
 
     /**
      * Offline auth mode.
      *
-     * @var string
+     * @var int
      */
-    public const OFFLINE = 'offline';
+    public const OFFLINE = 0;
 
     /**
      * Per-user auth mode.
      *
-     * @var string
+     * @var int
      */
-    public const PERUSER = 'per-user';
+    public const PERUSER = 1;
 }

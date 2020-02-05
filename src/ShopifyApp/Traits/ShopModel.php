@@ -2,19 +2,23 @@
 
 namespace OhMyBrew\ShopifyApp\Traits;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use OhMyBrew\BasicShopifyAPI;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
-use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
-use OhMyBrew\ShopifyApp\Objects\Values\NullablePlanId;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
-use OhMyBrew\ShopifyApp\Services\ShopSession;
-use OhMyBrew\ShopifyApp\Storage\Models\Charge;
-use OhMyBrew\ShopifyApp\Storage\Models\Charge as ChargeModel;
 use OhMyBrew\ShopifyApp\Storage\Models\Plan;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use OhMyBrew\ShopifyApp\Services\ShopSession;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
+use OhMyBrew\ShopifyApp\Storage\Models\Charge;
+use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use OhMyBrew\ShopifyApp\Objects\Values\AccessToken;
 use OhMyBrew\ShopifyApp\Storage\Scopes\Namespacing;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use OhMyBrew\ShopifyApp\Objects\Values\NullablePlanId;
+use OhMyBrew\ShopifyApp\Storage\Models\Charge as ChargeModel;
+use OhMyBrew\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
+use OhMyBrew\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
 
 /**
  * Responsible for reprecenting a shop record.
@@ -55,17 +59,40 @@ trait ShopModel
     public function api($session = ShopSession::class): BasicShopifyAPI
     {
         if (!$this->api) {
-            // Get the domain and token
-            $shopDomain = new ShopDomain($this->username);
-            $token = (new $session())->getToken();
-
             // Create new API instance
             $this->api = ShopifyApp::api();
-            $this->api->setSession($shopDomain->toNative(), $token->toNative());
+            $this->api->setSession(
+                $this->getDomain()->toNative(),
+                (new $session())->getToken()->toNative()
+            );
         }
 
         // Return existing instance
         return $this->api;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getId(): ShopId
+    {
+        return new ShopId($this->id);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDomain(): ShopDomainValue
+    {
+        return new ShopDomain($this->name);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getToken(): AccessTokenValue
+    {
+        return new AccessToken($this->password);
     }
 
     /**
@@ -127,6 +154,6 @@ trait ShopModel
      */
     public function hasOfflineAccess(): bool
     {
-        return !empty($this->password);
+        return !$this->getToken()->isNull();
     }
 }

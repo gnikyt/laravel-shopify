@@ -3,6 +3,7 @@
 namespace OhMyBrew\ShopifyApp\Objects\Enums;
 
 use Funeralzone\ValueObjects\Enums\EnumTrait;
+use Funeralzone\ValueObjects\ValueObject;
 
 /**
  * API types for plans.
@@ -10,7 +11,7 @@ use Funeralzone\ValueObjects\Enums\EnumTrait;
  * @method static PlanType RECURRING()
  * @method static PlanType ONETIME()
  */
-final class PlanType
+final class PlanType implements ValueObject
 {
     use EnumTrait;
 

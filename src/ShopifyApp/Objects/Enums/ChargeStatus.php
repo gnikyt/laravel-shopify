@@ -3,6 +3,7 @@
 namespace OhMyBrew\ShopifyApp\Objects\Enums;
 
 use Funeralzone\ValueObjects\Enums\EnumTrait;
+use Funeralzone\ValueObjects\ValueObject;
 
 /**
  * API charge status.
@@ -12,35 +13,35 @@ use Funeralzone\ValueObjects\Enums\EnumTrait;
  * @method static ChargeStatus DECLINED()
  * @method static ChargeStatus CANCELLED()
  */
-final class ChargeStatus
+final class ChargeStatus implements ValueObject
 {
     use EnumTrait;
 
     /**
      * Status: Active.
      *
-     * @var string
+     * @var int
      */
-    public const ACTIVE = 'active';
+    public const ACTIVE = 0;
 
     /**
      * Status: Accepted.
      *
-     * @var string
+     * @var int
      */
-    public const ACCEPTED = 'accepted';
+    public const ACCEPTED = 1;
 
     /**
      * Status: Declines.
      *
-     * @var string
+     * @var int
      */
-    public const DECLINED = 'declined';
+    public const DECLINED = 2;
 
     /**
      * Status: Cancelled.
      *
-     * @var string
+     * @var int
      */
-    public const CANCELLED = 'cancelled';
+    public const CANCELLED = 3;
 }

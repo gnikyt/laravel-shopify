@@ -9,4 +9,10 @@ use Funeralzone\ValueObjects\ValueObject;
  */
 interface AccessToken extends ValueObject
 {
+    /**
+     * Detects if the string is empty.
+     *
+     * @return bool
+     */
+    public function isEmpty(): bool;
 }
