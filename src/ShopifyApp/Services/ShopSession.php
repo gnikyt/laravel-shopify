@@ -291,35 +291,31 @@ class ShopSession
 
         $this->agent = new Agent();
 
-        try {
-            $browser = $this->getBrowserDetails();
-            $platform = $this->getPlatformDetails();
+        $browser = $this->getBrowserDetails();
+        $platform = $this->getPlatformDetails();
 
-            if ($this->agent->browser() == 'Chrome' && $browser['float'] < 67) {
-                $compatible = false;
-            }
-
-            if ($this->agent->is('iOS') && $platform['float'] < 13) {
-                $compatible = false;
-            }
-
-            if ($this->agent->is('OS X') &&
-                ($this->agent->browser() == 'Safari' && !$this->agent->is('iOS')) &&
-                $platform['float'] < 10.15
-            ) {
-                $compatible = false;
-            }
-
-            if ($this->agent->browser() == 'UCBrowser' &&
-                $browser['float'] < 12.132
-            ) {
-                $compatible = false;
-            }
-
-            return $compatible;
-        } catch (\Exception $e) {
-            return true;
+        if ($this->agent->browser() == 'Chrome' && $browser['float'] < 67) {
+            $compatible = false;
         }
+
+        if ($this->agent->is('iOS') && $platform['float'] < 13) {
+            $compatible = false;
+        }
+
+        if ($this->agent->is('OS X') &&
+            ($this->agent->browser() == 'Safari' && !$this->agent->is('iOS')) &&
+            $platform['float'] < 10.15
+        ) {
+            $compatible = false;
+        }
+
+        if ($this->agent->browser() == 'UCBrowser' &&
+            $browser['float'] < 12.132
+        ) {
+            $compatible = false;
+        }
+
+        return $compatible;
     }
 
     /**
