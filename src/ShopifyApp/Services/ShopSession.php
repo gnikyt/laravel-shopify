@@ -12,8 +12,10 @@ use OhMyBrew\ShopifyApp\Objects\Values\AccessToken;
 use OhMyBrew\ShopifyApp\Objects\Values\NullShopDomain;
 use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use OhMyBrew\ShopifyApp\Contracts\ShopModel as IShopModel;
+use OhMyBrew\ShopifyApp\Objects\Values\NullableAccessToken;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use OhMyBrew\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
+use OhMyBrew\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
 
 /**
  * Responsible for handling session retreival and storage.
@@ -161,14 +163,7 @@ class ShopSession
      */
     public function getType(): AuthMode
     {
-        $peruser = AuthMode::PERUSER();
-        $offline = AuthMode::OFFLINE();
-
-        if (AuthMode::fromNative($this->getConfig('api_grant_mode'))->isSame($peruser)) {
-            return $peruser;
-        }
-
-        return $offline;
+        return AuthMode::fromNative(strtoupper($this->getConfig('api_grant_mode')));
     }
 
     /**
@@ -214,9 +209,9 @@ class ShopSession
      *
      * @param bool $strict Return the token matching the grant type (default: use either).
      *
-     * @return AccessToken
+     * @return AccessTokenValue
      */
-    public function getToken(bool $strict = false): AccessToken
+    public function getToken(bool $strict = false): AccessTokenValue
     {
         // Keys as strings
         $peruser = AuthMode::PERUSER()->toNative();
@@ -224,7 +219,7 @@ class ShopSession
 
         // Token mapping
         $tokens = [
-            $peruser => new AccessToken(Session::get(self::USER_TOKEN)),
+            $peruser => NullableAccessToken::fromNative(Session::get(self::USER_TOKEN)),
             $offline => $this->get()->getToken(),
         ];
 

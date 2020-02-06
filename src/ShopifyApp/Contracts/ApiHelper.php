@@ -16,9 +16,9 @@ interface ApiHelper
     /**
      * Create an API instance (without a context to a shop).
      *
-     * @return self
+     * @return BasicShopifyAPI
      */
-    public function make();
+    public function make(): BasicShopifyAPI;
 
     /**
      * Set an existing API instance.

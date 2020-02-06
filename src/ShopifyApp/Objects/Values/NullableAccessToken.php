@@ -11,6 +11,14 @@ use OhMyBrew\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue
 final class NullableAccessToken extends Nullable implements AccessTokenValue
 {
     /**
+     * {@inheritdoc}
+     */
+    public function isEmpty(): bool
+    {
+        return $this->value->isEmpty();
+    }
+
+    /**
      * @return string
      */
     protected static function nonNullImplementation(): string

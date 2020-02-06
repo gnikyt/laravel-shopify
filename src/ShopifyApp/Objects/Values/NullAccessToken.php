@@ -17,6 +17,6 @@ final class NullAccessToken implements AccessTokenValue
      */
     public function isEmpty(): bool
     {
-        return true
+        return true;
     }
 }

@@ -31,7 +31,7 @@ class ApiHelper implements IApiHelper
     /**
      * {@inheritdoc}
      */
-    public function make(): self
+    public function make(): BasicShopifyAPI
     {
         // Create the instance
         $apiClass = $this->getConfig('api_class');
@@ -49,7 +49,7 @@ class ApiHelper implements IApiHelper
             );
         }
 
-        return $this;
+        return $this->api;
     }
 
     /**
