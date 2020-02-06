@@ -287,39 +287,35 @@ class ShopSession
      */
     private function checkSameSiteNoneCompatible()
     {
-        $compatible = false;
+        $compatible = true;
 
         $this->agent = new Agent();
 
-        try {
-            $browser = $this->getBrowserDetails();
-            $platform = $this->getPlatformDetails();
+        $browser = $this->getBrowserDetails();
+        $platform = $this->getPlatformDetails();
 
-            if ($this->agent->is('Chrome') && $browser['major'] >= 67) {
-                $compatible = true;
-            }
-
-            if ($this->agent->is('iOS') && $platform['major'] > 12) {
-                $compatible = true;
-            }
-
-            if ($this->agent->is('OS X') &&
-                ($this->agent->is('Safari') && !$this->agent->is('iOS')) &&
-                $platform['float'] > 10.14
-            ) {
-                $compatible = true;
-            }
-
-            if ($this->agent->is('UCBrowser') &&
-                $browser['float'] > 12.13
-            ) {
-                $compatible = true;
-            }
-
-            return $compatible;
-        } catch (\Exception $e) {
-            return false;
+        if ($this->agent->browser() == 'Chrome' && $browser['float'] < 67) {
+            $compatible = false;
         }
+
+        if ($this->agent->is('iOS') && $platform['float'] < 13) {
+            $compatible = false;
+        }
+
+        if ($this->agent->is('OS X') &&
+            ($this->agent->browser() == 'Safari' && !$this->agent->is('iOS')) &&
+            $platform['float'] < 10.15
+        ) {
+            $compatible = false;
+        }
+
+        if ($this->agent->browser() == 'UCBrowser' &&
+            $browser['float'] < 12.132
+        ) {
+            $compatible = false;
+        }
+
+        return $compatible;
     }
 
     /**
@@ -329,13 +325,10 @@ class ShopSession
      */
     private function getBrowserDetails()
     {
-        $version = $this->agent->version($this->agent->browser());
-        $pieces = explode('.', str_replace('_', '.', $version));
+        $version = $this->agent->version($this->agent->browser(), Agent::VERSION_TYPE_FLOAT);
 
         return [
-            'major' => $pieces[0],
-            'minor' => $pieces[1],
-            'float' => (float) sprintf('%s.%s', $pieces[0], $pieces[1]),
+            'float' => ($version ?: 0),
         ];
     }
 
@@ -346,13 +339,10 @@ class ShopSession
      */
     private function getPlatformDetails()
     {
-        $version = $this->agent->version($this->agent->platform());
-        $pieces = explode('.', str_replace('_', '.', $version));
+        $version = $this->agent->version($this->agent->platform(), Agent::VERSION_TYPE_FLOAT);
 
         return [
-            'major' => $pieces[0],
-            'minor' => $pieces[1],
-            'float' => (float) sprintf('%s.%s', $pieces[0], $pieces[1]),
+            'float' => ($version ?: 0),
         ];
     }
 }
