@@ -18,7 +18,7 @@ class ChargeTest extends TestCase
         parent::setUp();
 
         $this->query = $this->app->make(IChargeQuery::class);
-        $this->shop = factory($this->app['config']->get('auth.providers.users.model'))->create();
+        $this->shop = factory($this->model)->create();
     }
 
     public function testChargeGetById(): void
@@ -44,7 +44,7 @@ class ChargeTest extends TestCase
 
         // Query it
         $this->assertNotNull(
-            $this->query->getByShopIdAndChargeId(new ShopId($this->shop->id), new ChargeId($charge->id))
+            $this->query->getByShopIdAndChargeId($this->shop->getId(0), new ChargeId($charge->id))
         );
 
         // Query non-existant

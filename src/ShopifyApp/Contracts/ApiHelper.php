@@ -18,7 +18,7 @@ interface ApiHelper
      *
      * @return self
      */
-    public function createApi();
+    public function make();
 
     /**
      * Set an existing API instance.

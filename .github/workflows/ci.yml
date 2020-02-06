@@ -12,7 +12,7 @@ jobs:
         php-versions: ['7.3']
         laravel-versions: ['5.8', '6.0']
 
-    name: PHP ${{ matrix.php-versions }} / Laravel ${{ matrix.laravel-version }}
+    name: PHP ${{ matrix.php-versions }} / Laravel ${{ matrix.laravel-versions }}
 
     steps:
     - name: Checkout

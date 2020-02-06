@@ -128,6 +128,14 @@ trait ShopModel
     /**
      * {@inheritdoc}
      */
+    public function api(): BasicShopifyAPI
+    {
+        return (resolve(ShopSession::class))->api();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function planCharge(NullablePlanId $planId = null): ?ChargeModel
     {
         return $this

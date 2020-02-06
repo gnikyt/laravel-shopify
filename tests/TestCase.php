@@ -11,6 +11,8 @@ use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 abstract class TestCase extends OrchestraTestCase
 {
+    protected $model;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -18,6 +20,9 @@ abstract class TestCase extends OrchestraTestCase
         // Setup database
         $this->setupDatabase($this->app);
         $this->withFactories(__DIR__.'/../src/ShopifyApp/resources/database/factories');
+
+        // Assign the user model
+        $this->model = $this->app['config']->get('auth.providers.users.model');
     }
 
     protected function getPackageProviders($app): array

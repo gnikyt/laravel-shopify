@@ -10,14 +10,12 @@ use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
 class ShopTest extends TestCase
 {
     protected $query;
-    protected $model;
 
     public function setUp(): void
     {
         parent::setUp();
 
         $this->query = $this->app->make(IShopQuery::class);
-        $this->model = $this->app['config']->get('auth.providers.users.model');
     }
 
     public function testShopGetById(): void
@@ -26,7 +24,7 @@ class ShopTest extends TestCase
         $shop = factory($this->model)->create();
 
         // Query it
-        $this->assertNotNull($this->query->getById(new ShopId($shop->id)));
+        $this->assertNotNull($this->query->getById($shop->getId()));
 
         // Query non-existant
         $this->assertNull($this->query->getById(new ShopId(10)));
@@ -38,7 +36,7 @@ class ShopTest extends TestCase
         $shop = factory($this->model)->create();
 
         // Query it
-        $this->assertNotNull($this->query->getByDomain(new ShopDomain($shop->name)));
+        $this->assertNotNull($this->query->getByDomain($shop->getDomain()));
 
         // Query non-existant
         $this->assertNull($this->query->getByDomain(new ShopDomain('non-existant.myshopify.com')));

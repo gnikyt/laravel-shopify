@@ -7,10 +7,12 @@ use Illuminate\Auth\AuthManager;
 use Illuminate\Support\Facades\Session;
 use OhMyBrew\ShopifyApp\Objects\Enums\AuthMode;
 use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
 use OhMyBrew\ShopifyApp\Objects\Values\AccessToken;
 use OhMyBrew\ShopifyApp\Objects\Values\NullShopDomain;
 use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use OhMyBrew\ShopifyApp\Contracts\ShopModel as IShopModel;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use OhMyBrew\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
 
 /**
@@ -49,6 +51,13 @@ class ShopSession
     protected $shopCommand;
 
     /**
+     * The queries for shop.
+     *
+     * @var IShopQuery
+     */
+    protected $shopQuery;
+
+    /**
      * The Laravel auth manager.
      *
      * @var AuthManager
@@ -72,43 +81,59 @@ class ShopSession
     /**
      * Constructor for shop session class.
      *
+     * @param AuthManager   $auth         The Laravel auth manager.
      * @param IApiHelper    $apiHelper    The API helper.
      * @param CookieHelper  $cookieHelper The cookie helper.
-     * @param AuthManager   $auth        The Laravel auth manager.
      * @param IShopCommand  $shopCommand  The commands for shop.
+     * @param IShopQuery    $shopQuery    The queries for shop.
      *
      * @return self
      */
     public function __construct(
+        AuthManager $auth,
         IApiHelper $apiHelper,
         CookieHelper $cookieHelper,
-        AuthManager $auth,
-        IShopCommand $shopCommand
+        IShopCommand $shopCommand,
+        IShopQuery $shopQuery
     ) {
+        $this->auth = $auth;
         $this->apiHelper = $apiHelper;
         $this->cookieHelper = $cookieHelper;
-        $this->auth = $auth;
         $this->shopCommand = $shopCommand;
+        $this->shopQuery = $shopQuery;
     }
 
     /**
-     * Wrapper for auth->user().
+     * Wrapper for auth->guard()->user().
      *
      * @return IShopModel|null
      */
-    public function getShop(): ?IShopModel
+    public function get(): ?IShopModel
     {
         return $this->auth->guard()->user();
     }
 
     /**
-     * Wrapper for checking if getSession is valid.
+     * Wrapper for auth->guard()->guest().
      *
      * @return bool
      */
-    public function hasSession(): bool
+    public function guest(): bool
     {
-        return $this->getShop() !== null;
+        return $this->auth->guard()->guest();
+    }
+
+    /**
+     * Login a shop.
+     *
+     * @return self
+     */
+    public function make(ShopDomain $domain): self
+    {
+        $shop = $this->shopQuery->getByDomain($domain, [], true);
+        $this->auth->guard()->login($shop);
+
+        return $this;
     }
 
     /**
@@ -117,13 +142,10 @@ class ShopSession
     public function api(): BasicShopifyAPI
     {
         if (!$this->api) {
-            // Get the shop
-            $shop = $this->getShop();
-
             // Create new API instance
-            $this->api = $this->apiHelper->createApi();
+            $this->api = $this->apiHelper->make();
             $this->api->setSession(
-                $shop->getDomain()->toNative(),
+                $this->get()->getDomain()->toNative(),
                 $this->getToken()->toNative()
             );
         }
@@ -181,7 +203,7 @@ class ShopSession
             $this->sessionSet(self::USER_TOKEN, $token->toNative());
         } else {
             // Offline
-            $this->shopCommand->setAccessToken($this->getShop()->getId(), $token);
+            $this->shopCommand->setAccessToken($this->get()->getId(), $token);
         }
 
         return $this;
@@ -203,7 +225,7 @@ class ShopSession
         // Token mapping
         $tokens = [
             $peruser => new AccessToken(Session::get(self::USER_TOKEN)),
-            $offline => $this->getShop()->getToken(),
+            $offline => $this->get()->getToken(),
         ];
 
         if ($strict) {
@@ -264,7 +286,7 @@ class ShopSession
     public function isValid(IShopModel $shop): bool
     {
         // Grab the domain and token for comparison
-        $currentShop = $this->getShop();
+        $currentShop = $this->get();
         $currentToken = $this->getToken(true);
         $currentDomain = $currentShop ? $currentShop->getDomain() : new NullShopDomain();
 

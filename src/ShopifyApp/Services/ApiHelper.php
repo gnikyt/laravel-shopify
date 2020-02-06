@@ -31,7 +31,7 @@ class ApiHelper implements IApiHelper
     /**
      * {@inheritdoc}
      */
-    public function createApi(): self
+    public function make(): self
     {
         // Create the instance
         $apiClass = $this->getConfig('api_class');
