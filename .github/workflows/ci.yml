@@ -1,0 +1,34 @@
+name: PHP Composer
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      max-parallel: 3
+      matrix:
+        php-versions: ['7.2', '7.3']
+
+    name: PHP ${{ matrix.php-versions }} Test
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+  
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v1
+      with:
+        php-version: ${{ matrix.php-versions }}
+        coverage: xdebug
+        tools: composer
+
+    - name: Validate composer.json and composer.lock
+      run: composer validate
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress --no-suggest
+
+    - name: Run test suite
+      run: composer run-script test
