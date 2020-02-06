@@ -3,7 +3,6 @@
 namespace OhMyBrew\ShopifyApp\Test\Services;
 
 use OhMyBrew\BasicShopifyAPI;
-use Illuminate\Support\Facades\Config;
 use OhMyBrew\ShopifyApp\Test\TestCase;
 use OhMyBrew\ShopifyApp\Services\ShopSession;
 use OhMyBrew\ShopifyApp\Objects\Enums\AuthMode;
@@ -47,15 +46,6 @@ class ShopSessionTest extends TestCase
 
         // Confirm
         $this->assertTrue($this->shopSession->isType(AuthMode::PERUSER()));
-    }
-
-    public function testApiInstance(): void
-    {
-        // Create the shop and log them in
-        $shop = factory($this->model)->create();
-        $this->shopSession->make($shop->getDomain());
-
-        $this->assertInstanceOf(BasicShopifyAPI::class, $this->shopSession->api());
     }
 
     public function testGetToken(): void

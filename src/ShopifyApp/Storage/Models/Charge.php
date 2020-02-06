@@ -85,7 +85,7 @@ class Charge extends Model
             case ChargeType::CREDIT()->toNative():
                 $type = 'application_credit';
                 break;
-            case ChargeType::ONETIME()->toNative():
+            case ChargeType::CHARGE()->toNative():
                 $type = 'application_charge';
                 break;
             default:

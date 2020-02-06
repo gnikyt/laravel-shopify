@@ -139,24 +139,6 @@ class ShopSession
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function api(): BasicShopifyAPI
-    {
-        if (!$this->api) {
-            // Create new API instance
-            $this->api = $this->apiHelper->make();
-            $this->api->setSession(
-                $this->get()->getDomain()->toNative(),
-                $this->getToken()->toNative()
-            );
-        }
-
-        // Return existing instance
-        return $this->api;
-    }
-
-    /**
      * Determines the type of access.
      *
      * @return string

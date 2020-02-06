@@ -34,14 +34,6 @@ abstract class TestCase extends OrchestraTestCase
         ];
     }
 
-    protected function getPackageAliases($app): array
-    {
-        // For the facade
-        return [
-            'ShopifyApp' => \OhMyBrew\ShopifyApp\Facades\ShopifyApp::class,
-        ];
-    }
-
     protected function resolveApplicationHttpKernel($app): void
     {
         // For adding custom the shop middleware

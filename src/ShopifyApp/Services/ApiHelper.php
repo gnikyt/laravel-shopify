@@ -33,7 +33,7 @@ class ApiHelper implements IApiHelper
     /**
      * {@inheritdoc}
      */
-    public function make(): BasicShopifyAPI
+    public function make(): self
     {
         // Create the instance
         $apiClass = $this->getConfig('api_class');
@@ -51,7 +51,7 @@ class ApiHelper implements IApiHelper
             );
         }
 
-        return $this->api;
+        return $this;
     }
 
     /**
@@ -102,12 +102,13 @@ class ApiHelper implements IApiHelper
         return $this->api->getAuthUrl(
             $scopes,
             URL::secure($this->getConfig('api_redirect')),
-            $mode->toNative()
+            strtolower($mode->toNative())
         );
     }
 
     /**
      * {@inheritdoc}
+     * @codeCoverageIgnore No need to retest.
      */
     public function verifyRequest(array $request): bool
     {
@@ -116,6 +117,7 @@ class ApiHelper implements IApiHelper
 
     /**
      * {@inheritdoc}
+     * @codeCoverageIgnore No need to retest.
      */
     public function getAccessData(string $code)
     {
@@ -138,7 +140,7 @@ class ApiHelper implements IApiHelper
 
         // Fire the request
         $response = $this->doRequest(
-            ApiMethod::GET()->toNative(),
+            ApiMethod::GET(),
             '/admin/script_tags.json',
             $reqParams
         );
@@ -153,7 +155,7 @@ class ApiHelper implements IApiHelper
     {
         // Fire the request
         $response = $this->doRequest(
-            ApiMethod::POST()->toNative(),
+            ApiMethod::POST(),
             '/admin/script_tags.json',
             ['script_tag' => $payload]
         );
@@ -166,13 +168,16 @@ class ApiHelper implements IApiHelper
      */
     public function getCharge(ChargeType $chargeType, ChargeId $chargeId): object
     {
+        // API path
+        $typeString = $this->chargeApiPath($chargeType);
+
         // Fire the request
         $response = $this->doRequest(
-            ApiMethod::GET()->toNative(),
-            "/admin/{$chargeType->toNative()}/{$chargeId->toNative()}.json"
+            ApiMethod::GET(),
+            "/admin/{$typeString}s/{$chargeId->toNative()}.json"
         );
 
-        return $response->body->{substr($chargeType->toNative(), 0, -1)};
+        return $response->body->{$typeString};
     }
 
     /**
@@ -180,13 +185,16 @@ class ApiHelper implements IApiHelper
      */
     public function activateCharge(ChargeType $chargeType, ChargeId $chargeId): object
     {
+        // API path
+        $typeString = $this->chargeApiPath($chargeType);
+
         // Fire the request
         $response = $this->doRequest(
-            ApiMethod::POST()->toNative(),
-            "/admin/{$chargeType->toNative()}/{$chargeId->toNative()}/activate.json"
+            ApiMethod::POST(),
+            "/admin/{$typeString}s/{$chargeId->toNative()}/activate.json"
         );
 
-        return $response->body->{substr($chargeType->toNative(), 0, -1)};
+        return $response->body->{$typeString};
     }
 
     /**
@@ -194,14 +202,17 @@ class ApiHelper implements IApiHelper
      */
     public function createCharge(ChargeType $chargeType, PlanDetailsTransfer $payload): object
     {
+        // API path
+        $typeString = $this->chargeApiPath($chargeType);
+
         // Fire the request
         $response = $this->doRequest(
-            ApiMethod::POST()->toNative(),
-            "/admin/{$chargeType->toNative()}.json",
+            ApiMethod::POST(),
+            "/admin/{$typeString}s.json",
             ['charge' => (array) $payload]
         );
 
-        return $response->body->{substr($chargeType->toNative(), 0, -1)};
+        return $response->body->{$typeString};
     }
 
     /**
@@ -220,7 +231,7 @@ class ApiHelper implements IApiHelper
 
         // Fire the request
         $response = $this->doRequest(
-            ApiMethod::GET()->toNative(),
+            ApiMethod::GET(),
             '/admin/webhooks.json',
             $reqParams
         );
@@ -235,7 +246,7 @@ class ApiHelper implements IApiHelper
     {
         // Fire the request
         $response = $this->doRequest(
-            ApiMethod::POST()->toNative(),
+            ApiMethod::POST(),
             '/admin/webhooks.json',
             ['webhook' => $payload]
         );
@@ -246,13 +257,15 @@ class ApiHelper implements IApiHelper
     /**
      * {@inheritdoc}
      */
-    public function deleteWebhook(int $webhookId): void
+    public function deleteWebhook(int $webhookId): object
     {
         // Fire the request
-        $this->doRequest(
-            ApiMethod::DELETE()->toNative(),
+        $response = $this->doRequest(
+            ApiMethod::DELETE(),
             "/admin/webhooks/{$webhookId}.json"
         );
+
+        return $response->body;
     }
 
     /**
@@ -262,8 +275,8 @@ class ApiHelper implements IApiHelper
     {
         // Fire the request
         $response = $this->doRequest(
-            ApiMethod::POST()->toNative(),
-            "/admin/recurring_application_charges/{$payload->chargeId}/usage_charges.json",
+            ApiMethod::POST(),
+            "/admin/recurring_application_charges/{$payload->chargeId->toNative()}/usage_charges.json",
             [
                 'usage_charge' => [
                     'price'       => $payload->price,
@@ -273,6 +286,23 @@ class ApiHelper implements IApiHelper
         );
 
         return $response->body->usage_charge;
+    }
+
+    /**
+     * Converts ChargeType enum into an API path.
+     *
+     * @param ChargeType $chargeType The charge type.
+     *
+     * @return string
+     */
+    protected function chargeApiPath(ChargeType $chargeType): string
+    {
+        // Convert to API path
+        $format = $chargeType->isSame(ChargeType::RECURRING()) ?
+            '%s_application_charge' :
+            'application_%s';
+
+        return sprintf($format, strtolower($chargeType->toNative()));
     }
 
     /**
@@ -287,9 +317,9 @@ class ApiHelper implements IApiHelper
     protected function doRequest(ApiMethod $method, string $path, array $payload = null)
     {
         $response = $this->api->rest($method->toNative(), $path, $payload);
-        if (!$response || $response->errors === true) {
+        if (!$response || property_exists($response->body, 'errors')) {
             // Request error somewhere, throw the exception
-            throw new ApiException($response->exception);
+            throw new ApiException($response->body->errors);
         }
 
         return $response;

@@ -22,7 +22,7 @@ $factory->state(Charge::class, 'type_recurring', [
 ]);
 
 $factory->state(Charge::class, 'type_onetime', [
-    'type' => ChargeType::ONETIME()->toNative(),
+    'type' => ChargeType::CHARGE()->toNative(),
 ]);
 
 $factory->state(Charge::class, 'type_usage', [

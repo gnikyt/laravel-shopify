@@ -18,9 +18,9 @@ interface ApiHelper
     /**
      * Create an API instance (without a context to a shop).
      *
-     * @return BasicShopifyAPI
+     * @return self
      */
-    public function make(): BasicShopifyAPI;
+    public function make();
 
     /**
      * Set an existing API instance.
@@ -139,7 +139,7 @@ interface ApiHelper
      *
      * @return void
      */
-    public function deleteWebhook(int $webhookId): void;
+    public function deleteWebhook(int $webhookId): object;
 
     /**
      * Creates a usage charge for a recurring charge.

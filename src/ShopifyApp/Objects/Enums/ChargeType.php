@@ -29,7 +29,7 @@ final class ChargeType implements ValueObject
      *
      * @var int
      */
-    public const ONETIME = 2;
+    public const CHARGE = 2;
 
     /**
      * Charge: Usage.

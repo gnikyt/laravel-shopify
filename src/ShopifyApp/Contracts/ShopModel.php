@@ -2,10 +2,11 @@
 
 namespace OhMyBrew\ShopifyApp\Contracts;
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use OhMyBrew\BasicShopifyAPI;
+use Illuminate\Contracts\Auth\Authenticatable;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 use OhMyBrew\ShopifyApp\Objects\Values\NullablePlanId;
+use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use OhMyBrew\ShopifyApp\Storage\Models\Charge as ChargeModel;
 use OhMyBrew\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
 use OhMyBrew\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
@@ -61,9 +62,11 @@ interface ShopModel extends Authenticatable
      * Get the API instance for a shop.
      * TODO: Find a better way than using resolve(). However, we can't inject in model constructors.
      *
-     * @return BasicShopifyAPI
+     * @param bool $returnInstance Return the API helper instance of API instance.
+     *
+     * @return BasicShopifyAPI|IApiHelper
      */
-    public function api(): BasicShopifyAPI;
+    public function api(bool $returnInstance = false);
 
     /**
      * Gets the last single or recurring charge for the shop.
