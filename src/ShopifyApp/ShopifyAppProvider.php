@@ -136,7 +136,7 @@ class ShopifyAppProvider extends ServiceProvider
                 return new GetPlanUrlAction(
                     $app->make(IApiHelper::class),
                     $app->make(IPlanQuery::class),
-                    $app->make(IShopQuery::class),
+                    $app->make(IShopQuery::class)
                 );
             }],
             CancelCurrentPlanAction::class => [self::CBIND, function ($app) {
@@ -198,7 +198,7 @@ class ShopifyAppProvider extends ServiceProvider
             CancelChargeAction::class => [self::CBIND, function ($app) {
                 return new CancelChargeAction(
                     $app->make(IChargeCommand::class),
-                    $app->make(ChargeHelper::class),
+                    $app->make(ChargeHelper::class)
                 );
             }],
 
@@ -224,7 +224,7 @@ class ShopifyAppProvider extends ServiceProvider
             ChargeHelper::class => [self::CBIND, function ($app) {
                 return new ChargeHelper(
                     $app->make(IApiHelper::class),
-                    $app->make(IChargeCommand::class),
+                    $app->make(IChargeCommand::class)
                 );
             }],
 
