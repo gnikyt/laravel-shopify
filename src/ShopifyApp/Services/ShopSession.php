@@ -197,8 +197,11 @@ class ShopSession
             $this->sessionSet(self::USER, $access->associated_user);
             $this->sessionSet(self::USER_TOKEN, $token->toNative());
         } else {
-            // Offline
+            // Update the token in database
             $this->shopCommand->setAccessToken($this->get()->getId(), $token);
+
+            // Refresh the model
+            $this->get()->refresh();
         }
 
         return $this;
@@ -254,6 +257,7 @@ class ShopSession
 
     /**
      * Forgets anything in session.
+     * Log out a shop via auth()->guard()->logout().
      *
      * @return self
      */
@@ -266,7 +270,7 @@ class ShopSession
         }
 
         // Logout the shop if logged in
-        $this->guard->logout();
+        $this->auth->guard()->logout();
 
         return $this;
     }
@@ -280,13 +284,20 @@ class ShopSession
      */
     public function isValid(IShopModel $shop): bool
     {
-        // Grab the domain and token for comparison
+        // Check if there is an existing session
         $currentShop = $this->get();
-        $currentToken = $this->getToken(true);
-        $currentDomain = $currentShop ? $currentShop->getDomain() : new NullShopDomain();
+        if ($currentShop) {
+            // We have a current shop, validate it and compare domains
+            $currentToken = $this->getToken(true);
+            $currentDomain = $currentShop->getDomain();
 
-        // No token set or domain in session?
-        return !$currentToken->isEmpty() && !$currentDomain->isNull() && $currentDomain->isSame($shop->getDomain());
+            return !$currentToken->isEmpty() &&
+                !$currentDomain->isNull() &&
+                $currentDomain->isSame($shop->getDomain());
+        }
+
+        // No current shop, validate it and skip compare of domains
+        return !$shop->getToken()->isEmpty() && !$shop->getDomain()->isNull();
     }
 
     /**

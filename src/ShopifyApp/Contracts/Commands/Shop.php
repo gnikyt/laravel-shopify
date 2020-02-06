@@ -17,7 +17,7 @@ interface Shop
      *
      * @return ShopId
      */
-    public function create(ShopDomainValue $domain, AccessTokenValue $token): ShopId;
+    public function make(ShopDomainValue $domain, AccessTokenValue $token): ShopId;
 
     /**
      * Sets a plan to a shop, meanwhile cancelling freemium.

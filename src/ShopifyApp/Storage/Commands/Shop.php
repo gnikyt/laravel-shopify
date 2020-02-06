@@ -44,13 +44,13 @@ class Shop implements ShopCommand
     /**
      * {@inheritdoc}
      */
-    public function create(ShopDomainValue $domain, AccessTokenValue $token): ShopId
+    public function make(ShopDomainValue $domain, AccessTokenValue $token): ShopId
     {
         $model = $this->model;
         $shop = new $model();
         $shop->name = $domain->toNative();
         $shop->password = $token->toNative();
-        $shop->email = '';
+        $shop->email = "shop@{$domain->toNative()}";
         $shop->save();
 
         return $shop->getId();
