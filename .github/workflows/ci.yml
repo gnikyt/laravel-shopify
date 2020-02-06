@@ -1,4 +1,4 @@
-name: PHP Composer
+name: Package Test
 
 on: [push]
 
@@ -9,9 +9,10 @@ jobs:
     strategy:
       max-parallel: 3
       matrix:
-        php-versions: ['7.2', '7.3']
+        php-versions: ['7.3']
+        laravel-versions: ['5.8', '6.0']
 
-    name: PHP ${{ matrix.php-versions }} Test
+    name: PHP ${{ matrix.php-versions }} / Laravel ${{ matrix.laravel-version }}
 
     steps:
     - name: Checkout
@@ -26,6 +27,9 @@ jobs:
 
     - name: Validate composer.json and composer.lock
       run: composer validate
+
+    - name: Install Laravel package
+      run: composer require "laravel/framework:${{ matrix.laravel-versions }}" --no-update
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest
