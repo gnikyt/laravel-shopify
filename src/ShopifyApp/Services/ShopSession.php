@@ -2,13 +2,14 @@
 
 namespace OhMyBrew\ShopifyApp\Services;
 
+use OhMyBrew\BasicShopifyAPI;
+use Illuminate\Auth\AuthManager;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Contracts\Auth\StatefulGuard;
-use Illuminate\Contracts\Auth\Authenticatable;
 use OhMyBrew\ShopifyApp\Objects\Enums\AuthMode;
 use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
 use OhMyBrew\ShopifyApp\Objects\Values\AccessToken;
 use OhMyBrew\ShopifyApp\Objects\Values\NullShopDomain;
+use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use OhMyBrew\ShopifyApp\Contracts\ShopModel as IShopModel;
 use OhMyBrew\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
 
@@ -34,6 +35,13 @@ class ShopSession
     public const USER_TOKEN = 'shopify_token';
 
     /**
+     * The API helper.
+     *
+     * @var IApiHelper
+     */
+    protected $apiHelper;
+
+    /**
      * The commands for shop.
      *
      * @var IShopCommand
@@ -41,11 +49,11 @@ class ShopSession
     protected $shopCommand;
 
     /**
-     * The Laravel guard.
+     * The Laravel auth manager.
      *
-     * @var StatefulGuard
+     * @var AuthManager
      */
-    protected $guard;
+    protected $auth;
 
     /**
      * The cookie helper.
@@ -55,32 +63,42 @@ class ShopSession
     protected $cookieHelper;
 
     /**
+     * API instance cached.
+     *
+     * @var BasicShopifyAPI
+     */
+    protected $api;
+
+    /**
      * Constructor for shop session class.
      *
-     * @param IShopCommand  $shopCommand  The commands for shop.
-     * @param StatefulGuard $guard        The Laravel guard.
+     * @param IApiHelper    $apiHelper    The API helper.
      * @param CookieHelper  $cookieHelper The cookie helper.
+     * @param AuthManager   $auth        The Laravel auth manager.
+     * @param IShopCommand  $shopCommand  The commands for shop.
      *
      * @return self
      */
     public function __construct(
-        IShopCommand $shopCommand,
-        StatefulGuard $guard,
-        CookieHelper $cookieHelper
+        IApiHelper $apiHelper,
+        CookieHelper $cookieHelper,
+        AuthManager $auth,
+        IShopCommand $shopCommand
     ) {
-        $this->shopCommand = $shopCommand;
-        $this->guard = $guard;
+        $this->apiHelper = $apiHelper;
         $this->cookieHelper = $cookieHelper;
+        $this->auth = $auth;
+        $this->shopCommand = $shopCommand;
     }
 
     /**
      * Wrapper for auth->user().
      *
-     * @return Authenticatable|null
+     * @return IShopModel|null
      */
-    public function getShop(): ?Authenticatable
+    public function getShop(): ?IShopModel
     {
-        return $this->guard->user();
+        return $this->auth->guard()->user();
     }
 
     /**
@@ -91,6 +109,27 @@ class ShopSession
     public function hasSession(): bool
     {
         return $this->getShop() !== null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function api(): BasicShopifyAPI
+    {
+        if (!$this->api) {
+            // Get the shop
+            $shop = $this->getShop();
+
+            // Create new API instance
+            $this->api = $this->apiHelper->createApi();
+            $this->api->setSession(
+                $shop->getDomain()->toNative(),
+                $this->getToken()->toNative()
+            );
+        }
+
+        // Return existing instance
+        return $this->api;
     }
 
     /**

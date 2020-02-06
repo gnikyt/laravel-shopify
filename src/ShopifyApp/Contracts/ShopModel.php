@@ -2,7 +2,7 @@
 
 namespace OhMyBrew\ShopifyApp\Contracts;
 
-use OhMyBrew\BasicShopifyAPI;
+use Illuminate\Contracts\Auth\Authenticatable;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 use OhMyBrew\ShopifyApp\Objects\Values\NullablePlanId;
 use OhMyBrew\ShopifyApp\Storage\Models\Charge as ChargeModel;
@@ -12,15 +12,8 @@ use OhMyBrew\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue
 /**
  * Reprecents the shop model.
  */
-interface ShopModel
+interface ShopModel extends Authenticatable
 {
-    /**
-     * Creates or returns an instance of API for the shop.
-     *
-     * @return BasicShopifyAPI
-     */
-    public function api(): BasicShopifyAPI;
-
     /**
      * Get shop ID as a value object.
      *

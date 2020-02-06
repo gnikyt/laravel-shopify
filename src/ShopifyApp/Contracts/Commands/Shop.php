@@ -2,9 +2,10 @@
 
 namespace OhMyBrew\ShopifyApp\Contracts\Commands;
 
-use OhMyBrew\ShopifyApp\Contracts\Objects\Values\PlanId;
-use OhMyBrew\ShopifyApp\Objects\Values\AccessToken;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
+use OhMyBrew\ShopifyApp\Contracts\Objects\Values\PlanId as PlanIdValue;
+use OhMyBrew\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
+use OhMyBrew\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
 
 /**
  * Reprecents commands for shops.
@@ -12,24 +13,31 @@ use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 interface Shop
 {
     /**
+     * Create a shop.
+     *
+     * @return ShopId
+     */
+    public function create(ShopDomainValue $domain, AccessTokenValue $token): ShopId;
+
+    /**
      * Sets a plan to a shop, meanwhile cancelling freemium.
      *
-     * @param ShopId   $shopId The shop's ID.
-     * @param ChargeId $planId The plan's ID.
+     * @param ShopId      $shopId The shop's ID.
+     * @param PlanIdValue $planId The plan's ID.
      *
      * @return bool
      */
-    public function setToPlan(ShopId $shopId, PlanId $planId): bool;
+    public function setToPlan(ShopId $shopId, PlanIdValue $planId): bool;
 
     /**
      * Sets the access token (offline) from Shopify to the shop.
      *
-     * @param ShopId      $shopId The shop's ID.
-     * @param AccessToken $token  The token from Shopify Oauth.
+     * @param ShopId           $shopId The shop's ID.
+     * @param AccessTokenValue $token  The token from Shopify Oauth.
      *
      * @return bool
      */
-    public function setAccessToken(ShopId $shopId, AccessToken $token): bool;
+    public function setAccessToken(ShopId $shopId, AccessTokenValue $token): bool;
 
     /**
      * Cleans the shop's properties (token, plan).

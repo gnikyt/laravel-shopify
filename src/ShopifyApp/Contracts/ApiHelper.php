@@ -14,13 +14,27 @@ use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
 interface ApiHelper
 {
     /**
-     * Set the API instance.
+     * Create an API instance (without a context to a shop).
+     *
+     * @return self
+     */
+    public function createApi();
+
+    /**
+     * Set an existing API instance.
      *
      * @param BasicShopifyAPI $api The API instance.
      *
      * @return self
      */
-    public function setInstance(BasicShopifyAPI $api): self;
+    public function setApi(BasicShopifyAPI $api);
+
+    /**
+     * Get the existing instance.
+     *
+     * @return BasicShopifyAPI
+     */
+    public function getApi(): BasicShopifyAPI;
 
     /**
      * Build the authentication URL to Shopify.

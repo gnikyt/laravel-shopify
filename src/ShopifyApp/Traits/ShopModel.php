@@ -56,24 +56,6 @@ trait ShopModel
     /**
      * {@inheritdoc}
      */
-    public function api($session = ShopSession::class): BasicShopifyAPI
-    {
-        if (!$this->api) {
-            // Create new API instance
-            $this->api = ShopifyApp::api();
-            $this->api->setSession(
-                $this->getDomain()->toNative(),
-                (new $session())->getToken()->toNative()
-            );
-        }
-
-        // Return existing instance
-        return $this->api;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getId(): ShopId
     {
         return new ShopId($this->id);
@@ -138,6 +120,14 @@ trait ShopModel
     /**
      * {@inheritdoc}
      */
+    public function hasOfflineAccess(): bool
+    {
+        return !$this->getToken()->isNull();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function planCharge(NullablePlanId $planId = null): ?ChargeModel
     {
         return $this
@@ -147,13 +137,5 @@ trait ShopModel
             ->where('plan_id', $planId ?? $this->plan_id)
             ->orderBy('created_at', 'desc')
             ->first();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function hasOfflineAccess(): bool
-    {
-        return !$this->getToken()->isNull();
     }
 }

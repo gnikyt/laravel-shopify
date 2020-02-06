@@ -212,9 +212,10 @@ class ShopifyAppProvider extends ServiceProvider
             // Services (end)
             ShopSession::class => [self::CBIND, function ($app) {
                 return new ShopSession(
-                    $app->make(IShopCommand::class),
+                    $app->make(IApiHelper::class),
+                    $app->make(CookieHelper::class),
                     $app->make(AuthManager::class),
-                    $app->make(CookieHelper::class)
+                    $app->make(IShopCommand::class)
                 );
             }],
             CookieHelper::class => [self::CBIND, function () {
@@ -230,6 +231,7 @@ class ShopifyAppProvider extends ServiceProvider
             // Facades
             'shopifyapp' => [self::CBIND, function ($app) {
                 return new ShopifyApp(
+                    $app->make(IShopCommand::class),
                     $app->make(IShopQuery::class),
                     $app->make(ShopSession::class)
                 );

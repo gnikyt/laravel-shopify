@@ -31,11 +31,43 @@ class ApiHelper implements IApiHelper
     /**
      * {@inheritdoc}
      */
-    public function setInstance(BasicShopifyAPI $api): self
+    public function createApi(): self
+    {
+        // Create the instance
+        $apiClass = $this->getConfig('api_class');
+        $this->api = new $apiClass();
+        $this->api
+            ->setApiKey($this->getConfig('api_class'))
+            ->setApiSecret($this->getConfig('api_secret'))
+            ->setVersion($this->getConfig('api_version'));
+
+        // Enable basic rate limiting?
+        if ($this->getConfig('api_rate_limiting_enabled') === true) {
+            $this->api->enableRateLimiting(
+                $this->getConfig('api_rate_limit_cycle'),
+                $this->getConfig('api_rate_limit_cycle_buffer')
+            );
+        }
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setApi(BasicShopifyAPI $api): self
     {
         $this->api = $api;
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getApi(): BasicShopifyAPI
+    {
+        return $this->api;
     }
 
     /**
@@ -47,7 +79,7 @@ class ApiHelper implements IApiHelper
      *
      * @return void
      */
-    public function withInstance(BasicShopifyAPI $api, Closure $fn): void
+    public function withApi(BasicShopifyAPI $api, Closure $fn): void
     {
         // Save current instance
         $currentApi = $this->api;

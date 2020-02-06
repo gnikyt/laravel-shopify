@@ -2,18 +2,29 @@
 
 namespace OhMyBrew\ShopifyApp\Storage\Commands;
 
-use OhMyBrew\ShopifyApp\Contracts\Commands\Shop as ShopCommand;
-use OhMyBrew\ShopifyApp\Contracts\Objects\Values\PlanId;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
 use OhMyBrew\ShopifyApp\Contracts\ShopModel;
-use OhMyBrew\ShopifyApp\Objects\Values\AccessToken;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
+use OhMyBrew\ShopifyApp\Contracts\Commands\Shop as ShopCommand;
+use OhMyBrew\ShopifyApp\Contracts\Objects\Values\PlanId as PlanIdValue;
+use OhMyBrew\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
+use OhMyBrew\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
+use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Reprecents the commands for shops.
  */
 class Shop implements ShopCommand
 {
+    use ConfigAccessible;
+
+    /**
+     * The shop model (configurable).
+     *
+     * @var ShopModel
+     */
+    protected $model;
+
     /**
      * The querier.
      *
@@ -27,12 +38,28 @@ class Shop implements ShopCommand
     public function __construct(ShopQuery $query)
     {
         $this->query = $query;
+        $this->model = $this->getConfig('user_model');
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function create(ShopDomainValue $domain, AccessTokenValue $token): ShopId
+    {
+        $model = $this->model;
+        $shop = new $model();
+        $shop->name = $domain->toNative();
+        $shop->password = $token->toNative();
+        $shop->email = '';
+        $shop->save();
+
+        return $shop->getId();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setToPlan(ShopId $shopId, PlanId $planId): bool
+    public function setToPlan(ShopId $shopId, PlanIdValue $planId): bool
     {
         $shop = $this->getShop($shopId);
         $shop->plan_id = $planId->toNative();
@@ -44,7 +71,7 @@ class Shop implements ShopCommand
     /**
      * {@inheritdoc}
      */
-    public function setAccessToken(ShopId $shopId, AccessToken $token): bool
+    public function setAccessToken(ShopId $shopId, AccessTokenValue $token): bool
     {
         $shop = $this->getShop($shopId);
         $shop->password = $token->toNative();
