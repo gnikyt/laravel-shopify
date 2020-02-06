@@ -4,6 +4,8 @@ namespace OhMyBrew\ShopifyApp\Contracts;
 
 use GuzzleHttp\Exception\RequestException;
 use OhMyBrew\BasicShopifyAPI;
+use OhMyBrew\ShopifyApp\Objects\Enums\AuthMode;
+use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
 use OhMyBrew\ShopifyApp\Objects\Transfers\PlanDetails;
 use OhMyBrew\ShopifyApp\Objects\Transfers\UsageChargeDetails;
 use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
@@ -39,12 +41,12 @@ interface ApiHelper
     /**
      * Build the authentication URL to Shopify.
      *
-     * @param string $mode   The mode of authentication (offline or per-user).
-     * @param string $scopes The scopes for the authentication, comma-separated.
+     * @param AuthMode $mode   The mode of authentication (offline or per-user).
+     * @param string   $scopes The scopes for the authentication, comma-separated.
      *
      * @return string
      */
-    public function buildAuthUrl(string $mode, string $scopes): string;
+    public function buildAuthUrl(AuthMode $mode, string $scopes): string;
 
     /**
      * Determines if the request HMAC is verified.
@@ -85,32 +87,32 @@ interface ApiHelper
     /**
      * Get the charge record.
      *
-     * @param string   $chargeType The type of charge (plural).
-     * @param ChargeId $chargeId   The charge ID.
+     * @param ChargeType $chargeType The type of charge (plural).
+     * @param ChargeId   $chargeId   The charge ID.
      *
      * @return object|RequestException
      */
-    public function getCharge(string $chargeType, ChargeId $chargeId): object;
+    public function getCharge(ChargeType $chargeType, ChargeId $chargeId): object;
 
     /**
      * Activate a charge.
      *
-     * @param string   $chargeType The type of charge (plural).
-     * @param ChargeId $chargeId   The charge ID.
+     * @param ChargeType $chargeType The type of charge (plural).
+     * @param ChargeId   $chargeId   The charge ID.
      *
      * @return object|RequestException
      */
-    public function activateCharge(string $chargeType, ChargeId $chargeId): object;
+    public function activateCharge(ChargeType $chargeType, ChargeId $chargeId): object;
 
     /**
      * Create a charge.
      *
-     * @param string      $chargeType The type of charge (plural).
+     * @param ChargeType  $chargeType The type of charge (plural).
      * @param PlanDetails $payload    The data for the charge creation.
      *
      * @return object
      */
-    public function createCharge(string $chargeType, PlanDetails $payload): object;
+    public function createCharge(ChargeType $chargeType, PlanDetails $payload): object;
 
     /**
      * Get webhooks for the shop.

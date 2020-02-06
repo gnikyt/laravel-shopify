@@ -9,6 +9,8 @@ use OhMyBrew\BasicShopifyAPI;
 use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use OhMyBrew\ShopifyApp\Exceptions\ApiException;
 use OhMyBrew\ShopifyApp\Objects\Enums\ApiMethod;
+use OhMyBrew\ShopifyApp\Objects\Enums\AuthMode;
+use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
 use OhMyBrew\ShopifyApp\Objects\Transfers\PlanDetails as PlanDetailsTransfer;
 use OhMyBrew\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
 use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
@@ -95,12 +97,12 @@ class ApiHelper implements IApiHelper
     /**
      * {@inheritdoc}
      */
-    public function buildAuthUrl(string $mode, string $scopes): string
+    public function buildAuthUrl(AuthMode $mode, string $scopes): string
     {
         return $this->api->getAuthUrl(
             $scopes,
             URL::secure($this->getConfig('api_redirect')),
-            $mode
+            $mode->toNative()
         );
     }
 
@@ -162,44 +164,44 @@ class ApiHelper implements IApiHelper
     /**
      * {@inheritdoc}
      */
-    public function getCharge(string $chargeType, ChargeId $chargeId): object
+    public function getCharge(ChargeType $chargeType, ChargeId $chargeId): object
     {
         // Fire the request
         $response = $this->doRequest(
             ApiMethod::GET()->toNative(),
-            "/admin/{$chargeType}/{$chargeId->toNative()}.json"
+            "/admin/{$chargeType->toNative()}/{$chargeId->toNative()}.json"
         );
 
-        return $response->body->{substr($chargeType, 0, -1)};
+        return $response->body->{substr($chargeType->toNative(), 0, -1)};
     }
 
     /**
      * {@inheritdoc}
      */
-    public function activateCharge(string $chargeType, ChargeId $chargeId): object
+    public function activateCharge(ChargeType $chargeType, ChargeId $chargeId): object
     {
         // Fire the request
         $response = $this->doRequest(
             ApiMethod::POST()->toNative(),
-            "/admin/{$chargeType}/{$chargeId->toNative()}/activate.json"
+            "/admin/{$chargeType->toNative()}/{$chargeId->toNative()}/activate.json"
         );
 
-        return $response->body->{substr($chargeType, 0, -1)};
+        return $response->body->{substr($chargeType->toNative(), 0, -1)};
     }
 
     /**
      * {@inheritdoc}
      */
-    public function createCharge(string $chargeType, PlanDetailsTransfer $payload): object
+    public function createCharge(ChargeType $chargeType, PlanDetailsTransfer $payload): object
     {
         // Fire the request
         $response = $this->doRequest(
             ApiMethod::POST()->toNative(),
-            "/admin/{$chargeType}.json",
+            "/admin/{$chargeType->toNative()}.json",
             ['charge' => (array) $payload]
         );
 
-        return $response->body->{substr($chargeType, 0, -1)};
+        return $response->body->{substr($chargeType->toNative(), 0, -1)};
     }
 
     /**
@@ -276,15 +278,15 @@ class ApiHelper implements IApiHelper
     /**
      * Fire the request using the API instance.
      *
-     * @param string $method  The HTTP method.
-     * @param string $path    The endpoint path.
-     * @param array  $payload The optional payload to send to the endpoint.
+     * @param ApiMode $method  The HTTP method.
+     * @param string  $path    The endpoint path.
+     * @param array   $payload The optional payload to send to the endpoint.
      *
      * @return object|RequestException
      */
-    protected function doRequest(string $method, string $path, array $payload = null)
+    protected function doRequest(ApiMethod $method, string $path, array $payload = null)
     {
-        $response = $this->api->rest($method, $path, $payload);
+        $response = $this->api->rest($method->toNative(), $path, $payload);
         if (!$response || $response->errors === true) {
             // Request error somewhere, throw the exception
             throw new ApiException($response->exception);
