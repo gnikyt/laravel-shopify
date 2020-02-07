@@ -28,7 +28,7 @@ jobs:
     - name: Validate composer.json and composer.lock
       run: composer validate
 
-    - name: Install Laravel package
+    - name: Install Laravel
       run: composer require "laravel/framework:${{ matrix.laravel-versions }}" --no-update
 
     - name: Install dependencies
@@ -37,9 +37,9 @@ jobs:
     - name: Run test suite
       run: composer run-script test
 
-    - name: Upload coverage results to Coveralls
+    - name: Upload Coveralls
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         composer require cedx/coveralls
-        bin/coveralls build/logs/phpunit/clover.xml
+        bin/coveralls build/logs/clover.xml
