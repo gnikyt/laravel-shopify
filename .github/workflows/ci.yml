@@ -25,9 +25,6 @@ jobs:
         coverage: xdebug
         tools: composer
 
-    - name: Validate code style
-      uses: chekalsky/phpcs-action@v1
-
     - name: Validate composer setup
       run: composer validate
 
@@ -36,6 +33,9 @@ jobs:
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest
+
+    - name: Validate code style
+      uses: chekalsky/phpcs-action@v1
 
     - name: Run test suite
       run: composer run-script test
