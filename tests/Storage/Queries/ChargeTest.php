@@ -2,11 +2,11 @@
 
 namespace OhMyBrew\ShopifyApp\Test\Storage\Queries;
 
-use OhMyBrew\ShopifyApp\Test\TestCase;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Charge as IChargeQuery;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 use OhMyBrew\ShopifyApp\Storage\Models\Charge;
+use OhMyBrew\ShopifyApp\Test\TestCase;
 
 class ChargeTest extends TestCase
 {

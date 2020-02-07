@@ -2,10 +2,10 @@
 
 namespace OhMyBrew\ShopifyApp\Test\Storage\Queries;
 
-use OhMyBrew\ShopifyApp\Test\TestCase;
-use OhMyBrew\ShopifyApp\Objects\Values\PlanId;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Plan as IPlanQuery;
+use OhMyBrew\ShopifyApp\Objects\Values\PlanId;
 use OhMyBrew\ShopifyApp\Storage\Models\Plan;
+use OhMyBrew\ShopifyApp\Test\TestCase;
 
 class PlanTest extends TestCase
 {

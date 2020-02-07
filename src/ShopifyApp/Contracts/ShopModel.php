@@ -2,14 +2,14 @@
 
 namespace OhMyBrew\ShopifyApp\Contracts;
 
-use OhMyBrew\BasicShopifyAPI;
 use Illuminate\Contracts\Auth\Authenticatable;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
-use OhMyBrew\ShopifyApp\Objects\Values\NullablePlanId;
+use OhMyBrew\BasicShopifyAPI;
 use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
-use OhMyBrew\ShopifyApp\Storage\Models\Charge as ChargeModel;
-use OhMyBrew\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
 use OhMyBrew\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
+use OhMyBrew\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
+use OhMyBrew\ShopifyApp\Objects\Values\NullablePlanId;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
+use OhMyBrew\ShopifyApp\Storage\Models\Charge as ChargeModel;
 
 /**
  * Reprecents the shop model.

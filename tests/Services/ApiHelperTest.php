@@ -3,15 +3,15 @@
 namespace OhMyBrew\ShopifyApp\Test\Services;
 
 use OhMyBrew\BasicShopifyAPI;
-use OhMyBrew\ShopifyApp\Test\TestCase;
-use OhMyBrew\ShopifyApp\Objects\Enums\AuthMode;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
-use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
-use OhMyBrew\ShopifyApp\Test\Stubs\Api as ApiStub;
 use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use OhMyBrew\ShopifyApp\Exceptions\ApiException;
+use OhMyBrew\ShopifyApp\Objects\Enums\AuthMode;
+use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
 use OhMyBrew\ShopifyApp\Objects\Transfers\PlanDetails as PlanDetailsTransfer;
 use OhMyBrew\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
+use OhMyBrew\ShopifyApp\Test\Stubs\Api as ApiStub;
+use OhMyBrew\ShopifyApp\Test\TestCase;
 
 class ApiHelperTest extends TestCase
 {

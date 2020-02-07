@@ -2,13 +2,13 @@
 
 namespace OhMyBrew\ShopifyApp\Storage\Commands;
 
-use OhMyBrew\ShopifyApp\Contracts\ShopModel;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
 use OhMyBrew\ShopifyApp\Contracts\Commands\Shop as ShopCommand;
+use OhMyBrew\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
 use OhMyBrew\ShopifyApp\Contracts\Objects\Values\PlanId as PlanIdValue;
 use OhMyBrew\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
-use OhMyBrew\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
+use OhMyBrew\ShopifyApp\Contracts\ShopModel;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
 
 /**
@@ -40,7 +40,7 @@ class Shop implements ShopCommand
         $this->query = $query;
         $this->model = $this->getConfig('user_model');
     }
-    
+
     /**
      * {@inheritdoc}
      */

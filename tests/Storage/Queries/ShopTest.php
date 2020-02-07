@@ -2,10 +2,10 @@
 
 namespace OhMyBrew\ShopifyApp\Test\Storage\Queries;
 
-use OhMyBrew\ShopifyApp\Test\TestCase;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
+use OhMyBrew\ShopifyApp\Test\TestCase;
 
 class ShopTest extends TestCase
 {

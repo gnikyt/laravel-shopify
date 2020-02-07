@@ -2,9 +2,9 @@
 
 namespace OhMyBrew\ShopifyApp\Test\Services;
 
-use OhMyBrew\ShopifyApp\Test\TestCase;
-use OhMyBrew\ShopifyApp\Services\ShopSession;
 use OhMyBrew\ShopifyApp\Objects\Enums\AuthMode;
+use OhMyBrew\ShopifyApp\Services\ShopSession;
+use OhMyBrew\ShopifyApp\Test\TestCase;
 
 class ShopSessionTest extends TestCase
 {
@@ -73,7 +73,7 @@ class ShopSessionTest extends TestCase
         // Create the shop and log them in
         $shop = factory($this->model)->create();
         $this->shopSession->make($shop->getDomain());
-        
+
         // Set the data from a fixture
         $data = json_decode(file_get_contents(__DIR__.'/../fixtures/access_token.json'));
         $this->shopSession->setAccess($data);

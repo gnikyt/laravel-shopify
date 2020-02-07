@@ -2,10 +2,10 @@
 
 namespace OhMyBrew\ShopifyApp\Contracts\Commands;
 
-use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
+use OhMyBrew\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
 use OhMyBrew\ShopifyApp\Contracts\Objects\Values\PlanId as PlanIdValue;
 use OhMyBrew\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
-use OhMyBrew\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
 /**
  * Reprecents commands for shops.

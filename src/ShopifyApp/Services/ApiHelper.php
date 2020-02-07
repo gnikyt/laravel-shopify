@@ -118,6 +118,7 @@ class ApiHelper implements IApiHelper
 
     /**
      * {@inheritdoc}
+     *
      * @codeCoverageIgnore No need to retest.
      */
     public function verifyRequest(array $request): bool
@@ -127,6 +128,7 @@ class ApiHelper implements IApiHelper
 
     /**
      * {@inheritdoc}
+     *
      * @codeCoverageIgnore No need to retest.
      */
     public function getAccessData(string $code)

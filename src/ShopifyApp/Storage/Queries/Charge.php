@@ -3,9 +3,9 @@
 namespace OhMyBrew\ShopifyApp\Storage\Queries;
 
 use OhMyBrew\ShopifyApp\Contracts\Queries\Charge as IChargeQuery;
-use OhMyBrew\ShopifyApp\Storage\Models\Charge as ChargeModel;
 use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
+use OhMyBrew\ShopifyApp\Storage\Models\Charge as ChargeModel;
 
 /**
  * Reprecents a queries for charges.
