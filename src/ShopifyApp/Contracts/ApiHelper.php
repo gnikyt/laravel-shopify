@@ -6,6 +6,7 @@ use GuzzleHttp\Exception\RequestException;
 use OhMyBrew\BasicShopifyAPI;
 use OhMyBrew\ShopifyApp\Objects\Enums\AuthMode;
 use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
+use OhMyBrew\ShopifyApp\Objects\Transfers\ApiSession as ApiSessionTransfer;
 use OhMyBrew\ShopifyApp\Objects\Transfers\PlanDetails;
 use OhMyBrew\ShopifyApp\Objects\Transfers\UsageChargeDetails;
 use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
@@ -18,9 +19,11 @@ interface ApiHelper
     /**
      * Create an API instance (without a context to a shop).
      *
+     * @param ApiSessionTransfer $session The shop API session details.
+     *
      * @return self
      */
-    public function make();
+    public function make(ApiSessionTransfer $session = null);
 
     /**
      * Set an existing API instance.

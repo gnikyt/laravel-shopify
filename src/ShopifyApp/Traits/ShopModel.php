@@ -2,6 +2,7 @@
 
 namespace OhMyBrew\ShopifyApp\Traits;
 
+use OhMyBrew\BasicShopifyAPI;
 use OhMyBrew\ShopifyApp\Storage\Models\Plan;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
@@ -15,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use OhMyBrew\ShopifyApp\Objects\Values\NullablePlanId;
 use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use OhMyBrew\ShopifyApp\Storage\Models\Charge as ChargeModel;
+use OhMyBrew\ShopifyApp\Objects\Transfers\ApiSession as ApiSessionTransfer;
 use OhMyBrew\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
 use OhMyBrew\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
 
@@ -24,6 +26,13 @@ use OhMyBrew\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue
 trait ShopModel
 {
     use SoftDeletes;
+
+    /**
+     * The API helper instance.
+     *
+     * @var IApiHelper
+     */
+    public $apiHelper;
 
     /**
      * The "booting" method of the model.
@@ -112,19 +121,28 @@ trait ShopModel
     /**
      * {@inheritdoc}
      */
-    public function api(bool $returnInstance = false)
+    public function apiHelper(): IApiHelper
     {
-        // Make an instance
-        $instance = resolve(IApiHelper::class)->make();
-        $api = $instance->getApi();
+        if ($this->apiHelper === null) {
+            // Set the session
+            $this->apiHelper = resolve(IApiHelper::class)->make(
+                new ApiSessionTransfer($this->getDomain(), $this->getToken())
+            );
+        }
 
-        // Set the session
-        $api->setSession(
-            $this->getDomain()->toNative(),
-            $this->getToken()->toNative()
-        );
-        
-        return $returnInstance ? $instance : $api;
+        return $this->apiHelper;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function api(): BasicShopifyAPI
+    {
+        if ($this->apiHelper === null) {
+            $this->apiHelper();
+        }
+
+        return $this->apiHelper->getApi();
     }
 
     /**

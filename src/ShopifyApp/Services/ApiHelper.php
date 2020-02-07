@@ -11,6 +11,7 @@ use OhMyBrew\ShopifyApp\Exceptions\ApiException;
 use OhMyBrew\ShopifyApp\Objects\Enums\ApiMethod;
 use OhMyBrew\ShopifyApp\Objects\Enums\AuthMode;
 use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
+use OhMyBrew\ShopifyApp\Objects\Transfers\ApiSession as ApiSessionTransfer;
 use OhMyBrew\ShopifyApp\Objects\Transfers\PlanDetails as PlanDetailsTransfer;
 use OhMyBrew\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
 use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
@@ -33,7 +34,7 @@ class ApiHelper implements IApiHelper
     /**
      * {@inheritdoc}
      */
-    public function make(): self
+    public function make(ApiSessionTransfer $session = null): self
     {
         // Create the instance
         $apiClass = $this->getConfig('api_class');
@@ -48,6 +49,15 @@ class ApiHelper implements IApiHelper
             $this->api->enableRateLimiting(
                 $this->getConfig('api_rate_limit_cycle'),
                 $this->getConfig('api_rate_limit_cycle_buffer')
+            );
+        }
+
+        // Set session?
+        if ($session !== null) {
+            // Set the session to the shop's domain/token
+            $this->api->setSession(
+                $session->domain->toNative(),
+                $session->token->toNative()
             );
         }
 

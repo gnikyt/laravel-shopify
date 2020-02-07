@@ -2,11 +2,9 @@
 
 namespace OhMyBrew\ShopifyApp\Test\Services;
 
-use OhMyBrew\BasicShopifyAPI;
 use OhMyBrew\ShopifyApp\Test\TestCase;
 use OhMyBrew\ShopifyApp\Services\ShopSession;
 use OhMyBrew\ShopifyApp\Objects\Enums\AuthMode;
-use OhMyBrew\ShopifyApp\Contracts\ShopModel as IShopModel;
 
 class ShopSessionTest extends TestCase
 {
@@ -27,13 +25,11 @@ class ShopSessionTest extends TestCase
 
         // Test initial state
         $this->assertTrue($this->shopSession->guest());
-        $this->assertNull($this->shopSession->get());
 
         // Login the shop
         $this->shopSession->make($shop->getDomain());
 
         $this->assertFalse($this->shopSession->guest());
-        $this->assertInstanceOf(IShopModel::class, $this->shopSession->get());
     }
 
     public function testAuthModeType(): void

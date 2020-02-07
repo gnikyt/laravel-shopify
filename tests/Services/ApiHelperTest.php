@@ -67,7 +67,7 @@ class ApiHelperTest extends TestCase
         $shop = factory($this->model)->create();
 
         $this->assertNotEmpty(
-            $shop->api(true)->buildAuthUrl(AuthMode::OFFLINE(), 'read_content')
+            $shop->apiHelper()->buildAuthUrl(AuthMode::OFFLINE(), 'read_content')
         );
     }
 
@@ -81,7 +81,7 @@ class ApiHelperTest extends TestCase
         ApiStub::stubResponses(['get_script_tags']);
 
         $this->assertIsArray(
-            $shop->api(true)->getScriptTags()
+            $shop->apiHelper()->getScriptTags()
         );
     }
 
@@ -95,7 +95,7 @@ class ApiHelperTest extends TestCase
         ApiStub::stubResponses(['empty']);
 
         $this->assertIsObject(
-            $shop->api(true)->createScriptTag([])
+            $shop->apiHelper()->createScriptTag([])
         );
     }
 
@@ -109,7 +109,7 @@ class ApiHelperTest extends TestCase
         ApiStub::stubResponses(['get_application_charge']);
 
         $this->assertIsObject(
-            $shop->api(true)->getCharge(ChargeType::CHARGE(), new ChargeId(1234))
+            $shop->apiHelper()->getCharge(ChargeType::CHARGE(), new ChargeId(1234))
         );
     }
 
@@ -123,7 +123,7 @@ class ApiHelperTest extends TestCase
         ApiStub::stubResponses(['post_recurring_application_charges_activate']);
 
         $this->assertIsObject(
-            $shop->api(true)->activateCharge(ChargeType::RECURRING(), new ChargeId(1234))
+            $shop->apiHelper()->activateCharge(ChargeType::RECURRING(), new ChargeId(1234))
         );
     }
 
@@ -137,7 +137,7 @@ class ApiHelperTest extends TestCase
         ApiStub::stubResponses(['post_recurring_application_charges']);
 
         $this->assertIsObject(
-            $shop->api(true)->createCharge(
+            $shop->apiHelper()->createCharge(
                 ChargeType::RECURRING(),
                 new PlanDetailsTransfer(
                     'Test',
@@ -162,7 +162,7 @@ class ApiHelperTest extends TestCase
         ApiStub::stubResponses(['get_webhooks']);
 
         $this->assertIsArray(
-            $shop->api(true)->getWebhooks()
+            $shop->apiHelper()->getWebhooks()
         );
     }
 
@@ -176,7 +176,7 @@ class ApiHelperTest extends TestCase
         ApiStub::stubResponses(['post_webhook']);
 
         $this->assertIsObject(
-            $shop->api(true)->createWebhook([])
+            $shop->apiHelper()->createWebhook([])
         );
     }
 
@@ -190,7 +190,7 @@ class ApiHelperTest extends TestCase
         ApiStub::stubResponses(['empty']);
 
         $this->assertIsObject(
-            $shop->api(true)->deleteWebhook(1)
+            $shop->apiHelper()->deleteWebhook(1)
         );
     }
 
@@ -204,7 +204,7 @@ class ApiHelperTest extends TestCase
         ApiStub::stubResponses(['post_recurring_application_charges_usage_charges']);
 
         $this->assertIsObject(
-            $shop->api(true)->createUsageCharge(
+            $shop->apiHelper()->createUsageCharge(
                 new UsageChargeDetailsTransfer(
                     new ChargeId(1),
                     12.00,
@@ -225,7 +225,7 @@ class ApiHelperTest extends TestCase
         $this->setStub();
         ApiStub::stubResponses(['empty_with_error']);
 
-        $shop->api(true)->deleteWebhook(1);
+        $shop->apiHelper()->deleteWebhook(1);
     }
 
     private function setStub(): void

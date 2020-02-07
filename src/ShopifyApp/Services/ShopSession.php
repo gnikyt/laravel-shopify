@@ -106,13 +106,19 @@ class ShopSession
     }
 
     /**
-     * Wrapper for auth->guard()->user().
+     * Login a shop.
      *
-     * @return IShopModel|null
+     * @return self
      */
-    public function get(): ?IShopModel
+    public function make(ShopDomain $domain): self
     {
-        return $this->auth->guard()->user();
+        // Get the shop
+        $shop = $this->shopQuery->getByDomain($domain, [], true);
+
+        // Log them in with the guard
+        $this->auth->guard()->login($shop);
+
+        return $this;
     }
 
     /**
@@ -123,19 +129,6 @@ class ShopSession
     public function guest(): bool
     {
         return $this->auth->guard()->guest();
-    }
-
-    /**
-     * Login a shop.
-     *
-     * @return self
-     */
-    public function make(ShopDomain $domain): self
-    {
-        $shop = $this->shopQuery->getByDomain($domain, [], true);
-        $this->auth->guard()->login($shop);
-
-        return $this;
     }
 
     /**
@@ -180,10 +173,10 @@ class ShopSession
             $this->sessionSet(self::USER_TOKEN, $token->toNative());
         } else {
             // Update the token in database
-            $this->shopCommand->setAccessToken($this->get()->getId(), $token);
+            $this->shopCommand->setAccessToken($this->shop()->getId(), $token);
 
             // Refresh the model
-            $this->get()->refresh();
+            $this->shop()->refresh();
         }
 
         return $this;
@@ -205,7 +198,7 @@ class ShopSession
         // Token mapping
         $tokens = [
             $peruser => NullableAccessToken::fromNative(Session::get(self::USER_TOKEN)),
-            $offline => $this->get()->getToken(),
+            $offline => $this->shop()->getToken(),
         ];
 
         if ($strict) {
@@ -267,7 +260,7 @@ class ShopSession
     public function isValid(IShopModel $shop): bool
     {
         // Check if there is an existing session
-        $currentShop = $this->get();
+        $currentShop = $this->shop();
         if ($currentShop) {
             // We have a current shop, validate it and compare domains
             $currentToken = $this->getToken(true);
@@ -296,5 +289,15 @@ class ShopSession
         Session::put($key, $value);
 
         return $this;
+    }
+
+    /**
+     * Wrapper for auth->guard()->user().
+     *
+     * @return IShopModel|null
+     */
+    protected function shop(): ?IShopModel
+    {
+        return $this->auth->guard()->user();
     }
 }

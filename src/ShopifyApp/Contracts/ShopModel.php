@@ -59,14 +59,19 @@ interface ShopModel extends Authenticatable
     public function hasOfflineAccess(): bool;
 
     /**
-     * Get the API instance for a shop.
+     * Get the API helper instance for a shop.
      * TODO: Find a better way than using resolve(). However, we can't inject in model constructors.
      *
-     * @param bool $returnInstance Return the API helper instance of API instance.
-     *
-     * @return BasicShopifyAPI|IApiHelper
+     * @return IApiHelper
      */
-    public function api(bool $returnInstance = false);
+    public function apiHelper(): IApiHelper;
+
+    /**
+     * Get the API instance.
+     *
+     * @return BasicShopifyAPI
+     */
+    public function api(): BasicShopifyAPI;
 
     /**
      * Gets the last single or recurring charge for the shop.
