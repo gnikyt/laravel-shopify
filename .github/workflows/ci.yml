@@ -36,7 +36,7 @@ jobs:
 
     - name: Validate code style
       run: |
-        composer require "squizlabs/php_codesniffer=*" --no-update
+        composer require "squizlabs/php_codesniffer=*"
         bin/phpcs --standard="phpcs.xml" .
 
     - name: Run test suite
@@ -46,5 +46,5 @@ jobs:
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        composer require cedx/coveralls --no-update
+        composer require cedx/coveralls
         bin/coveralls build/logs/clover.xml
