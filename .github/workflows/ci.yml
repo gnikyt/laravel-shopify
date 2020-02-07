@@ -37,7 +37,9 @@ jobs:
     - name: Run test suite
       run: composer run-script test
 
-    - name: Coveralls
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Upload coverage results to Coveralls
+      env:
+        COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        composer global require cedx/coveralls
+        coveralls build/logs/phpunit/clover.xml
