@@ -14,7 +14,7 @@
          stopOnIncomplete="false"
          stopOnSkipped="false">
     <testsuites>
-        <testsuite name="ShopifyApp Test Suite">
+        <testsuite name="Laravel Shopify Test Suite">
             <directory>tests</directory>
         </testsuite>
     </testsuites>
@@ -22,15 +22,15 @@
         <whitelist>
             <directory suffix=".php">src/ShopifyApp/</directory>
             <exclude>
-                <directory>src/ShopifyApp/resources/views</directory>
+                <directory>src/ShopifyApp/resources/</directory>
             </exclude>
         </whitelist>
     </filter>
     <logging>
-        <log type="coverage-clover" target="build/logs/clover.xml"/>
-        <log type="coverage-text" target="php://stdout"/>
+        <log type="coverage-clover" target="build/logs/clover.xml" />
+        <log type="coverage-text" target="php://stdout" />
     </logging>
     <php>
-        <env name="APP_KEY" value="AckfSECXIvnK5r28GVIWUAxmbBSjTsmF"/>
+        <env name="APP_KEY" value="AckfSECXIvnK5r28GVIWUAxmbBSjTsmF" />
     </php>
 </phpunit>

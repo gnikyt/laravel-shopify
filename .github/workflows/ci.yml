@@ -25,7 +25,10 @@ jobs:
         coverage: xdebug
         tools: composer
 
-    - name: Validate composer.json and composer.lock
+    - name: Validate code style
+      uses: chekalsky/phpcs-action@v1
+
+    - name: Validate composer setup
       run: composer validate
 
     - name: Install Laravel
@@ -37,7 +40,7 @@ jobs:
     - name: Run test suite
       run: composer run-script test
 
-    - name: Upload Coveralls
+    - name: Upload coverage results
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
