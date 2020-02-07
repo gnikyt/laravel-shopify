@@ -35,7 +35,7 @@ jobs:
       run: composer install --prefer-dist --no-progress --no-suggest
 
     - name: Validate code style
-      run: /
+      run: |
         composer require "squizlabs/php_codesniffer=*" --no-update
         bin/phpcs --standard="phpcs.xml" .
 

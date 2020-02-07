@@ -2,7 +2,6 @@
 
 ![Tests](https://github.com/ohmybrew/laravel-shopify/workflows/Package%20Test/badge.svg?branch=structure-change)
 [![Coverage](https://coveralls.io/repos/github/ohmybrew/laravel-shopify/badge.svg?branch=structure-change)](https://coveralls.io/github/ohmybrew/laravel-shopify?branch=structure-change)
-[![StyleCI](https://styleci.io/repos/96462257/shield?branch=structure-change)](https://styleci.io/repos/96462257)
 [![License](https://poser.pugx.org/ohmybrew/laravel-shopify/license)](https://packagist.org/packages/ohmybrew/laravel-shopify)
 
 **Note: (structure-change) Is a complete library rewrite. The package has grown significantly, and with it has come challenges in maintaining. The goal of this branch is to seperate logic into bits, confirm to SOLID, CQR, DRY, etc. where applicable.**
