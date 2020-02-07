@@ -1,7 +1,7 @@
 # Laravel Shopify App
 
-[![Build Status](https://secure.travis-ci.org/ohmybrew/laravel-shopify.png?branch=structure-change)](http://travis-ci.org/ohmybrew/laravel-shopify)
-[![Coverage Status](https://coveralls.io/repos/github/ohmybrew/laravel-shopify/badge.svg?branch=structure-change)](https://coveralls.io/github/ohmybrew/laravel-shopify?branch=structure-change)
+![Tests](https://github.com/ohmybrew/laravel-shopify/workflows/Package%20Test/badge.svg?branch=structure-change)
+[![Coverage](https://coveralls.io/repos/github/ohmybrew/laravel-shopify/badge.svg?branch=structure-change)](https://coveralls.io/github/ohmybrew/laravel-shopify?branch=structure-change)
 [![StyleCI](https://styleci.io/repos/96462257/shield?branch=structure-change)](https://styleci.io/repos/96462257)
 [![License](https://poser.pugx.org/ohmybrew/laravel-shopify/license)](https://packagist.org/packages/ohmybrew/laravel-shopify)
 
