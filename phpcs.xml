@@ -4,7 +4,11 @@
 
   <rule ref="PSR2" />
 
-  <exclude-pattern>*/vendor/*</exclude-pattern>
+  <exclude-pattern>/vendor/*</exclude-pattern>
+  <exclude-pattern>/build/*</exclude-pattern>
+  <exclude-pattern>/bin/*</exclude-pattern>
+  <exclude-pattern>/src/ShopifyApp/resources/*</exclude-pattern>
+  <exclude-pattern>/tests/*</exclude-pattern>
 
   <autoload>/vendor/autoload.php</autoload>
 </ruleset>

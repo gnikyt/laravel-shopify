@@ -187,8 +187,7 @@ class ChargeHelper
      */
     public function pastDaysForPeriod(): ?int
     {
-        if (
-            $this->charge->cancelled_on &&
+        if ($this->charge->cancelled_on &&
             abs(Carbon::now()->diffInDays(Carbon::parse($this->charge->cancelled_on))) > 30
         ) {
             return null;

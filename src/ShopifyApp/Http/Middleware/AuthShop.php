@@ -229,7 +229,10 @@ class AuthShop
         }
 
         // These 3 must always be present
-        if (!isset($refererQueryParams['shop']) || !isset($refererQueryParams['hmac']) || !isset($refererQueryParams['timestamp'])) {
+        if (!isset($refererQueryParams['shop']) ||
+            !isset($refererQueryParams['hmac']) ||
+            !isset($refererQueryParams['timestamp'])
+        ) {
             return null;
         }
 

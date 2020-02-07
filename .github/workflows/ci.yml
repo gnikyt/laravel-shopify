@@ -35,7 +35,9 @@ jobs:
       run: composer install --prefer-dist --no-progress --no-suggest
 
     - name: Validate code style
-      uses: chekalsky/phpcs-action@v1
+      run: /
+        composer require "squizlabs/php_codesniffer=*" --no-update
+        bin/phpcs --standard="phpcs.xml" .
 
     - name: Run test suite
       run: composer run-script test
@@ -44,5 +46,5 @@ jobs:
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        composer require cedx/coveralls
+        composer require cedx/coveralls --no-update
         bin/coveralls build/logs/clover.xml

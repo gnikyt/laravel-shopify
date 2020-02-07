@@ -59,8 +59,7 @@ class CancelCharge
         $helper = $this->chargeHelper->useCharge($chargeId);
         $charge = $helper->getCharge();
 
-        if (
-            !$charge->isType(ChargeType::CHARGE()->toNative()) &&
+        if (!$charge->isType(ChargeType::CHARGE()->toNative()) &&
             !$charge->isType(ChargeType::RECURRING()->toNative())
         ) {
             throw new Exception('Cancel may only be called for single and recurring charges.');
