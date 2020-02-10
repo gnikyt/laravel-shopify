@@ -25,7 +25,7 @@ class ChargeTest extends TestCase
     {
         // Create a charge
         $charge = factory(Charge::class)->states('type_recurring')->create([
-            'shop_id' => $this->shop->id,
+            'user_id' => $this->shop->getId()->toNative(),
         ]);
 
         // Query it
@@ -39,12 +39,12 @@ class ChargeTest extends TestCase
     {
         // Create a charge
         $charge = factory(Charge::class)->states('type_recurring')->create([
-            'shop_id' => $this->shop->id,
+            'user_id' => $this->shop->getId()->toNative(),
         ]);
 
         // Query it
         $this->assertNotNull(
-            $this->query->getByShopIdAndChargeId($this->shop->getId(0), new ChargeId($charge->id))
+            $this->query->getByShopIdAndChargeId($this->shop->getId(), new ChargeId($charge->id))
         );
 
         // Query non-existant

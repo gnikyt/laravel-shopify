@@ -2,10 +2,11 @@
 
 namespace OhMyBrew\ShopifyApp\Contracts\Commands;
 
+use Illuminate\Support\Carbon as Carbon;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
 use OhMyBrew\ShopifyApp\Objects\Transfers\Charge as ChargeTransfer;
 use OhMyBrew\ShopifyApp\Objects\Transfers\UsageCharge as UsageChargeTransfer;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
 /**
  * Reprecents commands for charges.
@@ -41,11 +42,11 @@ interface Charge
     /**
      * Cancels a charge for a shop.
      *
-     * @param ChargeId    $chargeId    The charge Id
-     * @param string|null $expiresOn   YYYY-MM-DD of expiration.
-     * @param string|null $trialEndsOn YYYY-MM-DD of when trial ends on based on remaining.
+     * @param ChargeId $chargeId    The charge Id
+     * @param Carbon   $expiresOn   Date of expiration.
+     * @param Carbon   $trialEndsOn Date of when trial ends on based on remaining.
      *
      * @return bool
      */
-    public function cancelCharge(ChargeId $chargeId, ?string $expiresOn, ?string $trialEndsOn): bool;
+    public function cancelCharge(ChargeId $chargeId, ?Carbon $expiresOn = null, ?Carbon $trialEndsOn = null): bool;
 }

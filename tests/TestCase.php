@@ -5,8 +5,9 @@ namespace OhMyBrew\ShopifyApp\Test;
 use Closure;
 use Illuminate\Support\Facades\App;
 use OhMyBrew\ShopifyApp\ShopifyAppProvider;
-use OhMyBrew\ShopifyApp\Test\Stubs\User as UserStub;
 use Orchestra\Database\ConsoleServiceProvider;
+use OhMyBrew\ShopifyApp\Test\Stubs\Api as ApiStub;
+use OhMyBrew\ShopifyApp\Test\Stubs\User as UserStub;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 abstract class TestCase extends OrchestraTestCase
@@ -78,5 +79,10 @@ abstract class TestCase extends OrchestraTestCase
         App::detectEnvironment(function () use ($currentEnv) {
             return $currentEnv;
         });
+    }
+
+    protected function setApiStub(): void
+    {
+        $this->app['config']->set('shopify-app.api_class', ApiStub::class);
     }
 }

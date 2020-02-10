@@ -36,7 +36,7 @@ class PlanTest extends TestCase
         $this->assertNull($this->query->getDefault());
 
         // Create a plan
-        $plan = factory(Plan::class)->states(['type_recurring', 'installable'])->create();
+        factory(Plan::class)->states(['type_recurring', 'installable'])->create();
 
         // Query it
         $this->assertNotNull($this->query->getDefault());
@@ -45,7 +45,7 @@ class PlanTest extends TestCase
     public function testPlanGetAll(): void
     {
         // Create a plan
-        $plan = factory(Plan::class)->states('type_onetime')->create();
+        factory(Plan::class)->states('type_onetime')->create();
 
         // Ensure we get a result
         $this->assertEquals(1, $this->query->getAll()->count());

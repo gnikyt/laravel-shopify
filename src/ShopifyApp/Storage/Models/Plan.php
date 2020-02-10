@@ -4,26 +4,20 @@ namespace OhMyBrew\ShopifyApp\Storage\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\URL;
-use OhMyBrew\ShopifyApp\Contracts\ShopModel;
 use OhMyBrew\ShopifyApp\Objects\Enums\PlanType;
-use OhMyBrew\ShopifyApp\Objects\Transfers\PlanDetails as PlanDetailsTransfer;
-use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
+use OhMyBrew\ShopifyApp\Objects\Values\PlanId;
 
 /**
  * Responsible for reprecenting a plan record.
  */
 class Plan extends Model
 {
-    use ConfigAccessible;
-
     /**
      * The attributes that should be casted to native types.
      *
      * @var array
      */
     protected $casts = [
-        'type'          => 'int',
         'test'          => 'bool',
         'on_install'    => 'bool',
         'capped_amount' => 'float',
@@ -41,15 +35,35 @@ class Plan extends Model
     }
 
     /**
+     * Get the plan ID as a value object.
+     *
+     * @return PlanId
+     */
+    public function getId(): PlanId
+    {
+        return new PlanId($this->id);
+    }
+
+    /**
+     * Gets the type of plan.
+     *
+     * @return PlanType
+     */
+    public function getType(): PlanType
+    {
+        return PlanType::fromNative($this->type);
+    }
+
+    /**
      * Checks the plan type.
      *
-     * @param int $type The plan type.
+     * @param PlamType $type The plan type.
      *
      * @return bool
      */
-    public function isType(int $type): bool
+    public function isType(PlanType $type): bool
     {
-        return $this->type === $type;
+        return $this->getType()->isSame($type);
     }
 
     /**
@@ -103,32 +117,5 @@ class Plan extends Model
     public function isTest(): bool
     {
         return (bool) $this->test;
-    }
-
-    /**
-     * Returns the charge params sent with the post request.
-     *
-     * @param ShopModel $shop The shop the plan is for.
-     *
-     * @return PlanDetailsTransfer
-     */
-    public function chargeDetails(ShopModel $shop): PlanDetailsTransfer
-    {
-        // Handle capped amounts for UsageCharge API
-        $isCapped = isset($this->capped_amount) && $this->capped_amount > 0;
-
-        // Build the details object
-        return new PlanDetailsTransfer(
-            $this->name,
-            $this->price,
-            $this->isTest(),
-            $this->determineTrialDaysForShop($shop),
-            $isCapped ? $this->capped_amount : null,
-            $isCapped ? $this->terms : null,
-            URL::secure(
-                $this->getConfig('billing_redirect'),
-                ['plan_id' => $this->id]
-            )
-        );
     }
 }

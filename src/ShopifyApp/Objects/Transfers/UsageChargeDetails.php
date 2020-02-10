@@ -6,6 +6,7 @@ use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
 
 /**
  * Reprecents details for a usage charge.
+ * TODO: Add properties for types.
  */
 class UsageChargeDetails extends AbstractTransfer
 {

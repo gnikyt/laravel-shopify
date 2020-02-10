@@ -3,6 +3,8 @@
 namespace OhMyBrew\ShopifyApp\Contracts;
 
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use OhMyBrew\BasicShopifyAPI;
 use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use OhMyBrew\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
@@ -36,6 +38,20 @@ interface ShopModel extends Authenticatable
      * @return AccessTokenValue
      */
     public function getToken(): AccessTokenValue;
+
+    /**
+     * Gets charges belonging to the shop.
+     *
+     * @return HasMany
+     */
+    public function charges(): HasMany;
+
+    /**
+     * Gets the plan the shop is tied to.
+     *
+     * @return BelongsTo
+     */
+    public function plan(): BelongsTo;
 
     /**
      * Checks is shop is grandfathered in.
@@ -72,13 +88,4 @@ interface ShopModel extends Authenticatable
      * @return BasicShopifyAPI
      */
     public function api(): BasicShopifyAPI;
-
-    /**
-     * Gets the last single or recurring charge for the shop.
-     *
-     * @param NullablePlanId|null $planId The plan ID to check with.
-     *
-     * @return ChargeModel
-     */
-    public function planCharge(NullablePlanId $planId = null): ?ChargeModel;
 }

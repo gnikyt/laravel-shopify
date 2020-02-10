@@ -9,14 +9,11 @@ use OhMyBrew\BasicShopifyAPI;
 use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use OhMyBrew\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
 use OhMyBrew\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
-use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
 use OhMyBrew\ShopifyApp\Objects\Transfers\ApiSession as ApiSessionTransfer;
 use OhMyBrew\ShopifyApp\Objects\Values\AccessToken;
-use OhMyBrew\ShopifyApp\Objects\Values\NullablePlanId;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 use OhMyBrew\ShopifyApp\Storage\Models\Charge;
-use OhMyBrew\ShopifyApp\Storage\Models\Charge as ChargeModel;
 use OhMyBrew\ShopifyApp\Storage\Models\Plan;
 use OhMyBrew\ShopifyApp\Storage\Scopes\Namespacing;
 
@@ -143,19 +140,5 @@ trait ShopModel
         }
 
         return $this->apiHelper->getApi();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function planCharge(NullablePlanId $planId = null): ?ChargeModel
-    {
-        return $this
-            ->charges()
-            ->withTrashed()
-            ->whereIn('type', [ChargeType::RECURRING()->toNative(), ChargeType::CHARGE()->toNative()])
-            ->where('plan_id', $planId ?? $this->plan_id)
-            ->orderBy('created_at', 'desc')
-            ->first();
     }
 }

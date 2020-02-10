@@ -35,7 +35,7 @@ class CreateChargesTable extends Migration
             // This also allows us to store usage based charges not just subscription or one time charges.
             // We will be able to do things like create a charge history for a shop if they have multiple charges.
             // For instance, usage based or an app that has multiple purchases.
-            $table->integer('type');
+            $table->string('type');
 
             // Store the amount of the charge, this helps if you are experimenting with pricing
             $table->decimal('price', 8, 2);
@@ -77,8 +77,8 @@ class CreateChargesTable extends Migration
             $table->softDeletes();
 
             // Linking
-            $table->integer('shop_id')->unsigned();
-            $table->foreign('shop_id')->references('id')->on('users')->onDelete('cascade');
+            $table->integer('user_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('plan_id')->references('id')->on('plans');
             $table->foreign('reference_charge')->references('charge_id')->on('charges')->onDelete('cascade');
         });

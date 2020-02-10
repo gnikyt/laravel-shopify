@@ -95,6 +95,12 @@ class ShopifyAppProvider extends ServiceProvider
             IApiHelper::class => [self::CBIND, function () {
                 return new ApiHelper();
             }],
+            ChargeHelper::class => [self::CBIND, function ($app) {
+                return new ChargeHelper(
+                    $app->make(IApiHelper::class),
+                    $app->make(IChargeQuery::class)
+                );
+            }],
 
             // Queriers
             IShopQuery::class => [self::CSINGLETON, function () {
@@ -141,7 +147,9 @@ class ShopifyAppProvider extends ServiceProvider
             }],
             CancelCurrentPlanAction::class => [self::CBIND, function ($app) {
                 return new CancelCurrentPlanAction(
-                    $app->make(IShopQuery::class)
+                    $app->make(IShopQuery::class),
+                    $app->make(IChargeCommand::class),
+                    $app->make(ChargeHelper::class)
                 );
             }],
             DispatchWebhooksAction::class => [self::CBIND, function ($app) {
@@ -161,8 +169,8 @@ class ShopifyAppProvider extends ServiceProvider
             }],
             ActivatePlanAction::class => [self::CBIND, function ($app) {
                 return new ActivatePlanAction(
-                    $app->make(IApiHelper::class),
                     $app->make(CancelCurrentPlanAction::class),
+                    $app->make(ChargeHelper::class),
                     $app->make(IShopQuery::class),
                     $app->make(IChargeQuery::class),
                     $app->make(IPlanQuery::class),
@@ -221,12 +229,6 @@ class ShopifyAppProvider extends ServiceProvider
             }],
             CookieHelper::class => [self::CBIND, function () {
                 return new CookieHelper();
-            }],
-            ChargeHelper::class => [self::CBIND, function ($app) {
-                return new ChargeHelper(
-                    $app->make(IApiHelper::class),
-                    $app->make(IChargeCommand::class)
-                );
             }],
         ];
         foreach ($binds as $key => $fn) {

@@ -20,12 +20,12 @@ final class PlanType implements ValueObject
      *
      * @var int
      */
-    public const RECURRING = 1;
+    public const RECURRING = 0;
 
     /**
      * Plan: One-time.
      *
      * @var int
      */
-    public const ONETIME = 2;
+    public const ONETIME = 1;
 }

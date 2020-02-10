@@ -7,6 +7,7 @@ use OhMyBrew\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
 
 /**
  * Reprecents details for API session used by API helper.
+ * TODO: Add properties for types.
  */
 class ApiSession extends AbstractTransfer
 {

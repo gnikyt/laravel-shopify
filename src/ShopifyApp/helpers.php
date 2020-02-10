@@ -5,11 +5,12 @@ namespace OhMyBrew\ShopifyApp;
 /**
  * HMAC creation helper.
  *
- * @param array $opts The options for building the HMAC
+ * @param array  $opts   The options for building the HMAC.
+ * @param string $secret The app secret key.
  *
  * @return string
  */
-function createHmac(array $opts): string
+function createHmac(array $opts, string $secret): string
 {
     // Setup defaults
     $data = $opts['data'];
@@ -17,7 +18,6 @@ function createHmac(array $opts): string
     $buildQuery = $opts['buildQuery'] ?? false;
     $buildQueryWithJoin = $opts['buildQueryWithJoin'] ?? false;
     $encode = $opts['encode'] ?? false;
-    $secret = $opts['secret'];
 
     if ($buildQuery) {
         //Query params must be sorted and compiled

@@ -4,6 +4,7 @@ namespace OhMyBrew\ShopifyApp\Objects\Transfers;
 
 /**
  * Reprecents details for a plan.
+ * TODO: Add properties for types.
  */
 class PlanDetails extends AbstractTransfer
 {

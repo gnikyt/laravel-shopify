@@ -3,10 +3,17 @@
 namespace OhMyBrew\ShopifyApp\Services;
 
 use Illuminate\Support\Carbon;
-use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Charge as IChargeQuery;
+use Illuminate\Support\Facades\URL;
+use OhMyBrew\ShopifyApp\Storage\Models\Plan;
+use OhMyBrew\ShopifyApp\Objects\Values\PlanId;
 use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
+use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
+use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
+use OhMyBrew\ShopifyApp\Contracts\ShopModel as IShopModel;
 use OhMyBrew\ShopifyApp\Storage\Models\Charge as ChargeModel;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Charge as IChargeQuery;
+use OhMyBrew\ShopifyApp\Objects\Transfers\PlanDetails as PlanDetailsTransfer;
+use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Basic helper class for charges which encapsulates
@@ -15,6 +22,8 @@ use OhMyBrew\ShopifyApp\Storage\Models\Charge as ChargeModel;
  */
 class ChargeHelper
 {
+    use ConfigAccessible;
+
     /**
      * The API helper.
      *
@@ -82,10 +91,7 @@ class ChargeHelper
      */
     public function retrieve(): object
     {
-        return $this->apiHelper->getCharge(
-            $this->charge->typeAsString(true),
-            $this->charge->id
-        );
+        return $this->apiHelper->getCharge($this->charge->getType(), $this->charge->id);
     }
 
     /**
@@ -224,5 +230,79 @@ class ChargeHelper
         }
 
         return $this->charge->trial_days - $this->remainingTrialDays();
+    }
+
+    /**
+     * Gets the last single or recurring charge for the shop.
+     *
+     * @param PlanId     $planId The plan ID to check with.
+     * @param IShopModel $shop   The shop the plan is for.
+     *
+     * @return ChargeModel
+     */
+    public function chargeForPlan(PlanId $planId, IShopModel $shop): ?ChargeModel
+    {
+        return $shop
+            ->charges()
+            ->withTrashed()
+            ->whereIn('type', [ChargeType::RECURRING()->toNative(), ChargeType::CHARGE()->toNative()])
+            ->where('plan_id', $planId->toNative())
+            ->orderBy('created_at', 'desc')
+            ->first();
+    }
+
+    /**
+     * Determines the trial days for the plan.
+     * Detects if reinstall is happening and properly adjusts.
+     *
+     * @param Plan       $plan The plan.
+     * @param IShopModel $shop The shop the plan is for.
+     *
+     * @return int
+     */
+    protected function determineTrialDaysRemaining(Plan $plan, IShopModel $shop): int
+    {
+        if (!$plan->hasTrial()) {
+            // Not a trial-type plan, return none
+            return 0;
+        }
+
+        // See if the shop has been charged for this plan before..
+        // If they have, its a good chance its a reinstall
+        $pc = $this->chargeForPlan($plan->getId(), $shop);
+        if ($pc !== null) {
+            return $pc->remainingTrialDaysFromCancel();
+        }
+
+        // Seems like a fresh trial... return the days set in database
+        return $plan->trial_days;
+    }
+
+    /**
+     * Returns the charge params used with the create request.
+     *
+     * @param Plan       $plan The plan.
+     * @param IShopModel $shop The shop the plan is for.
+     *
+     * @return PlanDetailsTransfer
+     */
+    public function details(Plan $plan, IShopModel $shop): PlanDetailsTransfer
+    {
+        // Handle capped amounts for UsageCharge API
+        $isCapped = isset($plan->capped_amount) && $plan->capped_amount > 0;
+
+        // Build the details object
+        return new PlanDetailsTransfer(
+            $plan->name,
+            $plan->price,
+            $plan->isTest(),
+            $this->determineTrialDaysRemaining($plan, $shop),
+            $isCapped ? $this->capped_amount : null,
+            $isCapped ? $this->terms : null,
+            URL::secure(
+                $this->getConfig('billing_redirect'),
+                ['plan_id' => $plan->getId()->toNative()]
+            )
+        );
     }
 }

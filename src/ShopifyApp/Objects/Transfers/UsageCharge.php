@@ -10,6 +10,7 @@ use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
 /**
  * Reprecents create usage charge.
+ * TODO: Add properties for types.
  */
 class UsageCharge extends AbstractTransfer
 {

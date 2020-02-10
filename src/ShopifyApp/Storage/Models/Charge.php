@@ -3,11 +3,12 @@
 namespace OhMyBrew\ShopifyApp\Storage\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use OhMyBrew\ShopifyApp\Objects\Enums\ChargeStatus;
-use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
 use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
+use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
+use OhMyBrew\ShopifyApp\Objects\Enums\ChargeStatus;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Responsible for reprecenting a charge record.
@@ -24,7 +25,7 @@ class Charge extends Model
      */
     protected $fillable = [
         'type',
-        'shop_id',
+        'user_id',
         'charge_id',
         'plan_id',
         'status',
@@ -39,7 +40,7 @@ class Charge extends Model
         'type'          => 'int',
         'test'          => 'bool',
         'charge_id'     => 'string',
-        'shop_id'       => 'int',
+        'user_id'       => 'int',
         'capped_amount' => 'float',
         'price'         => 'float',
     ];
@@ -50,6 +51,16 @@ class Charge extends Model
      * @var array
      */
     protected $dates = ['deleted_at'];
+
+    /**
+     * Get the ID as a value object.
+     *
+     * @return ChargeId
+     */
+    public function getId(): ChargeId
+    {
+        return new ChargeId($this->id);
+    }
 
     /**
      * Gets the shop for the charge.
@@ -107,15 +118,25 @@ class Charge extends Model
     }
 
     /**
+     * Get the charge type.
+     *
+     * @return ChargeType
+     */
+    public function getType(): ChargeType
+    {
+        return ChargeType::fromNative($this->type);
+    }
+
+    /**
      * Checks if the charge is a type.
      *
-     * @param int $type The charge type.
+     * @param ChargeType $type The charge type.
      *
      * @return bool
      */
-    public function isType(int $type): bool
+    public function isType(ChargeType $type): bool
     {
-        return (int) $this->type === $type;
+        return $this->getType()->isSame($type);
     }
 
     /**

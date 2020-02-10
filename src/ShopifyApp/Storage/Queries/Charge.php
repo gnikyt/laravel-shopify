@@ -31,7 +31,7 @@ class Charge implements IChargeQuery
         return ChargeModel::where(
             [
                 'id'      => $chargeId->toNative(),
-                'shop_id' => $shopId->toNative(),
+                'user_id' => $shopId->toNative(),
             ]
         )->get()->first();
     }

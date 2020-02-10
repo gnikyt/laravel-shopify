@@ -12,6 +12,7 @@ use Funeralzone\ValueObjects\ValueObject;
  * @method static ChargeStatus ACCEPTED()
  * @method static ChargeStatus DECLINED()
  * @method static ChargeStatus CANCELLED()
+ * @method static ChargeStatus PENDING()
  */
 final class ChargeStatus implements ValueObject
 {
@@ -44,4 +45,11 @@ final class ChargeStatus implements ValueObject
      * @var int
      */
     public const CANCELLED = 3;
+
+    /**
+     * Status: Pending.
+     *
+     * @var int
+     */
+    public const PENDING = 4;
 }

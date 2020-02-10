@@ -3,15 +3,15 @@
 namespace OhMyBrew\ShopifyApp\Test\Services;
 
 use OhMyBrew\BasicShopifyAPI;
-use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
-use OhMyBrew\ShopifyApp\Exceptions\ApiException;
+use OhMyBrew\ShopifyApp\Test\TestCase;
 use OhMyBrew\ShopifyApp\Objects\Enums\AuthMode;
+use OhMyBrew\ShopifyApp\Exceptions\ApiException;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
 use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
+use OhMyBrew\ShopifyApp\Test\Stubs\Api as ApiStub;
+use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use OhMyBrew\ShopifyApp\Objects\Transfers\PlanDetails as PlanDetailsTransfer;
 use OhMyBrew\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
-use OhMyBrew\ShopifyApp\Test\Stubs\Api as ApiStub;
-use OhMyBrew\ShopifyApp\Test\TestCase;
 
 class ApiHelperTest extends TestCase
 {
@@ -77,7 +77,7 @@ class ApiHelperTest extends TestCase
         $shop = factory($this->model)->create();
 
         // Response stubbing
-        $this->setStub();
+        $this->setApiStub();
         ApiStub::stubResponses(['get_script_tags']);
 
         $this->assertIsArray(
@@ -91,7 +91,7 @@ class ApiHelperTest extends TestCase
         $shop = factory($this->model)->create();
 
         // Response stubbing
-        $this->setStub();
+        $this->setApiStub();
         ApiStub::stubResponses(['empty']);
 
         $this->assertIsObject(
@@ -105,7 +105,7 @@ class ApiHelperTest extends TestCase
         $shop = factory($this->model)->create();
 
         // Response stubbing
-        $this->setStub();
+        $this->setApiStub();
         ApiStub::stubResponses(['get_application_charge']);
 
         $this->assertIsObject(
@@ -119,7 +119,7 @@ class ApiHelperTest extends TestCase
         $shop = factory($this->model)->create();
 
         // Response stubbing
-        $this->setStub();
+        $this->setApiStub();
         ApiStub::stubResponses(['post_recurring_application_charges_activate']);
 
         $this->assertIsObject(
@@ -133,7 +133,7 @@ class ApiHelperTest extends TestCase
         $shop = factory($this->model)->create();
 
         // Response stubbing
-        $this->setStub();
+        $this->setApiStub();
         ApiStub::stubResponses(['post_recurring_application_charges']);
 
         $this->assertIsObject(
@@ -158,7 +158,7 @@ class ApiHelperTest extends TestCase
         $shop = factory($this->model)->create();
 
         // Response stubbing
-        $this->setStub();
+        $this->setApiStub();
         ApiStub::stubResponses(['get_webhooks']);
 
         $this->assertIsArray(
@@ -172,7 +172,7 @@ class ApiHelperTest extends TestCase
         $shop = factory($this->model)->create();
 
         // Response stubbing
-        $this->setStub();
+        $this->setApiStub();
         ApiStub::stubResponses(['post_webhook']);
 
         $this->assertIsObject(
@@ -186,7 +186,7 @@ class ApiHelperTest extends TestCase
         $shop = factory($this->model)->create();
 
         // Response stubbing
-        $this->setStub();
+        $this->setApiStub();
         ApiStub::stubResponses(['empty']);
 
         $this->assertIsObject(
@@ -200,7 +200,7 @@ class ApiHelperTest extends TestCase
         $shop = factory($this->model)->create();
 
         // Response stubbing
-        $this->setStub();
+        $this->setApiStub();
         ApiStub::stubResponses(['post_recurring_application_charges_usage_charges']);
 
         $this->assertIsObject(
@@ -222,14 +222,9 @@ class ApiHelperTest extends TestCase
         $shop = factory($this->model)->create();
 
         // Response stubbing
-        $this->setStub();
+        $this->setApiStub();
         ApiStub::stubResponses(['empty_with_error']);
 
         $shop->apiHelper()->deleteWebhook(1);
-    }
-
-    private function setStub(): void
-    {
-        $this->app['config']->set('shopify-app.api_class', ApiStub::class);
     }
 }
