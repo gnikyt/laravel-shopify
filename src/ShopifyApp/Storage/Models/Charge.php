@@ -53,13 +53,13 @@ class Charge extends Model
     protected $dates = ['deleted_at'];
 
     /**
-     * Get the ID as a value object.
+     * Get the charge ID as a value object.
      *
      * @return ChargeId
      */
-    public function getId(): ChargeId
+    public function getChargeId(): ChargeId
     {
-        return new ChargeId($this->id);
+        return new ChargeId($this->chargeId);
     }
 
     /**

@@ -86,12 +86,12 @@ class Charge implements ChargeCommand
         $charge = new ChargeModel();
         $charge->user_id = $chargeObj->shopId->toNative();
         $charge->charge_id = $chargeObj->chargeId->toNative();
-        $charge->type = $chargeObj->chargeType;
-        $charge->status = $chargeObj->chargeStatus;
-        $charge->billing_on = $chargeObj->billingOn;
-        $charge->price = $chargeObj->price;
-        $charge->description = $chargeObj->description;
-        $charge->reference_charge = $chargeObj->referenceCharge;
+        $charge->type = $chargeObj->chargeType->toNative();
+        $charge->status = $chargeObj->chargeStatus->toNative();
+        $charge->billing_on = $chargeObj->billingOn->format('Y-m-d');
+        $charge->price = $chargeObj->details->price;
+        $charge->description = $chargeObj->details->description;
+        $charge->reference_charge = $chargeObj->details->chargeId->toNative();
 
         // Save the charge
         $charge->save();

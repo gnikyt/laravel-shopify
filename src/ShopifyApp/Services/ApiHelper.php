@@ -329,9 +329,9 @@ class ApiHelper implements IApiHelper
     protected function doRequest(ApiMethod $method, string $path, array $payload = null)
     {
         $response = $this->api->rest($method->toNative(), $path, $payload);
-        if (!$response || property_exists($response->body, 'errors')) {
+        if ($response->errors) {
             // Request error somewhere, throw the exception
-            throw new ApiException($response->body->errors);
+            throw new ApiException($response->body ?? 'Unknown error', 0, $response->exception);
         }
 
         return $response;

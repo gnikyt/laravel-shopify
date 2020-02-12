@@ -2,15 +2,18 @@
 
 namespace OhMyBrew\ShopifyApp\Actions;
 
-use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
-use OhMyBrew\ShopifyApp\Exceptions\ChargeNotRecurringException;
-use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
-use OhMyBrew\ShopifyApp\Objects\Transfers\UsageCharge as UsageChargeTransfer;
-use OhMyBrew\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
+use Illuminate\Support\Carbon;
 use OhMyBrew\ShopifyApp\Objects\Values\PlanId;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
+use OhMyBrew\ShopifyApp\Services\ChargeHelper;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
+use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use OhMyBrew\ShopifyApp\Exceptions\ChargeNotRecurringException;
+use OhMyBrew\ShopifyApp\Contracts\Commands\Charge as IChargeCommand;
+use OhMyBrew\ShopifyApp\Objects\Enums\ChargeStatus;
+use OhMyBrew\ShopifyApp\Objects\Transfers\UsageCharge as UsageChargeTransfer;
+use OhMyBrew\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
 
 /**
  * Activates a usage charge for a shop.
@@ -18,11 +21,11 @@ use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 class ActivateUsageCharge
 {
     /**
-     * The API helper.
+     * The helper for charges.
      *
-     * @var IApiHelper
+     * @var ChargeHelper
      */
-    protected $apiHelper;
+    protected $chargeHelper;
 
     /**
      * Command for charges.
@@ -41,18 +44,19 @@ class ActivateUsageCharge
     /**
      * Setup.
      *
-     * @param IApiHelper     $apiHelper     The API helper.
+     * @param ChargeHelper   $chargeHelper  The helper for charges.
      * @param IChargeCommand $chargeCommand The commands for charges.
      * @param IShopQuery     $shopQuery     The querier for shops.
      *
      * @return self
      */
     public function __construct(
-        IApiHelper $apiHelper,
+        ChargeHelper $chargeHelper,
         IChargeCommand $chargeCommand,
         IShopQuery $shopQuery
     ) {
         $this->apiHelper = $apiHelper;
+        $this->chargeHelper = $chargeHelper;
         $this->chargeCommand = $chargeCommand;
         $this->shopQuery = $shopQuery;
     }
@@ -61,50 +65,38 @@ class ActivateUsageCharge
      * Execute.
      * TODO: Rethrow an API exception.
      *
-     * @param ShopeId $shopId      The shop ID.
-     * @param float   $price       Usage charge price.
-     * @param string  $description Usage charge description.
+     * @param ShopeId                    $shopId        The shop ID.
+     * @param UsageChargeDetailsTransfer $ucd The usage charge details (without charge ID).
      *
      * @throws ChargeNotRecurringException
      *
      * @return int
      */
-    public function __invoke(ShopId $shopId, float $price, string $description): int
+    public function __invoke(ShopId $shopId, UsageChargeDetailsTransfer $ucd): int
     {
         // Get the shop
         $shop = $this->shopQuery->getById($shopId);
 
         // Ensure we have a recurring charge
-        $currentCharge = $shop->planCharge();
-        if (!$currentCharge->isType(ChargeType::RECURRING()->toNative())) {
+        $currentCharge = $this->chargeHelper->chargeForPlan($shop->plan->getId(), $shop);
+        if (!$currentCharge->isType(ChargeType::RECURRING())) {
             throw new ChargeNotRecurringException('Can only create usage charges for recurring charge.');
         }
 
-        // Create the usage charge details
-        $ucDetails = new UsageChargeDetailsTransfer(
-            new ChargeId($currentCharge->charge_id),
-            $price,
-            $description
-        );
-
         // Create the usage charge
-        $response = $this
-            ->apiHelper
-            ->setInstance($shop->api())
-            ->createUsageCharge($ucDetails);
+        $ucd->chargeId = $currentCharge->getChargeId();
+        $response = $shop->apiHelper()->createUsageCharge($ucd);
+
+        // Create the transder
+        $uct = new UsageChargeTransfer();
+        $uct->shopId = $shopId;
+        $uct->planId = $shop->plan->getId();
+        $uct->chargeId = new ChargeId($response->id);
+        $uct->chargeStatus = ChargeStatus::fromNative(strtoupper($response->status));
+        $uct->billingOn = new Carbon($response->billing_on);
+        $uct->details = $ucd;
 
         // Save the usage charge
-        return $this->chargeCommand->createUsageCharge(
-            new UsageChargeTransfer(
-                $shopId,
-                new PlanId($shop->plan->id),
-                new ChargeId($currentCharge->charge_id),
-                ChargeType::USAGE()->toNative(),
-                $response->status,
-                $ucDetails->price,
-                $ucDetails->description,
-                $response->billing_on,
-            )
-        );
+        return $this->chargeCommand->createUsageCharge($uct);
     }
 }
