@@ -4,36 +4,54 @@ namespace OhMyBrew\ShopifyApp\Objects\Transfers;
 
 /**
  * Reprecents details for a plan.
- * TODO: Add properties for types.
  */
-class PlanDetails extends AbstractTransfer
+final class PlanDetails extends AbstractTransfer
 {
     /**
-     * Constructor.
+     * Plan name.
      *
-     * @param string      $name         Plan name.
-     * @param float       $price        Plan price.
-     * @param bool        $test         Plan test or real?
-     * @param int         $trialDays    Plan trial days.
-     * @param float|null  $cappedAmount Capped amount value.
-     * @param string|null $cappedTerms  Terms for capped amount.
-     * @param string|null $returnURL    Plan return URL.
+     * @var string
      */
-    public function __construct(
-        string $name,
-        float $price,
-        bool $test,
-        int $trialDays,
-        ?float $cappedAmount,
-        ?string $cappedTerms,
-        ?string $returnURL
-    ) {
-        $this->data['name'] = $name;
-        $this->data['price'] = $price;
-        $this->data['test'] = $test;
-        $this->data['trialDays'] = $trialDays;
-        $this->data['cappedAmount'] = $cappedAmount;
-        $this->data['cappedTerms'] = $cappedTerms;
-        $this->data['returnURL'] = $returnURL;
-    }
+    public $name;
+
+    /**
+     * Plan price.
+     *
+     * @var float
+     */
+    public $price;
+
+    /**
+     * Plan test or real?
+     *
+     * @var bool
+     */
+    public $test;
+    /**
+     * Plan trial days.
+     *
+     * @var int
+     */
+    public $trialDays;
+
+    /**
+     * Capped amount value (for usage charge).
+     *
+     * @var float|null
+     */
+    public $cappedAmount;
+
+    /**
+     * Capped terms (for usage charge).
+     *
+     * @var string|null
+     */
+    public $cappedTerms;
+
+    /**
+     * Plan return URL.
+     *
+     * @var string|null
+     */
+    public $returnUrl;
 }

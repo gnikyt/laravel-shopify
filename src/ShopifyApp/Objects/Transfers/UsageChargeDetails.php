@@ -6,23 +6,27 @@ use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
 
 /**
  * Reprecents details for a usage charge.
- * TODO: Add properties for types.
  */
-class UsageChargeDetails extends AbstractTransfer
+final class UsageChargeDetails extends AbstractTransfer
 {
     /**
-     * Constructor.
+     * The Shopify charge ID.
      *
-     * @param ChargeId $chargeId    The Shopify charge ID.
-     * @param float    $price       Usage charge price.
-     * @param string   $description Usage charge description.
-     *
-     * @return self
+     * @var ChargeId
      */
-    public function __construct(ChargeId $chargeId, float $price, string $description)
-    {
-        $this->data['chargeId'] = $chargeId;
-        $this->data['price'] = $price;
-        $this->data['description'] = $description;
-    }
+    public $chargeId;
+
+    /**
+     * Usage charge price.
+     *
+     * @var float
+     */
+    public $price;
+
+    /**
+     * Useage charge description.
+     *
+     * @var string
+     */
+    public $description;
 }

@@ -23,21 +23,20 @@ abstract class AbstractTransfer implements IteratorAggregate
      *
      * @param string $key The key to get.
      *
-     * @throws Exception
+     * @throws Exception If key is not valid.
      *
      * @return mixed
      */
     public function __get(string $key)
     {
-        if (array_key_exists($key, $this->data)) {
-            // Get the value of the key
-            return $this->data[$key];
+        if (!array_key_exists($key, $this->data)) {
+            // Does not exist, throw exception
+            $className = get_class($this);
+            throw new Exception("Property {$key} does not exist on transfer class {$className}");
         }
 
-        // Does not exist, throw exception
-        $className = get_class($this);
-
-        throw new Exception("Property {$key} does not exist on transfer class {$className}");
+        // Get the value of the key
+        return $this->data[$key];
     }
 
     /**
@@ -46,14 +45,19 @@ abstract class AbstractTransfer implements IteratorAggregate
      * @param string $key   The key attempting to set.
      * @param mixed  $value The value attempting to set.
      *
+     * @throws Exception If key is not valid.
+     *
      * @return void
      */
     public function __set(string $key, $value): void
     {
-        // Not allowed, throw exception
-        $className = get_class($this);
+        if (!array_key_exists($key, get_object_vars($this))) {
+            // Not allowed, throw exception
+            $className = get_class($this);
+            throw new Exception("Setting property {$key} for transfer class {$className} is not allowed");
+        }
 
-        throw new Exception("Setting properties for transfer class {$className}");
+        $this->data[$key] = $value;
     }
 
     /**

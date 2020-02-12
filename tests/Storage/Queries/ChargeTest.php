@@ -35,7 +35,7 @@ class ChargeTest extends TestCase
         $this->assertNull($this->query->getById(new ChargeId(10)));
     }
 
-    public function testPlanGetByShopIdAndChargeId(): void
+    public function testPlangetByChargeIdAndShopId(): void
     {
         // Create a charge
         $charge = factory(Charge::class)->states('type_recurring')->create([
@@ -44,10 +44,10 @@ class ChargeTest extends TestCase
 
         // Query it
         $this->assertNotNull(
-            $this->query->getByShopIdAndChargeId($this->shop->getId(), new ChargeId($charge->id))
+            $this->query->getByChargeIdAndShopId(new ChargeId($charge->charge_id), $this->shop->getId())
         );
 
         // Query non-existant
-        $this->assertNull($this->query->getByShopIdAndChargeId(new ShopId(10), new ChargeId(10)));
+        $this->assertNull($this->query->getByChargeIdAndShopId(new ChargeId(10), new ShopId(10)));
     }
 }

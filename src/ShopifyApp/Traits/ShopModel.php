@@ -122,9 +122,11 @@ trait ShopModel
     {
         if ($this->apiHelper === null) {
             // Set the session
-            $this->apiHelper = resolve(IApiHelper::class)->make(
-                new ApiSessionTransfer($this->getDomain(), $this->getToken())
-            );
+            $session = new ApiSessionTransfer();
+            $session->domain = $this->getDomain();
+            $session->token = $this->getToken();
+
+            $this->apiHelper = resolve(IApiHelper::class)->make($session);
         }
 
         return $this->apiHelper;

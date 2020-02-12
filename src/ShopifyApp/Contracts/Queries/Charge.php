@@ -24,10 +24,10 @@ interface Charge
     /**
      * Get by shop ID and charge ID.
      *
-     * @param ShopId   $shopId   The shop's ID for the charge.
      * @param ChargeId $chargeId The charge ID from Shopify.
+     * @param ShopId   $shopId   The shop's ID for the charge.
      *
      * @return ChargeModel|null
      */
-    public function getByShopIdAndChargeId(ShopId $shopId, ChargeId $chargeId): ?ChargeModel;
+    public function getByChargeIdAndShopId(ChargeId $chargeId, ShopId $shopId): ?ChargeModel;
 }

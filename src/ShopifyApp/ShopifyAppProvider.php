@@ -172,7 +172,6 @@ class ShopifyAppProvider extends ServiceProvider
                     $app->make(CancelCurrentPlanAction::class),
                     $app->make(ChargeHelper::class),
                     $app->make(IShopQuery::class),
-                    $app->make(IChargeQuery::class),
                     $app->make(IPlanQuery::class),
                     $app->make(IChargeCommand::class),
                     $app->make(IShopCommand::class)

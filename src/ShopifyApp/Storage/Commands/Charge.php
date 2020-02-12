@@ -69,7 +69,7 @@ class Charge implements ChargeCommand
      */
     public function deleteCharge(ShopId $shopId, ChargeId $chargeId): bool
     {
-        $charge = $this->chargeQuery->getByShopIdAndChargeId($shopId, $chargeId);
+        $charge = $this->query->getByChargeIdAndShopId($chargeId, $shopId);
         if (!$charge) {
             return false;
         }

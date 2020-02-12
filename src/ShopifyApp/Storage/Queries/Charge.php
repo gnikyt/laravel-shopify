@@ -26,13 +26,12 @@ class Charge implements IChargeQuery
     /**
      * {@inheritdoc}
      */
-    public function getByShopIdAndChargeId(ShopId $shopId, ChargeId $chargeId): ?ChargeModel
+    public function getByChargeIdAndShopId(ChargeId $chargeId, ShopId $shopId): ?ChargeModel
     {
-        return ChargeModel::where(
-            [
-                'id'      => $chargeId->toNative(),
-                'user_id' => $shopId->toNative(),
-            ]
-        )->get()->first();
+        return ChargeModel
+            ::where('charge_id', $chargeId->toNative())
+            ->where('user_id', $shopId->toNative())
+            ->get()
+            ->first();
     }
 }

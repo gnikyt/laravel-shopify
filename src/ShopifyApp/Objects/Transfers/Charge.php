@@ -11,44 +11,69 @@ use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
 /**
  * Reprecents create charge.
- * TODO: Add properties for types.
  */
 final class Charge extends AbstractTransfer
 {
     /**
-     * Constructor.
+     * Shop ID.
      *
-     * @param ShopId       $shopId       Shop ID.
-     * @param PlanId       $planId       Plan ID.
-     * @param ChargeId     $chargeId     Charge ID from Shopify.
-     * @param ChargeType   $chargeType   Charge type (recurring or single).
-     * @param ChargeStatus $chargeStatus Charge status.
-     * @param Carbon       $activatedOn  When the charge was activated.
-     * @param Carbon|null  $billingOn    When the charge will be billed on.
-     * @param Carbon|null  $trialEndsOn  When the trial ends on.
-     * @param PlanDetails  $planDetails  Plan details for reference.
-     *
-     * @return self
+     * @var ShopId
      */
-    public function __construct(
-        ShopId $shopId,
-        PlanId $planId,
-        ChargeId $chargeId,
-        ChargeType $chargeType,
-        ChargeStatus $chargeStatus,
-        Carbon $activatedOn,
-        ?Carbon $billingOn,
-        ?Carbon $trialEndsOn,
-        PlanDetails $planDetails
-    ) {
-        $this->data['shopId'] = $shopId;
-        $this->data['planId'] = $planId;
-        $this->data['chargeId'] = $chargeId;
-        $this->data['chargeType'] = $chargeType;
-        $this->data['chargeStatus'] = $chargeStatus;
-        $this->data['activatedOn'] = $activatedOn;
-        $this->data['billingOn'] = $billingOn;
-        $this->data['trialEndsOn'] = $trialEndsOn;
-        $this->data['planDetails'] = $planDetails;
-    }
+    public $shopId;
+
+     /**
+      * Plan ID.
+      *
+      * @var PlanId
+      */
+    public $planId;
+
+    /**
+     * Charge ID from Shopify.
+     *
+     * @var ChargeId
+     */
+    public $chargeId;
+
+    /**
+     * Charge type (recurring or single).
+     *
+     * @var ChargeType
+     */
+    public $chargeType;
+
+    /**
+     * Charge status.
+     *
+     * @var ChargeStatus $chargeStatus
+     */
+    public $chargeStatus;
+
+    /**
+     * When the charge was activated.
+     *
+     * @var Carbon
+     */
+    public $activatedOn;
+
+    /**
+     * When the charge will be billed on.
+     *
+     * @var Carbon|null
+     */
+    public $billingOn;
+
+    /**
+     * When the trial ends on.
+     *
+     * @var Carbon|null
+     */
+    public $trialEndsOn;
+
+    /**
+     * Plan details for reference.
+     *
+     * @var PlanDetails
+     */
+    public $planDetails;
 }

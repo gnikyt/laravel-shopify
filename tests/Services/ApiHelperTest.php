@@ -203,14 +203,13 @@ class ApiHelperTest extends TestCase
         $this->setApiStub();
         ApiStub::stubResponses(['post_recurring_application_charges_usage_charges']);
 
+        $tranfer = new UsageChargeDetailsTransfer();
+        $tranfer->chargeId = new ChargeId(1);
+        $tranfer->price = 12.00;
+        $tranfer->description = 'Hello!';
+
         $this->assertIsObject(
-            $shop->apiHelper()->createUsageCharge(
-                new UsageChargeDetailsTransfer(
-                    new ChargeId(1),
-                    12.00,
-                    'Hello!'
-                )
-            )
+            $shop->apiHelper()->createUsageCharge($tranfer)
         );
     }
 

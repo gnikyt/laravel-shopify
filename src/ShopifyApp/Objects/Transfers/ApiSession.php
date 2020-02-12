@@ -7,21 +7,20 @@ use OhMyBrew\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
 
 /**
  * Reprecents details for API session used by API helper.
- * TODO: Add properties for types.
  */
-class ApiSession extends AbstractTransfer
+final class ApiSession extends AbstractTransfer
 {
     /**
-     * Constructor.
+     * The shop's domain.
      *
-     * @param ShopDomainValue  $domain The shop's domain.
-     * @param AccessTokenValue $token  The access token.
-     *
-     * @return self
+     * @var ShopDomainValue
      */
-    public function __construct(ShopDomainValue $domain, AccessTokenValue $token)
-    {
-        $this->data['domain'] = $domain;
-        $this->data['token'] = $token;
-    }
+    public $domain;
+
+    /**
+     * The access token.
+     *
+     * @var AccessTokenValue
+     */
+    public $token;
 }

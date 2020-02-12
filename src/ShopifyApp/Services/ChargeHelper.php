@@ -292,17 +292,18 @@ class ChargeHelper
         $isCapped = isset($plan->capped_amount) && $plan->capped_amount > 0;
 
         // Build the details object
-        return new PlanDetailsTransfer(
-            $plan->name,
-            $plan->price,
-            $plan->isTest(),
-            $this->determineTrialDaysRemaining($plan, $shop),
-            $isCapped ? $this->capped_amount : null,
-            $isCapped ? $this->terms : null,
-            URL::secure(
-                $this->getConfig('billing_redirect'),
-                ['plan_id' => $plan->getId()->toNative()]
-            )
+        $transfer = new PlanDetailsTransfer();
+        $transfer->name = $plan->name;
+        $transfer->price = $plan->price;
+        $transfer->test = $plan->isTest();
+        $transfer->trialDays = $this->determineTrialDaysRemaining($plan, $shop);
+        $transfer->cappedAmount = $isCapped ? $this->capped_amount : null;
+        $transfer->cappedTerms = $isCapped ? $this->terms : null;
+        $transfer->returnUrl = URL::secure(
+            $this->getConfig('billing_redirect'),
+            ['plan_id' => $plan->getId()->toNative()]
         );
+
+        return $transfer;
     }
 }
