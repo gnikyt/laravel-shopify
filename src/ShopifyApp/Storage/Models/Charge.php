@@ -9,6 +9,7 @@ use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
 use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
 use OhMyBrew\ShopifyApp\Objects\Enums\ChargeStatus;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeReference;
 
 /**
  * Responsible for reprecenting a charge record.
@@ -53,13 +54,23 @@ class Charge extends Model
     protected $dates = ['deleted_at'];
 
     /**
-     * Get the charge ID as a value object.
+     * Get the ID as a value object.
      *
      * @return ChargeId
      */
-    public function getChargeId(): ChargeId
+    public function getId(): ChargeId
     {
-        return new ChargeId($this->chargeId);
+        return new ChargeId($this->id);
+    }
+
+    /**
+     * Get the charge ID as a value object.
+     *
+     * @return ChargeReference
+     */
+    public function getReference(): ChargeReference
+    {
+        return new ChargeReference($this->charge_id);
     }
 
     /**

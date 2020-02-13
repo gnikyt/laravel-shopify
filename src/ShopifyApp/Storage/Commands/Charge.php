@@ -9,7 +9,7 @@ use OhMyBrew\ShopifyApp\Storage\Models\Charge as ChargeModel;
 use OhMyBrew\ShopifyApp\Objects\Enums\ChargeStatus;
 use OhMyBrew\ShopifyApp\Objects\Transfers\Charge as ChargeTransfer;
 use OhMyBrew\ShopifyApp\Objects\Transfers\UsageCharge as UsageChargeTransfer;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeReference;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
 /**
@@ -39,7 +39,7 @@ class Charge implements ChargeCommand
     {
         $charge = new ChargeModel();
         $charge->user_id = $chargeObj->shopId->toNative();
-        $charge->charge_id = $chargeObj->chargeId->toNative();
+        $charge->charge_id = $chargeObj->chargeReference->toNative();
         $charge->type = $chargeObj->chargeType->toNative();
         $charge->status = $chargeObj->chargeStatus->toNative();
         $charge->name = $chargeObj->planDetails->name;
@@ -67,9 +67,9 @@ class Charge implements ChargeCommand
     /**
      * {@inheritdoc}
      */
-    public function deleteCharge(ShopId $shopId, ChargeId $chargeId): bool
+    public function deleteCharge(ChargeReference $chargeRef, ShopId $shopId): bool
     {
-        $charge = $this->query->getByChargeIdAndShopId($chargeId, $shopId);
+        $charge = $this->query->getByReferenceAndShopId($chargeRef, $shopId);
         if (!$charge) {
             return false;
         }
@@ -85,7 +85,7 @@ class Charge implements ChargeCommand
         // Create the charge
         $charge = new ChargeModel();
         $charge->user_id = $chargeObj->shopId->toNative();
-        $charge->charge_id = $chargeObj->chargeId->toNative();
+        $charge->charge_id = $chargeObj->chargeReference->toNative();
         $charge->type = $chargeObj->chargeType->toNative();
         $charge->status = $chargeObj->chargeStatus->toNative();
         $charge->billing_on = $chargeObj->billingOn->format('Y-m-d');
@@ -102,9 +102,9 @@ class Charge implements ChargeCommand
     /**
      * {@inheritdoc}
      */
-    public function cancelCharge(ChargeId $chargeId, ?Carbon $expiresOn = null, ?Carbon $trialEndsOn = null): bool
+    public function cancelCharge(ChargeReference $chargeRef, ?Carbon $expiresOn = null, ?Carbon $trialEndsOn = null): bool
     {
-        $charge = $this->query->getById($chargeId);
+        $charge = $this->query->getByReference($chargeRef);
         $charge->status = ChargeStatus::CANCELLED()->toNative();
         $charge->cancelled_on = $expiresOn === null ? Carbon::today()->format('Y-m-d') : $expiresOn->format('Y-m-d');
         $charge->expires_on = $trialEndsOn === null ? Carbon::today()->format('Y-m-d') : $trialEndsOn->format('Y-m-d');

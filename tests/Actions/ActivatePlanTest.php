@@ -5,7 +5,7 @@ namespace OhMyBrew\ShopifyApp\Test\Actions;
 use OhMyBrew\ShopifyApp\Test\TestCase;
 use OhMyBrew\ShopifyApp\Storage\Models\Plan;
 use OhMyBrew\ShopifyApp\Actions\ActivatePlan;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeReference;
 use OhMyBrew\ShopifyApp\Storage\Models\Charge;
 use OhMyBrew\ShopifyApp\Test\Stubs\Api as ApiStub;
 
@@ -44,7 +44,7 @@ class ActivatePlanTest extends TestCase
             $this->action,
             $shop->getId(),
             $plan->getId(),
-            new ChargeId(12345)
+            new ChargeReference(12345)
         );
 
         $this->assertTrue($result);

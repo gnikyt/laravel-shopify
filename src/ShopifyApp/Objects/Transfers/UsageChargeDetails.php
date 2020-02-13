@@ -2,7 +2,7 @@
 
 namespace OhMyBrew\ShopifyApp\Objects\Transfers;
 
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeReference;
 
 /**
  * Reprecents details for a usage charge.
@@ -12,9 +12,9 @@ final class UsageChargeDetails extends AbstractTransfer
     /**
      * The Shopify charge ID.
      *
-     * @var ChargeId
+     * @var ChargeReference
      */
-    public $chargeId;
+    public $chargeReference;
 
     /**
      * Usage charge price.

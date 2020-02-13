@@ -6,7 +6,7 @@ use Illuminate\Support\Carbon;
 use OhMyBrew\ShopifyApp\Contracts\Objects\Values\PlanId;
 use OhMyBrew\ShopifyApp\Objects\Enums\ChargeStatus;
 use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeReference;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
 /**
@@ -31,9 +31,9 @@ final class Charge extends AbstractTransfer
     /**
      * Charge ID from Shopify.
      *
-     * @var ChargeId
+     * @var ChargeReference
      */
-    public $chargeId;
+    public $chargeReference;
 
     /**
      * Charge type (recurring or single).

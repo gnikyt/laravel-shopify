@@ -24,9 +24,18 @@ class Api extends BasicShopifyAPI
             throw new Exception("Missing fixture for {$method} @ {$path}, tried: '{$filename}.json'");
         }
 
+        $errors = false;
+        $exception = null;
+        if (property_exists($response, 'errors')) {
+            $errors = true;
+            $exception = new Exception();
+        }
+
         return (object) [
-            'body'   => $response,
-            'status' => 200,
+            'errors'    => $errors,
+            'exception' => $exception,
+            'body'      => $response,
+            'status'    => 200,
         ];
     }
 

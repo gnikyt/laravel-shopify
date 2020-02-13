@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\View;
 use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeReference;
 use OhMyBrew\ShopifyApp\Objects\Values\PlanId;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
 use OhMyBrew\ShopifyApp\Requests\StoreUsageCharge;
@@ -55,7 +55,7 @@ trait BillingController
         $result = $activatePlanAction(
             new ShopDomain(ShopifyApp::shop()->name),
             new PlanId($planId),
-            new ChargeId($request->query('charge_id'))
+            new ChargeReference($request->query('charge_id'))
         );
 
         // Go to homepage of app

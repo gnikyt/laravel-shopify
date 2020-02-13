@@ -6,7 +6,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\URL;
 use OhMyBrew\ShopifyApp\Storage\Models\Plan;
 use OhMyBrew\ShopifyApp\Objects\Values\PlanId;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeReference;
 use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
 use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use OhMyBrew\ShopifyApp\Contracts\ShopModel as IShopModel;
@@ -62,14 +62,14 @@ class ChargeHelper
     /**
      * Set the charge in context.
      *
-     * @param ChargeId $chargeId The charge ID.
+     * @param ChargeReference $chargeRef The charge ID.
      *
      * @return self
      */
-    public function useCharge(ChargeId $chargeId): self
+    public function useCharge(ChargeReference $chargeRef): self
     {
         // Get the charge
-        $this->charge = $this->chargeQuery->getById($chargeId);
+        $this->charge = $this->chargeQuery->getByReference($chargeRef);
 
         return $this;
     }

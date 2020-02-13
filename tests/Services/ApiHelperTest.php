@@ -6,7 +6,7 @@ use OhMyBrew\BasicShopifyAPI;
 use OhMyBrew\ShopifyApp\Test\TestCase;
 use OhMyBrew\ShopifyApp\Objects\Enums\AuthMode;
 use OhMyBrew\ShopifyApp\Exceptions\ApiException;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeReference;
 use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
 use OhMyBrew\ShopifyApp\Test\Stubs\Api as ApiStub;
 use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
@@ -109,7 +109,7 @@ class ApiHelperTest extends TestCase
         ApiStub::stubResponses(['get_application_charge']);
 
         $this->assertIsObject(
-            $shop->apiHelper()->getCharge(ChargeType::CHARGE(), new ChargeId(1234))
+            $shop->apiHelper()->getCharge(ChargeType::CHARGE(), new ChargeReference(1234))
         );
     }
 
@@ -123,7 +123,7 @@ class ApiHelperTest extends TestCase
         ApiStub::stubResponses(['post_recurring_application_charges_activate']);
 
         $this->assertIsObject(
-            $shop->apiHelper()->activateCharge(ChargeType::RECURRING(), new ChargeId(1234))
+            $shop->apiHelper()->activateCharge(ChargeType::RECURRING(), new ChargeReference(1234))
         );
     }
 
@@ -204,7 +204,7 @@ class ApiHelperTest extends TestCase
         ApiStub::stubResponses(['post_recurring_application_charges_usage_charges']);
 
         $tranfer = new UsageChargeDetailsTransfer();
-        $tranfer->chargeId = new ChargeId(1);
+        $tranfer->chargeReference = new ChargeReference(1);
         $tranfer->price = 12.00;
         $tranfer->description = 'Hello!';
 

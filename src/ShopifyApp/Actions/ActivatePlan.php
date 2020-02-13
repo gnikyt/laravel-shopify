@@ -6,7 +6,7 @@ use Illuminate\Support\Carbon;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 use OhMyBrew\ShopifyApp\Services\ChargeHelper;
 use OhMyBrew\ShopifyApp\Objects\Enums\PlanType;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeReference;
 use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
 use OhMyBrew\ShopifyApp\Objects\Enums\ChargeStatus;
 use OhMyBrew\ShopifyApp\Contracts\Objects\Values\PlanId;
@@ -95,13 +95,13 @@ class ActivatePlan
      * Execution.
      * TODO: Rethrow an API exception.
      *
-     * @param ShopId   $shopId   The shop ID.
-     * @param PlanId   $planId   The plan to use.
-     * @param ChargeId $chargeId The charge ID from Shopify.
+     * @param ShopId          $shopId    The shop ID.
+     * @param PlanId          $planId    The plan to use.
+     * @param ChargeReference $chargeRef The charge ID from Shopify.
      *
      * @return bool
      */
-    public function __invoke(ShopId $shopId, PlanId $planId, ChargeId $chargeId): bool
+    public function __invoke(ShopId $shopId, PlanId $planId, ChargeReference $chargeRef): bool
     {
         // Get the shop
         $shop = $this->shopQuery->getById($shopId);
@@ -111,20 +111,20 @@ class ActivatePlan
         $chargeType = ChargeType::fromNative($plan->getType()->toNative());
 
         // Activate the plan on Shopify
-        $response = $shop->apiHelper()->activateCharge($chargeType, $chargeId);
+        $response = $shop->apiHelper()->activateCharge($chargeType, $chargeRef);
 
         // Cancel the shop's current plan
         call_user_func($this->cancelCurrentPlan, $shopId);
 
         // Cancel the existing charge if it exists (happens if someone refreshes during)
-        $this->chargeCommand->deleteCharge($shopId, $chargeId);
+        $this->chargeCommand->deleteCharge($chargeRef, $shopId);
 
         // Create the charge transfer
         $isRecurring = $plan->isType(PlanType::RECURRING());
         $transfer = new ChargeTransfer();
         $transfer->shopId = $shopId;
         $transfer->planId = $planId;
-        $transfer->chargeId = $chargeId;
+        $transfer->chargeReference = $chargeRef;
         $transfer->chargeType = $chargeType;
         $transfer->chargeStatus = ChargeStatus::fromNative(strtoupper($response->status));
         $transfer->activatedOn = $response->activated_on ? new Carbon($response->activated_on) : Carbon::today();

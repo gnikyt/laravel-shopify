@@ -73,7 +73,7 @@ class CancelCurrentPlan
         // Cancel the last charge
         $planCharge = $this->chargeHelper->chargeForPlan($shop->plan->getId(), $shop);
         if ($planCharge && !$planCharge->isDeclined() && !$planCharge->isCancelled()) {
-            $this->chargeCommand->cancelCharge($planCharge->getId());
+            $this->chargeCommand->cancelCharge($planCharge->getReference());
 
             return true;
         }

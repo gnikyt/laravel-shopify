@@ -9,7 +9,7 @@ use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
 use OhMyBrew\ShopifyApp\Objects\Transfers\ApiSession as ApiSessionTransfer;
 use OhMyBrew\ShopifyApp\Objects\Transfers\PlanDetails;
 use OhMyBrew\ShopifyApp\Objects\Transfers\UsageChargeDetails;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeReference;
 
 /**
  * Reprecents the API helper.
@@ -90,22 +90,22 @@ interface ApiHelper
     /**
      * Get the charge record.
      *
-     * @param ChargeType $chargeType The type of charge (plural).
-     * @param ChargeId   $chargeId   The charge ID.
+     * @param ChargeType      $chargeType The type of charge (plural).
+     * @param ChargeReference $chargeRef  The charge ID.
      *
      * @return object|RequestException
      */
-    public function getCharge(ChargeType $chargeType, ChargeId $chargeId): object;
+    public function getCharge(ChargeType $chargeType, ChargeReference $chargeRef): object;
 
     /**
      * Activate a charge.
      *
-     * @param ChargeType $chargeType The type of charge (plural).
-     * @param ChargeId   $chargeId   The charge ID.
+     * @param ChargeType      $chargeType The type of charge (plural).
+     * @param ChargeReference $chargeRef  The charge ID.
      *
      * @return object|RequestException
      */
-    public function activateCharge(ChargeType $chargeType, ChargeId $chargeId): object;
+    public function activateCharge(ChargeType $chargeType, ChargeReference $chargeRef): object;
 
     /**
      * Create a charge.

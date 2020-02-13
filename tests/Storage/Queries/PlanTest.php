@@ -24,7 +24,7 @@ class PlanTest extends TestCase
         $plan = factory(Plan::class)->states('type_recurring')->create();
 
         // Query it
-        $this->assertNotNull($this->query->getById(new PlanId($plan->id)));
+        $this->assertNotNull($this->query->getById($plan->getId()));
 
         // Query non-existant
         $this->assertNull($this->query->getById(new PlanId(10)));

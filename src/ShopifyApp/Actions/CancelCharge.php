@@ -6,7 +6,7 @@ use Exception;
 use Illuminate\Support\Carbon;
 use OhMyBrew\ShopifyApp\Contracts\Commands\Charge as IChargeCommand;
 use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeReference;
 use OhMyBrew\ShopifyApp\Services\ChargeHelper;
 
 /**
@@ -47,29 +47,27 @@ class CancelCharge
     /**
      * Cancels the charge.
      *
-     * @param ChargeId $chargeId The charge ID.
+     * @param ChargeReference $chargeRef The charge ID.
      *
      * @throws Exception
      *
      * @return bool
      */
-    public function __invoke(ChargeId $chargeId): bool
+    public function __invoke(ChargeReference $chargeRef): bool
     {
         // Get the charge
-        $helper = $this->chargeHelper->useCharge($chargeId);
+        $helper = $this->chargeHelper->useCharge($chargeRef);
         $charge = $helper->getCharge();
 
-        if (!$charge->isType(ChargeType::CHARGE()->toNative()) &&
-            !$charge->isType(ChargeType::RECURRING()->toNative())
-        ) {
+        if (!$charge->isType(ChargeType::CHARGE()) && !$charge->isType(ChargeType::RECURRING())) {
             throw new Exception('Cancel may only be called for single and recurring charges.');
         }
 
         // Save the details to the database
         return $this->chargeCommand->cancelCharge(
-            $chargeId,
-            Carbon::today()->format('Y-m-d'),
-            Carbon::today()->addDays($helper->remainingDaysForPeriod())->format('Y-m-d')
+            $chargeRef,
+            Carbon::today(),
+            Carbon::today()->addDays($helper->remainingDaysForPeriod())
         );
     }
 }

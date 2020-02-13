@@ -6,7 +6,7 @@ use Illuminate\Support\Carbon;
 use OhMyBrew\ShopifyApp\Objects\Values\PlanId;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 use OhMyBrew\ShopifyApp\Services\ChargeHelper;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeReference;
 use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use OhMyBrew\ShopifyApp\Exceptions\ChargeNotRecurringException;
@@ -55,7 +55,6 @@ class ActivateUsageCharge
         IChargeCommand $chargeCommand,
         IShopQuery $shopQuery
     ) {
-        $this->apiHelper = $apiHelper;
         $this->chargeHelper = $chargeHelper;
         $this->chargeCommand = $chargeCommand;
         $this->shopQuery = $shopQuery;
@@ -84,14 +83,14 @@ class ActivateUsageCharge
         }
 
         // Create the usage charge
-        $ucd->chargeId = $currentCharge->getChargeId();
+        $ucd->chargeReference = $currentCharge->getReference();
         $response = $shop->apiHelper()->createUsageCharge($ucd);
 
         // Create the transder
         $uct = new UsageChargeTransfer();
         $uct->shopId = $shopId;
         $uct->planId = $shop->plan->getId();
-        $uct->chargeId = new ChargeId($response->id);
+        $uct->chargeReference = new ChargeReference($response->id);
         $uct->chargeStatus = ChargeStatus::fromNative(strtoupper($response->status));
         $uct->billingOn = new Carbon($response->billing_on);
         $uct->details = $ucd;

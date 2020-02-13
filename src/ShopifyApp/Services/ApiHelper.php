@@ -14,7 +14,7 @@ use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
 use OhMyBrew\ShopifyApp\Objects\Transfers\ApiSession as ApiSessionTransfer;
 use OhMyBrew\ShopifyApp\Objects\Transfers\PlanDetails as PlanDetailsTransfer;
 use OhMyBrew\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeReference;
 use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
 
 /**
@@ -178,7 +178,7 @@ class ApiHelper implements IApiHelper
     /**
      * {@inheritdoc}
      */
-    public function getCharge(ChargeType $chargeType, ChargeId $chargeId): object
+    public function getCharge(ChargeType $chargeType, ChargeReference $chargeRef): object
     {
         // API path
         $typeString = $this->chargeApiPath($chargeType);
@@ -186,7 +186,7 @@ class ApiHelper implements IApiHelper
         // Fire the request
         $response = $this->doRequest(
             ApiMethod::GET(),
-            "/admin/{$typeString}s/{$chargeId->toNative()}.json"
+            "/admin/{$typeString}s/{$chargeRef->toNative()}.json"
         );
 
         return $response->body->{$typeString};
@@ -195,7 +195,7 @@ class ApiHelper implements IApiHelper
     /**
      * {@inheritdoc}
      */
-    public function activateCharge(ChargeType $chargeType, ChargeId $chargeId): object
+    public function activateCharge(ChargeType $chargeType, ChargeReference $chargeRef): object
     {
         // API path
         $typeString = $this->chargeApiPath($chargeType);
@@ -203,7 +203,7 @@ class ApiHelper implements IApiHelper
         // Fire the request
         $response = $this->doRequest(
             ApiMethod::POST(),
-            "/admin/{$typeString}s/{$chargeId->toNative()}/activate.json"
+            "/admin/{$typeString}s/{$chargeRef->toNative()}/activate.json"
         );
 
         return $response->body->{$typeString};
@@ -288,7 +288,7 @@ class ApiHelper implements IApiHelper
         // Fire the request
         $response = $this->doRequest(
             ApiMethod::POST(),
-            "/admin/recurring_application_charges/{$payload->chargeId->toNative()}/usage_charges.json",
+            "/admin/recurring_application_charges/{$payload->chargeReference->toNative()}/usage_charges.json",
             [
                 'usage_charge' => [
                     'price'       => $payload->price,
@@ -329,9 +329,13 @@ class ApiHelper implements IApiHelper
     protected function doRequest(ApiMethod $method, string $path, array $payload = null)
     {
         $response = $this->api->rest($method->toNative(), $path, $payload);
-        if ($response->errors) {
+        if (property_exists($response, 'errors') && $response->errors === true) {
             // Request error somewhere, throw the exception
-            throw new ApiException($response->body ?? 'Unknown error', 0, $response->exception);
+            throw new ApiException(
+                is_string($response->body) ? $response->body : 'Unknown error',
+                0,
+                $response->exception
+            );
         }
 
         return $response;

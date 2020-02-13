@@ -29,11 +29,11 @@ final class UsageCharge extends AbstractTransfer
     public $planId;
 
     /**
-     * The charge ID.
+     * The charge ID from Shopify.
      *
-     * @var ChargeId
+     * @var ChargeReference
      */
-    public $chargeId;
+    public $chargeReference;
 
     /**
      * Usage charge type.
