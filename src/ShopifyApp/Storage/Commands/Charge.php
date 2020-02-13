@@ -102,8 +102,11 @@ class Charge implements ChargeCommand
     /**
      * {@inheritdoc}
      */
-    public function cancelCharge(ChargeReference $chargeRef, ?Carbon $expiresOn = null, ?Carbon $trialEndsOn = null): bool
-    {
+    public function cancelCharge(
+        ChargeReference $chargeRef,
+        ?Carbon $expiresOn = null,
+        ?Carbon $trialEndsOn = null
+    ): bool {
         $charge = $this->query->getByReference($chargeRef);
         $charge->status = ChargeStatus::CANCELLED()->toNative();
         $charge->cancelled_on = $expiresOn === null ? Carbon::today()->format('Y-m-d') : $expiresOn->format('Y-m-d');

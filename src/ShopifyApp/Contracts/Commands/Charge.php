@@ -48,5 +48,9 @@ interface Charge
      *
      * @return bool
      */
-    public function cancelCharge(ChargeReference $chargeRef, ?Carbon $expiresOn = null, ?Carbon $trialEndsOn = null): bool;
+    public function cancelCharge(
+        ChargeReference $chargeRef,
+        ?Carbon $expiresOn = null,
+        ?Carbon $trialEndsOn = null
+    ): bool;
 }
