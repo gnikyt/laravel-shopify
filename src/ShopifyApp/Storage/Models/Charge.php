@@ -38,10 +38,7 @@ class Charge extends Model
      * @var array
      */
     protected $casts = [
-        'type'          => 'int',
         'test'          => 'bool',
-        'charge_id'     => 'string',
-        'user_id'       => 'int',
         'capped_amount' => 'float',
         'price'         => 'float',
     ];

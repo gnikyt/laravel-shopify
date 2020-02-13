@@ -179,7 +179,7 @@ class ShopifyAppProvider extends ServiceProvider
             }],
             ActivateUsageChargeAction::class => [self::CBIND, function ($app) {
                 return new ActivateUsageChargeAction(
-                    $app->make(IApiHelper::class),
+                    $app->make(ChargeHelper::class),
                     $app->make(IChargeCommand::class),
                     $app->make(IShopQuery::class)
                 );

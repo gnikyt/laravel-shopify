@@ -3,15 +3,13 @@
 namespace OhMyBrew\ShopifyApp\Actions;
 
 use Illuminate\Support\Carbon;
-use OhMyBrew\ShopifyApp\Objects\Values\PlanId;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 use OhMyBrew\ShopifyApp\Services\ChargeHelper;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeReference;
 use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeReference;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use OhMyBrew\ShopifyApp\Exceptions\ChargeNotRecurringException;
 use OhMyBrew\ShopifyApp\Contracts\Commands\Charge as IChargeCommand;
-use OhMyBrew\ShopifyApp\Objects\Enums\ChargeStatus;
 use OhMyBrew\ShopifyApp\Objects\Transfers\UsageCharge as UsageChargeTransfer;
 use OhMyBrew\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
 
@@ -64,8 +62,8 @@ class ActivateUsageCharge
      * Execute.
      * TODO: Rethrow an API exception.
      *
-     * @param ShopeId                    $shopId        The shop ID.
-     * @param UsageChargeDetailsTransfer $ucd The usage charge details (without charge ID).
+     * @param ShopeId                    $shopId The shop ID.
+     * @param UsageChargeDetailsTransfer $ucd    The usage charge details (without charge ID).
      *
      * @throws ChargeNotRecurringException
      *
@@ -91,7 +89,6 @@ class ActivateUsageCharge
         $uct->shopId = $shopId;
         $uct->planId = $shop->plan->getId();
         $uct->chargeReference = new ChargeReference($response->id);
-        $uct->chargeStatus = ChargeStatus::fromNative(strtoupper($response->status));
         $uct->billingOn = new Carbon($response->billing_on);
         $uct->details = $ucd;
 

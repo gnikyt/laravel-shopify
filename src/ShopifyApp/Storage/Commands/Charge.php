@@ -91,7 +91,7 @@ class Charge implements ChargeCommand
         $charge->billing_on = $chargeObj->billingOn->format('Y-m-d');
         $charge->price = $chargeObj->details->price;
         $charge->description = $chargeObj->details->description;
-        $charge->reference_charge = $chargeObj->details->chargeId->toNative();
+        $charge->reference_charge = $chargeObj->details->chargeReference->toNative();
 
         // Save the charge
         $charge->save();
