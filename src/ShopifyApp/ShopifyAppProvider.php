@@ -133,7 +133,6 @@ class ShopifyAppProvider extends ServiceProvider
             // Actions
             AuthenticateShopAction::class => [self::CBIND, function ($app) {
                 return new AuthenticateShopAction(
-                    $app->make(IApiHelper::class),
                     $app->make(IShopQuery::class),
                     $app->make(ShopSession::class)
                 );

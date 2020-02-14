@@ -71,21 +71,20 @@ class AfterAuthenticate
         // Grab the jobs config
         $jobsConfig = $this->getConfig('after_authenticate_job');
 
-        // We have multi-jobs
         if (isset($jobsConfig[0])) {
+            // We have multi-jobs
             foreach ($jobsConfig as $jobConfig) {
                 // We have a job, pass the shop object to the contructor
                 $fireJob($jobConfig, $shop);
             }
 
             return true;
-        }
-
-        // We have a single job
-        if (isset($jobsConfig['job'])) {
+        } elseif (isset($jobsConfig['job'])) {
+            // We have a single job
             return $fireJob($jobsConfig, $shop);
+        } else {
+            // We have no jobs
+            return false;
         }
-
-        return false;
     }
 }

@@ -99,9 +99,9 @@ class ActivatePlan
      * @param PlanId          $planId    The plan to use.
      * @param ChargeReference $chargeRef The charge ID from Shopify.
      *
-     * @return bool
+     * @return int
      */
-    public function __invoke(ShopId $shopId, PlanId $planId, ChargeReference $chargeRef): bool
+    public function __invoke(ShopId $shopId, PlanId $planId, ChargeReference $chargeRef): int
     {
         // Get the shop
         $shop = $this->shopQuery->getById($shopId);
@@ -134,11 +134,8 @@ class ActivatePlan
 
         // Create the charge
         $charge = $this->chargeCommand->createCharge($transfer);
-        if ($charge) {
-            // All good, update the shop's plan and take them off freemium (if applicable)
-            return $this->shopCommand->setToPlan($shopId, $planId);
-        }
+        $this->shopCommand->setToPlan($shopId, $planId);
 
-        return false;
+        return $charge;
     }
 }

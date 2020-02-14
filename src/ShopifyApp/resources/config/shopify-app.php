@@ -139,12 +139,12 @@ return [
     |--------------------------------------------------------------------------
     |
     | This option is for the grant mode when authenticating.
-    | Default is "offline", "per-user" is available as well.
+    | Default is "OFFLINE", "PERUSER" is available as well.
     | Note: Install will always be in offline mode.
     |
     */
 
-    'api_grant_mode' => env('SHOPIFY_API_GRANT_MODE', 'offline'),
+    'api_grant_mode' => env('SHOPIFY_API_GRANT_MODE', 'OFFLINE'),
 
     /*
     |--------------------------------------------------------------------------

@@ -47,6 +47,6 @@ class ActivatePlanTest extends TestCase
             new ChargeReference(12345)
         );
 
-        $this->assertTrue($result);
+        $this->assertIsInt($result);
     }
 }

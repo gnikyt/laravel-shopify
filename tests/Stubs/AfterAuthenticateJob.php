@@ -22,7 +22,7 @@ class AfterAuthenticateJob implements ShouldQueue
         $this->shop = $shop;
     }
 
-    public function handle()
+    public function handle(): void
     {
         // Do what you wish with the data
     }

@@ -2,12 +2,11 @@
 
 namespace OhMyBrew\ShopifyApp\Actions;
 
-use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
-use OhMyBrew\ShopifyApp\Objects\Enums\AuthMode;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
 use OhMyBrew\ShopifyApp\Services\ShopSession;
+use OhMyBrew\ShopifyApp\Objects\Enums\AuthMode;
 use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 
 /**
  * Authenticates a shop via HTTP request.
@@ -24,13 +23,6 @@ class AuthenticateShop
     protected $shopQuery;
 
     /**
-     * The API helper.
-     *
-     * @var IApiHelper
-     */
-    protected $apiHelper;
-
-    /**
      * The shop session handler.
      *
      * @var ShopSession
@@ -40,18 +32,15 @@ class AuthenticateShop
     /**
      * Setup.
      *
-     * @param IApiHelper  $apiHelper   The API helper.
      * @param IShopQuery  $shopQuery   The querier for the shop.
      * @param ShopSession $shopSession The shop session handler.
      *
      * @return self
      */
     public function __construct(
-        IApiHelper $apiHelper,
         IShopQuery $shopQuery,
         ShopSession $shopSession
     ) {
-        $this->apiHelper = $apiHelper;
         $this->shopQuery = $shopQuery;
         $this->shopSession = $shopSession;
     }
@@ -60,16 +49,16 @@ class AuthenticateShop
      * Execution.
      * TODO: Rethrow an API exception.
      *
-     * @param ShopDomain $shopDomain The shop ID.
-     * @param string     $code       The code from Shopify.
+     * @param ShopDomain  $shopDomain The shop ID.
+     * @param string|null $code       The code from Shopify.
      *
      * @return object
      */
-    public function __invoke(ShopDomain $shopDomain, string $code): object
+    public function __invoke(ShopDomain $shopDomain, ?string $code): object
     {
         // Get the shop
         $shop = $this->shopQuery->getByDomain($shopDomain);
-        $this->apiHelper->setInstance($shop->api());
+        $apiHelper = $shop->apiHelper();
 
         // Return data
         $return = [
@@ -80,8 +69,10 @@ class AuthenticateShop
         // Start the process
         if (empty($code)) {
             // We need the code first
-            $authUrl = $this->apiHelper->buildAuthUrl(
-                $shop->hasOfflineAccess() ? $this->getConfig('api_grant_mode') : AuthMode::OFFLINE()->toNative(),
+            $authUrl = $apiHelper->buildAuthUrl(
+                $shop->hasOfflineAccess() ?
+                    AuthMode::fromNative($this->getConfig('api_grant_mode')) :
+                    AuthMode::OFFLINE(),
                 $this->getConfig('api_scopes')
             );
 
@@ -89,13 +80,8 @@ class AuthenticateShop
             $return['url'] = $authUrl;
         } else {
             // We have a good code, get the access details
-            $this
-                ->shopSession
-                ->setShop($shop)
-                ->setDomain(new ShopDomain($shop->name))
-                ->setAccess(
-                    $this->apiHelper->getAccessData($code)
-                );
+            $session = $this->shopSession->make($shop->getDomain());
+            $session->setAccess($apiHelper->getAccessData($code));
 
             $return['completed'] = true;
         }

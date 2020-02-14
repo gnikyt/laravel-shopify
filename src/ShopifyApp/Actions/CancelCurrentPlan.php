@@ -75,9 +75,11 @@ class CancelCurrentPlan
         if ($planCharge && !$planCharge->isDeclined() && !$planCharge->isCancelled()) {
             $this->chargeCommand->cancelCharge($planCharge->getReference());
 
+            // Charge has been cancelled
             return true;
         }
 
+        // Shop had a plan with no charge attached, usually means its a custom plan
         return false;
     }
 }
