@@ -15,13 +15,6 @@ class CreateWebhooks
     use ConfigAccessible;
 
     /**
-     * The API helper.
-     *
-     * @var IApiHelper
-     */
-    protected $apiHelper;
-
-    /**
      * Querier for shops.
      *
      * @var IShopQuery
@@ -31,14 +24,12 @@ class CreateWebhooks
     /**
      * Setup.
      *
-     * @param IApiHelper $apiHelper The API helper.
      * @param IShopQuery $shopQuery The querier for the shop.
      *
      * @return self
      */
-    public function __construct(IApiHelper $apiHelper, IShopQuery $shopQuery)
+    public function __construct(IShopQuery $shopQuery)
     {
-        $this->apiHelper = $apiHelper;
         $this->shopQuery = $shopQuery;
     }
 
@@ -46,11 +37,12 @@ class CreateWebhooks
      * Execution.
      * TODO: Rethrow an API exception.
      *
-     * @param ShopId $shopId The shop ID.
+     * @param ShopId $shopId         The shop ID.
+     * @param array  $configWebhooks The webhooks to add.
      *
      * @return array
      */
-    public function __invoke(ShopId $shopId): array
+    public function __invoke(ShopId $shopId, array $configWebhooks): array
     {
         /**
          * Checks if a webhooks exists already in the shop.
@@ -73,22 +65,17 @@ class CreateWebhooks
 
         // Get the shop
         $shop = $this->shopQuery->getById($shopId);
-
-        // Set the API instance
-        $this->apiHelper->setInstance($shop->api());
-
-        // Get the webhooks in config
-        $configWebhooks = $this->getConfig('webhooks');
+        $apiHelper = $shop->apiHelper();
 
         // Get the webhooks existing in for the shop
-        $webhooks = $this->apiHelper->getWebhooks();
+        $webhooks = $apiHelper->getWebhooks();
 
         $created = [];
         foreach ($configWebhooks as $webhook) {
             // Check if the required webhook exists on the shop
             if (!$exists($webhook, $webhooks)) {
                 // It does not... create the webhook
-                $this->api->createWebhook($webhook);
+                $apiHelper->createWebhook($webhook);
 
                 // Keep track of what was created
                 $created[] = $webhook;

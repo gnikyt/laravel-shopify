@@ -18,34 +18,42 @@ class ScripttagInstaller implements ShouldQueue
     use InteractsWithQueue;
     use Queueable;
     use SerializesModels;
+
     /**
      * The shop's ID.
      *
-     * @var int
+     * @var ShopId
      */
     protected $shopId;
 
     /**
      * Action for creating scripttags.
      *
-     * @var callable
+     * @var string
      */
     protected $createScriptsAction;
 
     /**
+     * The scripts to add.
+     *
+     * @var array
+     */
+    protected $configScripts;
+
+    /**
      * Create a new job instance.
      *
-     * @param int      $shopId              The shop ID.
-     * @param callable $createScriptsAction Action for creating scripttags.
+     * @param ShopId $shopId              The shop ID.
+     * @param string $createScriptsAction Action for creating scripttags.
+     * @param array  $configScripts       The scripts to add.
      *
      * @return self
      */
-    public function __construct(
-        int $shopId,
-        callable $createScriptsAction
-    ) {
+    public function __construct(ShopId $shopId, callable $createScriptsAction, array $configScripts)
+    {
         $this->shopId = $shopId;
         $this->createScriptsAction = $createScriptsAction;
+        $this->configScripts = $configScripts;
     }
 
     /**
@@ -55,6 +63,10 @@ class ScripttagInstaller implements ShouldQueue
      */
     public function handle(): array
     {
-        return call_user_func($this->createScriptsAction, new ShopId($this->shopId));
+        return call_user_func(
+            $this->createScriptsAction,
+            $this->shopId,
+            $this->configScripts
+        );
     }
 }

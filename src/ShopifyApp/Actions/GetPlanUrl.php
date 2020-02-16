@@ -2,24 +2,18 @@
 
 namespace OhMyBrew\ShopifyApp\Actions;
 
-use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
+use OhMyBrew\ShopifyApp\Objects\Values\NullablePlanId;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Plan as IPlanQuery;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
-use OhMyBrew\ShopifyApp\Objects\Values\NullablePlanId;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
+use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
+use OhMyBrew\ShopifyApp\Services\ChargeHelper;
 
 /**
  * Retrieve the a billing plan's URL.
  */
 class GetPlanUrl
 {
-    /**
-     * The API helper.
-     *
-     * @var IApiHelper
-     */
-    protected $apiHelper;
-
     /**
      * Querier for plans.
      *
@@ -35,17 +29,24 @@ class GetPlanUrl
     protected $shopQuery;
 
     /**
+     * The charge helper.
+     *
+     * @var ChargeHelper
+     */
+    protected $chargeHelper;
+
+    /**
      * Setup.
      *
-     * @param IApiHelper $apiHelper The API helper.
-     * @param IPlanQuery $planQuery The querier for the plans.
-     * @param IShopQuery $shopQuery The querier for shops.
+     * @param ChargeHelper $chargeHelper The charge helper.
+     * @param IPlanQuery   $planQuery    The querier for the plans.
+     * @param IShopQuery   $shopQuery    The querier for shops.
      *
      * @return self
      */
-    public function __construct(IApiHelper $apiHelper, IPlanQuery $planQuery, IShopQuery $shopQuery)
+    public function __construct(ChargeHelper $chargeHelper, IPlanQuery $planQuery, IShopQuery $shopQuery)
     {
-        $this->apiHelper = $apiHelper;
+        $this->chargeHelper = $chargeHelper;
         $this->planQuery = $planQuery;
         $this->shopQuery = $shopQuery;
     }
@@ -65,17 +66,14 @@ class GetPlanUrl
         $shop = $this->shopQuery->getById($shopId);
 
         // If the plan is null, get a plan
-        if (is_null($planId)) {
+        if ($planId->isNull()) {
             $plan = $this->planQuery->getDefault();
         }
 
-        $api = $this
-            ->apiHelper
-            ->setInstance($shop->api())
-            ->createCharge(
-                $plan->getTypeAsString(true),
-                $plan->chargeDetails($shop)
-            );
+        $api = $shop->apiHelper()->createCharge(
+            ChargeType::fromNative($plan->getType()->toNative()),
+            $this->chargeHelper->details($plan, $shop)
+        );
 
         return $api->confirmation_url;
     }

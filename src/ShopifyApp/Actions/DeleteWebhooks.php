@@ -2,7 +2,6 @@
 
 namespace OhMyBrew\ShopifyApp\Actions;
 
-use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
@@ -11,13 +10,6 @@ use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
  */
 class DeleteWebhooks
 {
-    /**
-     * The API helper.
-     *
-     * @var IApiHelper
-     */
-    protected $apiHelper;
-
     /**
      * Querier for shops.
      *
@@ -28,14 +20,12 @@ class DeleteWebhooks
     /**
      * Setup.
      *
-     * @param IApiHelper $apiHelper The API helper.
      * @param IShopQuery $shopQuery The querier for the shop.
      *
      * @return self
      */
-    public function __construct(IApiHelper $apiHelper, IShopQuery $shopQuery)
+    public function __construct(IShopQuery $shopQuery)
     {
-        $this->apiHelper = $apiHelper;
         $this->shopQuery = $shopQuery;
     }
 
@@ -51,17 +41,15 @@ class DeleteWebhooks
     {
         // Get the shop
         $shop = $this->shopQuery->getById($shopId);
-
-        // Set the API instance
-        $this->apiHelper->setInstance($shop->api());
+        $apiHelper = $shop->apiHelper();
 
         // Get the webhooks
-        $webhooks = $this->apiHelper->getWebhooks();
+        $webhooks = $apiHelper->getWebhooks();
 
         $deleted = [];
         foreach ($webhooks as $webhook) {
             // Its a webhook in the config, delete it
-            $this->api->deleteWebhook($webhook->id);
+            $apiHelper->deleteWebhook($webhook->id);
 
             // Keep track of what was deleted
             $deleted[] = $webhook;

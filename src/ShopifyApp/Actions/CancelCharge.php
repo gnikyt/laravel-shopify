@@ -2,12 +2,12 @@
 
 namespace OhMyBrew\ShopifyApp\Actions;
 
-use Exception;
 use Illuminate\Support\Carbon;
-use OhMyBrew\ShopifyApp\Contracts\Commands\Charge as IChargeCommand;
+use OhMyBrew\ShopifyApp\Services\ChargeHelper;
 use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
 use OhMyBrew\ShopifyApp\Objects\Values\ChargeReference;
-use OhMyBrew\ShopifyApp\Services\ChargeHelper;
+use OhMyBrew\ShopifyApp\Contracts\Commands\Charge as IChargeCommand;
+use OhMyBrew\ShopifyApp\Exceptions\ChargeNotRecurringOrOnetimeException;
 
 /**
  * Cancels a charge for a shop.
@@ -60,7 +60,10 @@ class CancelCharge
         $charge = $helper->getCharge();
 
         if (!$charge->isType(ChargeType::CHARGE()) && !$charge->isType(ChargeType::RECURRING())) {
-            throw new Exception('Cancel may only be called for single and recurring charges.');
+            // Not a recurring or one-time charge, someone trying to cancel a usage charge?
+            throw new ChargeNotRecurringOrOnetimeException(
+                'Cancel may only be called for single and recurring charges.'
+            );
         }
 
         // Save the details to the database

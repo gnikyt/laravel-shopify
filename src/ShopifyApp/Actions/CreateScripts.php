@@ -2,10 +2,9 @@
 
 namespace OhMyBrew\ShopifyApp\Actions;
 
-use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 
 /**
  * Create scripttags for this app on the shop.
@@ -13,13 +12,6 @@ use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
 class CreateScripts
 {
     use ConfigAccessible;
-
-    /**
-     * The API helper.
-     *
-     * @var IApiHelper
-     */
-    protected $apiHelper;
 
     /**
      * Querier for shops.
@@ -31,14 +23,12 @@ class CreateScripts
     /**
      * Setup.
      *
-     * @param IApiHelper $apiHelper The API helper.
      * @param IShopQuery $shopQuery The querier for the shop.
      *
      * @return self
      */
-    public function __construct(IApiHelper $apiHelper, IShopQuery $shopQuery)
+    public function __construct(IShopQuery $shopQuery)
     {
-        $this->apiHelper = $apiHelper;
         $this->shopQuery = $shopQuery;
     }
 
@@ -46,11 +36,12 @@ class CreateScripts
      * Execution.
      * TODO: Rethrow an API exception.
      *
-     * @param ShopId $shopId The shop ID.
+     * @param ShopId $shopId        The shop ID.
+     * @param array  $configScripts The scripts to add.
      *
      * @return array
      */
-    public function __invoke(ShopId $shopId): array
+    public function __invoke(ShopId $shopId, array $configScripts): array
     {
         /**
          * Checks if a scripttag exists already in the shop.
@@ -73,15 +64,10 @@ class CreateScripts
 
         // Get the shop
         $shop = $this->shopQuery->getById($shopId);
-
-        // Set the API instance
-        $this->apiHelper->setInstance($shop->api());
-
-        // Get the scripttags in config
-        $configScripts = $this->getConfig('scripttags');
+        $apiHelper = $shop->apiHelper();
 
         // Get the scripts existing in for the shop
-        $scripts = $this->apiHelper->getScriptTags();
+        $scripts = $apiHelper->getScriptTags();
 
         // Keep track of whats created
         $created = [];
@@ -89,7 +75,7 @@ class CreateScripts
             // Check if the required scripttag exists on the shop
             if (!$exists($scripttag, $scripts)) {
                 // It does not... create the scripttag
-                $this->apiHelper->createScriptTag($scripttag);
+                $apiHelper->createScriptTag($scripttag);
 
                 // Keep track of what was created
                 $created[] = $scripttag;

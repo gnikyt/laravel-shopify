@@ -3,10 +3,10 @@
 namespace OhMyBrew\ShopifyApp\Messaging\Jobs;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
 /**
@@ -33,17 +33,26 @@ class WebhookInstaller implements ShouldQueue
     protected $createWebhooksAction;
 
     /**
+     * The webhooks to add.
+     *
+     * @var array
+     */
+    protected $configWebhooks;
+
+    /**
      * Create a new job instance.
      *
-     * @param int      $shopId               The shop's ID.
-     * @param callable $createWebhooksAction Action for creating webhooks.
+     * @param ShopId $shopId               The shop ID.
+     * @param string $createWebhooksAction Action for creating webhooks.
+     * @param array  $configWebhooks       The webhooks to add.
      *
      * @return self
      */
-    public function __construct(int $shopId, callable $createWebhooksAction)
+    public function __construct(ShopId $shopId, callable $createWebhooksAction, array $configWebhooks)
     {
         $this->shopId = $shopId;
         $this->createWebhooksAction = $createWebhooksAction;
+        $this->configWebhooks = $configWebhooks;
     }
 
     /**
@@ -53,6 +62,10 @@ class WebhookInstaller implements ShouldQueue
      */
     public function handle(): array
     {
-        return call_user_func($this->createWebhooksAction, new ShopId($this->shopId));
+        return call_user_func(
+            $this->createWebhooksAction,
+            $this->shopId,
+            $this->configWebhooks
+        );
     }
 }

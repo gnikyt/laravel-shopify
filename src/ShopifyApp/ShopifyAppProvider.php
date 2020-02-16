@@ -3,11 +3,12 @@
 namespace OhMyBrew\ShopifyApp;
 
 use Illuminate\Auth\AuthManager;
+use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Support\ServiceProvider;
 use OhMyBrew\ShopifyApp\Actions\ActivatePlan as ActivatePlanAction;
 use OhMyBrew\ShopifyApp\Actions\ActivateUsageCharge as ActivateUsageChargeAction;
-use OhMyBrew\ShopifyApp\Actions\AfterAuthenticate as AfterAuthenticateAction;
-use OhMyBrew\ShopifyApp\Actions\AuthenticateShop as AuthenticateShopAction;
+use OhMyBrew\ShopifyApp\Actions\AfterAuthorize as AfterAuthorizeAction;
+use OhMyBrew\ShopifyApp\Actions\AuthorizeShop as AuthorizeShopAction;
 use OhMyBrew\ShopifyApp\Actions\CancelCharge as CancelChargeAction;
 use OhMyBrew\ShopifyApp\Actions\CancelCurrentPlan as CancelCurrentPlanAction;
 use OhMyBrew\ShopifyApp\Actions\CreateScripts as CreateScriptsAction;
@@ -27,6 +28,8 @@ use OhMyBrew\ShopifyApp\Http\Middleware\AuthProxy;
 use OhMyBrew\ShopifyApp\Http\Middleware\AuthShop;
 use OhMyBrew\ShopifyApp\Http\Middleware\AuthWebhook;
 use OhMyBrew\ShopifyApp\Http\Middleware\Billable;
+use OhMyBrew\ShopifyApp\Messaging\Jobs\ScripttagInstaller;
+use OhMyBrew\ShopifyApp\Messaging\Jobs\WebhookInstaller;
 use OhMyBrew\ShopifyApp\Services\ApiHelper;
 use OhMyBrew\ShopifyApp\Services\ChargeHelper;
 use OhMyBrew\ShopifyApp\Services\CookieHelper;
@@ -131,15 +134,15 @@ class ShopifyAppProvider extends ServiceProvider
             }],
 
             // Actions
-            AuthenticateShopAction::class => [self::CBIND, function ($app) {
-                return new AuthenticateShopAction(
+            AuthorizeShopAction::class => [self::CBIND, function ($app) {
+                return new AuthorizeShopAction(
                     $app->make(IShopQuery::class),
                     $app->make(ShopSession::class)
                 );
             }],
             GetPlanUrlAction::class => [self::CBIND, function ($app) {
                 return new GetPlanUrlAction(
-                    $app->make(IApiHelper::class),
+                    $app->make(ChargeHelper::class),
                     $app->make(IPlanQuery::class),
                     $app->make(IShopQuery::class)
                 );
@@ -153,16 +156,20 @@ class ShopifyAppProvider extends ServiceProvider
             }],
             DispatchWebhooksAction::class => [self::CBIND, function ($app) {
                 return new DispatchWebhooksAction(
-                    $app->make(IShopQuery::class)
+                    $app->make(IShopQuery::class),
+                    WebhookInstaller::class,
+                    $app->make(CreateWebhooksAction::class)
                 );
             }],
             DispatchScriptsAction::class => [self::CBIND, function ($app) {
                 return new DispatchScriptsAction(
-                    $app->make(IShopQuery::class)
+                    $app->make(IShopQuery::class),
+                    ScripttagInstaller::class,
+                    $app->make(CreateScriptsAction::class)
                 );
             }],
-            AfterAuthenticateAction::class => [self::CBIND, function ($app) {
-                return new AfterAuthenticateAction(
+            AfterAuthorizeAction::class => [self::CBIND, function ($app) {
+                return new AfterAuthorizeAction(
                     $app->make(IShopQuery::class)
                 );
             }],
@@ -185,19 +192,16 @@ class ShopifyAppProvider extends ServiceProvider
             }],
             DeleteWebhooksAction::class => [self::CBIND, function ($app) {
                 return new DeleteWebhooksAction(
-                    $app->make(IApiHelper::class),
                     $app->make(IShopQuery::class)
                 );
             }],
             CreateWebhooksAction::class => [self::CBIND, function ($app) {
                 return new CreateWebhooksAction(
-                    $app->make(IApiHelper::class),
                     $app->make(IShopQuery::class)
                 );
             }],
             CreateScriptsAction::class => [self::CBIND, function ($app) {
                 return new CreateScriptsAction(
-                    $app->make(IApiHelper::class),
                     $app->make(IShopQuery::class)
                 );
             }],

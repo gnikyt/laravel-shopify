@@ -2,10 +2,9 @@
 
 namespace OhMyBrew\ShopifyApp\Actions;
 
-use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
-use OhMyBrew\ShopifyApp\Jobs\WebhookInstaller;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 
 /**
  * Attempt to install webhooks on a shop.
@@ -22,15 +21,33 @@ class DispatchWebhooks
     protected $shopQuery;
 
     /**
+     * The job to dispatch.
+     *
+     * @var string
+     */
+    protected $jobClass;
+
+    /**
+     * The action to handle the job.
+     *
+     * @var callable
+     */
+    protected $actionClass;
+
+    /**
      * Setup.
      *
-     * @param IShopQuery $shopQuery The querier for the shop.
+     * @param IShopQuery $shopQuery   The querier for the shop.
+     * @param string     $jobClass    The job to dispatch.
+     * @param callable   $actionClass The action to handle the job.
      *
      * @return self
      */
-    public function __construct(IShopQuery $shopQuery)
+    public function __construct(IShopQuery $shopQuery, string $jobClass, callable $actionClass)
     {
         $this->shopQuery = $shopQuery;
+        $this->jobClass = $jobClass;
+        $this->actionClass = $actionClass;
     }
 
     /**
@@ -55,10 +72,17 @@ class DispatchWebhooks
 
         // Run the installer job
         if ($inline) {
-            WebhookInstaller::dispatchNow($shop);
+            ($this->jobClass)::dispatchNow(
+                $shop->getId(),
+                $this->actionClass,
+                $webhooks
+            );
         } else {
-            WebhookInstaller::dispatch($shop)
-                ->onQueue($this->getConfig('job_queues')['webhooks']);
+            ($this->jobClass)::dispatch(
+                $shop->getId(),
+                $this->actionClass,
+                $webhooks
+            )->onQueue($this->getConfig('job_queues')['webhooks']);
         }
 
         return true;
