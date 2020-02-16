@@ -5,38 +5,27 @@ namespace OhMyBrew\ShopifyApp\Objects\Transfers;
 use ArrayIterator;
 use Exception;
 use IteratorAggregate;
+use JsonSerializable;
 
 /**
  * Reprecents the base for DTO.
  */
-abstract class AbstractTransfer implements IteratorAggregate
+abstract class AbstractTransfer implements IteratorAggregate, JsonSerializable
 {
-    /**
-     * The data container.
-     *
-     * @var array
-     */
-    protected $data = [];
-
     /**
      * Get a value from the object.
      *
      * @param string $key The key to get.
      *
-     * @throws Exception If key is not valid.
+     * @throws Exception
      *
-     * @return mixed
+     * @return void
      */
-    public function __get(string $key)
+    public function __get(string $key): void
     {
-        if (!array_key_exists($key, $this->data)) {
-            // Does not exist, throw exception
-            $className = get_class($this);
-            throw new Exception("Property {$key} does not exist on transfer class {$className}");
-        }
-
-        // Get the value of the key
-        return $this->data[$key];
+        // Does not exist, throw exception
+        $className = get_class($this);
+        throw new Exception("Property {$key} does not exist on transfer class {$className}");
     }
 
     /**
@@ -45,19 +34,15 @@ abstract class AbstractTransfer implements IteratorAggregate
      * @param string $key   The key attempting to set.
      * @param mixed  $value The value attempting to set.
      *
-     * @throws Exception If key is not valid.
+     * @throws Exception
      *
      * @return void
      */
     public function __set(string $key, $value): void
     {
-        if (!array_key_exists($key, get_object_vars($this))) {
-            // Not allowed, throw exception
-            $className = get_class($this);
-            throw new Exception("Setting property {$key} for transfer class {$className} is not allowed");
-        }
-
-        $this->data[$key] = $value;
+        // Not allowed, throw exception
+        $className = get_class($this);
+        throw new Exception("Setting property {$key} for transfer class {$className} is not allowed");
     }
 
     /**
@@ -67,6 +52,16 @@ abstract class AbstractTransfer implements IteratorAggregate
      */
     public function getIterator(): ArrayIterator
     {
-        return new ArrayIterator($this->data);
+        return new ArrayIterator(get_object_vars($this));
+    }
+
+    /**
+     * Serialize the class to JSON.
+     *
+     * @return string
+     */
+    public function jsonSerialize(): string
+    {
+        return json_encode(get_object_vars($this));
     }
 }

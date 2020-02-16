@@ -13,6 +13,7 @@ class AppLoggedIn
 {
     use Dispatchable;
     use SerializesModels;
+
     /**
      * Shop's instance.
      *

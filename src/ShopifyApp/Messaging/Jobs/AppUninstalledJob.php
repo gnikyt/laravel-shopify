@@ -3,12 +3,12 @@
 namespace OhMyBrew\ShopifyApp\Messaging\Jobs;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
-use OhMyBrew\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
+use OhMyBrew\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
 
 /**
  * Webhook job responsible for handling when the app is uninstalled.
@@ -19,10 +19,11 @@ class AppUninstalledJob implements ShouldQueue
     use InteractsWithQueue;
     use Queueable;
     use SerializesModels;
+
     /**
      * The shop ID.
      *
-     * @var int
+     * @var ShopId
      */
     protected $shopId;
 
@@ -34,13 +35,6 @@ class AppUninstalledJob implements ShouldQueue
     protected $data;
 
     /**
-     * Commands for shops.
-     *
-     * @var IShopCommand
-     */
-    protected $shopCommand;
-
-    /**
      * Action for cancelling current plan.
      *
      * @var callable
@@ -50,37 +44,39 @@ class AppUninstalledJob implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param int          $shopId                  The shop ID.
+     * @param ShopId       $shopId                  The shop ID.
      * @param object       $data                    The webhook data (JSON decoded).
-     * @param IShopCommand $shopCommand             The commands for shops.
      * @param callable     $cancelCurrentPlanAction Action for cancelling current plan.
      *
      * @return self
      */
     public function __construct(
-        int $shopId,
+        ShopId $shopId,
         object $data,
-        IShopCommand $shopCommand,
         callable $cancelCurrentPlanAction
     ) {
         $this->shopId = $shopId;
         $this->data = $data;
-        $this->shopCommand = $shopCommand;
         $this->cancelCurrentPlanAction = $cancelCurrentPlanAction;
     }
 
     /**
      * Execute the job.
      *
+     * @param IShopCommand $shopCommand The commands for shops.
+     *
      * @return bool
      */
-    public function handle(): bool
+    public function handle(IShopCommand $shopCommand): bool
     {
-        $shopId = new ShopId($this->shopId);
+        // Cancel the current plan
+        call_user_func($this->cancelCurrentPlanAction, $this->shopId);
+        
+        // Purge shop of token, plan, etc.
+        $shopCommand->clean($this->shopId);
 
-        call_user_func($this->cancelCurrentPlanAction, $shopId);
-        $this->shopCommand->clean($shopId);
-        $this->shopCommand->softDelete($shopId);
+        // Soft delete the shop.
+        $shopCommand->softDelete($this->shopId);
 
         return true;
     }

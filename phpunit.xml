@@ -22,7 +22,24 @@
         <whitelist>
             <directory suffix=".php">src/ShopifyApp/</directory>
             <exclude>
+                <!-- No need to test this -->
                 <directory>src/ShopifyApp/resources/</directory>
+
+                <!-- No need to test value objects or enums as its from a package -->
+                <directory>src/ShopifyApp/Objects/Values/</directory>
+                <directory>src/ShopifyApp/Objects/Enums/</directory>
+
+                <!-- Nothing to test here -->
+                <directory>src/ShopifyApp/Contracts/</directory>
+
+                <!-- Nothing to test here -->
+                <directory>src/ShopifyApp/Exceptions/</directory>
+
+                <!-- Nothing to test in here, all Laravel code -->
+                <file>src/ShopifyApp/ShopifyAppProvider.php</file>
+
+                <!-- Nothing to test here -->
+                <file>src/ShopifyApp/Messaging/Events/AppLoggedIn.php</file>
             </exclude>
         </whitelist>
     </filter>

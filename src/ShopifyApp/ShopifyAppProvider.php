@@ -3,7 +3,6 @@
 namespace OhMyBrew\ShopifyApp;
 
 use Illuminate\Auth\AuthManager;
-use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Support\ServiceProvider;
 use OhMyBrew\ShopifyApp\Actions\ActivatePlan as ActivatePlanAction;
 use OhMyBrew\ShopifyApp\Actions\ActivateUsageCharge as ActivateUsageChargeAction;
@@ -43,6 +42,7 @@ use OhMyBrew\ShopifyApp\Storage\Queries\Shop as ShopQuery;
 
 /**
  * This package's provider for Laravel.
+ *
  */
 class ShopifyAppProvider extends ServiceProvider
 {
