@@ -52,6 +52,7 @@ class ShopSessionTest extends TestCase
 
         // Offline token
         $this->assertFalse($this->shopSession->getToken(true)->isNull());
+        $this->assertFalse($this->shopSession->getToken()->isNull());
 
         // Per user token
         $this->app['config']->set('shopify-app.api_grant_mode', AuthMode::PERUSER()->toNative());

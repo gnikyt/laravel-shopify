@@ -25,13 +25,6 @@ class ChargeHelper
     use ConfigAccessible;
 
     /**
-     * The API helper.
-     *
-     * @var IApiHelper
-     */
-    protected $apiHelper;
-
-    /**
      * The querier for charges.
      *
      * @var IChargeQuery
@@ -48,14 +41,12 @@ class ChargeHelper
     /**
      * Contructor.
      *
-     * @param IApiHelper   $apiHelper   The API helper.
      * @param IChargeQuery $chargeQuery The querier for charges.
      *
      * @return self
      */
-    public function __construct(IApiHelper $apiHelper, IChargeQuery $chargeQuery)
+    public function __construct(IChargeQuery $chargeQuery)
     {
-        $this->apiHelper = $apiHelper;
         $this->chargeQuery = $chargeQuery;
     }
 
@@ -86,12 +77,17 @@ class ChargeHelper
 
     /**
      * Gets the charge's data from Shopify.
+     * 
+     * @param IShopModel $shop The shop.
      *
      * @return object
      */
-    public function retrieve(): object
+    public function retrieve(IShopModel $shop): object
     {
-        return $this->apiHelper->getCharge($this->charge->getType(), $this->charge->id);
+        return $shop->apiHelper()->getCharge(
+            $this->charge->getType(),
+            $this->charge->getReference()
+        );
     }
 
     /**
@@ -132,8 +128,8 @@ class ChargeHelper
             return null;
         }
 
-        $cancelledDate = Carbon::parse($this->cancelled_on);
-        $trialEndsDate = Carbon::parse($this->trial_ends_on);
+        $cancelledDate = Carbon::parse($this->charge->cancelled_on);
+        $trialEndsDate = Carbon::parse($this->charge->trial_ends_on);
 
         // Ensure cancelled date happened before the trial was supposed to end
         if ($this->charge->isCancelled() && $cancelledDate->lte($trialEndsDate)) {
@@ -145,7 +141,7 @@ class ChargeHelper
     }
 
     /**
-     * return the date when the current period has begun.
+     * Return the date when the current period has begun.
      *
      * @return string
      */
@@ -158,7 +154,7 @@ class ChargeHelper
     }
 
     /**
-     * return the end date of the current period.
+     * Return the end date of the current period.
      *
      * @return string
      */
@@ -175,11 +171,9 @@ class ChargeHelper
     public function remainingDaysForPeriod(): int
     {
         $pastDaysForPeriod = $this->pastDaysForPeriod();
-        if (is_null($pastDaysForPeriod)) {
-            return 0;
-        }
-
-        if ($pastDaysForPeriod == 0 && Carbon::parse($this->charge->cancelled_on)->lt(Carbon::today())) {
+        if (is_null($pastDaysForPeriod) ||
+            ($pastDaysForPeriod == 0 && Carbon::parse($this->charge->cancelled_on)->lt(Carbon::today()))
+        ) {
             return 0;
         }
 
@@ -252,33 +246,6 @@ class ChargeHelper
     }
 
     /**
-     * Determines the trial days for the plan.
-     * Detects if reinstall is happening and properly adjusts.
-     *
-     * @param Plan       $plan The plan.
-     * @param IShopModel $shop The shop the plan is for.
-     *
-     * @return int
-     */
-    protected function determineTrialDaysRemaining(Plan $plan, IShopModel $shop): int
-    {
-        if (!$plan->hasTrial()) {
-            // Not a trial-type plan, return none
-            return 0;
-        }
-
-        // See if the shop has been charged for this plan before..
-        // If they have, its a good chance its a reinstall
-        $pc = $this->chargeForPlan($plan->getId(), $shop);
-        if ($pc !== null) {
-            return $pc->remainingTrialDaysFromCancel();
-        }
-
-        // Seems like a fresh trial... return the days set in database
-        return $plan->trial_days;
-    }
-
-    /**
      * Returns the charge params used with the create request.
      *
      * @param Plan       $plan The plan.
@@ -305,5 +272,35 @@ class ChargeHelper
         );
 
         return $transfer;
+    }
+
+    /**
+     * Determines the trial days for the plan.
+     * Detects if reinstall is happening and properly adjusts.
+     *
+     * @param Plan       $plan The plan.
+     * @param IShopModel $shop The shop the plan is for.
+     *
+     * @return int
+     */
+    protected function determineTrialDaysRemaining(Plan $plan, IShopModel $shop): ?int
+    {
+        if (!$plan->hasTrial()) {
+            // Not a trial-type plan, return none
+            return 0;
+        }
+
+        // See if the shop has been charged for this plan before..
+        // If they have, its a good chance its a reinstall
+        $pc = $this->chargeForPlan($plan->getId(), $shop);
+        if ($pc !== null) {
+            $this->useCharge($pc->getReference());
+            $result = $this->remainingTrialDaysFromCancel();
+        } else {
+            // Seems like a fresh trial... return the days set in database
+            $result = $plan->trial_days;
+        }
+
+        return $result;
     }
 }

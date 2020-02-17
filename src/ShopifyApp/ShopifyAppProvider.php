@@ -98,12 +98,6 @@ class ShopifyAppProvider extends ServiceProvider
             IApiHelper::class => [self::CBIND, function () {
                 return new ApiHelper();
             }],
-            ChargeHelper::class => [self::CBIND, function ($app) {
-                return new ChargeHelper(
-                    $app->make(IApiHelper::class),
-                    $app->make(IChargeQuery::class)
-                );
-            }],
 
             // Queriers
             IShopQuery::class => [self::CSINGLETON, function () {
@@ -227,6 +221,11 @@ class ShopifyAppProvider extends ServiceProvider
                     $app->make(CookieHelper::class),
                     $app->make(IShopCommand::class),
                     $app->make(IShopQuery::class)
+                );
+            }],
+            ChargeHelper::class => [self::CBIND, function ($app) {
+                return new ChargeHelper(
+                    $app->make(IChargeQuery::class)
                 );
             }],
             CookieHelper::class => [self::CBIND, function () {
