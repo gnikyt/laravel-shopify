@@ -1110,7 +1110,7 @@ class BasicShopifyAPI implements LoggerAwareInterface
             'next'     => null,
             'previous' => null,
         ];
-        $regex = '/<.*page_info=([a-z0-9\-]+).*>; rel="?{type}"?/i';
+        $regex = '/<.*page_info=([a-z0-9\-_]+).*>; rel="?{type}"?/i';
 
         foreach (array_keys($links) as $type) {
             preg_match(str_replace('{type}', $type, $regex), $header, $matches);

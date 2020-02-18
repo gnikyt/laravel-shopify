@@ -445,12 +445,12 @@ This library internally catches only 400-500 status range errors through Guzzle.
 $call = $api->rest('GET', '/admin/non-existant-route-or-object.json');
 
 if ($call->errors) {
-  echo "Oops! {$call->errors->status} error";
-  print_r($call->errors->body);
+  echo "Oops! {$call->status} error";
+  var_dump($call->body);
 
-  // Original exception can be accessed via `$call->errors->exception`
+  // Original exception can be accessed via `$call->exception`
   // Example, if response body was `{"error": "Not found"}`...
-  /// then: `$call->errors->body->error` would return "Not Found"
+  /// then: `$call->body` would return "Not Found"
 }
 ```
 
