@@ -77,7 +77,7 @@ class ChargeHelper
 
     /**
      * Gets the charge's data from Shopify.
-     * 
+     *
      * @param IShopModel $shop The shop.
      *
      * @return object
