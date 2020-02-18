@@ -9,6 +9,7 @@ use OhMyBrew\ShopifyApp\Test\Stubs\Api as ApiStub;
 use OhMyBrew\ShopifyApp\Actions\ActivateUsageCharge;
 use OhMyBrew\ShopifyApp\Objects\Transfers\UsageChargeDetails;
 use OhMyBrew\ShopifyApp\Exceptions\ChargeNotRecurringException;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
 
 class ActivateUsageChargeTest extends TestCase
 {
@@ -52,7 +53,7 @@ class ActivateUsageChargeTest extends TestCase
             $ucd
         );
 
-        $this->assertIsInt($result);
+        $this->assertInstanceOf(ChargeId::class, $result);
     }
 
     public function testRunWithoutRecurringCharge(): void

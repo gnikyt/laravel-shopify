@@ -15,12 +15,13 @@ interface Shop
     /**
      * Get by ID.
      *
-     * @param ShopId $shopId The shop ID.
-     * @param array  $with   The relations to eager load.
+     * @param ShopId $shopId      The shop ID.
+     * @param array  $with        The relations to eager load.
+     * @param bool   $withTrashed Include trashed shops?
      *
      * @return IShopModel|null
      */
-    public function getById(ShopId $shopId, array $with = []): ?IShopModel;
+    public function getById(ShopId $shopId, array $with = [], bool $withTrashed = false): ?IShopModel;
 
     /**
      * Get by domain.

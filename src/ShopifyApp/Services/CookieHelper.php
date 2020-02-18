@@ -69,36 +69,31 @@ class CookieHelper
     public function checkSameSiteNoneCompatible(): bool
     {
         $compatible = false;
+        $browser = $this->getBrowserDetails();
+        $platform = $this->getPlatformDetails();
 
-        try {
-            $browser = $this->getBrowserDetails();
-            $platform = $this->getPlatformDetails();
-
-            if ($this->agent->is('Chrome') && $browser['major'] >= 67) {
-                $compatible = true;
-            }
-
-            if ($this->agent->is('iOS') && $platform['major'] > 12) {
-                $compatible = true;
-            }
-
-            if ($this->agent->is('OS X') &&
-                ($this->agent->is('Safari') && !$this->agent->is('iOS')) &&
-                $platform['float'] > 10.14
-            ) {
-                $compatible = true;
-            }
-
-            if ($this->agent->is('UCBrowser') &&
-                $browser['float'] > 12.13
-            ) {
-                $compatible = true;
-            }
-
-            return $compatible;
-        } catch (Exception $e) {
-            return false;
+        if ($this->agent->is('Chrome') && $browser['major'] >= 67) {
+            $compatible = true;
         }
+
+        if ($this->agent->is('iOS') && $platform['major'] > 12) {
+            $compatible = true;
+        }
+
+        if ($this->agent->is('OS X') &&
+            ($this->agent->is('Safari') && !$this->agent->is('iOS')) &&
+            $platform['float'] > 10.14
+        ) {
+            $compatible = true;
+        }
+
+        if ($this->agent->is('UCBrowser') &&
+            $browser['float'] > 12.13
+        ) {
+            $compatible = true;
+        }
+
+        return $compatible;
     }
 
     /**
@@ -108,14 +103,7 @@ class CookieHelper
      */
     public function getBrowserDetails(): array
     {
-        $version = $this->agent->version($this->agent->browser());
-        $pieces = explode('.', str_replace('_', '.', $version));
-
-        return [
-            'major' => $pieces[0],
-            'minor' => $pieces[1],
-            'float' => (float) sprintf('%s.%s', $pieces[0], $pieces[1]),
-        ];
+        return $this->version($this->agent->browser());
     }
 
     /**
@@ -125,13 +113,25 @@ class CookieHelper
      */
     public function getPlatformDetails(): array
     {
-        $version = $this->agent->version($this->agent->platform());
+        return $this->version($this->agent->platform());
+    }
+
+    /**
+     * Create a versioned array from a source.
+     *
+     * @param string $source The source string to version.
+     *
+     * @return array
+     */
+    protected function version(string $source): array
+    {
+        $version = $this->agent->version($source);
         $pieces = explode('.', str_replace('_', '.', $version));
 
         return [
-            'major' => $pieces[0],
-            'minor' => $pieces[1],
-            'float' => (float) sprintf('%s.%s', $pieces[0], $pieces[1]),
+            'major' => isset($pieces[0]) ? $pieces[0] : null,
+            'minor' => isset($pieces[1]) ? $pieces[1] : null,
+            'float' => isset($pieces[0]) && isset($pieces[1]) ? (float) sprintf('%s.%s', $pieces[0], $pieces[1]) : null,
         ];
     }
 }

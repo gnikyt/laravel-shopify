@@ -9,6 +9,7 @@ use OhMyBrew\ShopifyApp\Storage\Models\Charge as ChargeModel;
 use OhMyBrew\ShopifyApp\Objects\Enums\ChargeStatus;
 use OhMyBrew\ShopifyApp\Objects\Transfers\Charge as ChargeTransfer;
 use OhMyBrew\ShopifyApp\Objects\Transfers\UsageCharge as UsageChargeTransfer;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
 use OhMyBrew\ShopifyApp\Objects\Values\ChargeReference;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 
@@ -35,8 +36,19 @@ class Charge implements ChargeCommand
     /**
      * {@inheritdoc}
      */
-    public function createCharge(ChargeTransfer $chargeObj): int
+    public function make(ChargeTransfer $chargeObj): ChargeId
     {
+        /**
+         * Is an instance of Carbon?
+         *
+         * @param object|null The object to check.
+         *
+         * @return bool
+         */
+        $isCarbon = function (?object $obj): bool {
+            return $obj instanceof Carbon;
+        };
+
         $charge = new ChargeModel();
         $charge->user_id = $chargeObj->shopId->toNative();
         $charge->charge_id = $chargeObj->chargeReference->toNative();
@@ -48,39 +60,30 @@ class Charge implements ChargeCommand
         $charge->trial_days = $chargeObj->planDetails->trialDays;
         $charge->capped_amount = $chargeObj->planDetails->cappedAmount;
         $charge->terms = $chargeObj->planDetails->cappedTerms;
-        $charge->activated_on = $chargeObj->activatedOn instanceof Carbon ?
-            $chargeObj->activatedOn->format('Y-m-d') :
-            null;
-        $charge->billing_on = $chargeObj->billingOn instanceof Carbon ?
-            $chargeObj->billingOn->format('Y-m-d') :
-            null;
-        $charge->trial_ends_on = $chargeObj->trialEndsOn instanceof Carbon ?
-            $chargeObj->trialEndsOn->format('Y-m-d') :
-            null;
+        $charge->activated_on = $isCarbon($chargeObj->activatedOn) ? $chargeObj->activatedOn->format('Y-m-d') : null;
+        $charge->billing_on = $isCarbon($chargeObj->billingOn) ? $chargeObj->billingOn->format('Y-m-d') : null;
+        $charge->trial_ends_on = $isCarbon($chargeObj->trialEndsOn) ? $chargeObj->trialEndsOn->format('Y-m-d') : null;
         
         // Save the charge
         $charge->save();
 
-        return $charge->id;
+        return $charge->getId();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function deleteCharge(ChargeReference $chargeRef, ShopId $shopId): bool
+    public function delete(ChargeReference $chargeRef, ShopId $shopId): bool
     {
         $charge = $this->query->getByReferenceAndShopId($chargeRef, $shopId);
-        if (!$charge) {
-            return false;
-        }
 
-        return $charge->delete();
+        return $charge === null ? false : $charge->delete();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function createUsageCharge(UsageChargeTransfer $chargeObj): int
+    public function makeUsage(UsageChargeTransfer $chargeObj): ChargeId
     {
         // Create the charge
         $charge = new ChargeModel();
@@ -96,13 +99,13 @@ class Charge implements ChargeCommand
         // Save the charge
         $charge->save();
 
-        return $charge->id;
+        return $charge->getId();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function cancelCharge(
+    public function cancel(
         ChargeReference $chargeRef,
         ?Carbon $expiresOn = null,
         ?Carbon $trialEndsOn = null

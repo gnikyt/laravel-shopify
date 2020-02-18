@@ -107,7 +107,7 @@ class Shop implements ShopCommand
      */
     public function restore(ShopId $shopId): bool
     {
-        $shop = $this->getShop($shopId);
+        $shop = $this->getShop($shopId, true);
         $shop->charges()->restore();
 
         return $shop->restore();
@@ -163,12 +163,13 @@ class Shop implements ShopCommand
     /**
      * Helper to get the shop.
      *
-     * @param int $shopId The shop's ID.
+     * @param ShopId $shopId      The shop's ID.
+     * @param bool   $withTrashed Include trashed shops?
      *
      * @return ShopModel|null
      */
-    protected function getShop(ShopId $shopId): ?ShopModel
+    protected function getShop(ShopId $shopId, bool $withTrashed = false): ?ShopModel
     {
-        return $this->query->getById($shopId);
+        return $this->query->getById($shopId, [], $withTrashed);
     }
 }

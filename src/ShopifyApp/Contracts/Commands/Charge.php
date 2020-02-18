@@ -4,6 +4,7 @@ namespace OhMyBrew\ShopifyApp\Contracts\Commands;
 
 use Illuminate\Support\Carbon as Carbon;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
 use OhMyBrew\ShopifyApp\Objects\Values\ChargeReference;
 use OhMyBrew\ShopifyApp\Objects\Transfers\Charge as ChargeTransfer;
 use OhMyBrew\ShopifyApp\Objects\Transfers\UsageCharge as UsageChargeTransfer;
@@ -18,9 +19,9 @@ interface Charge
      *
      * @param ChargeTransfer $chargeObj The charge object.
      *
-     * @return int
+     * @return ChargeId
      */
-    public function createCharge(ChargeTransfer $chargeObj): int;
+    public function make(ChargeTransfer $chargeObj): ChargeId;
 
     /**
      * Deletes a charge for a shop.
@@ -28,16 +29,16 @@ interface Charge
      * @param ChargeReference $chargeRef The charge ID from Shopify.
      * @param ShopId          $shopId   The shop's ID.
      */
-    public function deleteCharge(ChargeReference $chargeRef, ShopId $shopId): bool;
+    public function delete(ChargeReference $chargeRef, ShopId $shopId): bool;
 
     /**
      * Create a usage charge.
      *
      * @param UsageChargeTransfer $chargeObj The usage charge object.
      *
-     * @return int
+     * @return ChargeId
      */
-    public function createUsageCharge(UsageChargeTransfer $chargeObj): int;
+    public function makeUsage(UsageChargeTransfer $chargeObj): ChargeId;
 
     /**
      * Cancels a charge for a shop.
@@ -48,7 +49,7 @@ interface Charge
      *
      * @return bool
      */
-    public function cancelCharge(
+    public function cancel(
         ChargeReference $chargeRef,
         ?Carbon $expiresOn = null,
         ?Carbon $trialEndsOn = null

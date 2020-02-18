@@ -67,7 +67,7 @@ class CancelCharge
         }
 
         // Save the details to the database
-        return $this->chargeCommand->cancelCharge(
+        return $this->chargeCommand->cancel(
             $chargeRef,
             Carbon::today(),
             Carbon::today()->addDays($helper->remainingDaysForPeriod())

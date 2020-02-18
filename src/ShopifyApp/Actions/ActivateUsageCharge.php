@@ -5,6 +5,7 @@ namespace OhMyBrew\ShopifyApp\Actions;
 use Illuminate\Support\Carbon;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 use OhMyBrew\ShopifyApp\Services\ChargeHelper;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
 use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
 use OhMyBrew\ShopifyApp\Objects\Values\ChargeReference;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
@@ -67,9 +68,9 @@ class ActivateUsageCharge
      *
      * @throws ChargeNotRecurringException
      *
-     * @return int
+     * @return ChargeId
      */
-    public function __invoke(ShopId $shopId, UsageChargeDetailsTransfer $ucd): int
+    public function __invoke(ShopId $shopId, UsageChargeDetailsTransfer $ucd): ChargeId
     {
         // Get the shop
         $shop = $this->shopQuery->getById($shopId);
@@ -93,6 +94,6 @@ class ActivateUsageCharge
         $uct->details = $ucd;
 
         // Save the usage charge
-        return $this->chargeCommand->createUsageCharge($uct);
+        return $this->chargeCommand->makeUsage($uct);
     }
 }

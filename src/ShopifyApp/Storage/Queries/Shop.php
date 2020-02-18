@@ -36,9 +36,14 @@ class Shop implements IShopQuery
     /**
      * {@inheritdoc}
      */
-    public function getByID(ShopId $shopId, array $with = []): ?ShopModel
+    public function getByID(ShopId $shopId, array $with = [], bool $withTrashed = false): ?ShopModel
     {
-        return $this->model::with($with)
+        $result = $this->model::with($with);
+        if ($withTrashed) {
+            $result = $result->withTrashed();
+        }
+
+        return $result
             ->get()
             ->where('id', $shopId->toNative())
             ->first();

@@ -6,9 +6,10 @@ use Illuminate\Support\Carbon;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 use OhMyBrew\ShopifyApp\Services\ChargeHelper;
 use OhMyBrew\ShopifyApp\Objects\Enums\PlanType;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeReference;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
 use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
 use OhMyBrew\ShopifyApp\Objects\Enums\ChargeStatus;
+use OhMyBrew\ShopifyApp\Objects\Values\ChargeReference;
 use OhMyBrew\ShopifyApp\Contracts\Objects\Values\PlanId;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Plan as IPlanQuery;
 use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
@@ -99,9 +100,9 @@ class ActivatePlan
      * @param PlanId          $planId    The plan to use.
      * @param ChargeReference $chargeRef The charge ID from Shopify.
      *
-     * @return int
+     * @return ChargeId
      */
-    public function __invoke(ShopId $shopId, PlanId $planId, ChargeReference $chargeRef): int
+    public function __invoke(ShopId $shopId, PlanId $planId, ChargeReference $chargeRef): ChargeId
     {
         // Get the shop
         $shop = $this->shopQuery->getById($shopId);
@@ -117,7 +118,7 @@ class ActivatePlan
         call_user_func($this->cancelCurrentPlan, $shopId);
 
         // Cancel the existing charge if it exists (happens if someone refreshes during)
-        $this->chargeCommand->deleteCharge($chargeRef, $shopId);
+        $this->chargeCommand->delete($chargeRef, $shopId);
 
         // Create the charge transfer
         $isRecurring = $plan->isType(PlanType::RECURRING());
@@ -133,7 +134,7 @@ class ActivatePlan
         $transfer->planDetails = $this->chargeHelper->details($plan, $shop);
 
         // Create the charge
-        $charge = $this->chargeCommand->createCharge($transfer);
+        $charge = $this->chargeCommand->make($transfer);
         $this->shopCommand->setToPlan($shopId, $planId);
 
         return $charge;
