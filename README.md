@@ -8,7 +8,7 @@
 
 **This rewrite introduces the use of using the user model provided by Laravel instead of its own shop model. Laravel's IoC will be used everywhere it can, and more logic moved into small services and action classes.**
 
-**The current status of the rewrite is completed and rewriting of the unit tests are underway.**
+**The current status of the rewrite is completed and most of the testing is completed. Currently testing the last bit which is the controller traits and middlewares.**
 
 ----
 
