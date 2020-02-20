@@ -2,6 +2,7 @@
 
 use Faker\Generator as Faker;
 use Illuminate\Support\Carbon;
+use OhMyBrew\ShopifyApp\Objects\Enums\ChargeStatus;
 use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
 use OhMyBrew\ShopifyApp\Storage\Models\Charge;
 
@@ -10,6 +11,7 @@ $factory->define(Charge::class, function (Faker $faker) {
         'charge_id' => $faker->randomNumber(8),
         'name'      => $faker->word,
         'price'     => $faker->randomFloat(),
+        'status'    => ChargeStatus::ACCEPTED()->toNative(),
     ];
 });
 

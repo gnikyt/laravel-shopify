@@ -25,16 +25,6 @@ class Plan extends Model
     ];
 
     /**
-     * Get charges.
-     *
-     * @return HasMany
-     */
-    public function charges(): HasMany
-    {
-        return $this->hasMany(Charge::class);
-    }
-
-    /**
      * Get the plan ID as a value object.
      *
      * @return PlanId
@@ -42,6 +32,16 @@ class Plan extends Model
     public function getId(): PlanId
     {
         return new PlanId($this->id);
+    }
+
+    /**
+     * Get charges.
+     *
+     * @return HasMany
+     */
+    public function charges(): HasMany
+    {
+        return $this->hasMany(Charge::class);
     }
 
     /**
@@ -73,18 +73,13 @@ class Plan extends Model
      *
      * @return string
      */
-    public function typeAsString($plural = false): string
+    public function getTypeApiString($plural = false): string
     {
-        $type = null;
-        switch ($this->type) {
-            case PlanType::ONETIME()->toNative():
-                $type = 'application_charge';
-                break;
-            default:
-            case PlanType::RECURRING()->toNative():
-                $type = 'recurring_application_charge';
-                break;
-        }
+        $types = [
+            PlanType::ONETIME()->toNative()   => 'application_charge',
+            PlanType::RECURRING()->toNative() => 'recurring_application_charge',
+        ];
+        $type = $types[$this->getType()->toNative()];
 
         return $plural ? "{$type}s" : $type;
     }

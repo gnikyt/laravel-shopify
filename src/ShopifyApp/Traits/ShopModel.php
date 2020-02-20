@@ -2,20 +2,20 @@
 
 namespace OhMyBrew\ShopifyApp\Traits;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use OhMyBrew\BasicShopifyAPI;
-use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
-use OhMyBrew\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
-use OhMyBrew\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
-use OhMyBrew\ShopifyApp\Objects\Transfers\ApiSession as ApiSessionTransfer;
-use OhMyBrew\ShopifyApp\Objects\Values\AccessToken;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
+use OhMyBrew\ShopifyApp\Storage\Models\Plan;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 use OhMyBrew\ShopifyApp\Storage\Models\Charge;
-use OhMyBrew\ShopifyApp\Storage\Models\Plan;
+use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use OhMyBrew\ShopifyApp\Objects\Values\AccessToken;
 use OhMyBrew\ShopifyApp\Storage\Scopes\Namespacing;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
+use OhMyBrew\ShopifyApp\Objects\Transfers\ApiSession as ApiSessionTransfer;
+use OhMyBrew\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
+use OhMyBrew\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
 
 /**
  * Responsible for reprecenting a shop record.

@@ -77,7 +77,11 @@ class Charge extends Model
      */
     public function shop(): BelongsTo
     {
-        return $this->belongsTo($this->getConfig('user_model'));
+        return $this->belongsTo(
+            $this->getConfig('user_model'),
+            'user_id',
+            'id'
+        );
     }
 
     /**
@@ -97,20 +101,14 @@ class Charge extends Model
      *
      * @return string
      */
-    public function typeAsString($plural = false): string
+    public function getTypeApiString($plural = false): string
     {
-        $type = '';
-        switch ($this->type) {
-            case ChargeType::CREDIT()->toNative():
-                $type = 'application_credit';
-                break;
-            case ChargeType::CHARGE()->toNative():
-                $type = 'application_charge';
-                break;
-            default:
-                $type = 'recurring_application_charge';
-                break;
-        }
+        $types = [
+            ChargeType::CREDIT()->toNative()    => 'application_credit',
+            ChargeType::CHARGE()->toNative()    => 'application_charge',
+            ChargeType::RECURRING()->toNative() => 'recurring_application_charge',
+        ];
+        $type = $types[$this->getType()->toNative()];
 
         return $plural ? "{$type}s" : $type;
     }
@@ -158,15 +156,25 @@ class Charge extends Model
     }
 
     /**
+     * Get the charge status.
+     *
+     * @return ChargeStatus
+     */
+    public function getStatus(): ChargeStatus
+    {
+        return ChargeStatus::fromNative($this->status);
+    }
+
+    /**
      * Checks the status of the charge.
      *
-     * @param string $status The status to check.
+     * @param ChargeStatus $status The status to check.
      *
      * @return bool
      */
-    public function isStatus(string $status): bool
+    public function isStatus(ChargeStatus $status): bool
     {
-        return $this->status === $status;
+        return $this->getStatus()->isSame($status);
     }
 
     /**
@@ -176,7 +184,7 @@ class Charge extends Model
      */
     public function isActive(): bool
     {
-        return $this->isStatus(ChargeStatus::ACTIVE()->toNative());
+        return $this->isStatus(ChargeStatus::ACTIVE());
     }
 
     /**
@@ -186,7 +194,7 @@ class Charge extends Model
      */
     public function isAccepted(): bool
     {
-        return $this->isStatus(ChargeStatus::ACCEPTED()->toNative());
+        return $this->isStatus(ChargeStatus::ACCEPTED());
     }
 
     /**
@@ -196,7 +204,7 @@ class Charge extends Model
      */
     public function isDeclined(): bool
     {
-        return $this->isStatus(ChargeStatus::DECLINED()->toNative());
+        return $this->isStatus(ChargeStatus::DECLINED());
     }
 
     /**
@@ -206,7 +214,7 @@ class Charge extends Model
      */
     public function isCancelled(): bool
     {
-        return !is_null($this->cancelled_on) || $this->isStatus(ChargeStatus::CANCELLED()->toNative());
+        return !is_null($this->cancelled_on) || $this->isStatus(ChargeStatus::CANCELLED());
     }
 
     /**
