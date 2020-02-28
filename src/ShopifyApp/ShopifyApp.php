@@ -139,7 +139,7 @@ class ShopifyApp
             foreach ($data as $key => $value) {
                 $queryCompiled[] = "{$key}=".(is_array($value) ? implode($value, ',') : $value);
             }
-            $data = implode($queryCompiled, ($buildQueryWithJoin ? '&' : ''));
+            $data = implode(($buildQueryWithJoin ? '&' : ''), $queryCompiled);
         }
 
         // Create the hmac all based on the secret
