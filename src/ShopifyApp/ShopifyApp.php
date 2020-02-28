@@ -137,7 +137,7 @@ class ShopifyApp
             ksort($data);
             $queryCompiled = [];
             foreach ($data as $key => $value) {
-                $queryCompiled[] = "{$key}=".(is_array($value) ? implode($value, ',') : $value);
+                $queryCompiled[] = "{$key}=".(is_array($value) ? implode(',', $value) : $value);
             }
             $data = implode(($buildQueryWithJoin ? '&' : ''), $queryCompiled);
         }
