@@ -3,11 +3,11 @@
 namespace OhMyBrew\ShopifyApp\Storage\Queries;
 
 use Illuminate\Support\Collection;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use OhMyBrew\ShopifyApp\Contracts\ShopModel;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
 use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
+use OhMyBrew\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 
 /**
  * Reprecents shop queries.
@@ -52,7 +52,7 @@ class Shop implements IShopQuery
     /**
      * {@inheritdoc}
      */
-    public function getByDomain(ShopDomain $domain, array $with = [], bool $withTrashed = false): ?ShopModel
+    public function getByDomain(ShopDomainValue $domain, array $with = [], bool $withTrashed = false): ?ShopModel
     {
         $result = $this->model::with($with);
         if ($withTrashed) {

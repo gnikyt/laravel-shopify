@@ -5,15 +5,39 @@ namespace OhMyBrew\ShopifyApp\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\Session;
-use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
+use function OhMyBrew\ShopifyApp\createHmac;
+use OhMyBrew\ShopifyApp\Services\ShopSession;
+use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
+use OhMyBrew\ShopifyApp\Objects\Values\NullShopDomain;
+use OhMyBrew\ShopifyApp\Objects\Values\NullableShopDomain;
 
 /**
  * Responsible for ensuring a proper app proxy request.
  */
 class AuthProxy
 {
+    use ConfigAccessible;
+
+    /**
+     * Shop session helper.
+     *
+     * @var ShopSession
+     */
+    protected $shopSession;
+
+    /**
+     * Constructor.
+     *
+     * @param ShopSession $shopSession Shop session helper.
+     *
+     * @return self
+     */
+    public function __construct(ShopSession $shopSession)
+    {
+        $this->shopSession = $shopSession;
+    }
+
     /**
      * Handle an incoming request to ensure it is valid.
      *
@@ -24,20 +48,29 @@ class AuthProxy
      */
     public function handle(Request $request, Closure $next)
     {
-        // Grab the query parameters we need, remove signature since its not part of the signature calculation
+        // Grab the query parameters we need
         $query = $request->query->all();
-        $signature = $query['signature'];
-        unset($query['signature']);
+        $signature = isset($query['signature']) ? $query['signature'] : null;
+        $shop = new NullableShopDomain(
+            isset($query['shop']) ?
+                new ShopDomain($query['shop']) :
+                new NullShopDomain(null)
+        );
+
+        if (isset($query['signature'])) {
+            // Remove signature since its not part of the signature calculation
+            unset($query['signature']);
+        }
 
         // Build a local signature
-        $signatureLocal = ShopifyApp::createHmac(['data' => $query, 'buildQuery' => true]);
-        if ($signature !== $signatureLocal || !isset($query['shop'])) {
+        $signatureLocal = createHmac(['data' => $query, 'buildQuery' => true], $this->getConfig('api_secret'));
+        if ($signature !== $signatureLocal || $shop->isNull()) {
             // Issue with HMAC or missing shop header
             return Response::make('Invalid proxy signature.', 401);
         }
 
-        // Save shop domain to session
-        Session::put('shopify_domain', new ShopDomain($request->get('shop')));
+        // SLogin the shop
+        $this->shopSession->make($shop);
 
         // All good, process proxy request
         return $next($request);

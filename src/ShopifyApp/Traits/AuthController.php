@@ -2,14 +2,14 @@
 
 namespace OhMyBrew\ShopifyApp\Traits;
 
-use Illuminate\Contracts\View\View as ViewView;
+use Illuminate\Support\Facades\View;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Redirect;
+use OhMyBrew\ShopifyApp\Requests\AuthShopify;
+use Illuminate\Contracts\View\View as ViewView;
 use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
-use OhMyBrew\ShopifyApp\Requests\AuthShop;
 
 /**
  * Responsible for authenticating the shop.
@@ -36,16 +36,16 @@ trait AuthController
     /**
      * Authenticating a shop.
      *
-     * @param AuthShop $request           The incoming request.
-     * @param callable $authShop          The action for authenticating a shop.
-     * @param callable $dispatchScripts   The action for dispatching scripttag installation.
-     * @param callable $dispatchWebhooks  The action for dispatching webhook installation.
-     * @param callable $afterAuthenticate The action for dispatching custom actions after authentication.
+     * @param AuthShopify $request           The incoming request.
+     * @param callable    $authShop          The action for authenticating a shop.
+     * @param callable    $dispatchScripts   The action for dispatching scripttag installation.
+     * @param callable    $dispatchWebhooks  The action for dispatching webhook installation.
+     * @param callable    $afterAuthenticate The action for dispatching custom actions after authentication.
      *
      * @return ViewView|RedirectResponse
      */
     public function authenticate(
-        AuthShop $request,
+        AuthShopify $request,
         callable $authShop,
         callable $dispatchScripts,
         callable $dispatchWebhooks,

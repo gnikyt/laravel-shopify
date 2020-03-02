@@ -31,7 +31,7 @@ class ShopModelTest extends TestCase
         $this->assertFalse($shop->hasCharges());
         $this->assertInstanceOf(Plan::class, $shop->plan);
         $this->assertTrue($shop->hasOfflineAccess());
-        $this->assertInstanceOf(IApiHelper::class, $shop->apiHelper());
         $this->assertInstanceOf(BasicShopifyAPI::class, $shop->api());
+        $this->assertInstanceOf(IApiHelper::class, $shop->apiHelper());
     }
 }

@@ -1,16 +1,19 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Requests;
+namespace OhMyBrew\ShopifyApp\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
-use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
+use Illuminate\Foundation\Http\FormRequest;
+use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
+use function OhMyBrew\ShopifyApp\createHmac;
 
 /**
  * Handles validating a usage charge.
  */
 class StoreUsageCharge extends FormRequest
 {
+    use ConfigAccessible;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -46,7 +49,7 @@ class StoreUsageCharge extends FormRequest
             unset($data['signature']);
 
             // Confirm the charge hasn't been tampered with
-            $signatureLocal = ShopifyApp::createHmac(['data' => $data, 'buildQuery' => true]);
+            $signatureLocal = createHmac(['data' => $data, 'buildQuery' => true], $this->getConfig('api_secret'));
             if (!hash_equals($signature, $signatureLocal)) {
                 // Possible tampering
                 $validator->errors()->add('signature', 'Signature does not match.');

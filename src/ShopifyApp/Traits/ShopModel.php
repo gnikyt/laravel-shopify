@@ -70,14 +70,6 @@ trait ShopModel
     /**
      * {@inheritdoc}
      */
-    public function isGrandfathered(): bool
-    {
-        return ((bool) $this->shopify_grandfathered) === true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function charges(): HasMany
     {
         return $this->hasMany(Charge::class);
@@ -97,6 +89,14 @@ trait ShopModel
     public function plan(): BelongsTo
     {
         return $this->belongsTo(Plan::class);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isGrandfathered(): bool
+    {
+        return ((bool) $this->shopify_grandfathered) === true;
     }
 
     /**

@@ -2,19 +2,19 @@
 
 namespace OhMyBrew\ShopifyApp\Services;
 
+use OhMyBrew\BasicShopifyAPI;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Support\Facades\Session;
-use OhMyBrew\BasicShopifyAPI;
-use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
-use OhMyBrew\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
-use OhMyBrew\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
-use OhMyBrew\ShopifyApp\Contracts\ShopModel as IShopModel;
 use OhMyBrew\ShopifyApp\Objects\Enums\AuthMode;
-use OhMyBrew\ShopifyApp\Objects\Values\AccessToken;
-use OhMyBrew\ShopifyApp\Objects\Values\NullableAccessToken;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
 use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
+use OhMyBrew\ShopifyApp\Objects\Values\AccessToken;
+use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
+use OhMyBrew\ShopifyApp\Contracts\ShopModel as IShopModel;
+use OhMyBrew\ShopifyApp\Objects\Values\NullableAccessToken;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use OhMyBrew\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
+use OhMyBrew\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
+use OhMyBrew\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
 
 /**
  * Responsible for handling session retreival and storage.
@@ -109,7 +109,7 @@ class ShopSession
      *
      * @return self
      */
-    public function make(ShopDomain $domain): self
+    public function make(ShopDomainValue $domain): self
     {
         // Get the shop
         $shop = $this->shopQuery->getByDomain($domain, [], true);

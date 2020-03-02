@@ -4,41 +4,41 @@ namespace OhMyBrew\ShopifyApp;
 
 use Illuminate\Auth\AuthManager;
 use Illuminate\Support\ServiceProvider;
+use OhMyBrew\ShopifyApp\Services\ApiHelper;
+use OhMyBrew\ShopifyApp\Services\ShopSession;
+use OhMyBrew\ShopifyApp\Services\ChargeHelper;
+use OhMyBrew\ShopifyApp\Services\CookieHelper;
+use OhMyBrew\ShopifyApp\Http\Middleware\Billable;
+use OhMyBrew\ShopifyApp\Http\Middleware\AuthProxy;
+use OhMyBrew\ShopifyApp\Http\Middleware\AuthShopify;
+use OhMyBrew\ShopifyApp\Http\Middleware\AuthWebhook;
+use OhMyBrew\ShopifyApp\Console\WebhookJobMakeCommand;
+use OhMyBrew\ShopifyApp\Messaging\Jobs\WebhookInstaller;
+use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
+use OhMyBrew\ShopifyApp\Messaging\Jobs\ScripttagInstaller;
+use OhMyBrew\ShopifyApp\Storage\Queries\Plan as PlanQuery;
+use OhMyBrew\ShopifyApp\Storage\Queries\Shop as ShopQuery;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Plan as IPlanQuery;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use OhMyBrew\ShopifyApp\Storage\Commands\Shop as ShopCommand;
+use OhMyBrew\ShopifyApp\Storage\Queries\Charge as ChargeQuery;
+use OhMyBrew\ShopifyApp\Actions\GetPlanUrl as GetPlanUrlAction;
+use OhMyBrew\ShopifyApp\Storage\Observers\Shop as ShopObserver;
+use OhMyBrew\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
+use OhMyBrew\ShopifyApp\Contracts\Queries\Charge as IChargeQuery;
+use OhMyBrew\ShopifyApp\Storage\Commands\Charge as ChargeCommand;
 use OhMyBrew\ShopifyApp\Actions\ActivatePlan as ActivatePlanAction;
-use OhMyBrew\ShopifyApp\Actions\ActivateUsageCharge as ActivateUsageChargeAction;
-use OhMyBrew\ShopifyApp\Actions\AfterAuthorize as AfterAuthorizeAction;
-use OhMyBrew\ShopifyApp\Actions\AuthorizeShop as AuthorizeShopAction;
 use OhMyBrew\ShopifyApp\Actions\CancelCharge as CancelChargeAction;
-use OhMyBrew\ShopifyApp\Actions\CancelCurrentPlan as CancelCurrentPlanAction;
+use OhMyBrew\ShopifyApp\Contracts\Commands\Charge as IChargeCommand;
+use OhMyBrew\ShopifyApp\Actions\AuthorizeShop as AuthorizeShopAction;
 use OhMyBrew\ShopifyApp\Actions\CreateScripts as CreateScriptsAction;
+use OhMyBrew\ShopifyApp\Actions\AfterAuthorize as AfterAuthorizeAction;
 use OhMyBrew\ShopifyApp\Actions\CreateWebhooks as CreateWebhooksAction;
 use OhMyBrew\ShopifyApp\Actions\DeleteWebhooks as DeleteWebhooksAction;
 use OhMyBrew\ShopifyApp\Actions\DispatchScripts as DispatchScriptsAction;
 use OhMyBrew\ShopifyApp\Actions\DispatchWebhooks as DispatchWebhooksAction;
-use OhMyBrew\ShopifyApp\Actions\GetPlanUrl as GetPlanUrlAction;
-use OhMyBrew\ShopifyApp\Console\WebhookJobMakeCommand;
-use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
-use OhMyBrew\ShopifyApp\Contracts\Commands\Charge as IChargeCommand;
-use OhMyBrew\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Charge as IChargeQuery;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Plan as IPlanQuery;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
-use OhMyBrew\ShopifyApp\Http\Middleware\AuthProxy;
-use OhMyBrew\ShopifyApp\Http\Middleware\AuthShop;
-use OhMyBrew\ShopifyApp\Http\Middleware\AuthWebhook;
-use OhMyBrew\ShopifyApp\Http\Middleware\Billable;
-use OhMyBrew\ShopifyApp\Messaging\Jobs\ScripttagInstaller;
-use OhMyBrew\ShopifyApp\Messaging\Jobs\WebhookInstaller;
-use OhMyBrew\ShopifyApp\Services\ApiHelper;
-use OhMyBrew\ShopifyApp\Services\ChargeHelper;
-use OhMyBrew\ShopifyApp\Services\CookieHelper;
-use OhMyBrew\ShopifyApp\Services\ShopSession;
-use OhMyBrew\ShopifyApp\Storage\Commands\Charge as ChargeCommand;
-use OhMyBrew\ShopifyApp\Storage\Commands\Shop as ShopCommand;
-use OhMyBrew\ShopifyApp\Storage\Observers\Shop as ShopObserver;
-use OhMyBrew\ShopifyApp\Storage\Queries\Charge as ChargeQuery;
-use OhMyBrew\ShopifyApp\Storage\Queries\Plan as PlanQuery;
-use OhMyBrew\ShopifyApp\Storage\Queries\Shop as ShopQuery;
+use OhMyBrew\ShopifyApp\Actions\CancelCurrentPlan as CancelCurrentPlanAction;
+use OhMyBrew\ShopifyApp\Actions\ActivateUsageCharge as ActivateUsageChargeAction;
 
 /**
  * This package's provider for Laravel.
@@ -340,7 +340,7 @@ class ShopifyAppProvider extends ServiceProvider
     private function bootMiddlewares(): void
     {
         // Middlewares
-        $this->app['router']->aliasMiddleware('auth.shop', AuthShop::class);
+        $this->app['router']->aliasMiddleware('auth.shopify', AuthShopify::class);
         $this->app['router']->aliasMiddleware('auth.webhook', AuthWebhook::class);
         $this->app['router']->aliasMiddleware('auth.proxy', AuthProxy::class);
         $this->app['router']->aliasMiddleware('billable', Billable::class);

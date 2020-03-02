@@ -1,17 +1,16 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Requests;
+namespace OhMyBrew\ShopifyApp\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
-use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
+use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 
 /**
  * Handles validating a shop trying to authenticate.
  * TODO: Inject iApiHelper somehow.
  */
-class AuthShop extends FormRequest
+class AuthShopify extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -40,9 +39,12 @@ class AuthShop extends FormRequest
                 return;
             }
 
+            // Hacky, but not sure what else to do here...
+            $apiHelper = app(IApiHelper::class);
+            $apiHelper->make();
+
             // Determine if the HMAC is correct
-            $shop = ShopifyApp::shop(new ShopDomain($this->request->get('shop')));
-            if (!$this->apiHelper->verifyRequest($this->request->all())) {
+            if (!$apiHelper->verifyRequest($this->request->all())) {
                 $validator->errors()->add('signature', 'Not a valid signature.');
             }
         });
