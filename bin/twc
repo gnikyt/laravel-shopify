@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-# Test: With Coverage (Text)
-"$PWD/bin/phpunit" --coverage-text "$@"

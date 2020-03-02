@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-# Test: No Coverage
-"$PWD/bin/phpunit" --no-coverage "$@"
