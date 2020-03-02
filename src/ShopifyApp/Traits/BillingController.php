@@ -4,10 +4,10 @@ namespace Osiset\ShopifyApp\Traits;
 
 use Illuminate\Contracts\View\View as ViewView;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\View;
-use Osiset\ShopifyApp\Facades\ShopifyApp;
 use Osiset\ShopifyApp\Objects\Values\ChargeReference;
 use Osiset\ShopifyApp\Objects\Values\PlanId;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
@@ -53,7 +53,7 @@ trait BillingController
     ): RedirectResponse {
         // Activate the plan and save
         $result = $activatePlanAction(
-            new ShopDomain(ShopifyApp::shop()->name),
+            new ShopDomain(Auth::user()->name),
             new PlanId($planId),
             new ChargeReference($request->query('charge_id'))
         );
@@ -81,7 +81,7 @@ trait BillingController
 
         // Activate and save the usage charge
         $activateUsageChargeAction(
-            new ShopDomain(ShopifyApp::shop()->name),
+            new ShopDomain(Auth::user()->name),
             $validated['price'],
             $validated['description']
         );

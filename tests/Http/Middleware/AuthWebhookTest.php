@@ -10,10 +10,28 @@ class AuthWebhookTest extends TestCase
 {
     public function testDenysForMissingShopHeader(): void
     {
-        Request::instance()->header('x-shopify-hmac-sha256', '1234');
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            [],
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            // This valid referer should be ignored as there is a get variable
+            array_merge(Request::server(), [
+                'HTTP_X_Shopify_Hmac_Sha256' => '1234',
+            ])
+        );
+        Request::swap($newRequest);
 
         // Run the middleware
-        $response = ($this->app->make(AuthWebhookMiddleware::class))->handle(request(), function ($request) {
+        $response = ($this->app->make(AuthWebhookMiddleware::class))->handle(request(), function () {
             // ...
         });
 
@@ -23,10 +41,28 @@ class AuthWebhookTest extends TestCase
 
     public function testDenysForMissingHmacHeader(): void
     {
-        Request::instance()->header('x-shopify-shop-domain', 'example.myshopify.com');
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            [],
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            // This valid referer should be ignored as there is a get variable
+            array_merge(Request::server(), [
+                'HTTP_X_Shopify_Shop_Domain' => 'exapmle.myshopify.com',
+            ])
+        );
+        Request::swap($newRequest);
 
         // Run the middleware
-        $response = ($this->app->make(AuthWebhookMiddleware::class))->handle(request(), function ($request) {
+        $response = ($this->app->make(AuthWebhookMiddleware::class))->handle(request(), function () {
             // ...
         });
 
@@ -36,15 +72,34 @@ class AuthWebhookTest extends TestCase
 
     public function testRuns(): void
     {
-        Request::instance()->header('x-shopify-shop-domain', 'example.myshopify.com');
-        Request::instance()->header('x-shopify-hmac-256', 'thNnmggU2ex3L5XXeMNfxf8Wl8STcVZTxscSFEKSxa0=%');
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            [],
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            // This valid referer should be ignored as there is a get variable
+            array_merge(Request::server(), [
+                'HTTP_X_Shopify_Hmac_Sha256' => 'thNnmggU2ex3L5XXeMNfxf8Wl8STcVZTxscSFEKSxa0=',
+                'HTTP_X_Shopify_Shop_Domain' => 'example.myshopify.com'
+            ])
+        );
+        Request::swap($newRequest);
 
         // Run the middleware
-        $response = ($this->app->make(AuthWebhookMiddleware::class))->handle(request(), function ($request) {
-            // ...
+        $called = false;
+        $response = ($this->app->make(AuthWebhookMiddleware::class))->handle(request(), function () use (&$called) {
+            $called = true;
         });
 
         // Assert we get a proper response
-        $this->assertEquals(401, $response->status());
+        $this->assertTrue($called);
     }
 }

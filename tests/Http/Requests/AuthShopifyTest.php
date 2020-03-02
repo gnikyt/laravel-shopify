@@ -19,6 +19,7 @@ class AuthShopifyTest extends TestCase
         );
 
         $this->assertTrue($validator->fails());
+        $this->assertTrue((new AuthShopify())->authorize());
     }
 
     public function testFailsWithInvalidHmac(): void

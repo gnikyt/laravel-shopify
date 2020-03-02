@@ -3,7 +3,6 @@
 namespace Osiset\ShopifyApp\Test\Requests;
 
 use Illuminate\Support\Facades\Validator;
-use Osiset\ShopifyApp\Facades\ShopifyApp;
 use Osiset\ShopifyApp\Http\Requests\StoreUsageCharge;
 use Osiset\ShopifyApp\Test\TestCase;
 use function Osiset\ShopifyApp\createHmac;
@@ -18,6 +17,7 @@ class StoreUsageChargeTest extends TestCase
         );
 
         $this->assertTrue($validator->fails());
+        $this->assertTrue((new StoreUsageCharge())->authorize());
     }
 
     public function testFailsForInvalidSignature(): void
@@ -43,6 +43,7 @@ class StoreUsageChargeTest extends TestCase
         $data = [
             'price'       => '1.00',
             'description' => 'Testing',
+            'redirect'    => '/'
         ];
         $signature = createHmac(['data' => $data, 'buildQuery' => true], $this->app['config']->get('shopify-app.api_secret'));
         $data['signature'] = $signature;

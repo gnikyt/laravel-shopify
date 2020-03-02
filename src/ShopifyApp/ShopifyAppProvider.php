@@ -131,6 +131,7 @@ class ShopifyAppProvider extends ServiceProvider
             AuthorizeShopAction::class => [self::CBIND, function ($app) {
                 return new AuthorizeShopAction(
                     $app->make(IShopQuery::class),
+                    $app->make(IShopCommand::class),
                     $app->make(ShopSession::class)
                 );
             }],

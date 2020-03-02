@@ -49,7 +49,7 @@ class Shop implements ShopCommand
         $model = $this->model;
         $shop = new $model();
         $shop->name = $domain->toNative();
-        $shop->password = $token->toNative();
+        $shop->password = $token->isNull() ? '' : $token->toNative();
         $shop->email = "shop@{$domain->toNative()}";
         $shop->save();
 

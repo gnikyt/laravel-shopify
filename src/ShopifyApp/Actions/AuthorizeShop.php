@@ -7,6 +7,8 @@ use Osiset\ShopifyApp\Objects\Enums\AuthMode;
 use Osiset\ShopifyApp\Traits\ConfigAccessible;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
+use Osiset\ShopifyApp\Objects\Values\NullAccessToken;
 
 /**
  * Authenticates a shop via HTTP request.
@@ -21,6 +23,13 @@ class AuthorizeShop
      * @var IShopQuery
      */
     protected $shopQuery;
+
+    /**
+     * Commander for shops.
+     *
+     * @var IShopCommand
+     */
+    protected $shopCommand;
 
     /**
      * The shop session handler.
@@ -39,9 +48,11 @@ class AuthorizeShop
      */
     public function __construct(
         IShopQuery $shopQuery,
+        IShopCommand $shopCommand,
         ShopSession $shopSession
     ) {
         $this->shopQuery = $shopQuery;
+        $this->shopCommand = $shopCommand;
         $this->shopSession = $shopSession;
     }
 
@@ -58,6 +69,11 @@ class AuthorizeShop
     {
         // Get the shop
         $shop = $this->shopQuery->getByDomain($shopDomain);
+        if ($shop === null) {
+            // Shop does not exist, make them and re-get
+            $this->shopCommand->make($shopDomain, new NullAccessToken(null));
+            $shop = $this->shopQuery->getByDomain($shopDomain);
+        }
         $apiHelper = $shop->apiHelper();
 
         // Return data

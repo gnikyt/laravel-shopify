@@ -40,7 +40,7 @@ class ApiHelper implements IApiHelper
         $apiClass = $this->getConfig('api_class');
         $this->api = new $apiClass();
         $this->api
-            ->setApiKey($this->getConfig('api_class'))
+            ->setApiKey($this->getConfig('api_key'))
             ->setApiSecret($this->getConfig('api_secret'))
             ->setVersion($this->getConfig('api_version'));
 

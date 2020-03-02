@@ -4,6 +4,7 @@ namespace Osiset\ShopifyApp\Test\Actions;
 
 use Osiset\ShopifyApp\Test\TestCase;
 use Osiset\ShopifyApp\Actions\AuthorizeShop;
+use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
 
 class AuthorizeShopTest extends TestCase
@@ -13,6 +14,21 @@ class AuthorizeShopTest extends TestCase
         parent::setUp();
 
         $this->action = $this->app->make(AuthorizeShop::class);
+    }
+
+    public function testNoShopShouldBeMade(): void
+    {
+        $result = call_user_func(
+            $this->action,
+            new ShopDomain('non-existant.myshopify.com'),
+            null
+        );
+
+        $this->assertStringContainsString(
+            '/admin/oauth/authorize?client_id=&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalhost%2Fauthenticate',
+            $result->url
+        );
+        $this->assertFalse($result->completed);
     }
 
     public function testWithoutCode(): void
@@ -27,7 +43,7 @@ class AuthorizeShopTest extends TestCase
         );
 
         $this->assertStringContainsString(
-            '/admin/oauth/authorize?client_id=Osiset%5CBasicShopifyAPI&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalhost%2Fauthenticate',
+            '/admin/oauth/authorize?client_id=&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalhost%2Fauthenticate',
             $result->url
         );
         $this->assertFalse($result->completed);

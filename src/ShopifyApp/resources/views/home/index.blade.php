@@ -57,7 +57,7 @@
             </div>
 
             <p>Welcome to your Shopify App powered by Laravel.</p>
-            <p>{{ ShopifyApp::shop()->name }}</p>
+            <p>{{ Auth::user()->name }}</p>
 
             <div class="links">
                 <a href="https://github.com/osiset/laravel-shopify" target="_blank">Package</a>
