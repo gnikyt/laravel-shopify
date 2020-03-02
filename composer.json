@@ -17,16 +17,17 @@
         }
     ],
     "require": {
-        "php": ">=7.1.0",
-        "laravel/framework": "~5.6 | ^6.0",
+        "php": ">=7.2",
+        "laravel/framework": "~5.8 | ^6.0",
         "ohmybrew/basic-shopify-api": "^6.0",
         "doctrine/dbal": "~2.5",
+        "funeralzone/valueobjects": "^0.4.5",
         "jenssegers/agent": "^2.6"
     },
     "require-dev": {
-        "orchestra/database": "~3.6 | ~4.0",
-        "orchestra/testbench": "~3.6 | ~4.0",
-        "phpunit/phpunit": "~6.0 || ~7.0 || ~8.0",
+        "orchestra/database": "~3.8 | ~4.0",
+        "orchestra/testbench": "~3.8 | ~4.0",
+        "phpunit/phpunit": "~8.0",
         "squizlabs/php_codesniffer": "^3.0",
         "mockery/mockery": "^1.0"
     },
@@ -45,6 +46,9 @@
     },
     "config": {
         "bin-dir": "bin"
+    },
+    "scripts": {
+        "test": "bin/phpunit"
     },
     "extra": {
         "laravel": {

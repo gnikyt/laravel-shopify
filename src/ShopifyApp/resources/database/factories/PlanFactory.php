@@ -1,7 +1,8 @@
 <?php
 
 use Faker\Generator as Faker;
-use OhMyBrew\ShopifyApp\Models\Plan;
+use OhMyBrew\ShopifyApp\Objects\Enums\PlanType;
+use OhMyBrew\ShopifyApp\Storage\Models\Plan;
 
 $factory->define(Plan::class, function (Faker $faker) {
     return [
@@ -32,9 +33,9 @@ $factory->state(Plan::class, 'installable', [
 ]);
 
 $factory->state(Plan::class, 'type_recurring', [
-    'type' => Plan::PLAN_RECURRING,
+    'type' => PlanType::RECURRING()->toNative(),
 ]);
 
 $factory->state(Plan::class, 'type_onetime', [
-    'type' => Plan::PLAN_ONETIME,
+    'type' => PlanType::ONETIME()->toNative(),
 ]);

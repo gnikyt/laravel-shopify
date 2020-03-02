@@ -1,11 +1,18 @@
 # Laravel Shopify App
 
-[![Build Status](https://secure.travis-ci.org/ohmybrew/laravel-shopify.png?branch=master)](http://travis-ci.org/ohmybrew/laravel-shopify)
-[![Coverage Status](https://coveralls.io/repos/github/ohmybrew/laravel-shopify/badge.svg?branch=master)](https://coveralls.io/github/ohmybrew/laravel-shopify?branch=master)
-[![StyleCI](https://styleci.io/repos/96462257/shield?branch=master)](https://styleci.io/repos/96462257)
+![Tests](https://github.com/ohmybrew/laravel-shopify/workflows/Package%20Test/badge.svg?branch=structure-change)
+[![Coverage](https://coveralls.io/repos/github/ohmybrew/laravel-shopify/badge.svg?branch=structure-change)](https://coveralls.io/github/ohmybrew/laravel-shopify?branch=structure-change)
 [![License](https://poser.pugx.org/ohmybrew/laravel-shopify/license)](https://packagist.org/packages/ohmybrew/laravel-shopify)
 
-**[2020-01-13] As a notice to all: I am currently refactoring the package in a branch to be more manageable. This package has grown exponentially beyond what I had expected and has become a little cumbersome to manage. The new structure will is simply a shuffle of existing code and minor refactors so future contributions, maintenance, and issues will be much easier to handle. I will try to handle the open issues currently in the queue and issue patch releases as I am doing this -- however I can not guarantee this as I am only one person. Please bare with me... thank you!**
+**Warning: You are viewing the master branch which is the next release of this package, see latest tag for [current](https://github.com/ohmybrew/laravel-shopify/tree/v10.3.1) version.**
+
+**Note: The package has grown significantly, and with it has come challenges in maintaining. The goal of this branch is to seperate logic into bits, confirm to SOLID, CQR, DRY, etc. where applicable.**
+
+**This rewrite introduces the use of using the user model provided by Laravel instead of its own shop model. Laravel's IoC will be used everywhere it can, and more logic moved into small services and action classes.**
+
+**The current status of the rewrite is completed and most of the testing is completed. Currently doing real-world testing.**
+
+----
 
 A full-featured Laravel package for aiding in Shopify App development, similar to `shopify_app` for Rails. Works for Laravel 5.6+
 
@@ -65,4 +72,3 @@ Contibutors are updated each release, pulled from Github API. See `CONTRIBUTORS.
 ### Special Note
 
 I develop this package in my spare time, with a busy family/work life like many of you! So, I would like to thank everyone who's helped me out from submitting PRs, to assisting on issues, and plain using the package (I hope its useful). Cheers.
-

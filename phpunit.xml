@@ -14,7 +14,7 @@
          stopOnIncomplete="false"
          stopOnSkipped="false">
     <testsuites>
-        <testsuite name="ShopifyApp Test Suite">
+        <testsuite name="Laravel Shopify Test Suite">
             <directory>tests</directory>
         </testsuite>
     </testsuites>
@@ -22,15 +22,32 @@
         <whitelist>
             <directory suffix=".php">src/ShopifyApp/</directory>
             <exclude>
-                <directory>src/ShopifyApp/resources/views</directory>
+                <!-- No need to test this -->
+                <directory>src/ShopifyApp/resources/</directory>
+
+                <!-- No need to test value objects or enums as its from a package -->
+                <directory>src/ShopifyApp/Objects/Values/</directory>
+                <directory>src/ShopifyApp/Objects/Enums/</directory>
+
+                <!-- Nothing to test here -->
+                <directory>src/ShopifyApp/Contracts/</directory>
+
+                <!-- Nothing to test here -->
+                <directory>src/ShopifyApp/Exceptions/</directory>
+
+                <!-- Nothing to test in here, all Laravel code -->
+                <file>src/ShopifyApp/ShopifyAppProvider.php</file>
+
+                <!-- Nothing to test here -->
+                <file>src/ShopifyApp/Messaging/Events/AppLoggedIn.php</file>
             </exclude>
         </whitelist>
     </filter>
     <logging>
-        <log type="coverage-clover" target="build/logs/clover.xml"/>
-        <log type="coverage-text" target="php://stdout"/>
+        <log type="coverage-clover" target="build/logs/clover.xml" />
+        <log type="coverage-text" target="php://stdout" />
     </logging>
     <php>
-        <env name="APP_KEY" value="AckfSECXIvnK5r28GVIWUAxmbBSjTsmF"/>
+        <env name="APP_KEY" value="AckfSECXIvnK5r28GVIWUAxmbBSjTsmF" />
     </php>
 </phpunit>
