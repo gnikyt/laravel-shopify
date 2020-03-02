@@ -1,6 +1,6 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Exceptions;
+namespace Osiset\ShopifyApp\Exceptions;
 
 /**
  * Exception for when an API error occurs.

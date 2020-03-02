@@ -1,13 +1,13 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Test\Http\Middleware;
+namespace Osiset\ShopifyApp\Test\Http\Middleware;
 
-use OhMyBrew\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Test\TestCase;
 use Illuminate\Support\Facades\Request;
-use OhMyBrew\ShopifyApp\Storage\Models\Plan;
-use OhMyBrew\ShopifyApp\Services\ShopSession;
-use OhMyBrew\ShopifyApp\Storage\Models\Charge;
-use OhMyBrew\ShopifyApp\Http\Middleware\Billable as BillableMiddleware;
+use Osiset\ShopifyApp\Storage\Models\Plan;
+use Osiset\ShopifyApp\Services\ShopSession;
+use Osiset\ShopifyApp\Storage\Models\Charge;
+use Osiset\ShopifyApp\Http\Middleware\Billable as BillableMiddleware;
 
 class BillableTest extends TestCase
 {

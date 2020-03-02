@@ -1,10 +1,10 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Test\Http\Middleware;
+namespace Osiset\ShopifyApp\Test\Http\Middleware;
 
-use OhMyBrew\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Test\TestCase;
 use Illuminate\Support\Facades\Request;
-use OhMyBrew\ShopifyApp\Http\Middleware\AuthWebhook as AuthWebhookMiddleware;
+use Osiset\ShopifyApp\Http\Middleware\AuthWebhook as AuthWebhookMiddleware;
 
 class AuthWebhookTest extends TestCase
 {

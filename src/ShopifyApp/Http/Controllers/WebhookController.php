@@ -1,9 +1,9 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Controllers;
+namespace Osiset\ShopifyApp\Controllers;
 
 use Illuminate\Routing\Controller;
-use OhMyBrew\ShopifyApp\Traits\WebhookController as WebhookControllerTrait;
+use Osiset\ShopifyApp\Traits\WebhookController as WebhookControllerTrait;
 
 /**
  * Responsible for handling incoming webhook requests.

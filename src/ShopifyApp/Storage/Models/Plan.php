@@ -1,11 +1,11 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Storage\Models;
+namespace Osiset\ShopifyApp\Storage\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use OhMyBrew\ShopifyApp\Objects\Enums\PlanType;
-use OhMyBrew\ShopifyApp\Objects\Values\PlanId;
+use Osiset\ShopifyApp\Objects\Enums\PlanType;
+use Osiset\ShopifyApp\Objects\Values\PlanId;
 
 /**
  * Responsible for reprecenting a plan record.

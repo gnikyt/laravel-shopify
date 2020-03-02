@@ -1,10 +1,10 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Messaging\Events;
+namespace Osiset\ShopifyApp\Messaging\Events;
 
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use OhMyBrew\ShopifyApp\Contracts\ShopModel as IShopModel;
+use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
 
 /**
  * Event fired when a shop passes through authentication.

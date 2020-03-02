@@ -1,13 +1,13 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Test\Actions;
+namespace Osiset\ShopifyApp\Test\Actions;
 
-use OhMyBrew\ShopifyApp\Test\TestCase;
-use OhMyBrew\ShopifyApp\Storage\Models\Plan;
-use OhMyBrew\ShopifyApp\Actions\CancelCharge;
-use OhMyBrew\ShopifyApp\Exceptions\ChargeNotRecurringOrOnetimeException;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeReference;
-use OhMyBrew\ShopifyApp\Storage\Models\Charge;
+use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Storage\Models\Plan;
+use Osiset\ShopifyApp\Actions\CancelCharge;
+use Osiset\ShopifyApp\Exceptions\ChargeNotRecurringOrOnetimeException;
+use Osiset\ShopifyApp\Objects\Values\ChargeReference;
+use Osiset\ShopifyApp\Storage\Models\Charge;
 
 class CancelChargeTest extends TestCase
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Actions;
+namespace Osiset\ShopifyApp\Actions;
 
-use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
-use OhMyBrew\ShopifyApp\Services\ChargeHelper;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
-use OhMyBrew\ShopifyApp\Contracts\Commands\Charge as IChargeCommand;
+use Osiset\ShopifyApp\Objects\Values\ShopId;
+use Osiset\ShopifyApp\Services\ChargeHelper;
+use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use Osiset\ShopifyApp\Contracts\Commands\Charge as IChargeCommand;
 
 /**
  * Cancel's the shop's current plan (in the database).

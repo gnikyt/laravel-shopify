@@ -1,21 +1,21 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Actions;
+namespace Osiset\ShopifyApp\Actions;
 
 use Illuminate\Support\Carbon;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
-use OhMyBrew\ShopifyApp\Services\ChargeHelper;
-use OhMyBrew\ShopifyApp\Objects\Enums\PlanType;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
-use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
-use OhMyBrew\ShopifyApp\Objects\Enums\ChargeStatus;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeReference;
-use OhMyBrew\ShopifyApp\Contracts\Objects\Values\PlanId;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Plan as IPlanQuery;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
-use OhMyBrew\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
-use OhMyBrew\ShopifyApp\Objects\Transfers\Charge as ChargeTransfer;
-use OhMyBrew\ShopifyApp\Contracts\Commands\Charge as IChargeCommand;
+use Osiset\ShopifyApp\Objects\Values\ShopId;
+use Osiset\ShopifyApp\Services\ChargeHelper;
+use Osiset\ShopifyApp\Objects\Enums\PlanType;
+use Osiset\ShopifyApp\Objects\Values\ChargeId;
+use Osiset\ShopifyApp\Objects\Enums\ChargeType;
+use Osiset\ShopifyApp\Objects\Enums\ChargeStatus;
+use Osiset\ShopifyApp\Objects\Values\ChargeReference;
+use Osiset\ShopifyApp\Contracts\Objects\Values\PlanId;
+use Osiset\ShopifyApp\Contracts\Queries\Plan as IPlanQuery;
+use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
+use Osiset\ShopifyApp\Objects\Transfers\Charge as ChargeTransfer;
+use Osiset\ShopifyApp\Contracts\Commands\Charge as IChargeCommand;
 
 /**
  * Activates a plan for a shop.

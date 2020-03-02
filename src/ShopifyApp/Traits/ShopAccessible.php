@@ -1,8 +1,8 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Traits;
+namespace Osiset\ShopifyApp\Traits;
 
-use OhMyBrew\ShopifyApp\Contracts\ShopModel as IShopModel;
+use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
 
 /**
  * Allows for setting of a shop and accessing it.

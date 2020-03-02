@@ -1,10 +1,10 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Http\Requests;
+namespace Osiset\ShopifyApp\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
-use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
+use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 
 /**
  * Handles validating a shop trying to authenticate.

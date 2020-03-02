@@ -1,12 +1,12 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Test\Actions;
+namespace Osiset\ShopifyApp\Test\Actions;
 
-use OhMyBrew\ShopifyApp\Test\TestCase;
-use OhMyBrew\ShopifyApp\Actions\GetPlanUrl;
-use OhMyBrew\ShopifyApp\Storage\Models\Plan;
-use OhMyBrew\ShopifyApp\Test\Stubs\Api as ApiStub;
-use OhMyBrew\ShopifyApp\Objects\Values\NullablePlanId;
+use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Actions\GetPlanUrl;
+use Osiset\ShopifyApp\Storage\Models\Plan;
+use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
+use Osiset\ShopifyApp\Objects\Values\NullablePlanId;
 
 class GetPlanUrlTest extends TestCase
 {

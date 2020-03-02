@@ -1,9 +1,9 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Objects\Transfers;
+namespace Osiset\ShopifyApp\Objects\Transfers;
 
 use Exception;
-use OhMyBrew\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Test\TestCase;
 
 class AbstractTransferTest extends TestCase
 {

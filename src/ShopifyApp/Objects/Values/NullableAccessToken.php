@@ -1,9 +1,9 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Objects\Values;
+namespace Osiset\ShopifyApp\Objects\Values;
 
 use Funeralzone\ValueObjects\Nullable;
-use OhMyBrew\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
+use Osiset\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
 
 /**
  * Value object for access token (nullable).

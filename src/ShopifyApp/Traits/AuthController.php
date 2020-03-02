@@ -1,15 +1,15 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Traits;
+namespace Osiset\ShopifyApp\Traits;
 
 use Illuminate\Support\Facades\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
-use OhMyBrew\ShopifyApp\Requests\AuthShopify;
+use Osiset\ShopifyApp\Requests\AuthShopify;
 use Illuminate\Contracts\View\View as ViewView;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
+use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 
 /**
  * Responsible for authenticating the shop.

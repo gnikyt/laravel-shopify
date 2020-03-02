@@ -1,10 +1,10 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Objects\Values;
+namespace Osiset\ShopifyApp\Objects\Values;
 
 use Funeralzone\ValueObjects\Scalars\StringTrait;
-use OhMyBrew\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
-use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
+use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
+use Osiset\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Value object for shop's domain.

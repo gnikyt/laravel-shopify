@@ -1,11 +1,11 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Test\Storage\Models;
+namespace Osiset\ShopifyApp\Test\Storage\Models;
 
-use OhMyBrew\ShopifyApp\Objects\Enums\PlanType;
-use OhMyBrew\ShopifyApp\Objects\Values\PlanId;
-use OhMyBrew\ShopifyApp\Test\TestCase;
-use OhMyBrew\ShopifyApp\Storage\Models\Plan;
+use Osiset\ShopifyApp\Objects\Enums\PlanType;
+use Osiset\ShopifyApp\Objects\Values\PlanId;
+use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Storage\Models\Plan;
 
 class PlanTest extends TestCase
 {

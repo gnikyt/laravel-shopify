@@ -1,6 +1,6 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Traits;
+namespace Osiset\ShopifyApp\Traits;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response as ResponseResponse;

@@ -1,9 +1,9 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Test\Services;
+namespace Osiset\ShopifyApp\Test\Services;
 
-use OhMyBrew\ShopifyApp\Services\CookieHelper;
-use OhMyBrew\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Services\CookieHelper;
+use Osiset\ShopifyApp\Test\TestCase;
 
 class CookieHelperTest extends TestCase
 {

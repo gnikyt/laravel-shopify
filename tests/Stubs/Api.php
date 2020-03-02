@@ -1,10 +1,10 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Test\Stubs;
+namespace Osiset\ShopifyApp\Test\Stubs;
 
 use ErrorException;
 use Exception;
-use OhMyBrew\BasicShopifyAPI;
+use Osiset\BasicShopifyAPI;
 
 class Api extends BasicShopifyAPI
 {

@@ -1,13 +1,13 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Test;
+namespace Osiset\ShopifyApp\Test;
 
 use Closure;
 use Illuminate\Support\Facades\App;
-use OhMyBrew\ShopifyApp\ShopifyAppProvider;
+use Osiset\ShopifyApp\ShopifyAppProvider;
 use Orchestra\Database\ConsoleServiceProvider;
-use OhMyBrew\ShopifyApp\Test\Stubs\Api as ApiStub;
-use OhMyBrew\ShopifyApp\Test\Stubs\User as UserStub;
+use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
+use Osiset\ShopifyApp\Test\Stubs\User as UserStub;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 abstract class TestCase extends OrchestraTestCase
@@ -38,7 +38,7 @@ abstract class TestCase extends OrchestraTestCase
     protected function resolveApplicationHttpKernel($app): void
     {
         // For adding custom the shop middleware
-        $app->singleton(\Illuminate\Contracts\Http\Kernel::class, \OhMyBrew\ShopifyApp\Test\Stubs\Kernel::class);
+        $app->singleton(\Illuminate\Contracts\Http\Kernel::class, \Osiset\ShopifyApp\Test\Stubs\Kernel::class);
     }
 
     protected function getEnvironmentSetUp($app): void

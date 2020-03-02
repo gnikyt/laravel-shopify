@@ -1,12 +1,12 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Actions;
+namespace Osiset\ShopifyApp\Actions;
 
-use OhMyBrew\ShopifyApp\Services\ShopSession;
-use OhMyBrew\ShopifyApp\Objects\Enums\AuthMode;
-use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use Osiset\ShopifyApp\Services\ShopSession;
+use Osiset\ShopifyApp\Objects\Enums\AuthMode;
+use Osiset\ShopifyApp\Traits\ConfigAccessible;
+use Osiset\ShopifyApp\Objects\Values\ShopDomain;
+use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 
 /**
  * Authenticates a shop via HTTP request.

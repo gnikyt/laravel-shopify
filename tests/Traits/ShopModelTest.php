@@ -1,14 +1,14 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Test\Traits;
+namespace Osiset\ShopifyApp\Test\Traits;
 
-use OhMyBrew\BasicShopifyAPI;
-use OhMyBrew\ShopifyApp\Test\TestCase;
-use OhMyBrew\ShopifyApp\Storage\Models\Plan;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
-use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
-use OhMyBrew\ShopifyApp\Contracts\Objects\Values\ShopDomain;
-use OhMyBrew\ShopifyApp\Contracts\Objects\Values\AccessToken;
+use Osiset\BasicShopifyAPI;
+use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Storage\Models\Plan;
+use Osiset\ShopifyApp\Objects\Values\ShopId;
+use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
+use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain;
+use Osiset\ShopifyApp\Contracts\Objects\Values\AccessToken;
 
 class ShopModelTest extends TestCase
 {

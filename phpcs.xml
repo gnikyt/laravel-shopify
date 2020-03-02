@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<ruleset name="Laravel-Shopify Ruleset" namespace="OhMyBrew\ShopifyApp">
+<ruleset name="Laravel-Shopify Ruleset" namespace="Osiset\ShopifyApp">
   <description>PSR2 CS for Laravel-Shopify</description>
 
   <rule ref="PSR2" />

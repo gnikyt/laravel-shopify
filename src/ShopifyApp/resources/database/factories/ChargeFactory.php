@@ -2,9 +2,9 @@
 
 use Faker\Generator as Faker;
 use Illuminate\Support\Carbon;
-use OhMyBrew\ShopifyApp\Objects\Enums\ChargeStatus;
-use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
-use OhMyBrew\ShopifyApp\Storage\Models\Charge;
+use Osiset\ShopifyApp\Objects\Enums\ChargeStatus;
+use Osiset\ShopifyApp\Objects\Enums\ChargeType;
+use Osiset\ShopifyApp\Storage\Models\Charge;
 
 $factory->define(Charge::class, function (Faker $faker) {
     return [

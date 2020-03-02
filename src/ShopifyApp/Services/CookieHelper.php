@@ -1,10 +1,10 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Services;
+namespace Osiset\ShopifyApp\Services;
 
 use Exception;
 use Jenssegers\Agent\Agent;
-use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
+use Osiset\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Helper for dealing with cookie and cookie issues.

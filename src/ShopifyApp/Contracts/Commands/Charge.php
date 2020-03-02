@@ -1,13 +1,13 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Contracts\Commands;
+namespace Osiset\ShopifyApp\Contracts\Commands;
 
 use Illuminate\Support\Carbon as Carbon;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeReference;
-use OhMyBrew\ShopifyApp\Objects\Transfers\Charge as ChargeTransfer;
-use OhMyBrew\ShopifyApp\Objects\Transfers\UsageCharge as UsageChargeTransfer;
+use Osiset\ShopifyApp\Objects\Values\ShopId;
+use Osiset\ShopifyApp\Objects\Values\ChargeId;
+use Osiset\ShopifyApp\Objects\Values\ChargeReference;
+use Osiset\ShopifyApp\Objects\Transfers\Charge as ChargeTransfer;
+use Osiset\ShopifyApp\Objects\Transfers\UsageCharge as UsageChargeTransfer;
 
 /**
  * Reprecents commands for charges.

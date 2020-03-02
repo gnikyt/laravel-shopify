@@ -1,13 +1,13 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Actions;
+namespace Osiset\ShopifyApp\Actions;
 
-use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
-use OhMyBrew\ShopifyApp\Objects\Values\NullablePlanId;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Plan as IPlanQuery;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
-use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
-use OhMyBrew\ShopifyApp\Services\ChargeHelper;
+use Osiset\ShopifyApp\Objects\Values\ShopId;
+use Osiset\ShopifyApp\Objects\Values\NullablePlanId;
+use Osiset\ShopifyApp\Contracts\Queries\Plan as IPlanQuery;
+use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use Osiset\ShopifyApp\Objects\Enums\ChargeType;
+use Osiset\ShopifyApp\Services\ChargeHelper;
 
 /**
  * Retrieve the a billing plan's URL.

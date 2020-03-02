@@ -1,6 +1,6 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Exceptions;
+namespace Osiset\ShopifyApp\Exceptions;
 
 /**
  * Exception for when a charge is not recurring but a recurring action is attempted.

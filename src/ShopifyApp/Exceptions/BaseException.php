@@ -1,11 +1,11 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Exceptions;
+namespace Osiset\ShopifyApp\Exceptions;
 
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
-use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
+use Osiset\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Base exception for all exceptions of the package.

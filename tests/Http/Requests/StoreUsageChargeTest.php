@@ -1,12 +1,12 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Test\Requests;
+namespace Osiset\ShopifyApp\Test\Requests;
 
 use Illuminate\Support\Facades\Validator;
-use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
-use OhMyBrew\ShopifyApp\Http\Requests\StoreUsageCharge;
-use OhMyBrew\ShopifyApp\Test\TestCase;
-use function OhMyBrew\ShopifyApp\createHmac;
+use Osiset\ShopifyApp\Facades\ShopifyApp;
+use Osiset\ShopifyApp\Http\Requests\StoreUsageCharge;
+use Osiset\ShopifyApp\Test\TestCase;
+use function Osiset\ShopifyApp\createHmac;
 
 class StoreUsageChargeTest extends TestCase
 {

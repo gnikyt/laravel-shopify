@@ -1,11 +1,11 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Contracts\Queries;
+namespace Osiset\ShopifyApp\Contracts\Queries;
 
-use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeReference;
-use OhMyBrew\ShopifyApp\Storage\Models\Charge as ChargeModel;
+use Osiset\ShopifyApp\Objects\Values\ShopId;
+use Osiset\ShopifyApp\Objects\Values\ChargeId;
+use Osiset\ShopifyApp\Objects\Values\ChargeReference;
+use Osiset\ShopifyApp\Storage\Models\Charge as ChargeModel;
 
 /**
  * Reprecents a queries for charges.

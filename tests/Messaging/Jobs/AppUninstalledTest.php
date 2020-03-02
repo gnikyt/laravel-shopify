@@ -1,13 +1,13 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Test\Messaging\Jobs;
+namespace Osiset\ShopifyApp\Test\Messaging\Jobs;
 
-use OhMyBrew\ShopifyApp\Actions\CancelCurrentPlan;
-use OhMyBrew\ShopifyApp\Test\TestCase;
-use OhMyBrew\ShopifyApp\Storage\Models\Plan;
-use OhMyBrew\ShopifyApp\Storage\Models\Charge;
-use OhMyBrew\ShopifyApp\Objects\Enums\ChargeStatus;
-use OhMyBrew\ShopifyApp\Messaging\Jobs\AppUninstalledJob;
+use Osiset\ShopifyApp\Actions\CancelCurrentPlan;
+use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Storage\Models\Plan;
+use Osiset\ShopifyApp\Storage\Models\Charge;
+use Osiset\ShopifyApp\Objects\Enums\ChargeStatus;
+use Osiset\ShopifyApp\Messaging\Jobs\AppUninstalledJob;
 
 class AppUninstalledTest extends TestCase
 {

@@ -1,17 +1,17 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Traits;
+namespace Osiset\ShopifyApp\Traits;
 
 use Illuminate\Contracts\View\View as ViewView;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\View;
-use OhMyBrew\ShopifyApp\Facades\ShopifyApp;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeReference;
-use OhMyBrew\ShopifyApp\Objects\Values\PlanId;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
-use OhMyBrew\ShopifyApp\Requests\StoreUsageCharge;
+use Osiset\ShopifyApp\Facades\ShopifyApp;
+use Osiset\ShopifyApp\Objects\Values\ChargeReference;
+use Osiset\ShopifyApp\Objects\Values\PlanId;
+use Osiset\ShopifyApp\Objects\Values\ShopDomain;
+use Osiset\ShopifyApp\Requests\StoreUsageCharge;
 
 /**
  * Responsible for billing a shop for plans and usage charges.

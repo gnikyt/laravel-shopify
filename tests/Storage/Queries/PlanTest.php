@@ -1,11 +1,11 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Test\Storage\Queries;
+namespace Osiset\ShopifyApp\Test\Storage\Queries;
 
-use OhMyBrew\ShopifyApp\Contracts\Queries\Plan as IPlanQuery;
-use OhMyBrew\ShopifyApp\Objects\Values\PlanId;
-use OhMyBrew\ShopifyApp\Storage\Models\Plan;
-use OhMyBrew\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Contracts\Queries\Plan as IPlanQuery;
+use Osiset\ShopifyApp\Objects\Values\PlanId;
+use Osiset\ShopifyApp\Storage\Models\Plan;
+use Osiset\ShopifyApp\Test\TestCase;
 
 class PlanTest extends TestCase
 {

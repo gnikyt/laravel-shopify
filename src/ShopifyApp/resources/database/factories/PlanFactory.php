@@ -1,8 +1,8 @@
 <?php
 
 use Faker\Generator as Faker;
-use OhMyBrew\ShopifyApp\Objects\Enums\PlanType;
-use OhMyBrew\ShopifyApp\Storage\Models\Plan;
+use Osiset\ShopifyApp\Objects\Enums\PlanType;
+use Osiset\ShopifyApp\Storage\Models\Plan;
 
 $factory->define(Plan::class, function (Faker $faker) {
     return [

@@ -1,5 +1,5 @@
 # [...document.getElementsByClassName('contrib-person')].map(n => n.getElementsByClassName('avatar')[0].alt).join('\n');
-ohmybrew
+osiset
 darrynten
 amosmos
 ilamp

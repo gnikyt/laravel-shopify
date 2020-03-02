@@ -1,9 +1,9 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Controllers;
+namespace Osiset\ShopifyApp\Controllers;
 
 use Illuminate\Routing\Controller;
-use OhMyBrew\ShopifyApp\Traits\AuthController as AuthControllerTrait;
+use Osiset\ShopifyApp\Traits\AuthController as AuthControllerTrait;
 
 /**
  * Responsible for authenticating the shop.

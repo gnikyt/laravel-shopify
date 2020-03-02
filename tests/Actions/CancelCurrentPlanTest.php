@@ -1,11 +1,11 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Test\Actions;
+namespace Osiset\ShopifyApp\Test\Actions;
 
-use OhMyBrew\ShopifyApp\Test\TestCase;
-use OhMyBrew\ShopifyApp\Storage\Models\Plan;
-use OhMyBrew\ShopifyApp\Storage\Models\Charge;
-use OhMyBrew\ShopifyApp\Actions\CancelCurrentPlan;
+use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Storage\Models\Plan;
+use Osiset\ShopifyApp\Storage\Models\Charge;
+use Osiset\ShopifyApp\Actions\CancelCurrentPlan;
 
 class CancelCurrentPlanTest extends TestCase
 {

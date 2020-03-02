@@ -2,6 +2,6 @@
 
 namespace App\Jobs;
 
-class AppUninstalledJob extends \OhMyBrew\ShopifyApp\Jobs\AppUninstalledJob
+class AppUninstalledJob extends \Osiset\ShopifyApp\Jobs\AppUninstalledJob
 {
 }

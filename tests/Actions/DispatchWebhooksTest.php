@@ -1,12 +1,12 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Test\Actions;
+namespace Osiset\ShopifyApp\Test\Actions;
 
 use Illuminate\Support\Facades\Queue;
-use OhMyBrew\ShopifyApp\Test\TestCase;
-use OhMyBrew\ShopifyApp\Actions\DispatchWebhooks;
-use OhMyBrew\ShopifyApp\Test\Stubs\Api as ApiStub;
-use OhMyBrew\ShopifyApp\Messaging\Jobs\WebhookInstaller;
+use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Actions\DispatchWebhooks;
+use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
+use Osiset\ShopifyApp\Messaging\Jobs\WebhookInstaller;
 
 class DispatchWebhooksTest extends TestCase
 {

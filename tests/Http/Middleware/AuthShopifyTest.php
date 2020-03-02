@@ -1,11 +1,11 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Test\Http\Middleware;
+namespace Osiset\ShopifyApp\Test\Http\Middleware;
 
-use OhMyBrew\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Test\TestCase;
 use Illuminate\Support\Facades\Request;
-use OhMyBrew\ShopifyApp\Exceptions\SignatureVerificationException;
-use OhMyBrew\ShopifyApp\Http\Middleware\AuthShopify as AuthShopifyMiddleware;
+use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
+use Osiset\ShopifyApp\Http\Middleware\AuthShopify as AuthShopifyMiddleware;
 
 class AuthShopifyTest extends TestCase
 {

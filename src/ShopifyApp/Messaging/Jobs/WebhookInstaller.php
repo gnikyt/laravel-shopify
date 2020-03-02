@@ -1,13 +1,13 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Messaging\Jobs;
+namespace Osiset\ShopifyApp\Messaging\Jobs;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
+use Osiset\ShopifyApp\Objects\Values\ShopId;
 
 /**
  * Webhook job responsible for handling installation of webhook listeners.

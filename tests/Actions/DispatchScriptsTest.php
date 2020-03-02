@@ -1,12 +1,12 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Test\Actions;
+namespace Osiset\ShopifyApp\Test\Actions;
 
 use Illuminate\Support\Facades\Queue;
-use OhMyBrew\ShopifyApp\Test\TestCase;
-use OhMyBrew\ShopifyApp\Actions\DispatchScripts;
-use OhMyBrew\ShopifyApp\Test\Stubs\Api as ApiStub;
-use OhMyBrew\ShopifyApp\Messaging\Jobs\ScripttagInstaller;
+use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Actions\DispatchScripts;
+use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
+use Osiset\ShopifyApp\Messaging\Jobs\ScripttagInstaller;
 
 class DispatchScriptsTest extends TestCase
 {

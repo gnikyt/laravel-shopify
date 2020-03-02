@@ -1,15 +1,15 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Storage\Models;
+namespace Osiset\ShopifyApp\Storage\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
-use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
-use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
-use OhMyBrew\ShopifyApp\Objects\Enums\ChargeStatus;
+use Osiset\ShopifyApp\Objects\Values\ChargeId;
+use Osiset\ShopifyApp\Traits\ConfigAccessible;
+use Osiset\ShopifyApp\Objects\Enums\ChargeType;
+use Osiset\ShopifyApp\Objects\Enums\ChargeStatus;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeReference;
+use Osiset\ShopifyApp\Objects\Values\ChargeReference;
 
 /**
  * Responsible for reprecenting a charge record.

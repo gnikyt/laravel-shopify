@@ -1,10 +1,10 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Storage\Observers;
+namespace Osiset\ShopifyApp\Storage\Observers;
 
-use OhMyBrew\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
-use OhMyBrew\ShopifyApp\Contracts\ShopModel as IShopModel;
-use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
+use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
+use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
+use Osiset\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Responsible for observing changes to the shop (user) model.

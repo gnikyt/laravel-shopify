@@ -22,7 +22,7 @@ Route::group(['prefix' => config('shopify-app.prefix'), 'middleware' => ['web']]
 
     Route::get(
         '/',
-        'OhMyBrew\ShopifyApp\Controllers\HomeController@index'
+        'Osiset\ShopifyApp\Controllers\HomeController@index'
     )
     ->middleware(['auth', 'auth.shopify', 'billable'])
     ->name('home');
@@ -38,7 +38,7 @@ Route::group(['prefix' => config('shopify-app.prefix'), 'middleware' => ['web']]
 
     Route::get(
         '/login',
-        'OhMyBrew\ShopifyApp\Controllers\AuthController@index'
+        'Osiset\ShopifyApp\Controllers\AuthController@index'
     )->name('login');
 
     /*
@@ -53,7 +53,7 @@ Route::group(['prefix' => config('shopify-app.prefix'), 'middleware' => ['web']]
     Route::match(
         ['get', 'post'],
         '/authenticate',
-        'OhMyBrew\ShopifyApp\Controllers\AuthController@authenticate'
+        'Osiset\ShopifyApp\Controllers\AuthController@authenticate'
     )
     ->name('authenticate');
 
@@ -68,7 +68,7 @@ Route::group(['prefix' => config('shopify-app.prefix'), 'middleware' => ['web']]
 
     Route::get(
         '/billing/{plan?}',
-        'OhMyBrew\ShopifyApp\Controllers\BillingController@index'
+        'Osiset\ShopifyApp\Controllers\BillingController@index'
     )
     ->middleware(['auth', 'auth.shopify'])
     ->where('plan', '^([0-9]+|)$')
@@ -85,7 +85,7 @@ Route::group(['prefix' => config('shopify-app.prefix'), 'middleware' => ['web']]
 
     Route::get(
         '/billing/process/{plan?}',
-        'OhMyBrew\ShopifyApp\Controllers\BillingController@process'
+        'Osiset\ShopifyApp\Controllers\BillingController@process'
     )
     ->middleware(['auth', 'auth.shopify'])
     ->where('plan', '^([0-9]+|)$')
@@ -103,7 +103,7 @@ Route::group(['prefix' => config('shopify-app.prefix'), 'middleware' => ['web']]
     Route::match(
         ['get', 'post'],
         '/billing/usage-charge',
-        'OhMyBrew\ShopifyApp\Controllers\BillingController@usageCharge'
+        'Osiset\ShopifyApp\Controllers\BillingController@usageCharge'
     )
     ->middleware(['auth', 'auth.shopify'])
     ->name('billing.usage_charge');
@@ -121,7 +121,7 @@ Route::group(['middleware' => ['api']], function () {
 
     Route::post(
         '/webhook/{type}',
-        'OhMyBrew\ShopifyApp\Controllers\WebhookController@handle'
+        'Osiset\ShopifyApp\Controllers\WebhookController@handle'
     )
     ->middleware('auth.webhook')
     ->name('webhook');

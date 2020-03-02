@@ -1,11 +1,11 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Test\Requests;
+namespace Osiset\ShopifyApp\Test\Requests;
 
-use OhMyBrew\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Test\TestCase;
 use Illuminate\Support\Facades\Validator;
-use function OhMyBrew\ShopifyApp\createHmac;
-use OhMyBrew\ShopifyApp\Http\Requests\AuthShopify;
+use function Osiset\ShopifyApp\createHmac;
+use Osiset\ShopifyApp\Http\Requests\AuthShopify;
 
 class AuthShopifyTest extends TestCase
 {

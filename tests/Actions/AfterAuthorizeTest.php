@@ -1,10 +1,10 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Test\Actions;
+namespace Osiset\ShopifyApp\Test\Actions;
 
 use Illuminate\Support\Facades\Queue;
-use OhMyBrew\ShopifyApp\Test\TestCase;
-use OhMyBrew\ShopifyApp\Actions\AfterAuthorize;
+use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Actions\AfterAuthorize;
 
 require_once __DIR__.'/../Stubs/AfterAuthorizeJob.php';
 

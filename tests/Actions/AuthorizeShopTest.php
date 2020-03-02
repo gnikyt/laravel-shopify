@@ -1,10 +1,10 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Test\Actions;
+namespace Osiset\ShopifyApp\Test\Actions;
 
-use OhMyBrew\ShopifyApp\Test\TestCase;
-use OhMyBrew\ShopifyApp\Actions\AuthorizeShop;
-use OhMyBrew\ShopifyApp\Test\Stubs\Api as ApiStub;
+use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Actions\AuthorizeShop;
+use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
 
 class AuthorizeShopTest extends TestCase
 {
@@ -27,7 +27,7 @@ class AuthorizeShopTest extends TestCase
         );
 
         $this->assertStringContainsString(
-            '/admin/oauth/authorize?client_id=OhMyBrew%5CBasicShopifyAPI&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalhost%2Fauthenticate',
+            '/admin/oauth/authorize?client_id=Osiset%5CBasicShopifyAPI&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalhost%2Fauthenticate',
             $result->url
         );
         $this->assertFalse($result->completed);

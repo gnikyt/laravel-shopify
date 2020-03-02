@@ -1,9 +1,9 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Controllers;
+namespace Osiset\ShopifyApp\Controllers;
 
 use Illuminate\Routing\Controller;
-use OhMyBrew\ShopifyApp\Traits\HomeController as HomeControllerTrait;
+use Osiset\ShopifyApp\Traits\HomeController as HomeControllerTrait;
 
 /**
  * Responsible for showing the main homescreen for the app.

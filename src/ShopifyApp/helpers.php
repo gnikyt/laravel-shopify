@@ -1,6 +1,6 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp;
+namespace Osiset\ShopifyApp;
 
 /**
  * HMAC creation helper.

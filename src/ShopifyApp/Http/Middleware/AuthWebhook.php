@@ -1,13 +1,13 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Http\Middleware;
+namespace Osiset\ShopifyApp\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
-use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
+use Osiset\ShopifyApp\Traits\ConfigAccessible;
 
-use function OhMyBrew\ShopifyApp\createHmac;
+use function Osiset\ShopifyApp\createHmac;
 
 /**
  * Response for ensuring a proper webhook request.

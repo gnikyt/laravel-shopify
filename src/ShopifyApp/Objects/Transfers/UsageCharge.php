@@ -1,13 +1,13 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Objects\Transfers;
+namespace Osiset\ShopifyApp\Objects\Transfers;
 
 use Illuminate\Support\Carbon;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
-use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
-use OhMyBrew\ShopifyApp\Objects\Enums\ChargeStatus;
-use OhMyBrew\ShopifyApp\Contracts\Objects\Values\PlanId;
-use OhMyBrew\ShopifyApp\Objects\Transfers\UsageChargeDetails;
+use Osiset\ShopifyApp\Objects\Values\ShopId;
+use Osiset\ShopifyApp\Objects\Enums\ChargeType;
+use Osiset\ShopifyApp\Objects\Enums\ChargeStatus;
+use Osiset\ShopifyApp\Contracts\Objects\Values\PlanId;
+use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails;
 
 /**
  * Reprecents create usage charge.

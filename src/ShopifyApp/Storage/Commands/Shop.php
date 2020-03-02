@@ -1,15 +1,15 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Storage\Commands;
+namespace Osiset\ShopifyApp\Storage\Commands;
 
-use OhMyBrew\ShopifyApp\Contracts\Commands\Shop as ShopCommand;
-use OhMyBrew\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
-use OhMyBrew\ShopifyApp\Contracts\Objects\Values\PlanId as PlanIdValue;
-use OhMyBrew\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
-use OhMyBrew\ShopifyApp\Contracts\ShopModel;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
-use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
+use Osiset\ShopifyApp\Contracts\Commands\Shop as ShopCommand;
+use Osiset\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
+use Osiset\ShopifyApp\Contracts\Objects\Values\PlanId as PlanIdValue;
+use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
+use Osiset\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
+use Osiset\ShopifyApp\Contracts\ShopModel;
+use Osiset\ShopifyApp\Objects\Values\ShopId;
+use Osiset\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Reprecents the commands for shops.

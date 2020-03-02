@@ -1,10 +1,10 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Contracts\Queries;
+namespace Osiset\ShopifyApp\Contracts\Queries;
 
 use Illuminate\Support\Collection;
-use OhMyBrew\ShopifyApp\Contracts\Objects\Values\PlanId;
-use OhMyBrew\ShopifyApp\Storage\Models\Plan as PlanModel;
+use Osiset\ShopifyApp\Contracts\Objects\Values\PlanId;
+use Osiset\ShopifyApp\Storage\Models\Plan as PlanModel;
 
 /**
  * Reprecents a queries for plans.

@@ -1,8 +1,8 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Objects\Transfers;
+namespace Osiset\ShopifyApp\Objects\Transfers;
 
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeReference;
+use Osiset\ShopifyApp\Objects\Values\ChargeReference;
 
 /**
  * Reprecents details for a usage charge.

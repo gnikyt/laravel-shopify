@@ -1,5 +1,5 @@
 {
-    "name": "ohmybrew/laravel-shopify",
+    "name": "osiset/laravel-shopify",
     "description": "Shopify package for Laravel to aide in app development",
     "keywords": [
         "laravel",
@@ -13,13 +13,13 @@
     "authors": [
         {
             "name": "Tyler King",
-            "email": "tyler@ohmybrew.com"
+            "email": "tyler@osiset.com"
         }
     ],
     "require": {
         "php": ">=7.2",
         "laravel/framework": "~5.8 | ^6.0",
-        "ohmybrew/basic-shopify-api": "^6.0",
+        "osiset/basic-shopify-api": "^7.0",
         "doctrine/dbal": "~2.5",
         "funeralzone/valueobjects": "^0.4.5",
         "jenssegers/agent": "^2.6"
@@ -33,7 +33,7 @@
     },
     "autoload": {
         "psr-4": {
-            "OhMyBrew\\ShopifyApp\\": "src/ShopifyApp"
+            "Osiset\\ShopifyApp\\": "src/ShopifyApp"
         },
         "files": [
             "src/ShopifyApp/helpers.php"
@@ -41,7 +41,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "OhMyBrew\\ShopifyApp\\Test\\": "tests"
+            "Osiset\\ShopifyApp\\Test\\": "tests"
         }
     },
     "config": {
@@ -53,10 +53,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "OhMyBrew\\ShopifyApp\\ShopifyAppProvider"
+                "Osiset\\ShopifyApp\\ShopifyAppProvider"
             ],
             "aliases": {
-                "ShopifyApp": "OhMyBrew\\ShopifyApp\\Facades\\ShopifyApp"
+                "ShopifyApp": "Osiset\\ShopifyApp\\Facades\\ShopifyApp"
             }
         }
     }

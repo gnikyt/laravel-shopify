@@ -1,21 +1,21 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Services;
+namespace Osiset\ShopifyApp\Services;
 
 use Closure;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Facades\URL;
-use OhMyBrew\BasicShopifyAPI;
-use OhMyBrew\ShopifyApp\Contracts\ApiHelper as IApiHelper;
-use OhMyBrew\ShopifyApp\Exceptions\ApiException;
-use OhMyBrew\ShopifyApp\Objects\Enums\ApiMethod;
-use OhMyBrew\ShopifyApp\Objects\Enums\AuthMode;
-use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
-use OhMyBrew\ShopifyApp\Objects\Transfers\ApiSession as ApiSessionTransfer;
-use OhMyBrew\ShopifyApp\Objects\Transfers\PlanDetails as PlanDetailsTransfer;
-use OhMyBrew\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeReference;
-use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
+use Osiset\BasicShopifyAPI;
+use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
+use Osiset\ShopifyApp\Exceptions\ApiException;
+use Osiset\ShopifyApp\Objects\Enums\ApiMethod;
+use Osiset\ShopifyApp\Objects\Enums\AuthMode;
+use Osiset\ShopifyApp\Objects\Enums\ChargeType;
+use Osiset\ShopifyApp\Objects\Transfers\ApiSession as ApiSessionTransfer;
+use Osiset\ShopifyApp\Objects\Transfers\PlanDetails as PlanDetailsTransfer;
+use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
+use Osiset\ShopifyApp\Objects\Values\ChargeReference;
+use Osiset\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Basic helper class for API calls to Shopify.

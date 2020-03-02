@@ -1,10 +1,10 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Test\Actions;
+namespace Osiset\ShopifyApp\Test\Actions;
 
-use OhMyBrew\ShopifyApp\Actions\CreateWebhooks;
-use OhMyBrew\ShopifyApp\Test\TestCase;
-use OhMyBrew\ShopifyApp\Test\Stubs\Api as ApiStub;
+use Osiset\ShopifyApp\Actions\CreateWebhooks;
+use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
 
 class CreateWebhooksTest extends TestCase
 {

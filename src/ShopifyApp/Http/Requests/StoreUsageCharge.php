@@ -1,11 +1,11 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Http\Requests;
+namespace Osiset\ShopifyApp\Http\Requests;
 
 use Illuminate\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
-use function OhMyBrew\ShopifyApp\createHmac;
+use Osiset\ShopifyApp\Traits\ConfigAccessible;
+use function Osiset\ShopifyApp\createHmac;
 
 /**
  * Handles validating a usage charge.

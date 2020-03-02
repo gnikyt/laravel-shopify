@@ -1,15 +1,15 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Contracts;
+namespace Osiset\ShopifyApp\Contracts;
 
 use GuzzleHttp\Exception\RequestException;
-use OhMyBrew\BasicShopifyAPI;
-use OhMyBrew\ShopifyApp\Objects\Enums\AuthMode;
-use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
-use OhMyBrew\ShopifyApp\Objects\Transfers\ApiSession as ApiSessionTransfer;
-use OhMyBrew\ShopifyApp\Objects\Transfers\PlanDetails;
-use OhMyBrew\ShopifyApp\Objects\Transfers\UsageChargeDetails;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeReference;
+use Osiset\BasicShopifyAPI;
+use Osiset\ShopifyApp\Objects\Enums\AuthMode;
+use Osiset\ShopifyApp\Objects\Enums\ChargeType;
+use Osiset\ShopifyApp\Objects\Transfers\ApiSession as ApiSessionTransfer;
+use Osiset\ShopifyApp\Objects\Transfers\PlanDetails;
+use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails;
+use Osiset\ShopifyApp\Objects\Values\ChargeReference;
 
 /**
  * Reprecents the API helper.

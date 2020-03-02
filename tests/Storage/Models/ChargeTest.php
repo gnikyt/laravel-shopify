@@ -1,14 +1,14 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Test\Storage\Models;
+namespace Osiset\ShopifyApp\Test\Storage\Models;
 
-use OhMyBrew\ShopifyApp\Test\TestCase;
-use OhMyBrew\ShopifyApp\Storage\Models\Charge;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
-use OhMyBrew\ShopifyApp\Objects\Enums\ChargeType;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeReference;
-use OhMyBrew\ShopifyApp\Contracts\ShopModel as IShopModel;
-use OhMyBrew\ShopifyApp\Objects\Enums\ChargeStatus;
+use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Storage\Models\Charge;
+use Osiset\ShopifyApp\Objects\Values\ChargeId;
+use Osiset\ShopifyApp\Objects\Enums\ChargeType;
+use Osiset\ShopifyApp\Objects\Values\ChargeReference;
+use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
+use Osiset\ShopifyApp\Objects\Enums\ChargeStatus;
 
 class ChargeTest extends TestCase
 {

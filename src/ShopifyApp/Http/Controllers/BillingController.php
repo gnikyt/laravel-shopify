@@ -1,9 +1,9 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Controllers;
+namespace Osiset\ShopifyApp\Controllers;
 
 use Illuminate\Routing\Controller;
-use OhMyBrew\ShopifyApp\Traits\BillingController as BillingControllerTrait;
+use Osiset\ShopifyApp\Traits\BillingController as BillingControllerTrait;
 
 /**
  * Responsible for billing a shop for plans and usage charges.

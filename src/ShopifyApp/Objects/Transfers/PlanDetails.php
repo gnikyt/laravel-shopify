@@ -1,6 +1,6 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Objects\Transfers;
+namespace Osiset\ShopifyApp\Objects\Transfers;
 
 /**
  * Reprecents details for a plan.

@@ -1,17 +1,17 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Storage\Commands;
+namespace Osiset\ShopifyApp\Storage\Commands;
 
 use Illuminate\Support\Carbon;
-use OhMyBrew\ShopifyApp\Contracts\Commands\Charge as ChargeCommand;
-use OhMyBrew\ShopifyApp\Contracts\Queries\Charge as ChargeQuery;
-use OhMyBrew\ShopifyApp\Storage\Models\Charge as ChargeModel;
-use OhMyBrew\ShopifyApp\Objects\Enums\ChargeStatus;
-use OhMyBrew\ShopifyApp\Objects\Transfers\Charge as ChargeTransfer;
-use OhMyBrew\ShopifyApp\Objects\Transfers\UsageCharge as UsageChargeTransfer;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeId;
-use OhMyBrew\ShopifyApp\Objects\Values\ChargeReference;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopId;
+use Osiset\ShopifyApp\Contracts\Commands\Charge as ChargeCommand;
+use Osiset\ShopifyApp\Contracts\Queries\Charge as ChargeQuery;
+use Osiset\ShopifyApp\Storage\Models\Charge as ChargeModel;
+use Osiset\ShopifyApp\Objects\Enums\ChargeStatus;
+use Osiset\ShopifyApp\Objects\Transfers\Charge as ChargeTransfer;
+use Osiset\ShopifyApp\Objects\Transfers\UsageCharge as UsageChargeTransfer;
+use Osiset\ShopifyApp\Objects\Values\ChargeId;
+use Osiset\ShopifyApp\Objects\Values\ChargeReference;
+use Osiset\ShopifyApp\Objects\Values\ShopId;
 
 /**
  * Reprecents the commands for charges.

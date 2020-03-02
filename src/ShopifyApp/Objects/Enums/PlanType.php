@@ -1,6 +1,6 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Objects\Enums;
+namespace Osiset\ShopifyApp\Objects\Enums;
 
 use Funeralzone\ValueObjects\Enums\EnumTrait;
 use Funeralzone\ValueObjects\ValueObject;

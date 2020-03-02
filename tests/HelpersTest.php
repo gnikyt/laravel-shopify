@@ -1,8 +1,8 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp;
+namespace Osiset\ShopifyApp;
 
-use OhMyBrew\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Test\TestCase;
 
 class HelpersTest extends TestCase
 {

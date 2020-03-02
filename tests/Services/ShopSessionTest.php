@@ -1,10 +1,10 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Test\Services;
+namespace Osiset\ShopifyApp\Test\Services;
 
-use OhMyBrew\ShopifyApp\Objects\Enums\AuthMode;
-use OhMyBrew\ShopifyApp\Services\ShopSession;
-use OhMyBrew\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Objects\Enums\AuthMode;
+use Osiset\ShopifyApp\Services\ShopSession;
+use Osiset\ShopifyApp\Test\TestCase;
 
 class ShopSessionTest extends TestCase
 {

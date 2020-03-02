@@ -1,10 +1,10 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Test\Actions;
+namespace Osiset\ShopifyApp\Test\Actions;
 
-use OhMyBrew\ShopifyApp\Test\TestCase;
-use OhMyBrew\ShopifyApp\Actions\DeleteWebhooks;
-use OhMyBrew\ShopifyApp\Test\Stubs\Api as ApiStub;
+use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Actions\DeleteWebhooks;
+use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
 
 class DeleteWebhooksTestTest extends TestCase
 {

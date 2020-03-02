@@ -1,16 +1,16 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Http\Middleware;
+namespace Osiset\ShopifyApp\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
-use function OhMyBrew\ShopifyApp\createHmac;
-use OhMyBrew\ShopifyApp\Services\ShopSession;
-use OhMyBrew\ShopifyApp\Traits\ConfigAccessible;
-use OhMyBrew\ShopifyApp\Objects\Values\ShopDomain;
-use OhMyBrew\ShopifyApp\Objects\Values\NullShopDomain;
-use OhMyBrew\ShopifyApp\Objects\Values\NullableShopDomain;
+use function Osiset\ShopifyApp\createHmac;
+use Osiset\ShopifyApp\Services\ShopSession;
+use Osiset\ShopifyApp\Traits\ConfigAccessible;
+use Osiset\ShopifyApp\Objects\Values\ShopDomain;
+use Osiset\ShopifyApp\Objects\Values\NullShopDomain;
+use Osiset\ShopifyApp\Objects\Values\NullableShopDomain;
 
 /**
  * Responsible for ensuring a proper app proxy request.
