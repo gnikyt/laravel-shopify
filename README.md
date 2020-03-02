@@ -4,11 +4,13 @@
 [![Coverage](https://coveralls.io/repos/github/ohmybrew/laravel-shopify/badge.svg?branch=structure-change)](https://coveralls.io/github/ohmybrew/laravel-shopify?branch=structure-change)
 [![License](https://poser.pugx.org/ohmybrew/laravel-shopify/license)](https://packagist.org/packages/ohmybrew/laravel-shopify)
 
-**Note: (structure-change) Is a complete library rewrite. The package has grown significantly, and with it has come challenges in maintaining. The goal of this branch is to seperate logic into bits, confirm to SOLID, CQR, DRY, etc. where applicable.**
+**Warning: You are viewing the master branch which is the next release of this package, see latest tag for [current](https://github.com/ohmybrew/laravel-shopify/tree/v10.3.1) version.**
+
+**Note: The package has grown significantly, and with it has come challenges in maintaining. The goal of this branch is to seperate logic into bits, confirm to SOLID, CQR, DRY, etc. where applicable.**
 
 **This rewrite introduces the use of using the user model provided by Laravel instead of its own shop model. Laravel's IoC will be used everywhere it can, and more logic moved into small services and action classes.**
 
-**The current status of the rewrite is completed and most of the testing is completed. Currently testing the last bit which is the controller traits and middlewares.**
+**The current status of the rewrite is completed and most of the testing is completed. Currently doing real-world testing.**
 
 ----
 
