@@ -172,10 +172,10 @@ class ShopSession
             $this->sessionSet(self::USER_TOKEN, $token->toNative());
         } else {
             // Update the token in database
-            $this->shopCommand->setAccessToken($this->shop()->getId(), $token);
+            $this->shopCommand->setAccessToken($this->getShop()->getId(), $token);
 
             // Refresh the model
-            $this->shop()->refresh();
+            $this->getShop()->refresh();
         }
 
         return $this;
@@ -197,7 +197,7 @@ class ShopSession
         // Token mapping
         $tokens = [
             $peruser => NullableAccessToken::fromNative(Session::get(self::USER_TOKEN)),
-            $offline => $this->shop()->getToken(),
+            $offline => $this->getShop()->getToken(),
         ];
 
         if ($strict) {
@@ -259,7 +259,7 @@ class ShopSession
     public function isValid(IShopModel $shop): bool
     {
         // Check if there is an existing session
-        $currentShop = $this->shop();
+        $currentShop = $this->getShop();
         if ($currentShop) {
             // We have a current shop, validate it and compare domains
             $currentToken = $this->getToken(true);
@@ -272,6 +272,16 @@ class ShopSession
 
         // No current shop, validate it and skip compare of domains
         return !$shop->getToken()->isEmpty() && !$shop->getDomain()->isNull();
+    }
+
+    /**
+     * Wrapper for auth->guard()->user().
+     *
+     * @return IShopModel|null
+     */
+    public function getShop(): ?IShopModel
+    {
+        return $this->auth->guard()->user();
     }
 
     /**
@@ -288,15 +298,5 @@ class ShopSession
         Session::put($key, $value);
 
         return $this;
-    }
-
-    /**
-     * Wrapper for auth->guard()->user().
-     *
-     * @return IShopModel|null
-     */
-    protected function shop(): ?IShopModel
-    {
-        return $this->auth->guard()->user();
     }
 }

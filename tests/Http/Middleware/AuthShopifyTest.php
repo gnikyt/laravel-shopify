@@ -17,6 +17,9 @@ class AuthShopifyTest extends TestCase
 
     public function testQueryInput(): void
     {
+        // Create the shop
+        factory($this->model)->create(['name' => 'mystore123.myshopify.com']);
+
         // Run the middleware
         $currentRequest = Request::instance();
         $newRequest = $currentRequest->duplicate(
@@ -54,6 +57,9 @@ class AuthShopifyTest extends TestCase
     {
         $this->expectException(SignatureVerificationException::class);
 
+        // Create the shop
+        factory($this->model)->create(['name' => 'mystore123.myshopify.com']);
+
         // Run the middleware
         $currentRequest = Request::instance();
         $newRequest = $currentRequest->duplicate(
@@ -86,6 +92,9 @@ class AuthShopifyTest extends TestCase
 
     public function testReferer()
     {
+        // Create the shop
+        factory($this->model)->create(['name' => 'example.myshopify.com']);
+
         // Run the middleware
         $currentRequest = Request::instance();
         $newRequest = $currentRequest->duplicate(
@@ -113,6 +122,9 @@ class AuthShopifyTest extends TestCase
 
     public function testHeaders()
     {
+        // Create the shop
+        factory($this->model)->create(['name' => 'example.myshopify.com']);
+
         // Run the middleware
         $currentRequest = Request::instance();
         $newRequest = $currentRequest->duplicate(
@@ -145,7 +157,7 @@ class AuthShopifyTest extends TestCase
     }
 
     private function runAuth(Closure $cb = null, $requestInstance = null): void
-    {//$this->expectedException();
+    {
         ($this->app->make(AuthShopifyMiddleware::class))->handle($requestInstance ? $requestInstance : Request::instance(), function ($request) use (&$called, $cb) {
             $called = true;
 

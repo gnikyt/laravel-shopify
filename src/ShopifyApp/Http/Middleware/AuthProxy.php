@@ -54,7 +54,7 @@ class AuthProxy
         $shop = new NullableShopDomain(
             isset($query['shop']) ?
                 new ShopDomain($query['shop']) :
-                new NullShopDomain(null)
+                new NullShopDomain()
         );
 
         if (isset($query['signature'])) {
@@ -69,7 +69,7 @@ class AuthProxy
             return Response::make('Invalid proxy signature.', 401);
         }
 
-        // SLogin the shop
+        // Login the shop
         $this->shopSession->make($shop);
 
         // All good, process proxy request

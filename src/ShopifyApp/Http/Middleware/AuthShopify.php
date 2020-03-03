@@ -4,9 +4,11 @@ namespace Osiset\ShopifyApp\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Osiset\ShopifyApp\Services\ShopSession;
+use Osiset\ShopifyApp\Objects\Enums\DataSource;
+use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
-use Osiset\ShopifyApp\Objects\Enums\DataSource;
 
 /**
  * Response for ensuring an authenticated request.
@@ -21,14 +23,23 @@ class AuthShopify
     protected $apiHelper;
 
     /**
+     * The shop session helper.
+     *
+     * @var ShopSession
+     */
+    protected $shopSession;
+
+    /**
      * Constructor.
      *
      * @param IApiHelper  $apiHelper   The API helper.
+     * @param ShopSession $shopSession The shop session helper.
      *
      * @return self
      */
-    public function __construct(IApiHelper $apiHelper)
+    public function __construct(IApiHelper $apiHelper, ShopSession $shopSession)
     {
+        $this->shopSession = $shopSession;
         $this->apiHelper = $apiHelper;
         $this->apiHelper->make();
     }
@@ -54,6 +65,8 @@ class AuthShopify
         // Only continue if data is verified to match HMAC
         $data = $this->getData($request, $hmac[1]);
         if ($this->apiHelper->verifyRequest($data)) {
+            // Log the shop in
+            $this->shopSession->make(new ShopDomain($data['shop']));
             return $next($request);
         }
 
