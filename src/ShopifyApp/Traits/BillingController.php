@@ -2,16 +2,20 @@
 
 namespace Osiset\ShopifyApp\Traits;
 
-use Illuminate\Contracts\View\View as ViewView;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
-use Osiset\ShopifyApp\Objects\Values\ChargeReference;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Redirect;
+use Osiset\ShopifyApp\Actions\GetPlanUrl;
+use Osiset\ShopifyApp\Actions\ActivatePlan;
+use Osiset\ShopifyApp\Services\ShopSession;
 use Osiset\ShopifyApp\Objects\Values\PlanId;
-use Osiset\ShopifyApp\Objects\Values\ShopDomain;
-use Osiset\ShopifyApp\Requests\StoreUsageCharge;
+use Illuminate\Contracts\View\View as ViewView;
+use Osiset\ShopifyApp\Actions\ActivateUsageCharge;
+use Osiset\ShopifyApp\Objects\Values\NullablePlanId;
+use Osiset\ShopifyApp\Http\Requests\StoreUsageCharge;
+use Osiset\ShopifyApp\Objects\Values\ChargeReference;
+use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
 
 /**
  * Responsible for billing a shop for plans and usage charges.
@@ -21,40 +25,47 @@ trait BillingController
     /**
      * Redirects to billing screen for Shopify.
      *
-     * @param int      $planId     The plan's ID.
-     * @param callable $getPlanUrl The action for getting the plan URL.
+     * @param int|null    $plan        The plan's ID, if provided in route.
+     * @param GetPlanUrl  $getPlanUrl  The action for getting the plan URL.
+     * @param ShopSession $shopSession The shop session helper.
      *
      * @return ViewView
      */
-    public function index(int $planId, callable $getPlanUrl): ViewView
+    public function index(?int $plan = null, GetPlanUrl $getPlanUrl, ShopSession $shopSession): ViewView
     {
+        // Get the plan URL for redirect
+        $url = $getPlanUrl(
+            $shopSession->getShop()->getId(),
+            NullablePlanId::fromNative($plan)
+        );
+
         // Do a fullpage redirect
         return View::make(
             'shopify-app::billing.fullpage_redirect',
-            [
-                'url' => $getPlanUrl(new PlanId($planId)),
-            ]
+            ['url' => $url]
         );
     }
 
     /**
      * Processes the response from the customer.
      *
-     * @param Request  $request      The HTTP request object.
-     * @param int      $planId       The plan's ID.
-     * @param callable $activatePlan The action for activating the plan for a shop.
+     * @param int          $plan         The plan's ID.
+     * @param Request      $request      The HTTP request object.
+     * @param ActivatePlan $activatePlan The action for activating the plan for a shop.
+     * @param ShopSession  $shopSession The shop session helper.
      *
      * @return RedirectResponse
      */
     public function process(
+        int $plan,
         Request $request,
-        int $planId,
-        callable $activatePlanAction
+        ActivatePlan $activatePlan,
+        ShopSession $shopSession
     ): RedirectResponse {
         // Activate the plan and save
-        $result = $activatePlanAction(
-            new ShopDomain(Auth::user()->name),
-            new PlanId($planId),
+        $result = $activatePlan(
+            $shopSession->getShop()->getId(),
+            new PlanId($plan),
             new ChargeReference($request->query('charge_id'))
         );
 
@@ -68,22 +79,28 @@ trait BillingController
     /**
      * Allows for setting a usage charge.
      *
-     * @param StoreUsageCharge $request                   The verified request.
-     * @param callable         $activateUsageChargeAction The action for activating a usage charge.
+     * @param StoreUsageCharge    $request             The verified request.
+     * @param ActivateUsageCharge $activateUsageCharge The action for activating a usage charge.
+     * @param ShopSession         $shopSession         The shop session helper.
      *
      * @return RedirectResponse
      */
     public function usageCharge(
         StoreUsageCharge $request,
-        callable $activateUsageChargeAction
+        ActivateUsageCharge $activateUsageCharge,
+        ShopSession $shopSession
     ): RedirectResponse {
         $validated = $request->validated();
 
+        // Create the transfer object
+        $ucd = new UsageChargeDetailsTransfer();
+        $ucd->price = $validated['price'];
+        $ucd->description = $validated['description'];
+
         // Activate and save the usage charge
-        $activateUsageChargeAction(
-            new ShopDomain(Auth::user()->name),
-            $validated['price'],
-            $validated['description']
+        $activateUsageCharge(
+            $shopSession->getShop()->getId(),
+            $ucd
         );
 
         // All done, return with success

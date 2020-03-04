@@ -1,6 +1,6 @@
 <?php
 
-namespace Osiset\ShopifyApp\Controllers;
+namespace Osiset\ShopifyApp\Http\Controllers;
 
 use Illuminate\Routing\Controller;
 use Osiset\ShopifyApp\Traits\HomeController as HomeControllerTrait;

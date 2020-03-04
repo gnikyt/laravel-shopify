@@ -51,11 +51,7 @@ class AuthProxy
         // Grab the query parameters we need
         $query = $request->query->all();
         $signature = isset($query['signature']) ? $query['signature'] : null;
-        $shop = new NullableShopDomain(
-            isset($query['shop']) ?
-                new ShopDomain($query['shop']) :
-                new NullShopDomain()
-        );
+        $shop = NullableShopDomain::fromNative($query['shop'] ?? null);
 
         if (isset($query['signature'])) {
             // Remove signature since its not part of the signature calculation
