@@ -1,7 +1,7 @@
 # Laravel Shopify App
 
-![Tests](https://github.com/osiset/laravel-shopify/workflows/Package%20Test/badge.svg?branch=structure-change)
-[![Coverage](https://coveralls.io/repos/github/osiset/laravel-shopify/badge.svg?branch=structure-change)](https://coveralls.io/github/osiset/laravel-shopify?branch=structure-change)
+![Tests](https://github.com/osiset/laravel-shopify/workflows/Package%20Test/badge.svg?branch=master)
+[![Coverage](https://coveralls.io/repos/github/osiset/laravel-shopify/badge.svg?branch=master)](https://coveralls.io/github/osiset/laravel-shopify?branch=master)
 [![License](https://poser.pugx.org/osiset/laravel-shopify/license)](https://packagist.org/packages/osiset/laravel-shopify)
 
 **Warning: You are viewing the master branch which is the next release of this package, see latest tag for [current](https://github.com/osiset/laravel-shopify/tree/v10.3.1) version.**
