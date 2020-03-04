@@ -109,10 +109,10 @@ class ShopSessionTest extends TestCase
         $this->shopSession->make($shop->getDomain());
 
         // Itself should be valid
-        $this->assertTrue($this->shopSession->isValidCompare($shop));
+        $this->assertTrue($this->shopSession->isValidCompare($shop->getDomain()));
 
         // Compare to another shop
-        $this->assertFalse($this->shopSession->isValidCompare($shop2));
+        $this->assertFalse($this->shopSession->isValidCompare($shop2->getDomain()));
     }
 
     public function testIsValidNoCompare(): void
