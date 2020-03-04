@@ -46,7 +46,7 @@ Route::group(['prefix' => config('shopify-app.prefix'), 'middleware' => ['web']]
     | Authenticate Method
     |--------------------------------------------------------------------------
     |
-    | Authenticates a shop fully or partially.
+    | Authenticates a shop.
     |
     */
 
@@ -56,6 +56,21 @@ Route::group(['prefix' => config('shopify-app.prefix'), 'middleware' => ['web']]
         'Osiset\ShopifyApp\Controllers\AuthController@authenticate'
     )
     ->name('authenticate');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Authenticate OAuth
+    |--------------------------------------------------------------------------
+    |
+    | Redirect to Shopify's OAuth screen.
+    |
+    */
+
+    Route::get(
+        '/authenticate/oauth',
+        'Osiset\ShopifyApp\Controllers\AuthController@oauth'
+    )
+    ->name('authenticate.oauth');
 
     /*
     |--------------------------------------------------------------------------

@@ -109,10 +109,10 @@ class ShopSessionTest extends TestCase
         $this->shopSession->make($shop->getDomain());
 
         // Itself should be valid
-        $this->assertTrue($this->shopSession->isValid($shop));
+        $this->assertTrue($this->shopSession->isValidCompare($shop));
 
         // Compare to another shop
-        $this->assertFalse($this->shopSession->isValid($shop2));
+        $this->assertFalse($this->shopSession->isValidCompare($shop2));
     }
 
     public function testIsValidNoCompare(): void
@@ -121,6 +121,7 @@ class ShopSessionTest extends TestCase
         $shop = factory($this->model)->create();
 
         // Itself should be valid
-        $this->assertTrue($this->shopSession->isValid($shop));
+        $this->shopSession->make($shop->getDomain());
+        $this->assertTrue($this->shopSession->isValid());
     }
 }

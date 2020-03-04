@@ -7,6 +7,7 @@ use Illuminate\Auth\AuthManager;
 use Illuminate\Support\Facades\Session;
 use Osiset\ShopifyApp\Objects\Enums\AuthMode;
 use Osiset\ShopifyApp\Traits\ConfigAccessible;
+use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Objects\Values\AccessToken;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
@@ -252,26 +253,28 @@ class ShopSession
     /**
      * Checks if the package has everything it needs in session.
      *
-     * @param IShopModel $shop The shop to compare validity to.
+     * @return bool
+     */
+    public function isValid(): bool
+    {
+        $currentShop = $this->getShop();
+        $currentToken = $this->getToken(true);
+        $currentDomain = $currentShop->getDomain();
+
+        return !$currentToken->isEmpty() && !$currentDomain->isNull();
+    }
+
+    /**
+     * Checks if the package has everything it needs in session (compare).
+     *
+     * @param ShopDomain $shopDomain The shop to compare validity to.
      *
      * @return bool
      */
-    public function isValid(IShopModel $shop): bool
+    public function isValidCompare(ShopDomain $shopDomain): bool
     {
-        // Check if there is an existing session
-        $currentShop = $this->getShop();
-        if ($currentShop) {
-            // We have a current shop, validate it and compare domains
-            $currentToken = $this->getToken(true);
-            $currentDomain = $currentShop->getDomain();
-
-            return !$currentToken->isEmpty() &&
-                !$currentDomain->isNull() &&
-                $currentDomain->isSame($shop->getDomain());
-        }
-
-        // No current shop, validate it and skip compare of domains
-        return !$shop->getToken()->isEmpty() && !$shop->getDomain()->isNull();
+        // Ensure domains match
+        return $this->isValid() && $shopDomain->isSame($this->getShop()->getDomain());
     }
 
     /**

@@ -4,11 +4,14 @@ namespace Osiset\ShopifyApp\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use Osiset\ShopifyApp\Services\ShopSession;
 use Osiset\ShopifyApp\Objects\Enums\DataSource;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
+use Osiset\ShopifyApp\Objects\Values\NullShopDomain;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
+use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
 
 /**
  * Response for ensuring an authenticated request.
@@ -45,7 +48,9 @@ class AuthShopify
     }
 
     /**
-     * Handle an incoming request.ShopCommand;
+     * Handle an incoming request.
+     * If HMAC is present, it will try to valiate it.
+     * If shop is not logged in, redirect to authenticate will happen.
      *
      * @param Request  $request The request object.
      * @param \Closure $next    The next action.
@@ -56,22 +61,94 @@ class AuthShopify
      */
     public function handle(Request $request, Closure $next)
     {
-        // Only continue if HMAC is not present
+        // Check the HMAC, if present
+        $this->verifyHmac($request);
+
+        if ($this->shopSession->guest()) {
+            // Login the shop and verify their data
+            return $this->loginShop($request, $next);
+        }
+
+        // Verify shop data is good by comparison
+        return $this->verifyShop($request, $next);
+    }
+
+    /**
+     * Verify HMAC data, if present.
+     *
+     * @param Request $request The request object.
+     *
+     * @return void
+     */
+    private function verifyHmac(Request $request): void
+    {
         $hmac = $this->getHmac($request);
         if ($hmac === null) {
-            return $next($request);
+            // No HMAC, move on...
+            return;
         }
 
-        // Only continue if data is verified to match HMAC
+        // We have HMAC, validate it
         $data = $this->getData($request, $hmac[1]);
-        if ($this->apiHelper->verifyRequest($data)) {
-            // Log the shop in
-            $this->shopSession->make(new ShopDomain($data['shop']));
-            return $next($request);
+        if (!$this->apiHelper->verifyRequest($data)) {
+            // Something didn't match
+            throw new SignatureVerificationException('Unable to verify signature.');
+        }
+    }
+
+    /**
+     * Login and verify the shop and it's data.
+     *
+     * @param Request  $request The request object.
+     * @param \Closure $next    The next action.
+     *
+     * @return mixed
+     */
+    private function loginShop(Request $request, Closure $next)
+    {
+        // Grab the domain
+        $shopDomain = $this->getShopDomainFromData($request);
+        if ($shopDomain->isNull()) {
+            // No shop... we have no way of knowing who this is... go to login
+            return Redirect::route('login');
         }
 
-        // Something didn't match
-        throw new SignatureVerificationException('Unable to verify signature.');
+        // Log the shop in
+        $this->shopSession->make($shopDomain);
+        if (!$this->shopSession->isValid()) {
+            // Somethings not right... missing token?
+            return Redirect::route(
+                'authenticate.oauth',
+                ['shop' => $shopDomain->toNative()]
+            );
+        }
+
+        return $next($request);
+    }
+
+    /**
+     * Verify the shop is alright, if theres a current session, it will compare.
+     *
+     * @param Request  $request The request object.
+     * @param \Closure $next    The next action.
+     *
+     * @return void
+     */
+    private function verifyShop(Request $request, Closure $next)
+    {
+        // Grab the domain
+        $shopDomain = $this->getShopDomainFromData($request);
+        if (!$shopDomain->isNull()) {
+            if (!$this->shopSession->isValidCompare($shopDomain)) {
+                // Mis-match of shops
+                return Redirect::route(
+                    'authenticate.oauth',
+                    ['shop' => $shopDomain->toNative()]
+                );
+            }
+        }
+
+        return $next($request);
     }
 
     /**
@@ -126,7 +203,7 @@ class AuthShopify
      *
      * @return array
      */
-    private function getData(Request $request, String $source): array
+    private function getData(Request $request, string $source): array
     {
         // All possible methods
         $options = [
@@ -184,5 +261,29 @@ class AuthShopify
         ];
 
         return $options[$source]();
+    }
+
+    /**
+     * Gets the shop domain from the data.
+     *
+     * @param Request $request The request object.
+     *
+     * @return ShopDomainValue
+     */
+    private function getShopDomainFromData(Request $request): ShopDomainValue
+    {
+        $options = [
+            DataSource::INPUT()->toNative(),
+            DataSource::HEADER()->toNative(),
+            DataSource::REFERER()->toNative()
+        ];
+        foreach ($options as $option) {
+            $result = $this->getData($request, $option);
+            if ($result && isset($result['shop'])) {
+                return new ShopDomain($result['shop']);
+            }
+        }
+
+        return new NullShopDomain();
     }
 }

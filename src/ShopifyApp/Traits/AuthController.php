@@ -3,6 +3,7 @@
 namespace Osiset\ShopifyApp\Traits;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
@@ -11,10 +12,10 @@ use Osiset\ShopifyApp\Actions\AuthorizeShop;
 use Osiset\ShopifyApp\Actions\AfterAuthorize;
 use Osiset\ShopifyApp\Actions\DispatchScripts;
 use Illuminate\Contracts\View\View as ViewView;
-use Illuminate\Support\Facades\Auth;
 use Osiset\ShopifyApp\Actions\DispatchWebhooks;
-use Osiset\ShopifyApp\Http\Requests\AuthShopify;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
+use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
+use Osiset\ShopifyApp\Services\ShopSession;
 
 /**
  * Responsible for authenticating the shop.
@@ -41,7 +42,6 @@ trait AuthController
     /**
      * Authenticating a shop.
      *
-     * @param AuthShopify      $request          The incoming request.
      * @param AuthorizeShop    $authShop         The action for authenticating a shop.
      * @param DispatchScripts  $dispatchScripts  The action for dispatching scripttag installation.
      * @param DispatchWebhooks $dispatchWebhooks The action for dispatching webhook installation.
@@ -50,49 +50,37 @@ trait AuthController
      * @return ViewView|RedirectResponse
      */
     public function authenticate(
-        AuthShopify $request,
+        Request $request,
+        IApiHelper $apiHelper,
+        ShopSession $shopSession,
         AuthorizeShop $authShop,
         DispatchScripts $dispatchScripts,
         DispatchWebhooks $dispatchWebhooks,
         AfterAuthorize $afterAuthorize
     ) {
-        // Run the action
-        $validated = $request->validated();
-        $shopDomain = new ShopDomain($validated['shop']);
-        $result = $authShop($shopDomain, isset($validated['code']) ? $validated['code'] : null);
+        // Setup
+        $shopDomain = new ShopDomain($request->get('shop'));
+        $code = $request->get('code');
 
-        if ($result->completed) {
-            // All good, handle the redirect
-            return $this->authenticateSuccess(
-                $dispatchScripts,
-                $dispatchWebhooks,
-                $afterAuthorize
-            );
+        // Run the check
+        $result = $authShop($shopDomain, $code);
+        if (!$result->completed) {
+            // Determine if the HMAC is correct
+            $apiHelper->make();
+            if (!$apiHelper->verifyRequest($request->all())) {
+                // Go to login, something is wrong
+                return Redirect::route('login');
+            }
+
+            // No code, redirect to auth URL
+            return $this->oauthFailure($result->url, $shopDomain);
         }
 
-        // No code, redirect to auth URL
-        return $this->authenticateFail(
-            $result->url,
-            $shopDomain
-        );
-    }
+        // Login the shop
+        $shopSession->make($shopDomain);
+        $shopId = $shopSession->getShop()->getId();
 
-    /**
-     * Handles when authentication is successful.
-     *
-     * @param DispatchScripts  $dispatchScripts  The action for dispatching scripttag installation.
-     * @param DispatchWebhooks $dispatchWebhooks The action for dispatching webhook installation.
-     * @param AfterAuthorize   $afterAuthorize   The action for dispatching custom actions after authentication.
-     *
-     * @return RedirectResponse
-     */
-    protected function authenticateSuccess(
-        DispatchScripts $dispatchScripts,
-        DispatchWebhooks $dispatchWebhooks,
-        AfterAuthorize $afterAuthorize
-    ): RedirectResponse {
         // Fire the post processing jobs
-        $shopId = Auth::user()->getId();
         $dispatchScripts($shopId, false);
         $dispatchWebhooks($shopId, false);
         $afterAuthorize($shopId);
@@ -101,7 +89,6 @@ trait AuthController
         $return_to = Session::get('return_to');
         if ($return_to) {
             Session::forget('return_to');
-
             return Redirect::to($return_to);
         }
 
@@ -110,14 +97,32 @@ trait AuthController
     }
 
     /**
-     * Handles when authentication is unsuccessful.
+     * Simply redirects to Shopify's Oauth screen.
+     *
+     * @param Request       $request  The request object.
+     * @param AuthorizeShop $authShop The action for authenticating a shop.
+     *
+     * @return ViewView
+     */
+    public function oauth(Request $request, AuthorizeShop $authShop): ViewView
+    {
+        // Setup
+        $shopDomain = new ShopDomain($request->get('shop'));
+        $result = $authShop($shopDomain, null);
+
+        // Redirect
+        return $this->oauthFailure($result->url, $shopDomain);
+    }
+
+    /**
+     * Handles when authentication is unsuccessful or new.
      *
      * @param string     $authUrl    The auth URl to redirect the user to get the code.
      * @param ShopDomain $shopDomain The shop's domain.
      *
      * @return ViewView
      */
-    protected function authenticateFail(string $authUrl, ShopDomain $shopDomain): ViewView
+    private function oauthFailure(string $authUrl, ShopDomain $shopDomain): ViewView
     {
         return View::make(
             'shopify-app::auth.fullpage_redirect',

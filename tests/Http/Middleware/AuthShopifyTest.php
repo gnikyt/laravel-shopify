@@ -2,17 +2,22 @@
 
 namespace Osiset\ShopifyApp\Test\Http\Middleware;
 
+use Closure;
 use Osiset\ShopifyApp\Test\TestCase;
 use Illuminate\Support\Facades\Request;
 use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
 use Osiset\ShopifyApp\Http\Middleware\AuthShopify as AuthShopifyMiddleware;
+use Osiset\ShopifyApp\Services\ShopSession;
 
 class AuthShopifyTest extends TestCase
 {
-    public function testBase(): void
+    protected $shopSession;
+
+    public function setUp(): void
     {
-        $this->runAuth();
-        $this->assertTrue(true);
+        parent::setUp();
+
+        $this->shopSession = $this->app->make(ShopSession::class);
     }
 
     public function testQueryInput(): void
@@ -49,8 +54,8 @@ class AuthShopifyTest extends TestCase
 
         Request::swap($newRequest);
 
-        $this->runAuth();
-        $this->assertTrue(true);
+        $result = $this->runAuth();
+        $this->assertTrue($result);
     }
 
     public function testHmacFail(): void
@@ -90,7 +95,7 @@ class AuthShopifyTest extends TestCase
         $this->runAuth();
     }
 
-    public function testReferer()
+    public function testReferer(): void
     {
         // Create the shop
         factory($this->model)->create(['name' => 'example.myshopify.com']);
@@ -116,11 +121,11 @@ class AuthShopifyTest extends TestCase
 
         Request::swap($newRequest);
 
-        $this->runAuth();
-        $this->assertTrue(true);
+        $result = $this->runAuth();
+        $this->assertTrue($result);
     }
 
-    public function testHeaders()
+    public function testHeaders(): void
     {
         // Create the shop
         factory($this->model)->create(['name' => 'example.myshopify.com']);
@@ -152,12 +157,100 @@ class AuthShopifyTest extends TestCase
 
         Request::swap($newRequest);
 
-        $this->runAuth();
-        $this->assertTrue(true);
+        $result = $this->runAuth();
+        $this->assertTrue($result);
     }
 
-    private function runAuth(Closure $cb = null, $requestInstance = null): void
+    public function testLoginShopThatsInvalid(): void
     {
+        // Create the shop
+        $shop = factory($this->model)->create();
+
+        // Now, remove its token to make it invalid
+        $shop->password = '';
+        $shop->save();
+        $shop->refresh();
+
+        // Run the middleware
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            [
+                'shop' => $shop->getDomain()->toNative(),
+            ],
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            Request::server()
+        );
+
+        Request::swap($newRequest);
+
+        // Now, invalidation should cause redirect
+        $result = $this->runAuth();
+        $this->assertFalse($result);
+    }
+
+    public function testLoginShopWithoutShopDomain(): void
+    {
+        // Now, invalidation should cause redirect
+        $result = $this->runAuth();
+        $this->assertFalse($result);
+    }
+
+    public function testLoginShopWithExistingSession(): void
+    {
+        // Create the shop
+        $shop = factory($this->model)->create();
+
+        // Log the shop in before running the middleware
+        $this->shopSession->make($shop->getDomain());
+
+        $result = $this->runAuth();
+        $this->assertTrue($result);
+    }
+
+    public function testLoginShopWithExistingSessionClashes(): void
+    {
+        // Create the shop
+        $shop = factory($this->model)->create();
+
+        // Log the shop in before running the middleware
+        $this->shopSession->make($shop->getDomain());
+
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            [
+                'shop' => 'conflict-shop.myshopify.com',
+            ],
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            Request::server()
+        );
+
+        Request::swap($newRequest);
+
+        $result = $this->runAuth();
+        $this->assertFalse($result);
+    }
+
+    private function runAuth(Closure $cb = null, $requestInstance = null): bool
+    {
+        $called = false;
         ($this->app->make(AuthShopifyMiddleware::class))->handle($requestInstance ? $requestInstance : Request::instance(), function ($request) use (&$called, $cb) {
             $called = true;
 
@@ -165,5 +258,7 @@ class AuthShopifyTest extends TestCase
                 $cb($request);
             }
         });
+
+        return $called;
     }
 }
