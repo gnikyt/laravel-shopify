@@ -24,7 +24,7 @@ class BillingControllerTest extends TestCase
         $this->shopSession = $this->app->make(ShopSession::class);
     }
 
-    public function testSendsShopToBillingScreen()
+    public function testSendsShopToBillingScreen(): void
     {
         // Stub the responses
         ApiStub::stubResponses([
@@ -47,7 +47,7 @@ class BillingControllerTest extends TestCase
         );
     }
 
-    public function testShopAcceptsBilling()
+    public function testShopAcceptsBilling(): void
     {
         // Stub the responses
         ApiStub::stubResponses([
@@ -73,7 +73,7 @@ class BillingControllerTest extends TestCase
         $this->assertNotNull($shop->plan);
     }
 
-    public function testUsageChargeSuccess()
+    public function testUsageChargeSuccess(): void
     {
         // Stub the responses
         ApiStub::stubResponses([
