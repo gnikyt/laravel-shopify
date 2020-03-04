@@ -42,11 +42,8 @@ class CancelCurrentPlan
      *
      * @return self
      */
-    public function __construct(
-        IShopQuery $shopQuery,
-        IChargeCommand $chargeCommand,
-        ChargeHelper $chargeHelper
-    ) {
+    public function __construct(IShopQuery $shopQuery, IChargeCommand $chargeCommand, ChargeHelper $chargeHelper)
+    {
         $this->shopQuery = $shopQuery;
         $this->chargeCommand = $chargeCommand;
         $this->chargeHelper = $chargeHelper;

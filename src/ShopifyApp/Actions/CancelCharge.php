@@ -36,10 +36,8 @@ class CancelCharge
      *
      * @return self
      */
-    public function __construct(
-        IChargeCommand $chargeCommand,
-        ChargeHelper $chargeHelper
-    ) {
+    public function __construct(IChargeCommand $chargeCommand, ChargeHelper $chargeHelper)
+    {
         $this->chargeCommand = $chargeCommand;
         $this->chargeHelper = $chargeHelper;
     }

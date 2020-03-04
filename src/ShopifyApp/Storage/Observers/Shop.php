@@ -52,7 +52,7 @@ class Shop
 
         if ($freemium === true && !isset($shop->shopify_freemium)) {
             // Add the freemium flag to the shop
-            $this->shopCommand->setAsFreemium($shop);
+            $this->shopCommand->setAsFreemiumByRef($shop);
         }
     }
 }

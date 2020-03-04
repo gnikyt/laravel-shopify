@@ -34,4 +34,15 @@ class ShopModelTest extends TestCase
         $this->assertInstanceOf(BasicShopifyAPI::class, $shop->api());
         $this->assertInstanceOf(IApiHelper::class, $shop->apiHelper());
     }
+
+    public function testNamespacingAndFreemium()
+    {
+        $this->app['config']->set('shopify-app.billing_freemium_enabled', true);
+        $this->app['config']->set('shopify-app.namespace', 'app');
+
+        $shop = factory($this->model)->create();
+
+        $this->assertEquals('app', $shop->shopify_namespace);
+        $this->assertTrue($shop->isFreemium());
+    }
 }

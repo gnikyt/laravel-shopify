@@ -36,6 +36,7 @@ use Osiset\ShopifyApp\Actions\AfterAuthorize as AfterAuthorizeAction;
 use Osiset\ShopifyApp\Actions\CreateWebhooks as CreateWebhooksAction;
 use Osiset\ShopifyApp\Actions\DeleteWebhooks as DeleteWebhooksAction;
 use Osiset\ShopifyApp\Actions\DispatchScripts as DispatchScriptsAction;
+use Osiset\ShopifyApp\Actions\AuthenticateShop as AuthenticateShopAction;
 use Osiset\ShopifyApp\Actions\DispatchWebhooks as DispatchWebhooksAction;
 use Osiset\ShopifyApp\Actions\CancelCurrentPlan as CancelCurrentPlanAction;
 use Osiset\ShopifyApp\Actions\ActivateUsageCharge as ActivateUsageChargeAction;
@@ -133,6 +134,16 @@ class ShopifyAppProvider extends ServiceProvider
                     $app->make(IShopQuery::class),
                     $app->make(IShopCommand::class),
                     $app->make(ShopSession::class)
+                );
+            }],
+            AuthenticateShopAction::class => [self::CBIND, function ($app) {
+                return new AuthenticateShopAction(
+                    $app->make(ShopSession::class),
+                    $app->make(IApiHelper::class),
+                    $app->make(AuthorizeShopAction::class),
+                    $app->make(DispatchScriptsAction::class),
+                    $app->make(DispatchWebhooksAction::class),
+                    $app->make(AfterAuthorizeAction::class)
                 );
             }],
             GetPlanUrlAction::class => [self::CBIND, function ($app) {

@@ -78,6 +78,8 @@ class AuthShopify
      *
      * @param Request $request The request object.
      *
+     * @throws SignatureVerificationException
+     *
      * @return void
      */
     private function verifyHmac(Request $request): void
@@ -90,10 +92,12 @@ class AuthShopify
 
         // We have HMAC, validate it
         $data = $this->getData($request, $hmac[1]);
-        if (!$this->apiHelper->verifyRequest($data)) {
-            // Something didn't match
-            throw new SignatureVerificationException('Unable to verify signature.');
+        if ($this->apiHelper->verifyRequest($data)) {
+            return;
         }
+
+        // Something didn't match
+        throw new SignatureVerificationException('Unable to verify signature.');
     }
 
     /**
@@ -138,14 +142,12 @@ class AuthShopify
     {
         // Grab the domain
         $shopDomain = $this->getShopDomainFromData($request);
-        if (!$shopDomain->isNull()) {
-            if (!$this->shopSession->isValidCompare($shopDomain)) {
-                // Mis-match of shops
-                return Redirect::route(
-                    'authenticate.oauth',
-                    ['shop' => $shopDomain->toNative()]
-                );
-            }
+        if (!$shopDomain->isNull() && !$this->shopSession->isValidCompare($shopDomain)) {
+            // Mis-match of shops
+            return Redirect::route(
+                'authenticate.oauth',
+                ['shop' => $shopDomain->toNative()]
+            );
         }
 
         return $next($request);
@@ -279,11 +281,13 @@ class AuthShopify
         ];
         foreach ($options as $option) {
             $result = $this->getData($request, $option);
-            if ($result && isset($result['shop'])) {
+            if (isset($result['shop'])) {
+                // Found a shop
                 return new ShopDomain($result['shop']);
             }
         }
 
+        // No shop domain found in any source
         return new NullShopDomain();
     }
 }
