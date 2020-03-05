@@ -25,8 +25,8 @@
         "jenssegers/agent": "^2.6"
     },
     "require-dev": {
-        "orchestra/database": "~3.8 | ~4.0",
-        "orchestra/testbench": "~3.8 | ~4.0",
+        "orchestra/database": "~3.8 | ~4.0 | ~5.0",
+        "orchestra/testbench": "~3.8 | ~4.0 | ~5.0",
         "phpunit/phpunit": "~8.0",
         "squizlabs/php_codesniffer": "^3.0",
         "mockery/mockery": "^1.0"
