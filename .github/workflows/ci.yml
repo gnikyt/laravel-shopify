@@ -10,7 +10,7 @@ jobs:
       max-parallel: 3
       matrix:
         php-versions: ['7.3']
-        laravel-versions: ['5.8', '6.0']
+        laravel-versions: ['5.8', '6.0', '7.0']
 
     name: PHP ${{ matrix.php-versions }} / Laravel ${{ matrix.laravel-versions }}
 
