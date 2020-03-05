@@ -25,6 +25,8 @@ class WebhookJobMakeCommand extends JobMakeCommand
     /**
      * Get the stub file for the generator.
      *
+     * @codeCoverageIgnore No point testing something that only returns a string.
+     *
      * @return string
      */
     protected function getStub(): string
