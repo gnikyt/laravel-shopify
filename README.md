@@ -4,13 +4,9 @@
 [![Coverage](https://coveralls.io/repos/github/osiset/laravel-shopify/badge.svg?branch=master)](https://coveralls.io/github/osiset/laravel-shopify?branch=master)
 [![License](https://poser.pugx.org/osiset/laravel-shopify/license)](https://packagist.org/packages/osiset/laravel-shopify)
 
-**Warning: You are viewing the master branch which is the next release of this package, see latest tag for [current](https://github.com/osiset/laravel-shopify/tree/v10.3.1) version.**
+**Warning: You are viewing the master branch which is a rewrite, and the next release of this package. See latest tag for [current](https://github.com/osiset/laravel-shopify/tree/v10.3.1) version.**
 
-**Note: The package has grown significantly, and with it has come challenges in maintaining. The goal of this branch is to seperate logic into bits, confirm to SOLID, CQR, DRY, etc. where applicable.**
-
-**This rewrite introduces the use of using the user model provided by Laravel instead of its own shop model. Laravel's IoC will be used everywhere it can, and more logic moved into small services and action classes.**
-
-**The current status of the rewrite is completed and most of the testing is completed. Currently doing real-world testing.**
+**The current status of the rewrite is completed and testing is completed. Currently undergoing real-world testing and will be released shortly.**
 
 ----
 
