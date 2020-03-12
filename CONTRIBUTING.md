@@ -56,11 +56,22 @@ You can then update by simply running:
 
 ### Running tests
 
+#### Locally
+
 We use PHPUnit to run tests. Simply run `composer install` and a symlink `phpunit` should be located in the `bin` directory.
 
 Next, run `bin/phpunit` and the rest will be taken care of. Upon any pull requests and merges, TravisCI will check the code to ensure all test suites pass.
 
 For quicker tests, be sure to disable coverage with `bin/php --no-coverage`.
+
+#### Actions
+
+We also utilize Github Actions. Currently it will:
+
+1. Pull the package
+2. Test the package against a matrix of PHP and Laravel Versions
+3. Confirm coding styling is good
+4. Updates coverage results
 
 -----
 
