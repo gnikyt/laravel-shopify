@@ -61,7 +61,7 @@ This project is released under the MIT [license](https://github.com/osiset/larav
 
 ## Misc
 
-### Repoistory
+### Repository
 
 #### Contributors
 
@@ -75,8 +75,8 @@ Maintainers are users who manage the repository itself, wheather its managing th
 
 Currently this repository is maintained by:
 
-- @osiset
-- @kyon147
+- [@osiset](https://github.com/osiset)
+- [@kyon147](https://github.com/kyon147)
 
 Looking to become a maintainer? E-mail @osiset directly.
 
