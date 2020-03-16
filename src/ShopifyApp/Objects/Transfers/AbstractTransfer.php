@@ -64,4 +64,14 @@ abstract class AbstractTransfer implements IteratorAggregate, JsonSerializable
     {
         return json_encode(get_object_vars($this));
     }
+
+    /**
+     * Convert to array.
+     *
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return (array) $this;
+    }
 }

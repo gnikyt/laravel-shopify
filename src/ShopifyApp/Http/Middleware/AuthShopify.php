@@ -4,6 +4,7 @@ namespace Osiset\ShopifyApp\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
 use Osiset\ShopifyApp\Services\ShopSession;
 use Osiset\ShopifyApp\Objects\Enums\DataSource;
@@ -143,6 +144,9 @@ class AuthShopify
         // Grab the domain
         $shopDomain = $this->getShopDomainFromData($request);
         if (!$shopDomain->isNull() && !$this->shopSession->isValidCompare($shopDomain)) {
+            // Set the return-to path so we can redirect after successful authentication
+            Session::put('return_to', $request->fullUrl());
+
             // Mis-match of shops
             return Redirect::route(
                 'authenticate.oauth',

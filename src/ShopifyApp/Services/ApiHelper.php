@@ -221,7 +221,7 @@ class ApiHelper implements IApiHelper
         $response = $this->doRequest(
             ApiMethod::POST(),
             "/admin/{$typeString}s.json",
-            ['charge' => (array) $payload]
+            [$typeString => $payload->toArray()]
         );
 
         return $response->body->{$typeString};
