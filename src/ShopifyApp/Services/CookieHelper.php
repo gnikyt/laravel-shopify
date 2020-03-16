@@ -2,7 +2,6 @@
 
 namespace Osiset\ShopifyApp\Services;
 
-use Exception;
 use Jenssegers\Agent\Agent;
 use Osiset\ShopifyApp\Traits\ConfigAccessible;
 

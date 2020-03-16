@@ -116,6 +116,7 @@ class ShopSession
         $shop = $this->shopQuery->getByDomain($domain, [], true);
 
         // Log them in with the guard
+        $this->cookieHelper->setCookiePolicy();
         $this->auth->guard()->login($shop);
 
         return $this;
