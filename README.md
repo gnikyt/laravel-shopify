@@ -6,7 +6,7 @@
 
 **Warning: You are viewing the master branch which is a rewrite, and the next release of this package. See latest tag for [current](https://github.com/osiset/laravel-shopify/tree/v10.3.1) version.**
 
-**The current status of the rewrite is completed and testing is completed. Currently undergoing real-world testing and will be released shortly.**
+**The current status of the rewrite is completed and testing is completed. Currently undergoing real-world testing and will be released shortly. See [this posting](https://github.com/osiset/laravel-shopify/issues/415) for updated information.**
 
 ----
 
