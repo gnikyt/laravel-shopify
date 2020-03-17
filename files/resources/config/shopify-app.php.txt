@@ -3,6 +3,28 @@
 return [
     /*
     |--------------------------------------------------------------------------
+    | Debug Mode
+    |--------------------------------------------------------------------------
+    |
+    | (Not yet complete) A verbose logged output of processes
+    |
+    */
+    'debug' => (bool) env('SHOPIFY_DEBUG', false),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Manual migrations
+    |--------------------------------------------------------------------------
+    |
+    | This option option allows you to use:
+    | `php artisan vendor:publish --tag=shopify-migrations` to push migrations
+    | to your app's folder so you're free to modify before migrating.
+    |
+    */
+    'manual_migrations' => (bool) env('SHOPIFY_MANUAL_MIGRATIONS', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | Namespace
     |--------------------------------------------------------------------------
     |
@@ -16,26 +38,43 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Shop Model
+    | Shopify Jobs Namespace
     |--------------------------------------------------------------------------
     |
-    | This option is for overriding the shop model with your own.
+    | This option option allows you to change out the default job namespace
+    | which is \App\Jobs. This option is mainly used if any custom configuration
+    | is done in autoload and does not need to be changed unless required.
     |
     */
-
-    'shop_model' => env('SHOPIFY_SHOP_MODEL', '\OhMyBrew\ShopifyApp\Models\Shop'),
+    'job_namespace' => env('SHOPIFY_JOB_NAMESPACE', '\\App\\Jobs\\'),
 
     /*
     |--------------------------------------------------------------------------
-    | ESDK Mode
+    | Prefix
     |--------------------------------------------------------------------------
     |
-    | ESDK (embedded apps) are enabled by default. Set to false to use legacy
+    | This option allows you to set a prefix for URLs.
+    | Useful for multiple apps using the same database instance.
+    |
+    */
+
+    'prefix' => env('SHOPIFY_APP_PREFIX', ''),
+
+    /*
+    |--------------------------------------------------------------------------
+    | AppBridge Mode
+    |--------------------------------------------------------------------------
+    |
+    | AppBridge (embedded apps) are enabled by default. Set to false to use legacy
     | mode and host the app inside your own container.
     |
     */
 
-    'esdk_enabled' => (bool) env('SHOPIFY_ESDK_ENABLED', true),
+    'appbridge_enabled' => (bool) env('SHOPIFY_APPBRIDGE_ENABLED', true),
+
+    // Use semver range to link to a major or minor version number.
+    // Leaving empty will use the latest verison - not recommended in production.
+    'appbridge_version' => env('SHOPIFY_APPBRIDGE_VERSION', '1'),
 
     /*
     |--------------------------------------------------------------------------
@@ -47,6 +86,19 @@ return [
     */
 
     'app_name' => env('SHOPIFY_APP_NAME', 'Shopify App'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Shopify API Version
+    |--------------------------------------------------------------------------
+    |
+    | This option is for the app's API version string.
+    | Use "YYYY-MM" or "unstable". Refer to Shopify's documentation
+    | on API versioning for the current stable version.
+    |
+    */
+
+    'api_version' => env('SHOPIFY_API_VERSION', '2020-01'),
 
     /*
     |--------------------------------------------------------------------------
@@ -83,6 +135,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Shopify API Grant Mode
+    |--------------------------------------------------------------------------
+    |
+    | This option is for the grant mode when authenticating.
+    | Default is "OFFLINE", "PERUSER" is available as well.
+    | Note: Install will always be in offline mode.
+    |
+    */
+
+    'api_grant_mode' => env('SHOPIFY_API_GRANT_MODE', 'OFFLINE'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Shopify API Redirect
     |--------------------------------------------------------------------------
     |
@@ -98,12 +163,12 @@ return [
     |--------------------------------------------------------------------------
     |
     | This option option allows you to change out the default API class
-    | which is OhMyBrew\BasicShopifyAPI. This option is mainly used for
+    | which is Osiset\BasicShopifyAPI. This option is mainly used for
     | testing and does not need to be changed unless required.
     |
     */
 
-    'api_class' => env('SHOPIFY_API_CLASS', \OhMyBrew\BasicShopifyAPI::class),
+    'api_class' => env('SHOPIFY_API_CLASS', \Osiset\BasicShopifyAPI::class),
 
     /*
     |--------------------------------------------------------------------------
@@ -157,7 +222,7 @@ return [
     |
     */
 
-    'myshopify_domain' => 'myshopify.com',
+    'myshopify_domain' => env('SHOPIFY_MYSHOPIFY_DOMAIN', 'myshopify.com'),
 
     /*
     |--------------------------------------------------------------------------
@@ -249,10 +314,26 @@ return [
     'after_authenticate_job' => [
         /*
             [
-                'job' => env('AFTER_AUTHENTICATE_JOB'), // example: \App\Jobs\AfterAuthenticateJob::class
-                'inline' => env('AFTER_AUTHENTICATE_JOB_INLINE', false) // False = execute inline, true = dispatch job for later
+                'job' => env('AFTER_AUTHENTICATE_JOB'), // example: \App\Jobs\AfterAuthorizeJob::class
+                'inline' => env('AFTER_AUTHENTICATE_JOB_INLINE', false) // False = dispatch job for later, true = dispatch immediately
             ],
         */
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Job Queues
+    |--------------------------------------------------------------------------
+    |
+    | This option is for setting a specific job queue for webhooks, scripttags
+    | and after_authenticate_job.
+    |
+    */
+
+    'job_queues' => [
+        'webhooks'           => env('WEBHOOKS_JOB_QUEUE', null),
+        'scripttags'         => env('SCRIPTTAGS_JOB_QUEUE', null),
+        'after_authenticate' => env('AFTER_AUTHENTICATE_JOB_QUEUE', null),
     ],
 ];
 

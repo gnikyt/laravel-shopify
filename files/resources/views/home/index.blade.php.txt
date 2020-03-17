@@ -57,11 +57,12 @@
             </div>
 
             <p>Welcome to your Shopify App powered by Laravel.</p>
+            <p>{{ Auth::user()->name }}</p>
 
             <div class="links">
-                <a href="https://github.com/ohmybrew/laravel-shopify" target="_blank">Package</a>
+                <a href="https://github.com/osiset/laravel-shopify" target="_blank">Package</a>
                 <a href="https://laravel.com" target="_blank">Laravel</a>
-                <a href="https://github.com/ohmybrew/laravel-shopify" target="_blank">GitHub</a>
+                <a href="https://github.com/osiset/laravel-shopify" target="_blank">GitHub</a>
             </div>
         </div>
     </div>
@@ -70,19 +71,17 @@
 @section('scripts')
     @parent
 
-    <script type="text/javascript">
-        window.mainPageTitle = 'Main Page';
-            ShopifyApp.ready(function(){
-                ShopifyApp.Bar.initialize({
-                    title: 'Welcome',
-                    buttons: {
-                    secondary: {
-                        label: 'Documentation',
-                        href: 'https://github.com/ohmybrew/laravel-shopify',
-                        target: 'new'
-                    }
-                }
-            });
-        });
-    </script>
+    @if(config('shopify-app.appbridge_enabled'))
+        <script type="text/javascript">
+            var AppBridge = window['app-bridge'];
+            var actions = AppBridge.actions;
+            var TitleBar = actions.TitleBar;
+            var Button = actions.Button;
+            var Redirect = actions.Redirect;
+            var titleBarOptions = {
+                title: 'Welcome',
+            };
+            var myTitleBar = TitleBar.create(app, titleBarOptions);
+        </script>
+    @endif
 @endsection
