@@ -50,4 +50,13 @@ class AbstractTransferTest extends TestCase
 
         $this->assertEquals('"{\"domain\":\"example.myshopify.com\",\"token\":\"123456\"}"', json_encode($transfer));
     }
+
+    public function testToArray()
+    {
+        $transfer = new ApiSession();
+        $transfer->domain = 'example.myshopify.com';
+        $transfer->token = '123456';
+
+        $this->assertArrayHasKey('domain', $transfer->toArray());
+    }
 }

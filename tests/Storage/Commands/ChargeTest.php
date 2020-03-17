@@ -4,6 +4,7 @@ namespace Osiset\ShopifyApp\Test\Storage\Commands;
 
 use Illuminate\Support\Carbon;
 use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Objects\Values\PlanId;
 use Osiset\ShopifyApp\Objects\Values\ShopId;
 use Osiset\ShopifyApp\Objects\Values\ChargeId;
 use Osiset\ShopifyApp\Objects\Enums\ChargeType;
@@ -94,6 +95,7 @@ class ChargeTest extends TestCase
         $charge->chargeType = ChargeType::RECURRING();
         $charge->chargeStatus = ChargeStatus::ACCEPTED();
         $charge->planDetails = $planDetails;
+        $charge->planId = new PlanId(1);
 
         return $this->command->make($charge);
     }

@@ -50,6 +50,7 @@ class Charge implements ChargeCommand
         };
 
         $charge = new ChargeModel();
+        $charge->plan_id = $chargeObj->planId->toNative();
         $charge->user_id = $chargeObj->shopId->toNative();
         $charge->charge_id = $chargeObj->chargeReference->toNative();
         $charge->type = $chargeObj->chargeType->toNative();
@@ -63,7 +64,7 @@ class Charge implements ChargeCommand
         $charge->activated_on = $isCarbon($chargeObj->activatedOn) ? $chargeObj->activatedOn->format('Y-m-d') : null;
         $charge->billing_on = $isCarbon($chargeObj->billingOn) ? $chargeObj->billingOn->format('Y-m-d') : null;
         $charge->trial_ends_on = $isCarbon($chargeObj->trialEndsOn) ? $chargeObj->trialEndsOn->format('Y-m-d') : null;
-        
+
         // Save the charge
         $charge->save();
 

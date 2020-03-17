@@ -5,6 +5,7 @@ namespace Osiset\ShopifyApp\Traits;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response as ResponseResponse;
 use Illuminate\Support\Facades\Response;
+use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 
 /**
  * Responsible for handling incoming webhook requests.
@@ -28,7 +29,7 @@ trait WebhookController
         $jobData = json_decode($request->getContent());
 
         $jobClass::dispatch(
-            $request->header('x-shopify-shop-domain'),
+            new ShopDomain($request->header('x-shopify-shop-domain')),
             $jobData
         );
 
