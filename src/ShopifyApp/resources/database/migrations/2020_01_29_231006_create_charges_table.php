@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Schema;
 
 class CreateChargesTable extends Migration
@@ -76,8 +77,13 @@ class CreateChargesTable extends Migration
             // Allows for soft deleting
             $table->softDeletes();
 
+            if ($this->getLaravelVersion() < 5.9) {
+                $table->integer('user_id')->unsigned();
+            } else {
+                $table->bigInteger('user_id')->unsigned();
+            }
+
             // Linking
-            $table->bigInteger('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('plan_id')->references('id')->on('plans');
         });
@@ -91,5 +97,16 @@ class CreateChargesTable extends Migration
     public function down()
     {
         Schema::drop('charges');
+    }
+
+    /**
+     * Get Laravel's version.
+     *
+     * @return float
+     */
+    private function getLaravelVersion()
+    {
+        $version = Application::VERSION;
+        return (float) substr($version, 0, strrpos($version, '.'));
     }
 }
