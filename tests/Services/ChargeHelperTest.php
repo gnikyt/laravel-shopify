@@ -10,6 +10,7 @@ use Osiset\ShopifyApp\Storage\Models\Plan;
 use Osiset\ShopifyApp\Services\ChargeHelper;
 use Osiset\ShopifyApp\Storage\Models\Charge;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
+use stdClass;
 
 class ChargeHelperTest extends TestCase
 {
@@ -157,7 +158,7 @@ class ChargeHelperTest extends TestCase
         $this->assertInstanceOf(PlanDetails::class, $result);
     }
 
-    protected function seedData($extraCharge = [], $extraPlan = [], $type = 'onetime'): object
+    protected function seedData($extraCharge = [], $extraPlan = [], $type = 'onetime'): stdClass
     {
         // Create a plan
         $plan = factory(Plan::class)->states("type_${type}")->create(

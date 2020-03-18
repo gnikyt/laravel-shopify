@@ -2,14 +2,15 @@
 
 namespace Osiset\ShopifyApp\Contracts;
 
-use GuzzleHttp\Exception\RequestException;
+use stdClass;
 use Osiset\BasicShopifyAPI;
+use GuzzleHttp\Exception\RequestException;
 use Osiset\ShopifyApp\Objects\Enums\AuthMode;
 use Osiset\ShopifyApp\Objects\Enums\ChargeType;
-use Osiset\ShopifyApp\Objects\Transfers\ApiSession as ApiSessionTransfer;
 use Osiset\ShopifyApp\Objects\Transfers\PlanDetails;
-use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails;
 use Osiset\ShopifyApp\Objects\Values\ChargeReference;
+use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails;
+use Osiset\ShopifyApp\Objects\Transfers\ApiSession as ApiSessionTransfer;
 
 /**
  * Reprecents the API helper.
@@ -74,7 +75,9 @@ interface ApiHelper
      *
      * @param array $params The params to set to the request.
      *
-     * @return array|RequestException
+     * @throws RequestException
+     *
+     * @return array
      */
     public function getScriptTags(array $params = []): array;
 
@@ -83,9 +86,11 @@ interface ApiHelper
      *
      * @param array $payload The data for the script tag creation.
      *
-     * @return object|RequestException
+     * @throws RequestException
+     *
+     * @return stdClass
      */
-    public function createScriptTag(array $payload): object;
+    public function createScriptTag(array $payload): stdClass;
 
     /**
      * Get the charge record.
@@ -93,9 +98,11 @@ interface ApiHelper
      * @param ChargeType      $chargeType The type of charge (plural).
      * @param ChargeReference $chargeRef  The charge ID.
      *
-     * @return object|RequestException
+     * @throws RequestException
+     *
+     * @return stdClass
      */
-    public function getCharge(ChargeType $chargeType, ChargeReference $chargeRef): object;
+    public function getCharge(ChargeType $chargeType, ChargeReference $chargeRef): stdClass;
 
     /**
      * Activate a charge.
@@ -103,9 +110,11 @@ interface ApiHelper
      * @param ChargeType      $chargeType The type of charge (plural).
      * @param ChargeReference $chargeRef  The charge ID.
      *
-     * @return object|RequestException
+     * @throws RequestExcpetion
+     *
+     * @return stdClass
      */
-    public function activateCharge(ChargeType $chargeType, ChargeReference $chargeRef): object;
+    public function activateCharge(ChargeType $chargeType, ChargeReference $chargeRef): stdClass;
 
     /**
      * Create a charge.
@@ -113,16 +122,18 @@ interface ApiHelper
      * @param ChargeType  $chargeType The type of charge (plural).
      * @param PlanDetails $payload    The data for the charge creation.
      *
-     * @return object
+     * @return stdClass
      */
-    public function createCharge(ChargeType $chargeType, PlanDetails $payload): object;
+    public function createCharge(ChargeType $chargeType, PlanDetails $payload): stdClass;
 
     /**
      * Get webhooks for the shop.
      *
      * @param array $params The params to set to the request.
      *
-     * @return object|RequestException
+     * @throws RequestException
+     *
+     * @return array
      */
     public function getWebhooks(array $params = []): array;
 
@@ -131,9 +142,9 @@ interface ApiHelper
      *
      * @param array $payload The data for the webhook creation.
      *
-     * @return object
+     * @return stdClass
      */
-    public function createWebhook(array $payload): object;
+    public function createWebhook(array $payload): stdClass;
 
     /**
      * Delete a webhook.
@@ -142,7 +153,7 @@ interface ApiHelper
      *
      * @return void
      */
-    public function deleteWebhook(int $webhookId): object;
+    public function deleteWebhook(int $webhookId): stdClass;
 
     /**
      * Creates a usage charge for a recurring charge.
@@ -151,5 +162,5 @@ interface ApiHelper
      *
      * @return object
      */
-    public function createUsageCharge(UsageChargeDetails $payload): object;
+    public function createUsageCharge(UsageChargeDetails $payload): stdClass;
 }

@@ -16,6 +16,7 @@ use Osiset\ShopifyApp\Objects\Transfers\PlanDetails as PlanDetailsTransfer;
 use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
 use Osiset\ShopifyApp\Objects\Values\ChargeReference;
 use Osiset\ShopifyApp\Traits\ConfigAccessible;
+use stdClass;
 
 /**
  * Basic helper class for API calls to Shopify.
@@ -163,7 +164,7 @@ class ApiHelper implements IApiHelper
     /**
      * {@inheritdoc}
      */
-    public function createScriptTag(array $payload): object
+    public function createScriptTag(array $payload): stdClass
     {
         // Fire the request
         $response = $this->doRequest(
@@ -178,7 +179,7 @@ class ApiHelper implements IApiHelper
     /**
      * {@inheritdoc}
      */
-    public function getCharge(ChargeType $chargeType, ChargeReference $chargeRef): object
+    public function getCharge(ChargeType $chargeType, ChargeReference $chargeRef): stdClass
     {
         // API path
         $typeString = $this->chargeApiPath($chargeType);
@@ -195,7 +196,7 @@ class ApiHelper implements IApiHelper
     /**
      * {@inheritdoc}
      */
-    public function activateCharge(ChargeType $chargeType, ChargeReference $chargeRef): object
+    public function activateCharge(ChargeType $chargeType, ChargeReference $chargeRef): stdClass
     {
         // API path
         $typeString = $this->chargeApiPath($chargeType);
@@ -212,7 +213,7 @@ class ApiHelper implements IApiHelper
     /**
      * {@inheritdoc}
      */
-    public function createCharge(ChargeType $chargeType, PlanDetailsTransfer $payload): object
+    public function createCharge(ChargeType $chargeType, PlanDetailsTransfer $payload): stdClass
     {
         // API path
         $typeString = $this->chargeApiPath($chargeType);
@@ -254,7 +255,7 @@ class ApiHelper implements IApiHelper
     /**
      * {@inheritdoc}
      */
-    public function createWebhook(array $payload): object
+    public function createWebhook(array $payload): stdClass
     {
         // Fire the request
         $response = $this->doRequest(
@@ -269,7 +270,7 @@ class ApiHelper implements IApiHelper
     /**
      * {@inheritdoc}
      */
-    public function deleteWebhook(int $webhookId): object
+    public function deleteWebhook(int $webhookId): stdClass
     {
         // Fire the request
         $response = $this->doRequest(
@@ -283,7 +284,7 @@ class ApiHelper implements IApiHelper
     /**
      * {@inheritdoc}
      */
-    public function createUsageCharge(UsageChargeDetailsTransfer $payload): object
+    public function createUsageCharge(UsageChargeDetailsTransfer $payload): stdClass
     {
         // Fire the request
         $response = $this->doRequest(
@@ -324,7 +325,9 @@ class ApiHelper implements IApiHelper
      * @param string  $path    The endpoint path.
      * @param array   $payload The optional payload to send to the endpoint.
      *
-     * @return object|RequestException
+     * @throws RequestException
+     *
+     * @return stdClass
      */
     protected function doRequest(ApiMethod $method, string $path, array $payload = null)
     {

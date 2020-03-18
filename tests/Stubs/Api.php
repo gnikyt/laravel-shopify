@@ -5,6 +5,7 @@ namespace Osiset\ShopifyApp\Test\Stubs;
 use ErrorException;
 use Exception;
 use Osiset\BasicShopifyAPI;
+use stdClass;
 
 class Api extends BasicShopifyAPI
 {
@@ -15,7 +16,7 @@ class Api extends BasicShopifyAPI
         self::$stubFiles = $stubFiles;
     }
 
-    public function rest(string $method, string $path, array $params = null, array $headers = [], bool $sync = true): object
+    public function rest(string $method, string $path, array $params = null, array $headers = [], bool $sync = true): stdClass
     {
         try {
             $filename = array_shift(self::$stubFiles);
@@ -39,7 +40,7 @@ class Api extends BasicShopifyAPI
         ];
     }
 
-    public function requestAccess(string $code): object
+    public function requestAccess(string $code): stdClass
     {
         return json_decode(file_get_contents(__DIR__.'/../fixtures/access_token.json'));
     }

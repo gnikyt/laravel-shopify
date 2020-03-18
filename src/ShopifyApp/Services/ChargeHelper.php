@@ -82,7 +82,7 @@ class ChargeHelper
      *
      * @return object
      */
-    public function retrieve(IShopModel $shop): object
+    public function retrieve(IShopModel $shop)
     {
         return $shop->apiHelper()->getCharge(
             $this->charge->getType(),
