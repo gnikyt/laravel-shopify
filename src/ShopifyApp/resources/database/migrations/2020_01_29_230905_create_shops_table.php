@@ -33,9 +33,8 @@ class CreateShopsTable extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
+            $table->dropForeign('users_plan_id_foreign');
             $table->dropColumn([
-                'shopify_domain',
-                'shopify_token',
                 'shopify_grandfathered',
                 'shopify_namespace',
                 'shopify_freemium',
