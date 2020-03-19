@@ -77,6 +77,7 @@ class ShopSessionTest extends TestCase
         );
 
         $this->assertTrue($this->shopSession->hasUser());
+        $this->assertFalse($this->shopSession->isUserExpired());
     }
 
     public function testSetAccessNormal(): void
@@ -133,5 +134,36 @@ class ShopSessionTest extends TestCase
         // Itself should be valid
         $this->shopSession->make($shop->getDomain());
         $this->assertTrue($this->shopSession->isValid());
+    }
+
+    public function testIsValidPerUser(): void
+    {
+        // Create the shop and log them in
+        $shop = factory($this->model)->create();
+        $this->shopSession->make($shop->getDomain());
+
+        // Set the data from a fixture
+        $data = json_decode(file_get_contents(__DIR__.'/../fixtures/access_token_grant.json'));
+        $this->shopSession->setAccess($data);
+
+        $this->assertTrue($this->shopSession->isValid());
+    }
+
+    public function testShopifySessionToken(): void
+    {
+        // Create the shop and log them in
+        $shop = factory($this->model)->create();
+        $this->shopSession->make($shop->getDomain());
+
+        // GOOD check (nothing to compare)
+        $this->assertTrue($this->shopSession->isSessionTokenValid('123abc'));
+
+        // GOOD check (with compare)
+        $this->shopSession->setSessionToken('123abc');
+        $this->assertEquals('123abc', $this->shopSession->getSessionToken());
+        $this->assertTrue($this->shopSession->isSessionTokenValid('123abc'));
+
+        // BAD check
+        $this->assertFalse($this->shopSession->isSessionTokenValid('xyz123'));
     }
 }

@@ -5,6 +5,7 @@ namespace Osiset\ShopifyApp\Services;
 use stdClass;
 use Osiset\BasicShopifyAPI;
 use Illuminate\Auth\AuthManager;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Session;
 use Osiset\ShopifyApp\Objects\Enums\AuthMode;
 use Osiset\ShopifyApp\Traits\ConfigAccessible;
@@ -33,11 +34,25 @@ class ShopSession
     public const USER = 'shopify_user';
 
     /**
-     * The (session/database) key for Shopify access token.
+     * The session key for Shopify user access token.
      *
      * @var string
      */
-    public const USER_TOKEN = 'shopify_token';
+    public const USER_TOKEN = 'shopify_user_token';
+
+    /**
+     * The session key for Shopify user expiration.
+     *
+     * @var string|null
+     */
+    public const USER_EXPIRES = 'shopify_user_expires';
+
+    /**
+     * Session token from Shopify.
+     *
+     * @var string|null
+     */
+    public const SESSION_TOKEN = 'shopify_session_token';
 
     /**
      * The API helper.
@@ -173,9 +188,14 @@ class ShopSession
 
         // Per-User
         if (property_exists($access, 'associated_user')) {
+            // Modify the expire time to a timestamp
+            $now = Carbon::now();
+            $expires = $now->addSeconds($access->expires_in - 10);
+
             // We have a user, so access will live only in session
             $this->sessionSet(self::USER, $access->associated_user);
             $this->sessionSet(self::USER_TOKEN, $token->toNative());
+            $this->sessionSet(self::USER_EXPIRES, $expires->toDateTimeString());
         } else {
             // Update the token in database
             $this->shopCommand->setAccessToken($this->getShop()->getId(), $token);
@@ -185,6 +205,46 @@ class ShopSession
         }
 
         return $this;
+    }
+
+    /**
+     * Sets the session token from Shopify.
+     *
+     * @param string $token The session token from Shopify.
+     *
+     * @return self
+     */
+    public function setSessionToken(string $token): self
+    {
+        $this->sessionSet(self::SESSION_TOKEN, $token);
+        return $this;
+    }
+
+    /**
+     * Get the Shopify session token.
+     *
+     * @return string|null
+     */
+    public function getSessionToken(): ?string
+    {
+        return Session::get(self::SESSION_TOKEN);
+    }
+
+    /**
+     * Compare session tokens from Shopify.
+     *
+     * @param string|null $incomingToken The session token from Shopify, from the request.
+     *
+     * @return bool
+     */
+    public function isSessionTokenValid(?string $incomingToken): bool
+    {
+        $currentToken = $this->getSessionToken();
+        if ($incomingToken === null || $currentToken === null) {
+            return true;
+        }
+
+        return $incomingToken === $currentToken;
     }
 
     /**
@@ -236,6 +296,19 @@ class ShopSession
     }
 
     /**
+     * Check if the user has expired.
+     *
+     * @return bool
+     */
+    public function isUserExpired(): bool
+    {
+        $now = Carbon::now();
+        $expires = new Carbon(Session::get(self::USER_EXPIRES));
+
+        return $now->greaterThanOrEqualTo($expires);
+    }
+
+    /**
      * Forgets anything in session.
      * Log out a shop via auth()->guard()->logout().
      *
@@ -244,7 +317,7 @@ class ShopSession
     public function forget(): self
     {
         // Forget session values
-        $keys = [self::USER, self::USER_TOKEN];
+        $keys = [self::USER, self::USER_TOKEN, self::USER_EXPIRES, self::SESSION_TOKEN];
         foreach ($keys as $key) {
             Session::forget($key);
         }
@@ -266,7 +339,14 @@ class ShopSession
         $currentToken = $this->getToken(true);
         $currentDomain = $currentShop->getDomain();
 
-        return !$currentToken->isEmpty() && !$currentDomain->isNull();
+        $baseValid = !$currentToken->isEmpty() && !$currentDomain->isNull();
+        if ($this->getUser() !== null) {
+            // Handle validation of per-user
+            return $baseValid && !$this->isUserExpired();
+        }
+
+        // Handle validation of standard
+        return $baseValid;
     }
 
     /**

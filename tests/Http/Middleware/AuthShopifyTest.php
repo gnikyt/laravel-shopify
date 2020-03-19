@@ -197,6 +197,76 @@ class AuthShopifyTest extends TestCase
         $this->assertFalse($result);
     }
 
+    public function testShopifySessionTokenInvalid(): void
+    {
+        // Create the shop
+        $shop = factory($this->model)->create();
+
+        // Set a session token
+        $this->shopSession->setSessionToken('123abc');
+
+        // Run the middleware
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            [
+                'shop'    => $shop->getDomain()->toNative(),
+                'session' => 'xyz123', // Different here
+            ],
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            Request::server()
+        );
+
+        Request::swap($newRequest);
+
+        // Now, invalidation should cause redirect
+        $result = $this->runAuth();
+        $this->assertFalse($result);
+    }
+
+    public function testShopifySessionTokenValid(): void
+    {
+        // Create the shop
+        $shop = factory($this->model)->create();
+
+        // Set a session token
+        $this->shopSession->setSessionToken('123abc');
+
+        // Run the middleware
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            [
+                'shop'    => $shop->getDomain()->toNative(),
+                'session' => '123abc', // Same
+            ],
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            Request::server()
+        );
+
+        Request::swap($newRequest);
+
+        // Now, invalidation should cause redirect
+        $result = $this->runAuth();
+        $this->assertTrue($result);
+    }
+
     public function testLoginShopWithoutShopDomain(): void
     {
         // Now, invalidation should cause redirect

@@ -62,16 +62,28 @@ class AuthShopify
      */
     public function handle(Request $request, Closure $next)
     {
-        // Check the HMAC, if present
+        // Grab the domain and check the HMAC (if present)
+        $domain = $this->getShopDomainFromData($request);
         $this->verifyHmac($request);
 
+        $checks = [];
         if ($this->shopSession->guest()) {
             // Login the shop and verify their data
-            return $this->loginShop($request, $next);
+            $checks[] = 'loginShop';
         }
 
-        // Verify shop data is good by comparison
-        return $this->verifyShop($request, $next);
+        // Verify the Shopify session token and verify the shop data
+        array_push($checks, 'verifyShopifySessionToken', 'verifyShop');
+
+        // Loop all checks needing to be done, if we get a false, handle it
+        foreach ($checks as $check) {
+            $result = call_user_func([$this, $check], $request, $domain);
+            if ($result === false) {
+                return $this->handleBadVerification($request, $domain);
+            }
+        }
+
+        return $next($request);
     }
 
     /**
@@ -104,57 +116,65 @@ class AuthShopify
     /**
      * Login and verify the shop and it's data.
      *
-     * @param Request  $request The request object.
-     * @param \Closure $next    The next action.
+     * @param Request         $request The request object.
+     * @param ShopDomainValue $domain  The shop domain.
      *
-     * @return mixed
+     * @return bool
      */
-    private function loginShop(Request $request, Closure $next)
+    private function loginShop(Request $request, ShopDomainValue $domain): bool
     {
-        // Grab the domain
-        $shopDomain = $this->getShopDomainFromData($request);
-        if ($shopDomain->isNull()) {
-            // No shop... we have no way of knowing who this is... go to login
-            return Redirect::route('login');
-        }
-
         // Log the shop in
-        $status = $this->shopSession->make($shopDomain);
+        $status = $this->shopSession->make($domain);
         if (!$status || !$this->shopSession->isValid()) {
             // Somethings not right... missing token?
-            return Redirect::route(
-                'authenticate.oauth',
-                ['shop' => $shopDomain->toNative()]
-            );
+            return false;
         }
 
-        return $next($request);
+        return true;
     }
 
     /**
      * Verify the shop is alright, if theres a current session, it will compare.
      *
-     * @param Request  $request The request object.
-     * @param \Closure $next    The next action.
+     * @param Request         $request The request object.
+     * @param ShopDomainValue $domain  The shop domain.
      *
-     * @return void
+     * @return bool
      */
-    private function verifyShop(Request $request, Closure $next)
+    private function verifyShop(Request $request, ShopDomainValue $domain): bool
     {
         // Grab the domain
-        $shopDomain = $this->getShopDomainFromData($request);
-        if (!$shopDomain->isNull() && !$this->shopSession->isValidCompare($shopDomain)) {
-            // Set the return-to path so we can redirect after successful authentication
-            Session::put('return_to', $request->fullUrl());
-
-            // Mis-match of shops
-            return Redirect::route(
-                'authenticate.oauth',
-                ['shop' => $shopDomain->toNative()]
-            );
+        if (!$domain->isNull() && !$this->shopSession->isValidCompare($domain)) {
+            // Somethings not right with the validation
+            return false;
         }
 
-        return $next($request);
+        return true;
+    }
+
+    /**
+     * Check the Shopify session token.
+     *
+     * @param Request         $request The request object.
+     * @param ShopDomainValue $domain  The shop domain.
+     *
+     * @return bool
+     */
+    private function verifyShopifySessionToken(Request $request, ShopDomainValue $domain): bool
+    {
+        // Ensure Shopify session token is OK
+        $incomingToken = $request->query('session');
+        if ($incomingToken) {
+            if (!$this->shopSession->isSessionTokenValid($incomingToken)) {
+                // Tokens do not match
+                return false;
+            }
+
+            // Save the session token
+            $this->shopSession->setSessionToken($incomingToken);
+        }
+
+        return true;
     }
 
     /**
@@ -293,5 +313,33 @@ class AuthShopify
 
         // No shop domain found in any source
         return new NullShopDomain();
+    }
+
+    /**
+     * Handle bad verification by killing the session and redirecting to auth.
+     *
+     * @param Request         $request The request object.
+     * @param ShopDomainValue $domain  The shop domain.
+     *
+     * @return void
+     */
+    private function handleBadVerification(Request $request, ShopDomainValue $domain)
+    {
+        if ($domain->isNull()) {
+            // We have no idea of knowing who this is, this should not happen
+            return Redirect::route('login');
+        }
+
+        // Set the return-to path so we can redirect after successful authentication
+        Session::put('return_to', $request->fullUrl());
+
+        // Kill off anything to do with the session
+        $this->shopSession->forget();
+
+        // Mis-match of shops
+        return Redirect::route(
+            'authenticate.oauth',
+            ['shop' => $domain->toNative()]
+        );
     }
 }
