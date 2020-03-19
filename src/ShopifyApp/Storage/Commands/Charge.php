@@ -41,11 +41,11 @@ class Charge implements ChargeCommand
         /**
          * Is an instance of Carbon?
          *
-         * @param object|null The object to check.
+         * @param mixed $obj The object to check.
          *
          * @return bool
          */
-        $isCarbon = function (?object $obj): bool {
+        $isCarbon = function ($obj): bool {
             return $obj instanceof Carbon;
         };
 

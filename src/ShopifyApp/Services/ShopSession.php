@@ -2,6 +2,7 @@
 
 namespace Osiset\ShopifyApp\Services;
 
+use stdClass;
 use Osiset\BasicShopifyAPI;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Support\Facades\Session;
@@ -158,11 +159,11 @@ class ShopSession
      * Stores the access token and user (if any).
      * Uses database for acess token if it was an offline authentication.
      *
-     * @param object $access
+     * @param stdClass $access
      *
      * @return self
      */
-    public function setAccess(object $access): self
+    public function setAccess(stdClass $access): self
     {
         // Grab the token
         $token = new AccessToken($access->access_token);

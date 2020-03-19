@@ -2,6 +2,7 @@
 
 namespace Osiset\ShopifyApp\Messaging\Jobs;
 
+use stdClass;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -45,14 +46,14 @@ class AppUninstalledJob implements ShouldQueue
      * Create a new job instance.
      *
      * @param ShopId       $shopId                  The shop ID.
-     * @param object       $data                    The webhook data (JSON decoded).
+     * @param stdClass     $data                    The webhook data (JSON decoded).
      * @param callable     $cancelCurrentPlanAction Action for cancelling current plan.
      *
      * @return self
      */
     public function __construct(
         ShopId $shopId,
-        object $data,
+        stdClass $data,
         callable $cancelCurrentPlanAction
     ) {
         $this->shopId = $shopId;

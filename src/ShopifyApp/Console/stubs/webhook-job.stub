@@ -1,5 +1,6 @@
 <?php namespace DummyNamespace;
 
+use stdClass;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -20,15 +21,15 @@ class DummyClass implements ShouldQueue
     /**
      * The webhook data
      *
-     * @var object
+     * @var stdClass
      */
     public $data;
 
     /**
      * Create a new job instance.
      *
-     * @param string $shopDomain The shop's myshopify domain
-     * @param object $data    The webhook data (JSON decoded)
+     * @param string   $shopDomain The shop's myshopify domain
+     * @param stdClass $data    The webhook data (JSON decoded)
      *
      * @return void
      */
