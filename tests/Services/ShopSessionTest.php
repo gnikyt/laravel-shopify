@@ -2,9 +2,10 @@
 
 namespace Osiset\ShopifyApp\Test\Services;
 
-use Osiset\ShopifyApp\Objects\Enums\AuthMode;
-use Osiset\ShopifyApp\Services\ShopSession;
 use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Services\ShopSession;
+use Osiset\ShopifyApp\Objects\Enums\AuthMode;
+use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 
 class ShopSessionTest extends TestCase
 {
@@ -27,9 +28,18 @@ class ShopSessionTest extends TestCase
         $this->assertTrue($this->shopSession->guest());
 
         // Login the shop
-        $this->shopSession->make($shop->getDomain());
+        $status = $this->shopSession->make($shop->getDomain());
 
         $this->assertFalse($this->shopSession->guest());
+        $this->assertTrue($status);
+    }
+
+    public function testMakeLogsInShopFailure(): void
+    {
+        // Login the shop
+        $status = $this->shopSession->make(new ShopDomain('non-existant.myshopify.com'));
+
+        $this->assertFalse($status);
     }
 
     public function testAuthModeType(): void

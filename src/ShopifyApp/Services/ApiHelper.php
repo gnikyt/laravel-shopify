@@ -110,10 +110,13 @@ class ApiHelper implements IApiHelper
      */
     public function buildAuthUrl(AuthMode $mode, string $scopes): string
     {
+        // Fix for peruser => per-user
+        $mode = $mode->isSame(AuthMode::PERUSER()) ? 'PER-USER' : $mode->toNative();
+
         return $this->api->getAuthUrl(
             $scopes,
             URL::secure($this->getConfig('api_redirect')),
-            strtolower($mode->toNative())
+            strtolower($mode)
         );
     }
 

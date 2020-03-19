@@ -85,20 +85,17 @@ class AuthorizeShop
 
         // Start the process
         if (empty($code)) {
-            // We need the code first
-            $authUrl = $apiHelper->buildAuthUrl(
-                $shop->hasOfflineAccess() ?
-                    AuthMode::fromNative($this->getConfig('api_grant_mode')) :
-                    AuthMode::OFFLINE(),
-                $this->getConfig('api_scopes')
-            );
+            // Access/grant mode
+            $grantMode = $shop->hasOfflineAccess() ?
+                AuthMode::fromNative($this->getConfig('api_grant_mode')) :
+                AuthMode::OFFLINE();
 
             // Call the partial callback with the shop and auth URL as params
-            $return['url'] = $authUrl;
+            $return['url'] = $apiHelper->buildAuthUrl($grantMode, $this->getConfig('api_scopes'));
         } else {
             // We have a good code, get the access details
-            $session = $this->shopSession->make($shop->getDomain());
-            $session->setAccess($apiHelper->getAccessData($code));
+            $this->shopSession->make($shop->getDomain());
+            $this->shopSession->setAccess($apiHelper->getAccessData($code));
 
             $return['completed'] = true;
         }

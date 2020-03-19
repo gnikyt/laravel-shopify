@@ -109,18 +109,21 @@ class ShopSession
     /**
      * Login a shop.
      *
-     * @return self
+     * @return bool
      */
-    public function make(ShopDomainValue $domain): self
+    public function make(ShopDomainValue $domain): bool
     {
         // Get the shop
         $shop = $this->shopQuery->getByDomain($domain, [], true);
+        if (!$shop) {
+            return false;
+        }
 
         // Log them in with the guard
         $this->cookieHelper->setCookiePolicy();
         $this->auth->guard()->login($shop);
 
-        return $this;
+        return true;
     }
 
     /**

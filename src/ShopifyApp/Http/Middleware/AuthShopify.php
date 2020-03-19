@@ -119,8 +119,8 @@ class AuthShopify
         }
 
         // Log the shop in
-        $this->shopSession->make($shopDomain);
-        if (!$this->shopSession->isValid()) {
+        $status = $this->shopSession->make($shopDomain);
+        if (!$status || !$this->shopSession->isValid()) {
             // Somethings not right... missing token?
             return Redirect::route(
                 'authenticate.oauth',
