@@ -46,7 +46,13 @@ final class PlanDetails extends AbstractTransfer
      *
      * @var string|null
      */
-    public $terms;
+    public $terms;    
+    /**
+     * cappedTerms
+     *
+     * @var mixed
+     */
+    public $cappedTerms;
 
     /**
      * Plan return URL.
@@ -66,7 +72,8 @@ final class PlanDetails extends AbstractTransfer
             'test'          => $this->test,
             'trial_days'    => $this->trialDays,
             'return_url'    => $this->returnUrl,
-            '$terms'        => $this->terms,
+            'cappedTerms'   => $this->cappedTerms,
+            'terms'         => $this->terms,
             'capped_amount' => $this->cappedAmount
         ];
     }
