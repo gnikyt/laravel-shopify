@@ -239,7 +239,7 @@ class AuthShopify
                 $shopify_values = array('shop', 'hmac', 'timestamp', 'timestamp');
                 $verify = [];
                 foreach ($request->all() as $key => $value) {
-                    if(in_array($key, $shopify_values)) {
+                    if (in_array($key, $shopify_values)) {
                         $verify[$key] = is_array($value) ? '["'.implode('", "', $value).'"]' : $value;
                     }
                 }
