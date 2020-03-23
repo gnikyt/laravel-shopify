@@ -264,8 +264,8 @@ class ChargeHelper
         $transfer->price = $plan->price;
         $transfer->test = $plan->isTest();
         $transfer->trialDays = $this->determineTrialDaysRemaining($plan, $shop);
-        $transfer->cappedAmount = $isCapped ? $this->capped_amount : null;
-        $transfer->cappedTerms = $isCapped ? $this->terms : null;
+        $transfer->cappedAmount = $isCapped ? $plan->capped_amount : null;
+        $transfer->terms = $isCapped ? $plan->terms : null;
         $transfer->returnUrl = URL::secure(
             $this->getConfig('billing_redirect'),
             ['plan_id' => $plan->getId()->toNative()]
