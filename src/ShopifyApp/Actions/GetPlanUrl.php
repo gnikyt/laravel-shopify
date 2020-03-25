@@ -65,10 +65,8 @@ class GetPlanUrl
         // Get the shop
         $shop = $this->shopQuery->getById($shopId);
 
-        // If the plan is null, get a plan
-        if ($planId->isNull()) {
-            $plan = $this->planQuery->getDefault();
-        }
+        // Get the plan
+        $plan = $planId->isNull() ? $this->planQuery->getDefault() : $this->planQuery->getById($planId);
 
         $api = $shop->apiHelper()->createCharge(
             ChargeType::fromNative($plan->getType()->toNative()),
