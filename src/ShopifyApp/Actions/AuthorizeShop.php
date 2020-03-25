@@ -69,7 +69,7 @@ class AuthorizeShop
     public function __invoke(ShopDomain $shopDomain, ?string $code): stdClass
     {
         // Get the shop
-        $shop = $this->shopQuery->getByDomain($shopDomain);
+        $shop = $this->shopQuery->getByDomain($shopDomain, [], true);
         if ($shop === null) {
             // Shop does not exist, make them and re-get
             $this->shopCommand->make($shopDomain, new NullAccessToken(null));
@@ -93,6 +93,11 @@ class AuthorizeShop
             // Call the partial callback with the shop and auth URL as params
             $return['url'] = $apiHelper->buildAuthUrl($grantMode, $this->getConfig('api_scopes'));
         } else {
+            // if the store has been deleted, restore the store to set the access token
+            if ($shop->trashed()) {
+                $shop->restore();
+            }
+
             // We have a good code, get the access details
             $this->shopSession->make($shop->getDomain());
             $this->shopSession->setAccess($apiHelper->getAccessData($code));

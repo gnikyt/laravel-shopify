@@ -8,7 +8,8 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Osiset\ShopifyApp\Objects\Values\ShopId;
+use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain;
+use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
 
 /**
@@ -22,11 +23,11 @@ class AppUninstalledJob implements ShouldQueue
     use SerializesModels;
 
     /**
-     * The shop ID.
+     * The shop domain.
      *
-     * @var ShopId
+     * @var ShopDomain
      */
-    protected $shopId;
+    protected $domain;
 
     /**
      * The webhook data.
@@ -45,18 +46,18 @@ class AppUninstalledJob implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param ShopId       $shopId                  The shop ID.
+     * @param ShopDomain   $domain                  The shop domain.
      * @param stdClass     $data                    The webhook data (JSON decoded).
      * @param callable     $cancelCurrentPlanAction Action for cancelling current plan.
      *
      * @return self
      */
     public function __construct(
-        ShopId $shopId,
+        ShopDomain $domain,
         stdClass $data,
         callable $cancelCurrentPlanAction
     ) {
-        $this->shopId = $shopId;
+        $this->domain = $domain;
         $this->data = $data;
         $this->cancelCurrentPlanAction = $cancelCurrentPlanAction;
     }
@@ -65,19 +66,24 @@ class AppUninstalledJob implements ShouldQueue
      * Execute the job.
      *
      * @param IShopCommand $shopCommand The commands for shops.
+     * @param IShopQuery   $shopQuery   The querier for shops.
      *
      * @return bool
      */
-    public function handle(IShopCommand $shopCommand): bool
+    public function handle(IShopCommand $shopCommand, IShopQuery $shopQuery): bool
     {
+        // Get the shop
+        $shop = $shopQuery->getByDomain($this->domain);
+        $shopId = $shop->getId();
+
         // Cancel the current plan
-        call_user_func($this->cancelCurrentPlanAction, $this->shopId);
+        call_user_func($this->cancelCurrentPlanAction, $shopId);
         
         // Purge shop of token, plan, etc.
-        $shopCommand->clean($this->shopId);
+        $shopCommand->clean($shopId);
 
         // Soft delete the shop.
-        $shopCommand->softDelete($this->shopId);
+        $shopCommand->softDelete($shopId);
 
         return true;
     }
