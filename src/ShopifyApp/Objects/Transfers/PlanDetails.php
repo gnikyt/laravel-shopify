@@ -46,7 +46,7 @@ final class PlanDetails extends AbstractTransfer
      *
      * @var string|null
      */
-    public $terms;    
+    public $terms;
     /**
      * cappedTerms
      *
