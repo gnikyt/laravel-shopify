@@ -236,12 +236,9 @@ class AuthShopify
             // GET/POST
             DataSource::INPUT()->toNative() => function () use ($request): array {
                 // Verify
-                $shopify_values = array('shop', 'hmac', 'timestamp', 'timestamp');
                 $verify = [];
-                foreach ($request->all() as $key => $value) {
-                    if (in_array($key, $shopify_values)) {
-                        $verify[$key] = is_array($value) ? '["'.implode('", "', $value).'"]' : $value;
-                    }
+                foreach ($request->query() as $key => $value) {
+                    $verify[$key] = is_array($value) ? '["'.implode('", "', $value).'"]' : $value;
                 }
 
                 return $verify;
