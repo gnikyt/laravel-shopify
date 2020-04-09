@@ -31,6 +31,7 @@ class Charge implements IChargeQuery
     {
         return ChargeModel::with($with)
             ->where('charge_id', $chargeRef->toNative())
+            ->withTrashed()
             ->get()
             ->first();
     }
