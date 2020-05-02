@@ -6,6 +6,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain;
 
 class DummyClass implements ShouldQueue
 {
@@ -14,14 +15,14 @@ class DummyClass implements ShouldQueue
     /**
      * Shop's myshopify domain
      *
-     * @var string
+     * @var ShopDomain
      */
     public $shopDomain;
 
     /**
      * The webhook data
      *
-     * @var stdClass
+     * @var object
      */
     public $data;
 
@@ -47,5 +48,6 @@ class DummyClass implements ShouldQueue
     public function handle()
     {
         // Do what you wish with the data
+        // Access domain name as $this->shopDomain->toNative()
     }
 }
