@@ -237,8 +237,9 @@ class AuthShopifyTest extends TestCase
         // Create the shop
         $shop = factory($this->model)->create();
 
-        // Set a session token
+        // Set a session token and login shop
         $this->shopSession->setSessionToken('123abc');
+        $this->shopSession->make($shop->getDomain());
 
         // Run the middleware
         $currentRequest = Request::instance();

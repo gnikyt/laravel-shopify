@@ -64,10 +64,15 @@ class AuthShopify
     {
         // Grab the domain and check the HMAC (if present)
         $domain = $this->getShopDomainFromData($request);
-        $this->verifyHmac($request);
+        $hmac = $this->verifyHmac($request);
 
         $checks = [];
         if ($this->shopSession->guest()) {
+            if ($hmac === null) {
+                // Auth flow required if not yet logged in
+                return $this->handleBadVerification($request, $domain);
+            }
+
             // Login the shop and verify their data
             $checks[] = 'loginShop';
         }
@@ -93,20 +98,20 @@ class AuthShopify
      *
      * @throws SignatureVerificationException
      *
-     * @return void
+     * @return bool|null
      */
-    private function verifyHmac(Request $request): void
+    private function verifyHmac(Request $request): ?bool
     {
         $hmac = $this->getHmac($request);
         if ($hmac === null) {
             // No HMAC, move on...
-            return;
+            return null;
         }
 
         // We have HMAC, validate it
         $data = $this->getData($request, $hmac[1]);
         if ($this->apiHelper->verifyRequest($data)) {
-            return;
+            return true;
         }
 
         // Something didn't match
