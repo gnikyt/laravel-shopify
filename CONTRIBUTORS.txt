@@ -1,16 +1,15 @@
 # [...document.getElementsByClassName('contrib-person')].map(n => n.getElementsByClassName('avatar')[0].alt).join('\n');
 osiset
-joelvh
 darrynten
 amosmos
 jedimdan
 ilamp
+awebartisan
 tuimz
 oanhnn
 seka19
 msonowal
 bilfeldt
-awebartisan
 ncpope
 mtownsend5512
 ericnkatz
@@ -18,10 +17,12 @@ dellow
 c4l3b
 aepnat
 mat-dropshipspy
+joelvh
 florinsith
 dhritimanrick
 baorv
 andrewscofield
+aaronlp
 Jamesking56
 ImgBotApp
 Enmaboya
