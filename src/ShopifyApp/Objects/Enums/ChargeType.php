@@ -32,6 +32,13 @@ final class ChargeType implements ValueObject
     public const CHARGE = 2;
 
     /**
+     * Charge: Alias for onetime.
+     *
+     * @var int
+     */
+    public const ONETIME = 2;
+
+    /**
      * Charge: Usage.
      *
      * @var int
