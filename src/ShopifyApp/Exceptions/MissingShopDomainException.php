@@ -7,4 +7,8 @@ namespace OhMyBrew\ShopifyApp\Exceptions;
  */
 class MissingShopDomainException extends BaseException
 {
+    public function report()
+    {
+        return;
+    }
 }
