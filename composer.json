@@ -19,7 +19,7 @@
     "require": {
         "php": ">=7.1.0",
         "laravel/framework": "~5.6 | ^6.0",
-        "ohmybrew/basic-shopify-api": "^6.0",
+        "seka19/basic-shopify-api": "^6.1.4",
         "doctrine/dbal": "~2.5",
         "jenssegers/agent": "^2.6"
     },
