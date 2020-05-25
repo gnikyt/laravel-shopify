@@ -1,0 +1,53 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Creates ALB
+Parameters:
+  SubnetIds:
+    Type: 'List<AWS::EC2::Subnet::Id>'
+  AlbSecurityGroup:
+    Type: 'List<AWS::EC2::SecurityGroup::Id>'
+  DeploymentTag:
+    Type: String  
+Resources:
+  ApplicationLB:
+    Type: 'AWS::ElasticLoadBalancingV2::LoadBalancer'
+    Properties:
+      Name: 'shopify-apps-alb'
+      SecurityGroups: !Ref AlbSecurityGroup
+      Scheme: internet-facing
+      Subnets: !Ref SubnetIds
+      Type: application
+  AlbHttpListener:
+    Type: 'AWS::ElasticLoadBalancingV2::Listener'
+    Properties:
+      LoadBalancerArn: !Ref ApplicationLB
+      DefaultActions:
+        - Type: fixed-response
+          FixedResponseConfig:
+            StatusCode: 404
+      Port: '80'
+      Protocol: HTTP
+Outputs:
+  AlbUrl:
+    Description: The DNS URL for ALB
+    Value: !GetAtt
+      - ApplicationLB
+      - DNSName
+    Export:
+      Name: !Sub '${AWS::StackName}-AlbUrl'
+  AlbArn:
+    Description: Arn For Alb
+    Value: !Ref ApplicationLB
+    Export:
+      Name: !Sub '${AWS::StackName}-AlbArn'
+  HttpListenerArn:
+    Description: the ARN for the ALB Http Listener
+    Value: !Ref AlbHttpListener
+    Export:
+      Name: !Sub '${AWS::StackName}-ListenerArn'
+  CanonicalHostedZoneID:
+    Description: the CanonicalHostedZoneID for the ALB
+    Value: !GetAtt
+      - ApplicationLB
+      - CanonicalHostedZoneID
+    Export:
+      Name: !Sub '${AWS::StackName}-CanonicalHostedZoneID'
