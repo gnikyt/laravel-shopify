@@ -125,11 +125,12 @@ trait ShopModel
             // Get the token
             /** @var ShopSession $shopSession */
             $shopSession = resolve(ShopSession::class);
+            $token = $shopSession->guest() ? $this->getToken() : $shopSession->getToken();
 
             // Set the session
             $session = new Session(
                 $this->getDomain()->toNative(),
-                $shopSession->getToken()->toNative(),
+                $token->toNative(),
                 $shopSession->getUser()
             );
             $this->apiHelper = resolve(IApiHelper::class)->make($session);
