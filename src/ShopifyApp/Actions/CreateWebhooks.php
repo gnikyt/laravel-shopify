@@ -54,7 +54,7 @@ class CreateWebhooks
          */
         $exists = function (array $webhook, array $webhooks): bool {
             foreach ($webhooks as $shopWebhook) {
-                if ($shopWebhook->address === $webhook['address']) {
+                if ($shopWebhook['address'] === $webhook['address']) {
                     // Found the webhook in our list
                     return true;
                 }

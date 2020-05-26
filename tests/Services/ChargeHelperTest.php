@@ -45,7 +45,7 @@ class ChargeHelperTest extends TestCase
         $this->setApiStub();
         ApiStub::stubResponses(['get_application_charge']);
 
-        $this->assertIsObject(
+        $this->assertIsArray(
             $this->chargeHelper->retrieve($seed->shop)
         );
     }

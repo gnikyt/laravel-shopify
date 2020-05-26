@@ -3,6 +3,7 @@
 namespace Osiset\ShopifyApp\Test\Services;
 
 use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\BasicShopifyAPI\ResponseAccess;
 use Osiset\ShopifyApp\Services\ShopSession;
 use Osiset\ShopifyApp\Objects\Enums\AuthMode;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
@@ -73,7 +74,9 @@ class ShopSessionTest extends TestCase
     {
         // Set the data from a fixture
         $this->shopSession->setAccess(
-            json_decode(file_get_contents(__DIR__.'/../fixtures/access_token_grant.json'))
+            new ResponseAccess(
+                json_decode(file_get_contents(__DIR__.'/../fixtures/access_token_grant.json'), true)
+            )
         );
 
         $this->assertTrue($this->shopSession->hasUser());
@@ -87,7 +90,9 @@ class ShopSessionTest extends TestCase
         $this->shopSession->make($shop->getDomain());
 
         // Set the data from a fixture
-        $data = json_decode(file_get_contents(__DIR__.'/../fixtures/access_token.json'));
+        $data = new ResponseAccess(
+            json_decode(file_get_contents(__DIR__.'/../fixtures/access_token.json'), true)
+        );
         $this->shopSession->setAccess($data);
 
         $this->assertEquals(
@@ -143,7 +148,9 @@ class ShopSessionTest extends TestCase
         $this->shopSession->make($shop->getDomain());
 
         // Set the data from a fixture
-        $data = json_decode(file_get_contents(__DIR__.'/../fixtures/access_token_grant.json'));
+        $data = new ResponseAccess(
+            json_decode(file_get_contents(__DIR__.'/../fixtures/access_token_grant.json'), true)
+        );
         $this->shopSession->setAccess($data);
 
         $this->assertTrue($this->shopSession->isValid());

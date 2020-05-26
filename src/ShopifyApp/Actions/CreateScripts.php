@@ -53,7 +53,7 @@ class CreateScripts
          */
         $exists = function (array $script, array $scripts): bool {
             foreach ($scripts as $shopScript) {
-                if ($shopScript->src === $script['src']) {
+                if ($shopScript['src'] === $script['src']) {
                     // Found the scripttag in our list
                     return true;
                 }
