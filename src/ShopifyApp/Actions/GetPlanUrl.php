@@ -73,6 +73,6 @@ class GetPlanUrl
             $this->chargeHelper->details($plan, $shop)
         );
 
-        return $api->confirmation_url;
+        return $api['confirmation_url'];
     }
 }

@@ -159,58 +159,51 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Shopify API class
+    | Shopify API Time Store
     |--------------------------------------------------------------------------
     |
-    | This option option allows you to change out the default API class
-    | which is Osiset\BasicShopifyAPI. This option is mainly used for
-    | testing and does not need to be changed unless required.
+    | This option is for the class which will hold the timestamps for API calls.
     |
     */
 
-    'api_class' => env('SHOPIFY_API_CLASS', \Osiset\BasicShopifyAPI::class),
+    'api_time_store' => env('SHOPIFY_API_TIME_STORE', \Osiset\BasicShopifyAPI\Store\Memory::class),
 
     /*
     |--------------------------------------------------------------------------
-    | Shopify API Rate Limiting
+    | Shopify API Limit Store
     |--------------------------------------------------------------------------
     |
-    | This option option allows you to enable basic rate limiting
-    | for API calls using the default BasicShopifyAPI library.
-    | Default is off.
+    | This option is for the class which will hold the call limits for REST and GraphQL.
     |
     */
 
-    'api_rate_limiting_enabled' => env('SHOPIFY_API_RATE_LIMITING_ENABLED', false),
+    'api_limit_store' => env('SHOPIFY_API_LIMIT_STORE', \Osiset\BasicShopifyAPI\Store\Memory::class),
 
     /*
     |--------------------------------------------------------------------------
-    | Shopify API Rate Limit Cycle
+    | Shopify API Deferrer
     |--------------------------------------------------------------------------
     |
-    | This option option allows you to set the millisecond cycle for
-    | API calls using the default BasicShopifyAPI library.
-    | Default is 500ms per API call.
-    | Example: 0.5 * 1000
+    | This option is for the class which will handle sleep deferrals for API calls.
     |
     */
 
-    'api_rate_limit_cycle' => env('SHOPIFY_API_RATE_LIMIT_CYCLE', null),
+    'api_deferrer' => env('SHOPIFY_API_DEFERRER', \Osiset\BasicShopifyAPI\Deferrers\Sleep::class),
 
     /*
     |--------------------------------------------------------------------------
-    | Shopify API Rate Limit Cycle Buffer
+    | Shopify API Init Function
     |--------------------------------------------------------------------------
     |
-    | This option option allows you to set the millisecond buffer for
-    | API calls using the default BasicShopifyAPI library which gets
-    | appended to the `api_rate_limit_cycle` value for a safety net.
-    | Default is 100ms per API call.
-    | Example: 0.1 * 1000
+    | This option is for initing the BasicShopifyAPI package optionally yourself.
+    | The first param injected in the current options (\Osiset\BasicShopifyAPI\Options).
+    | With this, you can customize the options, change params, and more.
+    |
+    | Value for this option must be a callable (callable, Closure, etc).
     |
     */
 
-    'api_rate_limit_cycle_buffer' => env('SHOPIFY_API_RATE_LIMIT_CYCLE_BUFFER', null),
+    'api_init' => null,
 
     /*
     |--------------------------------------------------------------------------

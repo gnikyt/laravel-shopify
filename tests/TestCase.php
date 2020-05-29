@@ -4,6 +4,7 @@ namespace Osiset\ShopifyApp\Test;
 
 use Closure;
 use Illuminate\Support\Facades\App;
+use Osiset\BasicShopifyAPI\Options;
 use Osiset\ShopifyApp\ShopifyAppProvider;
 use Orchestra\Database\ConsoleServiceProvider;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
@@ -83,6 +84,20 @@ abstract class TestCase extends OrchestraTestCase
 
     protected function setApiStub(): void
     {
-        $this->app['config']->set('shopify-app.api_class', ApiStub::class);
+        $this->app['config']->set(
+            'shopify-app.api_init',
+            function (Options $opts): ApiStub {
+                $ts = $this->app['config']->get('shopify-app.api_time_store');
+                $ls = $this->app['config']->get('shopify-app.api_limit_store');
+                $sd = $this->app['config']->get('shopify-app.api_deferrer');
+    
+                return new ApiStub(
+                    $opts,
+                    new $ts(),
+                    new $ls(),
+                    new $sd()
+                );
+            }
+        );
     }
 }

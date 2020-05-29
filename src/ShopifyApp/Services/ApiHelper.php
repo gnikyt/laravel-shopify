@@ -3,20 +3,22 @@
 namespace Osiset\ShopifyApp\Services;
 
 use Closure;
-use GuzzleHttp\Exception\RequestException;
+use stdClass;
 use Illuminate\Support\Facades\URL;
-use Osiset\BasicShopifyAPI;
-use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
+use Osiset\BasicShopifyAPI\Options;
+use Osiset\BasicShopifyAPI\Session;
+use GuzzleHttp\Exception\RequestException;
+use Osiset\BasicShopifyAPI\ResponseAccess;
+use Osiset\BasicShopifyAPI\BasicShopifyAPI;
+use Osiset\ShopifyApp\Objects\Enums\AuthMode;
 use Osiset\ShopifyApp\Exceptions\ApiException;
 use Osiset\ShopifyApp\Objects\Enums\ApiMethod;
-use Osiset\ShopifyApp\Objects\Enums\AuthMode;
+use Osiset\ShopifyApp\Traits\ConfigAccessible;
 use Osiset\ShopifyApp\Objects\Enums\ChargeType;
-use Osiset\ShopifyApp\Objects\Transfers\ApiSession as ApiSessionTransfer;
+use Osiset\ShopifyApp\Objects\Values\ChargeReference;
+use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use Osiset\ShopifyApp\Objects\Transfers\PlanDetails as PlanDetailsTransfer;
 use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
-use Osiset\ShopifyApp\Objects\Values\ChargeReference;
-use Osiset\ShopifyApp\Traits\ConfigAccessible;
-use stdClass;
 
 /**
  * Basic helper class for API calls to Shopify.
@@ -35,31 +37,36 @@ class ApiHelper implements IApiHelper
     /**
      * {@inheritdoc}
      */
-    public function make(ApiSessionTransfer $session = null): self
+    public function make(Session $session = null): self
     {
-        // Create the instance
-        $apiClass = $this->getConfig('api_class');
-        $this->api = new $apiClass();
-        $this->api
-            ->setApiKey($this->getConfig('api_key'))
-            ->setApiSecret($this->getConfig('api_secret'))
-            ->setVersion($this->getConfig('api_version'));
+        // Create the options
+        $opts = new Options();
+        $opts->setApiKey($this->getConfig('api_key'));
+        $opts->setApiSecret($this->getConfig('api_secret'));
+        $opts->setVersion($this->getConfig('api_version'));
 
-        // Enable basic rate limiting?
-        if ($this->getConfig('api_rate_limiting_enabled') === true) {
-            $this->api->enableRateLimiting(
-                $this->getConfig('api_rate_limit_cycle'),
-                $this->getConfig('api_rate_limit_cycle_buffer')
+        // Create the instance
+        if ($this->getConfig('api_init')) {
+            // User-defined init function
+            $this->api = call_user_func($this->getConfig('api_init'), $opts);
+        } else {
+            // Default init
+            $ts = $this->getConfig('api_time_store');
+            $ls = $this->getConfig('api_limit_store');
+            $sd = $this->getConfig('api_deferrer');
+
+            $this->api = new BasicShopifyAPI(
+                $opts,
+                new $ts(),
+                new $ls(),
+                new $sd()
             );
         }
 
         // Set session?
         if ($session !== null) {
             // Set the session to the shop's domain/token
-            $this->api->setSession(
-                $session->domain->toNative(),
-                $session->token->toNative()
-            );
+            $this->api->setSession($session);
         }
 
         return $this;
@@ -135,7 +142,7 @@ class ApiHelper implements IApiHelper
      *
      * @codeCoverageIgnore No need to retest.
      */
-    public function getAccessData(string $code)
+    public function getAccessData(string $code): ResponseAccess
     {
         return $this->api->requestAccess($code);
     }
@@ -161,13 +168,13 @@ class ApiHelper implements IApiHelper
             $reqParams
         );
 
-        return $response->body->script_tags;
+        return $response['body']['script_tags'];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function createScriptTag(array $payload): stdClass
+    public function createScriptTag(array $payload): ResponseAccess
     {
         // Fire the request
         $response = $this->doRequest(
@@ -176,13 +183,13 @@ class ApiHelper implements IApiHelper
             ['script_tag' => $payload]
         );
 
-        return $response->body;
+        return $response['body'];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getCharge(ChargeType $chargeType, ChargeReference $chargeRef): stdClass
+    public function getCharge(ChargeType $chargeType, ChargeReference $chargeRef): array
     {
         // API path
         $typeString = $this->chargeApiPath($chargeType);
@@ -193,13 +200,13 @@ class ApiHelper implements IApiHelper
             "/admin/{$typeString}s/{$chargeRef->toNative()}.json"
         );
 
-        return $response->body->{$typeString};
+        return $response['body'][$typeString];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function activateCharge(ChargeType $chargeType, ChargeReference $chargeRef): stdClass
+    public function activateCharge(ChargeType $chargeType, ChargeReference $chargeRef): array
     {
         // API path
         $typeString = $this->chargeApiPath($chargeType);
@@ -210,13 +217,13 @@ class ApiHelper implements IApiHelper
             "/admin/{$typeString}s/{$chargeRef->toNative()}/activate.json"
         );
 
-        return $response->body->{$typeString};
+        return $response['body'][$typeString];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function createCharge(ChargeType $chargeType, PlanDetailsTransfer $payload): stdClass
+    public function createCharge(ChargeType $chargeType, PlanDetailsTransfer $payload): array
     {
         // API path
         $typeString = $this->chargeApiPath($chargeType);
@@ -228,7 +235,7 @@ class ApiHelper implements IApiHelper
             [$typeString => $payload->toArray()]
         );
 
-        return $response->body->{$typeString};
+        return $response['body'][$typeString];
     }
 
     /**
@@ -252,13 +259,13 @@ class ApiHelper implements IApiHelper
             $reqParams
         );
 
-        return $response->body->webhooks;
+        return $response['body']['webhooks'];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function createWebhook(array $payload): stdClass
+    public function createWebhook(array $payload): array
     {
         // Fire the request
         $response = $this->doRequest(
@@ -267,13 +274,13 @@ class ApiHelper implements IApiHelper
             ['webhook' => $payload]
         );
 
-        return $response->body->webhook;
+        return $response['body']['webhook'];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function deleteWebhook(int $webhookId): stdClass
+    public function deleteWebhook(int $webhookId): ResponseAccess
     {
         // Fire the request
         $response = $this->doRequest(
@@ -281,13 +288,13 @@ class ApiHelper implements IApiHelper
             "/admin/webhooks/{$webhookId}.json"
         );
 
-        return $response->body;
+        return $response['body'];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function createUsageCharge(UsageChargeDetailsTransfer $payload): stdClass
+    public function createUsageCharge(UsageChargeDetailsTransfer $payload): array
     {
         // Fire the request
         $response = $this->doRequest(
@@ -301,7 +308,7 @@ class ApiHelper implements IApiHelper
             ]
         );
 
-        return $response->body->usage_charge;
+        return $response['body']['usage_charge'];
     }
 
     /**
@@ -339,12 +346,12 @@ class ApiHelper implements IApiHelper
     protected function doRequest(ApiMethod $method, string $path, array $payload = null)
     {
         $response = $this->api->rest($method->toNative(), $path, $payload);
-        if (property_exists($response, 'errors') && $response->errors === true) {
+        if ($response['errors'] === true) {
             // Request error somewhere, throw the exception
             throw new ApiException(
-                is_string($response->body) ? $response->body : 'Unknown error',
+                is_string($response['body']) ? $response['body'] : 'Unknown error',
                 0,
-                $response->exception
+                $response['exception']
             );
         }
 

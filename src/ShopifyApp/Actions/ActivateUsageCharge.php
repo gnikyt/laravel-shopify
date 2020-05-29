@@ -89,8 +89,8 @@ class ActivateUsageCharge
         $uct = new UsageChargeTransfer();
         $uct->shopId = $shopId;
         $uct->planId = $shop->plan->getId();
-        $uct->chargeReference = new ChargeReference($response->id);
-        $uct->billingOn = new Carbon($response->billing_on);
+        $uct->chargeReference = new ChargeReference($response['id']);
+        $uct->billingOn = new Carbon($response['billing_on']);
         $uct->details = $ucd;
 
         // Save the usage charge

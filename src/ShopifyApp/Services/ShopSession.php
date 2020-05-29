@@ -3,10 +3,11 @@
 namespace Osiset\ShopifyApp\Services;
 
 use stdClass;
-use Osiset\BasicShopifyAPI;
-use Illuminate\Auth\AuthManager;
 use Illuminate\Support\Carbon;
+use Illuminate\Auth\AuthManager;
 use Illuminate\Support\Facades\Session;
+use Osiset\BasicShopifyAPI\ResponseAccess;
+use Osiset\BasicShopifyAPI\BasicShopifyAPI;
 use Osiset\ShopifyApp\Objects\Enums\AuthMode;
 use Osiset\ShopifyApp\Traits\ConfigAccessible;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
@@ -177,23 +178,23 @@ class ShopSession
      * Stores the access token and user (if any).
      * Uses database for acess token if it was an offline authentication.
      *
-     * @param stdClass $access
+     * @param ResponseAccess $access
      *
      * @return self
      */
-    public function setAccess(stdClass $access): self
+    public function setAccess(ResponseAccess $access): self
     {
         // Grab the token
-        $token = new AccessToken($access->access_token);
+        $token = new AccessToken($access['access_token']);
 
         // Per-User
-        if (property_exists($access, 'associated_user')) {
+        if (isset($access['associated_user'])) {
             // Modify the expire time to a timestamp
             $now = Carbon::now();
-            $expires = $now->addSeconds($access->expires_in - 10);
+            $expires = $now->addSeconds($access['expires_in'] - 10);
 
             // We have a user, so access will live only in session
-            $this->sessionSet(self::USER, $access->associated_user);
+            $this->sessionSet(self::USER, $access['associated_user']);
             $this->sessionSet(self::USER_TOKEN, $token->toNative());
             $this->sessionSet(self::USER_EXPIRES, $expires->toDateTimeString());
         } else {
@@ -278,9 +279,9 @@ class ShopSession
     /**
      * Gets the associated user (if any).
      *
-     * @return object|null
+     * @return array|null
      */
-    public function getUser(): ?object
+    public function getUser(): ?array
     {
         return Session::get(self::USER);
     }

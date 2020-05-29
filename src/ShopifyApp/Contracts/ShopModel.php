@@ -2,7 +2,7 @@
 
 namespace Osiset\ShopifyApp\Contracts;
 
-use Osiset\BasicShopifyAPI;
+use Osiset\BasicShopifyAPI\BasicShopifyAPI;
 use Osiset\ShopifyApp\Objects\Values\ShopId;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Relations\HasMany;

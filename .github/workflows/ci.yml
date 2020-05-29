@@ -43,6 +43,7 @@ jobs:
       run: composer run-script test
 
     - name: Upload coverage results
+      if: matrix.php-versions == '7.4' && matrix.laravel-versions == '7.0'
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |

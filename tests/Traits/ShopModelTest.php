@@ -2,7 +2,7 @@
 
 namespace Osiset\ShopifyApp\Test\Traits;
 
-use Osiset\BasicShopifyAPI;
+use Osiset\BasicShopifyAPI\BasicShopifyAPI;
 use Osiset\ShopifyApp\Test\TestCase;
 use Osiset\ShopifyApp\Storage\Models\Plan;
 use Osiset\ShopifyApp\Objects\Values\ShopId;

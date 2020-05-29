@@ -2,13 +2,14 @@
 
 namespace Osiset\ShopifyApp\Test\Services;
 
-use Osiset\BasicShopifyAPI;
 use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\BasicShopifyAPI\ResponseAccess;
+use Osiset\BasicShopifyAPI\BasicShopifyAPI;
 use Osiset\ShopifyApp\Objects\Enums\AuthMode;
 use Osiset\ShopifyApp\Exceptions\ApiException;
-use Osiset\ShopifyApp\Objects\Values\ChargeReference;
 use Osiset\ShopifyApp\Objects\Enums\ChargeType;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
+use Osiset\ShopifyApp\Objects\Values\ChargeReference;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use Osiset\ShopifyApp\Objects\Transfers\PlanDetails as PlanDetailsTransfer;
 use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
@@ -33,7 +34,6 @@ class ApiHelperTest extends TestCase
         $api = $this->api->make()->getApi();
 
         $this->assertInstanceOf(BasicShopifyAPI::class, $api);
-        $this->assertEquals($this->app['config']->get('shopify-app.api_class'), BasicShopifyAPI::class);
         $this->assertEquals($this->app['config']->get('shopify-app.api_secret'), null);
         $this->assertEquals($this->app['config']->get('shopify-app.api_version'), '2020-01');
     }
@@ -108,7 +108,7 @@ class ApiHelperTest extends TestCase
         $this->setApiStub();
         ApiStub::stubResponses(['get_application_charge']);
 
-        $this->assertIsObject(
+        $this->assertIsArray(
             $shop->apiHelper()->getCharge(ChargeType::CHARGE(), new ChargeReference(1234))
         );
     }
@@ -122,7 +122,7 @@ class ApiHelperTest extends TestCase
         $this->setApiStub();
         ApiStub::stubResponses(['post_recurring_application_charges_activate']);
 
-        $this->assertIsObject(
+        $this->assertIsArray(
             $shop->apiHelper()->activateCharge(ChargeType::RECURRING(), new ChargeReference(1234))
         );
     }
@@ -136,7 +136,7 @@ class ApiHelperTest extends TestCase
         $this->setApiStub();
         ApiStub::stubResponses(['post_recurring_application_charges']);
 
-        $this->assertIsObject(
+        $this->assertIsArray(
             $shop->apiHelper()->createCharge(
                 ChargeType::RECURRING(),
                 new PlanDetailsTransfer(
@@ -175,7 +175,7 @@ class ApiHelperTest extends TestCase
         $this->setApiStub();
         ApiStub::stubResponses(['post_webhook']);
 
-        $this->assertIsObject(
+        $this->assertIsArray(
             $shop->apiHelper()->createWebhook([])
         );
     }
@@ -189,7 +189,8 @@ class ApiHelperTest extends TestCase
         $this->setApiStub();
         ApiStub::stubResponses(['empty']);
 
-        $this->assertIsObject(
+        $this->assertInstanceOf(
+            ResponseAccess::class,
             $shop->apiHelper()->deleteWebhook(1)
         );
     }
@@ -208,7 +209,7 @@ class ApiHelperTest extends TestCase
         $tranfer->price = 12.00;
         $tranfer->description = 'Hello!';
 
-        $this->assertIsObject(
+        $this->assertIsArray(
             $shop->apiHelper()->createUsageCharge($tranfer)
         );
     }
