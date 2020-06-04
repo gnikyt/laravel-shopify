@@ -160,7 +160,7 @@ interface ApiHelper
      *
      * @param UsageChargeDetails $payload The data for the usage charge creation.
      *
-     * @return array
+     * @return array|bool Array if success, bool for error.
      */
-    public function createUsageCharge(UsageChargeDetails $payload): array;
+    public function createUsageCharge(UsageChargeDetails $payload);
 }

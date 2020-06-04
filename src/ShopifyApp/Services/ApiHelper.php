@@ -294,7 +294,7 @@ class ApiHelper implements IApiHelper
     /**
      * {@inheritdoc}
      */
-    public function createUsageCharge(UsageChargeDetailsTransfer $payload): array
+    public function createUsageCharge(UsageChargeDetailsTransfer $payload)
     {
         // Fire the request
         $response = $this->doRequest(
@@ -308,7 +308,9 @@ class ApiHelper implements IApiHelper
             ]
         );
 
-        return $response['body']['usage_charge'];
+        return !empty($response['body']['usage_charge']) ?
+            $response['body']['usage_charge'] :
+            false;
     }
 
     /**
@@ -341,7 +343,7 @@ class ApiHelper implements IApiHelper
      *
      * @throws RequestException
      *
-     * @return stdClass
+     * @return array
      */
     protected function doRequest(ApiMethod $method, string $path, array $payload = null)
     {
