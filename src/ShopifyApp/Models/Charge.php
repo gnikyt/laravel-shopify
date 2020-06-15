@@ -5,10 +5,39 @@ namespace OhMyBrew\ShopifyApp\Models;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 
 /**
  * Responsible for reprecenting a charge record.
+ *
+ * @property int $id
+ * @property int $charge_id
+ * @property bool $test
+ * @property string $status
+ * @property string $name
+ * @property string $terms
+ * @property int $type
+ * @property float $price
+ * @property float $capped_amount
+ * @property int $trial_days
+ * @property Carbon $billing_on
+ * @property Carbon $activated_on
+ * @property Carbon $trial_ends_on
+ * @property Carbon $cancelled_on
+ * @property Carbon $expires_on
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property Carbon $deleted_at
+ * @property int $shop_id
+ * @property int $plan_id
+ * @property string $description
+ * @property int $reference_charge
+ *
+ * @property Plan $plan
+ * @property Shop $shop
+ *
+ * @mixin Builder
  */
 class Charge extends Model
 {

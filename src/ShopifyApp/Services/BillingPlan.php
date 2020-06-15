@@ -131,11 +131,11 @@ class BillingPlan
     {
         // Build the charge array
         $chargeDetails = [
-            'name'          => $this->plan->name,
-            'price'         => $this->plan->price,
-            'test'          => $this->plan->isTest(),
-            'trial_days'    => $this->determineTrialDays(),
-            'return_url'    => URL::secure(
+            'name'       => $this->plan->name,
+            'price'      => $this->plan->price,
+            'test'       => $this->plan->isTest(),
+            'trial_days' => $this->determineTrialDays(),
+            'return_url' => URL::secure(
                 Config::get('shopify-app.billing_redirect'),
                 ['plan_id' => $this->plan->id]
             ),
@@ -185,10 +185,12 @@ class BillingPlan
             throw new Exception('No activation response was recieved.');
         }
 
-        // Cancel the last charge
-        $planCharge = $this->shop->planCharge();
-        if ($planCharge && !$planCharge->isDeclined() && !$planCharge->isCancelled()) {
-            $planCharge->cancel();
+        if (!$this->plan->isAdditional()) {
+            // Cancel the last charge
+            $planCharge = $this->shop->planCharge();
+            if ($planCharge && !$planCharge->isDeclined() && !$planCharge->isCancelled()) {
+                $planCharge->cancel();
+            }
         }
 
         // Create a charge
@@ -210,7 +212,7 @@ class BillingPlan
         // Set the activated on, try for the API, fallback to today
         $charge->activated_on = $this->response->activated_on ?? Carbon::today()->format('Y-m-d');
 
-        // Merge in the plan detaiplan_idls since the fields match the database columns
+        // Merge in the plan detail plan_ids since the fields match the database columns
         $planDetails = $this->chargeParams();
         unset($planDetails['return_url']);
         foreach ($planDetails as $key => $value) {
@@ -218,12 +220,15 @@ class BillingPlan
         }
         $save = $charge->save();
 
-        if ($save) {
+        if ($save && !$this->plan->isAdditional()) {
             // All good, update the shop's plan and take them off freemium (if applicable)
             $this->shop->update([
                 'freemium' => false,
                 'plan_id'  => $this->plan->id,
             ]);
+        }
+        if ($save) {
+            $this->dispatchAfterBillingSuccess();
         }
 
         return $save;
@@ -251,5 +256,54 @@ class BillingPlan
 
         // Seems like a fresh trial... return the days set in database
         return $this->plan->trial_days;
+    }
+
+    /**
+     * Dispatches the after billing success job, if any.
+     *
+     * @return bool
+     */
+    protected function dispatchAfterBillingSuccess()
+    {
+        // Grab the jobs config
+        $jobsConfig = Config::get('shopify-app.after_billing_success_job');
+
+        /**
+         * Fires the job.
+         *
+         * @param array $config The job's configuration
+         *
+         * @return bool
+         */
+        $fireJob = function ($config) {
+            $job = $config['job'];
+            if (isset($config['inline']) && $config['inline'] === true) {
+                // Run this job immediately
+                $job::dispatchNow($this->shop, $this->plan);
+            } else {
+                // Run later
+                $job::dispatch($this->shop, $this->plan)
+                    ->onQueue(Config::get('shopify-app.job_queues.billing'));
+            }
+
+            return true;
+        };
+
+        // We have multi-jobs
+        if (isset($jobsConfig[0])) {
+            foreach ($jobsConfig as $jobConfig) {
+                // We have a job, pass the shop object to the constructor
+                $fireJob($jobConfig);
+            }
+
+            return true;
+        }
+
+        // We have a single job
+        if (isset($jobsConfig['job'])) {
+            return $fireJob($jobsConfig);
+        }
+
+        return false;
     }
 }

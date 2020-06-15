@@ -272,6 +272,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | After success billing shop Job
+    |--------------------------------------------------------------------------
+    |
+    | This option is for firing a job(s) after a shop accepts a charge and it is activated
+    |
+    */
+    'after_billing_success_job' => [
+        /*[
+            'job'    => Jobs\BillingSuccess::class,
+            'inline' => true
+        ]*/
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Shopify Webhooks
     |--------------------------------------------------------------------------
     |
@@ -342,6 +357,7 @@ return [
     */
 
     'job_queues' => [
+        'billing'            => env('BILLING_JOB_QUEUE', null),
         'webhooks'           => env('WEBHOOKS_JOB_QUEUE', null),
         'scripttags'         => env('SCRIPTTAGS_JOB_QUEUE', null),
         'after_authenticate' => env('AFTER_AUTHENTICATE_JOB_QUEUE', null),

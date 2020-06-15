@@ -2,10 +2,27 @@
 
 namespace OhMyBrew\ShopifyApp\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 /**
  * Responsible for reprecenting a plan record.
+ *
+ * @property int $id
+ * @property int $type
+ * @property string $name
+ * @property float $price
+ * @property float $capped_amount
+ * @property string $terms
+ * @property int $trial_days
+ * @property bool $test
+ * @property bool $on_install
+ * @property bool $additional
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ *
+ * @mixin Builder
  */
 class Plan extends Model
 {
@@ -22,6 +39,7 @@ class Plan extends Model
         'type'          => 'int',
         'test'          => 'bool',
         'on_install'    => 'bool',
+        'additional'    => 'bool',
         'capped_amount' => 'float',
         'price'         => 'float',
     ];
@@ -89,6 +107,16 @@ class Plan extends Model
     public function isOnInstall()
     {
         return (bool) $this->on_install;
+    }
+
+    /**
+     * Checks if this plan should not override current shop's plan
+     *
+     * @return bool
+     */
+    public function isAdditional()
+    {
+        return (bool) $this->additional && $this->isType(self::PLAN_ONETIME);
     }
 
     /**

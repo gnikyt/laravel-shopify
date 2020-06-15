@@ -163,7 +163,7 @@ class AuthShopHandler
     /**
      * Dispatches the after authenticate job, if any.
      *
-     * @return void
+     * @return bool
      */
     public function dispatchAfterAuthenticate()
     {
@@ -194,7 +194,7 @@ class AuthShopHandler
         // We have multi-jobs
         if (isset($jobsConfig[0])) {
             foreach ($jobsConfig as $jobConfig) {
-                // We have a job, pass the shop object to the contructor
+                // We have a job, pass the shop object to the constructor
                 $fireJob($jobConfig);
             }
 
