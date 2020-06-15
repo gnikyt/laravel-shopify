@@ -228,7 +228,7 @@ class BillingPlan
             ]);
         }
         if ($save) {
-            $this->dispatchAfterBillingSuccess();
+            $this->dispatchAfterBillingSuccess($charge);
         }
 
         return $save;
@@ -261,9 +261,10 @@ class BillingPlan
     /**
      * Dispatches the after billing success job, if any.
      *
+     * @param Charge $charge
      * @return bool
      */
-    protected function dispatchAfterBillingSuccess()
+    protected function dispatchAfterBillingSuccess(Charge $charge)
     {
         // Grab the jobs config
         $jobsConfig = Config::get('shopify-app.after_billing_success_job');
@@ -275,14 +276,14 @@ class BillingPlan
          *
          * @return bool
          */
-        $fireJob = function ($config) {
+        $fireJob = function ($config) use ($charge) {
             $job = $config['job'];
             if (isset($config['inline']) && $config['inline'] === true) {
                 // Run this job immediately
-                $job::dispatchNow($this->shop, $this->plan);
+                $job::dispatchNow($this->shop, $this->plan, $charge);
             } else {
                 // Run later
-                $job::dispatch($this->shop, $this->plan)
+                $job::dispatch($this->shop, $this->plan, $charge)
                     ->onQueue(Config::get('shopify-app.job_queues.billing'));
             }
 
