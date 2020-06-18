@@ -2,10 +2,11 @@
 
 namespace Osiset\ShopifyApp\Actions;
 
-use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
-use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use Osiset\BasicShopifyAPI\ResponseAccess;
 use Osiset\ShopifyApp\Objects\Values\ShopId;
 use Osiset\ShopifyApp\Traits\ConfigAccessible;
+use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
+use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 
 /**
  * Create webhooks for this app on the shop.
@@ -48,11 +49,11 @@ class CreateWebhooks
          * Checks if a webhooks exists already in the shop.
          *
          * @param array $webhook  The webhook config.
-         * @param array $webhooks The current webhooks to search.
+         * @param ResponseAccess $webhooks The current webhooks to search.
          *
          * @return bool
          */
-        $exists = function (array $webhook, array $webhooks): bool {
+        $exists = function (array $webhook, ResponseAccess $webhooks): bool {
             foreach ($webhooks as $shopWebhook) {
                 if ($shopWebhook['address'] === $webhook['address']) {
                     // Found the webhook in our list

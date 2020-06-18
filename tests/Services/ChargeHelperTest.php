@@ -3,6 +3,7 @@
 namespace Osiset\ShopifyApp\Test\Services;
 
 use Illuminate\Support\Carbon;
+use Osiset\BasicShopifyAPI\ResponseAccess;
 use Osiset\ShopifyApp\Objects\Enums\ChargeStatus;
 use Osiset\ShopifyApp\Objects\Transfers\PlanDetails;
 use Osiset\ShopifyApp\Test\TestCase;
@@ -45,9 +46,9 @@ class ChargeHelperTest extends TestCase
         $this->setApiStub();
         ApiStub::stubResponses(['get_application_charge']);
 
-        $this->assertIsArray(
-            $this->chargeHelper->retrieve($seed->shop)
-        );
+        $data = $this->chargeHelper->retrieve($seed->shop);
+        $this->assertInstanceOf(ResponseAccess::class, $data);
+        $this->assertEquals('accepted', $data->status);
     }
 
     public function testTrial(): void

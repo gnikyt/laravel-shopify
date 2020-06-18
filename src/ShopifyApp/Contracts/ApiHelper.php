@@ -77,9 +77,9 @@ interface ApiHelper
      *
      * @throws RequestException
      *
-     * @return array
+     * @return ResponseAccess
      */
-    public function getScriptTags(array $params = []): array;
+    public function getScriptTags(array $params = []): ResponseAccess;
 
     /**
      * Create a script tag for the shop.
@@ -100,9 +100,9 @@ interface ApiHelper
      *
      * @throws RequestException
      *
-     * @return array
+     * @return ResponseAccess
      */
-    public function getCharge(ChargeType $chargeType, ChargeReference $chargeRef): array;
+    public function getCharge(ChargeType $chargeType, ChargeReference $chargeRef): ResponseAccess;
 
     /**
      * Activate a charge.
@@ -112,9 +112,9 @@ interface ApiHelper
      *
      * @throws RequestExcpetion
      *
-     * @return array
+     * @return ResponseAccess
      */
-    public function activateCharge(ChargeType $chargeType, ChargeReference $chargeRef): array;
+    public function activateCharge(ChargeType $chargeType, ChargeReference $chargeRef): ResponseAccess;
 
     /**
      * Create a charge.
@@ -122,9 +122,9 @@ interface ApiHelper
      * @param ChargeType  $chargeType The type of charge (plural).
      * @param PlanDetails $payload    The data for the charge creation.
      *
-     * @return array
+     * @return ResponseAccess
      */
-    public function createCharge(ChargeType $chargeType, PlanDetails $payload): array;
+    public function createCharge(ChargeType $chargeType, PlanDetails $payload): ResponseAccess;
 
     /**
      * Get webhooks for the shop.
@@ -133,9 +133,9 @@ interface ApiHelper
      *
      * @throws RequestException
      *
-     * @return array
+     * @return ResponseAccess
      */
-    public function getWebhooks(array $params = []): array;
+    public function getWebhooks(array $params = []): ResponseAccess;
 
     /**
      * Create a webhook.
@@ -144,7 +144,7 @@ interface ApiHelper
      *
      * @return ResponseAccess
      */
-    public function createWebhook(array $payload): array;
+    public function createWebhook(array $payload): ResponseAccess;
 
     /**
      * Delete a webhook.

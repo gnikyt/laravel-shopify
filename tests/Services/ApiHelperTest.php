@@ -80,9 +80,10 @@ class ApiHelperTest extends TestCase
         $this->setApiStub();
         ApiStub::stubResponses(['get_script_tags']);
 
-        $this->assertIsArray(
-            $shop->apiHelper()->getScriptTags()
-        );
+        $data = $shop->apiHelper()->getScriptTags();
+        $this->assertInstanceOf(ResponseAccess::class, $data);
+        $this->assertEquals('onload', $data[0]['event']);
+        $this->assertEquals(2, count($data));
     }
 
     public function testCreateScriptTags(): void
@@ -94,9 +95,8 @@ class ApiHelperTest extends TestCase
         $this->setApiStub();
         ApiStub::stubResponses(['empty']);
 
-        $this->assertIsObject(
-            $shop->apiHelper()->createScriptTag([])
-        );
+        $data = $shop->apiHelper()->createScriptTag([]);
+        $this->assertInstanceOf(ResponseAccess::class, $data);
     }
 
     public function testGetCharge(): void
@@ -108,9 +108,10 @@ class ApiHelperTest extends TestCase
         $this->setApiStub();
         ApiStub::stubResponses(['get_application_charge']);
 
-        $this->assertIsArray(
-            $shop->apiHelper()->getCharge(ChargeType::CHARGE(), new ChargeReference(1234))
-        );
+        $data = $shop->apiHelper()->getCharge(ChargeType::CHARGE(), new ChargeReference(1234));
+        $this->assertInstanceOf(ResponseAccess::class, $data);
+        $this->assertEquals('iPod Cleaning', $data->name);
+        $this->assertEquals('accepted', $data['status']);
     }
 
     public function testActivateCharge(): void
@@ -122,9 +123,9 @@ class ApiHelperTest extends TestCase
         $this->setApiStub();
         ApiStub::stubResponses(['post_recurring_application_charges_activate']);
 
-        $this->assertIsArray(
-            $shop->apiHelper()->activateCharge(ChargeType::RECURRING(), new ChargeReference(1234))
-        );
+        $data = $shop->apiHelper()->activateCharge(ChargeType::RECURRING(), new ChargeReference(1234));
+        $this->assertInstanceOf(ResponseAccess::class, $data);
+        $this->assertEquals('Super Mega Plan', $data['name']);
     }
 
     public function testCreateCharge(): void
@@ -136,20 +137,20 @@ class ApiHelperTest extends TestCase
         $this->setApiStub();
         ApiStub::stubResponses(['post_recurring_application_charges']);
 
-        $this->assertIsArray(
-            $shop->apiHelper()->createCharge(
-                ChargeType::RECURRING(),
-                new PlanDetailsTransfer(
-                    'Test',
-                    12.00,
-                    true,
-                    7,
-                    null,
-                    null,
-                    null
-                )
+        $data = $shop->apiHelper()->createCharge(
+            ChargeType::RECURRING(),
+            new PlanDetailsTransfer(
+                'Test',
+                12.00,
+                true,
+                7,
+                null,
+                null,
+                null
             )
         );
+        $this->assertInstanceOf(ResponseAccess::class, $data);
+        $this->assertEquals('Basic Plan', $data['name']);
     }
 
     public function testGetWebhooks(): void
@@ -161,9 +162,9 @@ class ApiHelperTest extends TestCase
         $this->setApiStub();
         ApiStub::stubResponses(['get_webhooks']);
 
-        $this->assertIsArray(
-            $shop->apiHelper()->getWebhooks()
-        );
+        $data = $shop->apiHelper()->getWebhooks();
+        $this->assertInstanceOf(ResponseAccess::class, $data);
+        $this->assertTrue(count($data) > 0);
     }
 
     public function testCreateWebhook(): void
@@ -175,9 +176,9 @@ class ApiHelperTest extends TestCase
         $this->setApiStub();
         ApiStub::stubResponses(['post_webhook']);
 
-        $this->assertIsArray(
-            $shop->apiHelper()->createWebhook([])
-        );
+        $data = $shop->apiHelper()->createWebhook([]);
+        $this->assertInstanceOf(ResponseAccess::class, $data);
+        $this->assertEquals('app/uninstalled', $data['topic']);
     }
 
     public function testDeleteWebhook(): void
@@ -209,9 +210,8 @@ class ApiHelperTest extends TestCase
         $tranfer->price = 12.00;
         $tranfer->description = 'Hello!';
 
-        $this->assertIsArray(
-            $shop->apiHelper()->createUsageCharge($tranfer)
-        );
+        $data = $shop->apiHelper()->createUsageCharge($tranfer);
+        $this->assertInstanceOf(ResponseAccess::class, $data);
     }
 
     public function testErrors(): void

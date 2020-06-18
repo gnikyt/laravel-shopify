@@ -2,6 +2,7 @@
 
 namespace Osiset\ShopifyApp\Actions;
 
+use Osiset\BasicShopifyAPI\ResponseAccess;
 use Osiset\ShopifyApp\Objects\Values\ShopId;
 use Osiset\ShopifyApp\Traits\ConfigAccessible;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
@@ -47,11 +48,11 @@ class CreateScripts
          * Checks if a scripttag exists already in the shop.
          *
          * @param array $script  The scripttag config.
-         * @param array $scripts The current scripttags to search.
+         * @param ResponseAccess $scripts The current scripttags to search.
          *
          * @return bool
          */
-        $exists = function (array $script, array $scripts): bool {
+        $exists = function (array $script, ResponseAccess $scripts): bool {
             foreach ($scripts as $shopScript) {
                 if ($shopScript['src'] === $script['src']) {
                     // Found the scripttag in our list

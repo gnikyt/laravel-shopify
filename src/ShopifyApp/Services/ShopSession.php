@@ -279,9 +279,9 @@ class ShopSession
     /**
      * Gets the associated user (if any).
      *
-     * @return array|null
+     * @return ResponseAccess|null
      */
-    public function getUser(): ?array
+    public function getUser(): ?ResponseAccess
     {
         return Session::get(self::USER);
     }
