@@ -77,9 +77,9 @@ interface ApiHelper
      *
      * @throws RequestException
      *
-     * @return array
+     * @return ResponseAccess
      */
-    public function getScriptTags(array $params = []): array;
+    public function getScriptTags(array $params = []): ResponseAccess;
 
     /**
      * Create a script tag for the shop.
@@ -100,9 +100,9 @@ interface ApiHelper
      *
      * @throws RequestException
      *
-     * @return array
+     * @return ResponseAccess
      */
-    public function getCharge(ChargeType $chargeType, ChargeReference $chargeRef): array;
+    public function getCharge(ChargeType $chargeType, ChargeReference $chargeRef): ResponseAccess;
 
     /**
      * Activate a charge.
@@ -142,18 +142,18 @@ interface ApiHelper
      *
      * @throws RequestException
      *
-     * @return array
+     * @return ResponseAccess
      */
-    public function getWebhooks(array $params = []): array;
+    public function getWebhooks(array $params = []): ResponseAccess;
 
     /**
      * Create a webhook.
      *
      * @param array $payload The data for the webhook creation.
      *
-     * @return array
+     * @return ResponseAccess
      */
-    public function createWebhook(array $payload): array;
+    public function createWebhook(array $payload): ResponseAccess;
 
     /**
      * Delete a webhook.

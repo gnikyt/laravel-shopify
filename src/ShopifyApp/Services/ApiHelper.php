@@ -150,7 +150,7 @@ class ApiHelper implements IApiHelper
     /**
      * {@inheritdoc}
      */
-    public function getScriptTags(array $params = []): array
+    public function getScriptTags(array $params = []): ResponseAccess
     {
         // Setup the params
         $reqParams = array_merge(
@@ -189,7 +189,7 @@ class ApiHelper implements IApiHelper
     /**
      * {@inheritdoc}
      */
-    public function getCharge(ChargeType $chargeType, ChargeReference $chargeRef): array
+    public function getCharge(ChargeType $chargeType, ChargeReference $chargeRef): ResponseAccess
     {
         // API path
         $typeString = $this->chargeApiPath($chargeType);
@@ -285,7 +285,7 @@ class ApiHelper implements IApiHelper
     /**
      * {@inheritdoc}
      */
-    public function getWebhooks(array $params = []): array
+    public function getWebhooks(array $params = []): ResponseAccess
     {
         // Setup the params
         $reqParams = array_merge(
@@ -309,7 +309,7 @@ class ApiHelper implements IApiHelper
     /**
      * {@inheritdoc}
      */
-    public function createWebhook(array $payload): array
+    public function createWebhook(array $payload): ResponseAccess
     {
         // Fire the request
         $response = $this->doRequest(
