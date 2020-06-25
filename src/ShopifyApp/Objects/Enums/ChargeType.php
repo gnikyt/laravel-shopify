@@ -9,6 +9,7 @@ use Funeralzone\ValueObjects\ValueObject;
  * API types for charges.
  *
  * @method static ChargeType RECURRING()
+ * @method static ChargeType CHARGE()
  * @method static ChargeType ONETIME()
  * @method static ChargeType USAGE()
  * @method static ChargeType CREDIT()
