@@ -112,9 +112,9 @@ interface ApiHelper
      *
      * @throws RequestException
      *
-     * @return array
+     * @return ResponseAccess
      */
-    public function activateCharge(ChargeType $chargeType, ChargeReference $chargeRef): array;
+    public function activateCharge(ChargeType $chargeType, ChargeReference $chargeRef): ResponseAccess;
 
     /**
      * Create a charge.
@@ -124,7 +124,16 @@ interface ApiHelper
      *
      * @return ResponseAccess
      */
-    public function createCharge(ChargeType $chargeType, PlanDetails $payload): array;
+    public function createCharge(ChargeType $chargeType, PlanDetails $payload): ResponseAccess;
+
+    /**
+     * Create a charge using GraphQL.
+     *
+     * @param PlanDetails $payload    The data for the charge creation.
+     *
+     * @return ResponseAccess
+     */
+    public function createChargeGraphQL(PlanDetails $payload): ResponseAccess;
 
     /**
      * Get webhooks for the shop.

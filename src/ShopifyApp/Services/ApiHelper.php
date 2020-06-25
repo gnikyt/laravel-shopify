@@ -206,7 +206,7 @@ class ApiHelper implements IApiHelper
     /**
      * {@inheritdoc}
      */
-    public function activateCharge(ChargeType $chargeType, ChargeReference $chargeRef): array
+    public function activateCharge(ChargeType $chargeType, ChargeReference $chargeRef): ResponseAccess
     {
         // API path
         $typeString = $this->chargeApiPath($chargeType);
@@ -223,7 +223,7 @@ class ApiHelper implements IApiHelper
     /**
      * {@inheritdoc}
      */
-    public function createCharge(ChargeType $chargeType, PlanDetailsTransfer $payload): array
+    public function createCharge(ChargeType $chargeType, PlanDetailsTransfer $payload): ResponseAccess
     {
         // API path
         $typeString = $this->chargeApiPath($chargeType);
@@ -241,7 +241,7 @@ class ApiHelper implements IApiHelper
     /**
      * {@inheritdoc}
      */
-    public function createChargeGraphQL(PlanDetailsTransfer $payload): array
+    public function createChargeGraphQL(PlanDetailsTransfer $payload): ResponseAccess
     {
         $query = '
         mutation appSubscriptionCreate($name: String!, $returnUrl: URL!, $trialDays: Int, $test: Boolean, $lineItems: [AppSubscriptionLineItemInput!]!) {
@@ -270,6 +270,7 @@ class ApiHelper implements IApiHelper
                                 "amount" => $payload->price,
                                 "currencyCode" => "USD",
                             ],
+                            "interval" => $payload->interval
                         ],
                     ]
                 ]
