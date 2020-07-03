@@ -240,6 +240,7 @@ class ApiHelper implements IApiHelper
 
     /**
      * {@inheritdoc}
+     * @throws Exception
      */
     public function createChargeGraphQL(PlanDetailsTransfer $payload): ResponseAccess
     {
