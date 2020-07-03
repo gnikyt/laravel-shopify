@@ -9,8 +9,8 @@ use Funeralzone\ValueObjects\ValueObject;
  * Class PlanInterval
  * @package Osiset\ShopifyApp\Objects\Enums
  *
- * @method static ChargeInterval EVERY_30_DAYS()
- * @method static ChargeInterval ANNUAL()
+ * @method static PlanInterval EVERY_30_DAYS()
+ * @method static PlanInterval ANNUAL()
  */
 class PlanInterval implements ValueObject
 {

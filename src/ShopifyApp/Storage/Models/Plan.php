@@ -62,7 +62,7 @@ class Plan extends Model
      */
     public function getInterval(): PlanInterval
     {
-        return PlanInterval::fromNative($this->interval);
+        return $this->interval ? PlanInterval::fromNative($this->interval) : PlanInterval::EVERY_30_DAYS();
     }
 
     /**

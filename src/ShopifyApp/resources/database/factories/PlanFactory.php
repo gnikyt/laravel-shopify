@@ -1,6 +1,7 @@
 <?php
 
 use Faker\Generator as Faker;
+use Osiset\ShopifyApp\Objects\Enums\PlanInterval;
 use Osiset\ShopifyApp\Objects\Enums\PlanType;
 use Osiset\ShopifyApp\Storage\Models\Plan;
 
@@ -34,6 +35,7 @@ $factory->state(Plan::class, 'installable', [
 
 $factory->state(Plan::class, 'type_recurring', [
     'type' => PlanType::RECURRING()->toNative(),
+    'interval' => PlanInterval::EVERY_30_DAYS()->toNative(),
 ]);
 
 $factory->state(Plan::class, 'type_onetime', [
