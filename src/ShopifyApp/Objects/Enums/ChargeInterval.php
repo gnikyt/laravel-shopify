@@ -29,5 +29,4 @@ class ChargeInterval implements ValueObject
      * @var int
      */
     public const ANNUAL = 2;
-
 }
