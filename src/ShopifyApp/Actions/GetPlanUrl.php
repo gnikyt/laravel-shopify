@@ -72,7 +72,7 @@ class GetPlanUrl
         // Confirmation URL
         $confirmation_url = null;
 
-        switch($plan->getInterval()->toNative()) {
+        switch ($plan->getInterval()->toNative()) {
             case ChargeInterval::ANNUAL()->toNative():
                 $api = $shop->apiHelper()->createChargeGraphQL(
                     $this->chargeHelper->details($plan, $shop)

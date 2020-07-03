@@ -430,10 +430,11 @@ class ApiHelper implements IApiHelper
         $response = $this->api->graph($query, $payload);
 
         if ($response['errors'] !== false) {
+            $message = isset($response['body']['errors']) && is_array($response['body']['errors'])
+                ? $response['body']['errors'][0]['message'] : 'Unknown error';
+
             // Request error somewhere, throw the exception
-            throw new Exception(
-                isset($response['body']['errors']) && is_array($response['body']['errors']) ? $response['body']['errors'][0]['message'] : 'Unknown error'
-            );
+            throw new Exception($message);
         }
 
         return $response;
