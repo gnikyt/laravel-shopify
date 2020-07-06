@@ -35,7 +35,7 @@ trait ShopModel
     /**
      * Boot the trait.
      *
-     * Note that the method boot[TraitName] is auotmatically booted by Laravel
+     * Note that the method boot[TraitName] is auotmatically booted by Laravel.
      *
      * @return void
      */
