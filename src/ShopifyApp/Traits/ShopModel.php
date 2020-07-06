@@ -39,7 +39,7 @@ trait ShopModel
      *
      * @return void
      */
-    protected function bootShopModel(): void
+    protected static function bootShopModel(): void
     {
         static::addGlobalScope(new Namespacing());
     }
