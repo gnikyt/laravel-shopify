@@ -110,7 +110,7 @@ interface ApiHelper
      * @param ChargeType      $chargeType The type of charge (plural).
      * @param ChargeReference $chargeRef  The charge ID.
      *
-     * @throws RequestExcpetion
+     * @throws RequestException
      *
      * @return ResponseAccess
      */
@@ -125,6 +125,15 @@ interface ApiHelper
      * @return ResponseAccess
      */
     public function createCharge(ChargeType $chargeType, PlanDetails $payload): ResponseAccess;
+
+    /**
+     * Create a charge using GraphQL.
+     *
+     * @param PlanDetails $payload    The data for the charge creation.
+     *
+     * @return ResponseAccess
+     */
+    public function createChargeGraphQL(PlanDetails $payload): ResponseAccess;
 
     /**
      * Get webhooks for the shop.
@@ -160,7 +169,7 @@ interface ApiHelper
      *
      * @param UsageChargeDetails $payload The data for the usage charge creation.
      *
-     * @return array|bool Array if success, bool for error.
+     * @return ResponseAccess|bool Array if success, bool for error.
      */
     public function createUsageCharge(UsageChargeDetails $payload);
 }

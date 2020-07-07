@@ -4,6 +4,7 @@ namespace Osiset\ShopifyApp\Storage\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Osiset\ShopifyApp\Objects\Enums\PlanInterval;
 use Osiset\ShopifyApp\Objects\Enums\PlanType;
 use Osiset\ShopifyApp\Objects\Values\PlanId;
 
@@ -55,9 +56,19 @@ class Plan extends Model
     }
 
     /**
+     * Gets the interval of plan
+     *
+     * @return PlanInterval
+     */
+    public function getInterval(): PlanInterval
+    {
+        return $this->interval ? PlanInterval::fromNative($this->interval) : PlanInterval::EVERY_30_DAYS();
+    }
+
+    /**
      * Checks the plan type.
      *
-     * @param PlamType $type The plan type.
+     * @param PlanType $type The plan type.
      *
      * @return bool
      */

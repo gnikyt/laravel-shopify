@@ -74,7 +74,7 @@ class ActivatePlan
      * @param IChargeCommand $chargeCommand           The commands for charges.
      * @param IShopCommand   $shopCommand             The commands for shops.
      *
-     * @return self
+     * @return void
      */
     public function __construct(
         callable $cancelCurrentPlanAction,

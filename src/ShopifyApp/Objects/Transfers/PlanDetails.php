@@ -22,6 +22,13 @@ final class PlanDetails extends AbstractTransfer
     public $price;
 
     /**
+     * Plan interval.
+     *
+     * @var string
+     */
+    public $interval;
+
+    /**
      * Plan test or real?
      *
      * @var bool
@@ -69,6 +76,7 @@ final class PlanDetails extends AbstractTransfer
         return [
             'name'          => $this->name,
             'price'         => $this->price,
+            'interval'      => $this->interval,
             'test'          => $this->test,
             'trial_days'    => $this->trialDays,
             'return_url'    => $this->returnUrl,

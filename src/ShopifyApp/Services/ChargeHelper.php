@@ -42,7 +42,7 @@ class ChargeHelper
      *
      * @param IChargeQuery $chargeQuery The querier for charges.
      *
-     * @return self
+     * @return void
      */
     public function __construct(IChargeQuery $chargeQuery)
     {
@@ -79,7 +79,7 @@ class ChargeHelper
      *
      * @param IShopModel $shop The shop.
      *
-     * @return object
+     * @return array
      */
     public function retrieve(IShopModel $shop)
     {
@@ -261,6 +261,7 @@ class ChargeHelper
         $transfer = new PlanDetailsTransfer();
         $transfer->name = $plan->name;
         $transfer->price = $plan->price;
+        $transfer->interval = $plan->getInterval()->toNative();
         $transfer->test = $plan->isTest();
         $transfer->trialDays = $this->determineTrialDaysRemaining($plan, $shop);
         $transfer->cappedAmount = $isCapped ? $plan->capped_amount : null;

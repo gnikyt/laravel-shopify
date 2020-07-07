@@ -3,7 +3,7 @@
 namespace Osiset\ShopifyApp\Services;
 
 use Closure;
-use stdClass;
+use Exception;
 use Illuminate\Support\Facades\URL;
 use Osiset\BasicShopifyAPI\Options;
 use Osiset\BasicShopifyAPI\Session;
@@ -240,6 +240,63 @@ class ApiHelper implements IApiHelper
 
     /**
      * {@inheritdoc}
+     * @throws Exception
+     */
+    public function createChargeGraphQL(PlanDetailsTransfer $payload): ResponseAccess
+    {
+        $query = '
+        mutation appSubscriptionCreate(
+            $name: String!,
+            $returnUrl: URL!,
+            $trialDays: Int,
+            $test: Boolean,
+            $lineItems: [AppSubscriptionLineItemInput!]!
+        ) {
+            appSubscriptionCreate(
+                name: $name,
+                returnUrl: $returnUrl,
+                trialDays: $trialDays,
+                test: $test,
+                lineItems: $lineItems
+            ) {
+                appSubscription {
+                    id
+                }
+                confirmationUrl
+                userErrors {
+                    field
+                    message
+                }
+            }
+        }
+        ';
+        $variables = [
+            "name" => $payload->name,
+            "returnUrl" => $payload->returnUrl,
+            "trialDays" => $payload->trialDays,
+            "test" => $payload->test,
+            "lineItems" => [
+                [
+                    "plan" => [
+                        "appRecurringPricingDetails" => [
+                            "price" => [
+                                "amount" => $payload->price,
+                                "currencyCode" => "USD",
+                            ],
+                            "interval" => $payload->interval
+                        ],
+                    ]
+                ]
+            ],
+        ];
+
+        $response = $this->doRequestGraphQL($query, $variables);
+
+        return $response['body']['data']['appSubscriptionCreate'];
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function getWebhooks(array $params = []): ResponseAccess
     {
@@ -308,9 +365,8 @@ class ApiHelper implements IApiHelper
             ]
         );
 
-        return !empty($response['body']['usage_charge']) ?
-            $response['body']['usage_charge'] :
-            false;
+        return isset($response['body']) && isset($response['body']['usage_charge'])
+            ? $response['body']['usage_charge'] : false;
     }
 
     /**
@@ -337,9 +393,9 @@ class ApiHelper implements IApiHelper
     /**
      * Fire the request using the API instance.
      *
-     * @param ApiMode $method  The HTTP method.
-     * @param string  $path    The endpoint path.
-     * @param array   $payload The optional payload to send to the endpoint.
+     * @param ApiMethod $method  The HTTP method.
+     * @param string    $path    The endpoint path.
+     * @param array     $payload The optional payload to send to the endpoint.
      *
      * @throws RequestException
      *
@@ -355,6 +411,31 @@ class ApiHelper implements IApiHelper
                 0,
                 $response['exception']
             );
+        }
+
+        return $response;
+    }
+
+    /**
+     * Fire the request using the GraphQL API Instance.
+     *
+     * @param string    $query      The query of GraphQL
+     * @param array     $payload    The option payload to using on the query
+     *
+     * @throws Exception
+     *
+     * @return array
+     */
+    protected function doRequestGraphQL(string $query, array $payload = null)
+    {
+        $response = $this->api->graph($query, $payload);
+
+        if ($response['errors'] !== false) {
+            $message = isset($response['body']['errors']) && is_array($response['body']['errors'])
+                ? $response['body']['errors'][0]['message'] : 'Unknown error';
+
+            // Request error somewhere, throw the exception
+            throw new Exception($message);
         }
 
         return $response;

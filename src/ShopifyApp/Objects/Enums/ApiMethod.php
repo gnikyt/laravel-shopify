@@ -11,7 +11,7 @@ use Funeralzone\ValueObjects\ValueObject;
  * @method static ApiMethod GET()
  * @method static ApiMethod POST()
  * @method static ApiMethod PUT()
- * @method static ApiMethod DELEE()
+ * @method static ApiMethod DELETE()
  */
 final class ApiMethod implements ValueObject
 {
