@@ -33,14 +33,14 @@ trait ShopModel
     public $apiHelper;
 
     /**
-     * The "booting" method of the model.
+     * Boot the trait.
+     *
+     * Note that the method boot[TraitName] is auotmatically booted by Laravel.
      *
      * @return void
      */
-    protected static function boot(): void
+    protected static function bootShopModel(): void
     {
-        parent::boot();
-
         static::addGlobalScope(new Namespacing());
     }
 
