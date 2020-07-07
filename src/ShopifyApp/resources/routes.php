@@ -15,8 +15,8 @@ Route::group(['prefix' => config('shopify-app.prefix'), 'middleware' => ['web']]
     | Home Route
     |--------------------------------------------------------------------------
     |
-    | Homepage for an authenticated store. Store is checked with the auth.shop
-    | middleware and redirected to login if not.
+    | Homepage for an authenticated store. Store is checked with the
+    | auth.shopify middleware and redirected to login if not.
     |
     */
 
