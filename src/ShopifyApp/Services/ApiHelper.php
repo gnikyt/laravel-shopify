@@ -149,6 +149,7 @@ class ApiHelper implements IApiHelper
 
     /**
      * {@inheritdoc}
+     * TODO: Convert to GraphQL.
      */
     public function getScriptTags(array $params = []): ResponseAccess
     {
@@ -173,6 +174,7 @@ class ApiHelper implements IApiHelper
 
     /**
      * {@inheritdoc}
+     * TODO: Convert to GraphQL.
      */
     public function createScriptTag(array $payload): ResponseAccess
     {
@@ -188,6 +190,7 @@ class ApiHelper implements IApiHelper
 
     /**
      * {@inheritdoc}
+     * TODO: Convert to GraphQL.
      */
     public function getCharge(ChargeType $chargeType, ChargeReference $chargeRef): ResponseAccess
     {
@@ -205,6 +208,7 @@ class ApiHelper implements IApiHelper
 
     /**
      * {@inheritdoc}
+     * TODO: Convert to GraphQL.
      */
     public function activateCharge(ChargeType $chargeType, ChargeReference $chargeRef): ResponseAccess
     {
@@ -222,6 +226,7 @@ class ApiHelper implements IApiHelper
 
     /**
      * {@inheritdoc}
+     * TODO: Convert to GraphQL (merge createChargeGraphQL).
      */
     public function createCharge(ChargeType $chargeType, PlanDetailsTransfer $payload): ResponseAccess
     {
@@ -271,19 +276,19 @@ class ApiHelper implements IApiHelper
         }
         ';
         $variables = [
-            "name" => $payload->name,
-            "returnUrl" => $payload->returnUrl,
-            "trialDays" => $payload->trialDays,
-            "test" => $payload->test,
-            "lineItems" => [
+            'name'      => $payload->name,
+            'returnUrl' => $payload->returnUrl,
+            'trialDays' => $payload->trialDays,
+            'test'      => $payload->test,
+            'lineItems' => [
                 [
-                    "plan" => [
-                        "appRecurringPricingDetails" => [
-                            "price" => [
-                                "amount" => $payload->price,
-                                "currencyCode" => "USD",
+                    'plan' => [
+                        'appRecurringPricingDetails' => [
+                            'price'    => [
+                                'amount'       => $payload->price,
+                                'currencyCode' => 'USD',
                             ],
-                            "interval" => $payload->interval
+                            'interval' => $payload->interval,
                         ],
                     ]
                 ]
@@ -297,6 +302,7 @@ class ApiHelper implements IApiHelper
 
     /**
      * {@inheritdoc}
+     * TODO: Convert to GraphQL.
      */
     public function getWebhooks(array $params = []): ResponseAccess
     {
@@ -321,6 +327,7 @@ class ApiHelper implements IApiHelper
 
     /**
      * {@inheritdoc}
+     * TODO: Convert to GraphQL.
      */
     public function createWebhook(array $payload): ResponseAccess
     {
@@ -336,6 +343,7 @@ class ApiHelper implements IApiHelper
 
     /**
      * {@inheritdoc}
+     * TODO: Convert to GraphQL.
      */
     public function deleteWebhook(int $webhookId): ResponseAccess
     {
@@ -350,6 +358,7 @@ class ApiHelper implements IApiHelper
 
     /**
      * {@inheritdoc}
+     * TODO: Convert to GraphQL.
      */
     public function createUsageCharge(UsageChargeDetailsTransfer $payload)
     {
@@ -419,8 +428,8 @@ class ApiHelper implements IApiHelper
     /**
      * Fire the request using the GraphQL API Instance.
      *
-     * @param string    $query      The query of GraphQL
-     * @param array     $payload    The option payload to using on the query
+     * @param string $query   The query of GraphQL
+     * @param array  $payload The option payload to using on the query
      *
      * @throws Exception
      *
@@ -429,10 +438,9 @@ class ApiHelper implements IApiHelper
     protected function doRequestGraphQL(string $query, array $payload = null)
     {
         $response = $this->api->graph($query, $payload);
-
         if ($response['errors'] !== false) {
-            $message = isset($response['body']['errors']) && is_array($response['body']['errors'])
-                ? $response['body']['errors'][0]['message'] : 'Unknown error';
+            $message = is_array($response['errors'])
+                ? $response['errors'][0]['message'] : $response['errors'];
 
             // Request error somewhere, throw the exception
             throw new Exception($message);

@@ -6,8 +6,7 @@ use Funeralzone\ValueObjects\Enums\EnumTrait;
 use Funeralzone\ValueObjects\ValueObject;
 
 /**
- * Class PlanInterval
- * @package Osiset\ShopifyApp\Objects\Enums
+ * Plan interval with annual support.
  *
  * @method static PlanInterval EVERY_30_DAYS()
  * @method static PlanInterval ANNUAL()

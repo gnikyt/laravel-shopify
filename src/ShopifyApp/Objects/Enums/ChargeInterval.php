@@ -6,8 +6,7 @@ use Funeralzone\ValueObjects\Enums\EnumTrait;
 use Funeralzone\ValueObjects\ValueObject;
 
 /**
- * Class ChargeInterval
- * @package Osiset\ShopifyApp\Objects\Enums
+ * Charge interval with annual support.
  *
  * @method static ChargeInterval EVERY_30_DAYS()
  * @method static ChargeInterval ANNUAL()

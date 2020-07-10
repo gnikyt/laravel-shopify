@@ -41,6 +41,31 @@ class Api extends BasicShopifyAPI
         ];
     }
 
+    public function graph(string $query, array $variables = [], bool $sync = true): array
+    {
+        try {
+            $filename = array_shift(self::$stubFiles);
+            $response = json_decode(file_get_contents(__DIR__."/../fixtures/{$filename}.json"), true);
+        } catch (ErrorException $error) {
+            throw new Exception('Missing fixture for GraphQL call');
+        }
+
+        $errors = false;
+        $exception = null;
+        if (isset($response['errors'])) {
+            $errors = $response['errors'];
+            $exception = new Exception();
+        }
+
+        return [
+            'errors'     => $errors,
+            'exception'  => $exception,
+            'response'   => $response,
+            'status'     => 200,
+            'body'       => new ResponseAccess($response),
+        ];
+    }
+
     public function requestAccess(string $code): ResponseAccess
     {
         return new ResponseAccess(

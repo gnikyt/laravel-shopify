@@ -2,6 +2,7 @@
 
 namespace Osiset\ShopifyApp\Test\Services;
 
+use Exception;
 use Osiset\ShopifyApp\Test\TestCase;
 use Osiset\BasicShopifyAPI\ResponseAccess;
 use Osiset\BasicShopifyAPI\BasicShopifyAPI;
@@ -9,6 +10,7 @@ use Osiset\ShopifyApp\Objects\Enums\AuthMode;
 use Osiset\ShopifyApp\Exceptions\ApiException;
 use Osiset\ShopifyApp\Objects\Enums\ChargeType;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
+use Osiset\ShopifyApp\Objects\Enums\PlanInterval;
 use Osiset\ShopifyApp\Objects\Values\ChargeReference;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use Osiset\ShopifyApp\Objects\Transfers\PlanDetails as PlanDetailsTransfer;
@@ -137,17 +139,17 @@ class ApiHelperTest extends TestCase
         $this->setApiStub();
         ApiStub::stubResponses(['post_recurring_application_charges']);
 
+        // Build the details object
+        $transfer = new PlanDetailsTransfer();
+        $transfer->name = 'Test';
+        $transfer->price = 12.00;
+        $transfer->interval = PlanInterval::EVERY_30_DAYS()->toNative();
+        $transfer->test = true;
+        $transfer->trialDays = 7;
+
         $data = $shop->apiHelper()->createCharge(
             ChargeType::RECURRING(),
-            new PlanDetailsTransfer(
-                'Test',
-                12.00,
-                true,
-                7,
-                null,
-                null,
-                null
-            )
+            $transfer
         );
         $this->assertInstanceOf(ResponseAccess::class, $data);
         $this->assertEquals('Basic Plan', $data['name']);
@@ -205,12 +207,12 @@ class ApiHelperTest extends TestCase
         $this->setApiStub();
         ApiStub::stubResponses(['post_recurring_application_charges_usage_charges']);
 
-        $tranfer = new UsageChargeDetailsTransfer();
-        $tranfer->chargeReference = new ChargeReference(1);
-        $tranfer->price = 12.00;
-        $tranfer->description = 'Hello!';
+        $transfer = new UsageChargeDetailsTransfer();
+        $transfer->chargeReference = new ChargeReference(1);
+        $transfer->price = 12.00;
+        $transfer->description = 'Hello!';
 
-        $data = $shop->apiHelper()->createUsageCharge($tranfer);
+        $data = $shop->apiHelper()->createUsageCharge($transfer);
         $this->assertInstanceOf(ResponseAccess::class, $data);
     }
 
@@ -226,5 +228,26 @@ class ApiHelperTest extends TestCase
         ApiStub::stubResponses(['empty_with_error']);
 
         $shop->apiHelper()->deleteWebhook(1);
+    }
+
+    public function testErrorsGraphQL(): void
+    {
+        $this->expectException(Exception::class);
+
+        // Create a shop
+        $shop = factory($this->model)->create();
+
+        // Response stubbing
+        $this->setApiStub();
+        ApiStub::stubResponses(['empty_with_error_graphql']);
+
+        $transfer = new PlanDetailsTransfer();
+        $transfer->name = 'Test';
+        $transfer->price = 12.00;
+        $transfer->interval = PlanInterval::ANNUAL()->toNative();
+        $transfer->test = true;
+        $transfer->trialDays = 7;
+
+        $shop->apiHelper()->createChargeGraphQL($transfer);
     }
 }

@@ -41,3 +41,7 @@ $factory->state(Plan::class, 'type_recurring', [
 $factory->state(Plan::class, 'type_onetime', [
     'type' => PlanType::ONETIME()->toNative(),
 ]);
+
+$factory->state(Plan::class, 'interval_annual', [
+    'interval' => PlanInterval::ANNUAL()->toNative(),
+]);

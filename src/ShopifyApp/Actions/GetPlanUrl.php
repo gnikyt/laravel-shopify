@@ -71,7 +71,6 @@ class GetPlanUrl
 
         // Confirmation URL
         $confirmation_url = null;
-
         switch ($plan->getInterval()->toNative()) {
             case ChargeInterval::ANNUAL()->toNative():
                 $api = $shop->apiHelper()->createChargeGraphQL(
@@ -80,7 +79,6 @@ class GetPlanUrl
 
                 $confirmation_url = $api['confirmationUrl'];
                 break;
-
             default:
                 $api = $shop->apiHelper()->createCharge(
                     ChargeType::fromNative($plan->getType()->toNative()),
