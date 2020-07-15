@@ -38,4 +38,9 @@ In sending any donations or sponsorship, please follow these asks:
 
 ## Donators / Sponsors
 
-+ ...
+`APC` = `Annonymous Personal Contribution`
+`ACC` = `Annonymous Company Contribution`
+
++ Markus Tripp - 2020
++ ACC - 2020-07
++ APC - 2020-06
