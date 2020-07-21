@@ -11,6 +11,7 @@ use Osiset\ShopifyApp\Objects\Enums\DataSource;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Objects\Values\NullShopDomain;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
+use Osiset\ShopifyApp\Exceptions\MissingShopDomainException;
 use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
 
@@ -312,12 +313,12 @@ class AuthShopify
             $result = $this->getData($request, $option);
             if (isset($result['shop'])) {
                 // Found a shop
-                return new ShopDomain($result['shop']);
+                return ShopDomain::fromNative($result['shop']);
             }
         }
 
         // No shop domain found in any source
-        return new NullShopDomain();
+        return NullShopDomain::fromNative(null);
     }
 
     /**
@@ -326,13 +327,15 @@ class AuthShopify
      * @param Request         $request The request object.
      * @param ShopDomainValue $domain  The shop domain.
      *
+     * @throws MissingShopDomainException
+     *
      * @return void
      */
     private function handleBadVerification(Request $request, ShopDomainValue $domain)
     {
         if ($domain->isNull()) {
             // We have no idea of knowing who this is, this should not happen
-            return Redirect::route('login');
+            throw new MissingShopDomainException();
         }
 
         // Set the return-to path so we can redirect after successful authentication

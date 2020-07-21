@@ -38,7 +38,7 @@ class ShopSessionTest extends TestCase
     public function testMakeLogsInShopFailure(): void
     {
         // Login the shop
-        $status = $this->shopSession->make(new ShopDomain('non-existant.myshopify.com'));
+        $status = $this->shopSession->make(ShopDomain::fromNative('non-existant.myshopify.com'));
 
         $this->assertFalse($status);
     }

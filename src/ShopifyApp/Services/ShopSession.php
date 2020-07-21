@@ -185,7 +185,7 @@ class ShopSession
     public function setAccess(ResponseAccess $access): self
     {
         // Grab the token
-        $token = new AccessToken($access['access_token']);
+        $token = AccessToken::fromNative($access['access_token']);
 
         // Per-User
         if (isset($access['associated_user'])) {

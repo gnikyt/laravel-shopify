@@ -27,7 +27,7 @@ class PlanTest extends TestCase
         $this->assertNotNull($this->query->getById($plan->getId()));
 
         // Query non-existant
-        $this->assertNull($this->query->getById(new PlanId(10)));
+        $this->assertNull($this->query->getById(PlanId::fromNative(10)));
     }
 
     public function testPlanGetDefault(): void

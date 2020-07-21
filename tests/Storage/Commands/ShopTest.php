@@ -23,8 +23,8 @@ class ShopTest extends TestCase
     public function testMake(): void
     {
         // Make the shop
-        $domain = new ShopDomain('example.myshopify.com');
-        $token = new AccessToken('123456');
+        $domain = ShopDomain::fromNative('example.myshopify.com');
+        $token = AccessToken::fromNative('123456');
         $shopId = $this->command->make($domain, $token);
 
         $this->assertInstanceOf(ShopId::class, $shopId);
@@ -38,7 +38,7 @@ class ShopTest extends TestCase
         ]);
 
         $this->assertTrue(
-            $this->command->setToPlan($shop->getId(), new PlanId(1))
+            $this->command->setToPlan($shop->getId(), PlanId::fromNative(1))
         );
     }
 
@@ -48,7 +48,7 @@ class ShopTest extends TestCase
         $shop = factory($this->model)->create();
 
         $this->assertTrue(
-            $this->command->setAccessToken($shop->getId(), new AccessToken('123456'))
+            $this->command->setAccessToken($shop->getId(), AccessToken::fromNative('123456'))
         );
     }
 
@@ -56,7 +56,7 @@ class ShopTest extends TestCase
     {
         // Create a shop
         $shop = factory($this->model)->create([
-            'plan_id' => (new PlanId(1))->toNative(),
+            'plan_id' => PlanId::fromNative(1)->toNative(),
         ]);
 
         $this->assertTrue(

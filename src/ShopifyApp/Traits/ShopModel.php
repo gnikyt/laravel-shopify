@@ -49,7 +49,7 @@ trait ShopModel
      */
     public function getId(): ShopId
     {
-        return new ShopId($this->id);
+        return ShopId::fromNative($this->id);
     }
 
     /**
@@ -57,7 +57,7 @@ trait ShopModel
      */
     public function getDomain(): ShopDomainValue
     {
-        return new ShopDomain($this->name);
+        return ShopDomain::fromNative($this->name);
     }
 
     /**
@@ -65,7 +65,7 @@ trait ShopModel
      */
     public function getToken(): AccessTokenValue
     {
-        return new AccessToken($this->password);
+        return AccessToken::fromNative($this->password);
     }
 
     /**

@@ -42,7 +42,7 @@ class ChargeTest extends TestCase
         $this->seedData();
 
         $this->assertTrue(
-            $this->command->delete(new ChargeReference(123456), new ShopId(1))
+            $this->command->delete(ChargeReference::fromNative(123456), ShopId::fromNative(1))
         );
     }
 
@@ -52,12 +52,12 @@ class ChargeTest extends TestCase
         $ud = new UsageChargeDetailsTransfer();
         $ud->price = 12.00;
         $ud->description = 'Test';
-        $ud->chargeReference = new ChargeReference(123456);
+        $ud->chargeReference = ChargeReference::fromNative(123456);
 
         // Create usage charge transfer
         $uc = new UsageChargeTransfer();
-        $uc->shopId = new ShopId(1);
-        $uc->chargeReference = new ChargeReference(12345678);
+        $uc->shopId = ShopId::fromNative(1);
+        $uc->chargeReference = ChargeReference::fromNative(12345678);
         $uc->billingOn = Carbon::today();
         $uc->details = $ud;
 
@@ -73,7 +73,7 @@ class ChargeTest extends TestCase
         $this->seedData();
 
         $this->assertTrue(
-            $this->command->cancel(new ChargeReference(123456))
+            $this->command->cancel(ChargeReference::fromNative(123456))
         );
     }
 
@@ -90,12 +90,12 @@ class ChargeTest extends TestCase
 
         // Make the transfer object
         $charge = new ChargeTransfer();
-        $charge->shopId = new ShopId(1);
-        $charge->chargeReference = new ChargeReference(123456);
+        $charge->shopId = ShopId::fromNative(1);
+        $charge->chargeReference = ChargeReference::fromNative(123456);
         $charge->chargeType = ChargeType::RECURRING();
         $charge->chargeStatus = ChargeStatus::ACCEPTED();
         $charge->planDetails = $planDetails;
-        $charge->planId = new PlanId(1);
+        $charge->planId = PlanId::fromNative(1);
 
         return $this->command->make($charge);
     }

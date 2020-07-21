@@ -29,20 +29,6 @@ Route::group(['prefix' => config('shopify-app.prefix'), 'middleware' => ['web']]
 
     /*
     |--------------------------------------------------------------------------
-    | Login Route
-    |--------------------------------------------------------------------------
-    |
-    | Allows a shop to login/install.
-    |
-    */
-
-    Route::get(
-        '/login',
-        'Osiset\ShopifyApp\Http\Controllers\AuthController@index'
-    )->name('login');
-
-    /*
-    |--------------------------------------------------------------------------
     | Authenticate Method
     |--------------------------------------------------------------------------
     |

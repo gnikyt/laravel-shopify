@@ -95,7 +95,7 @@ class AuthenticateShop
     public function __invoke(Request $request): array
     {
         // Setup
-        $shopDomain = new ShopDomain($request->get('shop'));
+        $shopDomain = ShopDomain::fromNative($request->get('shop'));
         $code = $request->get('code');
 
         // Run the check
@@ -108,7 +108,7 @@ class AuthenticateShop
         // Determine if the HMAC is correct
         $this->apiHelper->make();
         if (!$this->apiHelper->verifyRequest($request->all())) {
-            // Go to login, something is wrong
+            // Throw exception, something is wrong
             return [$result, null];
         }
 

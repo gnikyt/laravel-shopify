@@ -27,7 +27,7 @@ class ShopTest extends TestCase
         $this->assertNotNull($this->query->getById($shop->getId()));
 
         // Query non-existant
-        $this->assertNull($this->query->getById(new ShopId(10)));
+        $this->assertNull($this->query->getById(ShopId::fromNative(10)));
     }
 
     public function testShopGetByDomain(): void
@@ -39,7 +39,7 @@ class ShopTest extends TestCase
         $this->assertNotNull($this->query->getByDomain($shop->getDomain()));
 
         // Query non-existant
-        $this->assertNull($this->query->getByDomain(new ShopDomain('non-existant.myshopify.com')));
+        $this->assertNull($this->query->getByDomain(ShopDomain::fromNative('non-existant.myshopify.com')));
     }
 
     public function testShopGetAll(): void

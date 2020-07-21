@@ -110,7 +110,7 @@ class ApiHelperTest extends TestCase
         $this->setApiStub();
         ApiStub::stubResponses(['get_application_charge']);
 
-        $data = $shop->apiHelper()->getCharge(ChargeType::CHARGE(), new ChargeReference(1234));
+        $data = $shop->apiHelper()->getCharge(ChargeType::CHARGE(), ChargeReference::fromNative(1234));
         $this->assertInstanceOf(ResponseAccess::class, $data);
         $this->assertEquals('iPod Cleaning', $data->name);
         $this->assertEquals('accepted', $data['status']);
@@ -125,7 +125,7 @@ class ApiHelperTest extends TestCase
         $this->setApiStub();
         ApiStub::stubResponses(['post_recurring_application_charges_activate']);
 
-        $data = $shop->apiHelper()->activateCharge(ChargeType::RECURRING(), new ChargeReference(1234));
+        $data = $shop->apiHelper()->activateCharge(ChargeType::RECURRING(), ChargeReference::fromNative(1234));
         $this->assertInstanceOf(ResponseAccess::class, $data);
         $this->assertEquals('Super Mega Plan', $data['name']);
     }
@@ -208,7 +208,7 @@ class ApiHelperTest extends TestCase
         ApiStub::stubResponses(['post_recurring_application_charges_usage_charges']);
 
         $transfer = new UsageChargeDetailsTransfer();
-        $transfer->chargeReference = new ChargeReference(1);
+        $transfer->chargeReference = ChargeReference::fromNative(1);
         $transfer->price = 12.00;
         $transfer->description = 'Hello!';
 

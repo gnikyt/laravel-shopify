@@ -33,7 +33,7 @@ class ChargeTest extends TestCase
         $this->assertNotNull($this->query->getById($charge->getId()));
 
         // Query non-existant
-        $this->assertNull($this->query->getById(new ChargeId(10)));
+        $this->assertNull($this->query->getById(ChargeId::fromNative(10)));
     }
 
     public function testChargeGetByChargeReference(): void
@@ -47,7 +47,7 @@ class ChargeTest extends TestCase
         $this->assertNotNull($this->query->getByReference($charge->getReference()));
 
         // Query non-existant
-        $this->assertNull($this->query->getByReference(new ChargeReference(10)));
+        $this->assertNull($this->query->getByReference(ChargeReference::fromNative(10)));
     }
 
     public function testPlangetByReferenceAndShopId(): void
@@ -63,6 +63,6 @@ class ChargeTest extends TestCase
         );
 
         // Query non-existant
-        $this->assertNull($this->query->getByReferenceAndShopId(new ChargeReference(10), new ShopId(10)));
+        $this->assertNull($this->query->getByReferenceAndShopId(ChargeReference::fromNative(10), ShopId::fromNative(10)));
     }
 }
