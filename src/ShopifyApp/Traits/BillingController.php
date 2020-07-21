@@ -66,7 +66,7 @@ trait BillingController
         $result = $activatePlan(
             $shopSession->getShop()->getId(),
             PlanId::fromNative($plan),
-            ChargeReference::fromNative($request->query('charge_id'))
+            ChargeReference::fromNative((int) $request->query('charge_id'))
         );
 
         // Go to homepage of app

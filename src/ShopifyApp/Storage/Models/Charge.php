@@ -57,7 +57,7 @@ class Charge extends Model
      */
     public function getId(): ChargeId
     {
-        return ChargeId::fromNative($this->id);
+        return ChargeId::fromNative((int) $this->id);
     }
 
     /**

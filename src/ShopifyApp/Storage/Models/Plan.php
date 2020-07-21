@@ -32,7 +32,7 @@ class Plan extends Model
      */
     public function getId(): PlanId
     {
-        return PlanId::fromNative($this->id);
+        return PlanId::fromNative((int) $this->id);
     }
 
     /**
