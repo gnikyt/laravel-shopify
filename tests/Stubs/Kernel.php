@@ -1,6 +1,6 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Test\Stubs;
+namespace Osiset\ShopifyApp\Test\Stubs;
 
 class Kernel extends \Orchestra\Testbench\Http\Kernel
 {
@@ -20,9 +20,9 @@ class Kernel extends \Orchestra\Testbench\Http\Kernel
         'throttle'   => \Illuminate\Routing\Middleware\ThrottleRequests::class,
 
         // Added for testing
-        'auth.shop'    => \OhMyBrew\ShopifyApp\Middleware\AuthShop::class,
-        'auth.webhook' => \OhMyBrew\ShopifyApp\Middleware\AuthWebhook::class,
-        'auth.proxy'   => \OhMyBrew\ShopifyApp\Middleware\AuthProxy::class,
-        'billable'     => \OhMyBrew\ShopifyApp\Middleware\Billable::class,
+        'auth.shopify' => \Osiset\ShopifyApp\Http\Middleware\AuthShopify::class,
+        'auth.webhook' => \Osiset\ShopifyApp\Http\Middleware\AuthWebhook::class,
+        'auth.proxy'   => \Osiset\ShopifyApp\Http\Middleware\AuthProxy::class,
+        'billable'     => \Osiset\ShopifyApp\Http\Middleware\Billable::class,
     ];
 }

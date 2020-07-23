@@ -1,0 +1,51 @@
+name: Package Test
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      max-parallel: 3
+      matrix:
+        php-versions: ['7.4']
+        laravel-versions: ['5.8', '6.0', '7.0']
+
+    name: PHP ${{ matrix.php-versions }} / Laravel ${{ matrix.laravel-versions }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+  
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v1
+      with:
+        php-version: ${{ matrix.php-versions }}
+        coverage: xdebug
+        tools: composer
+
+    - name: Validate composer setup
+      run: composer validate
+
+    - name: Install Laravel
+      run: composer require "laravel/framework:^${{ matrix.laravel-versions }}" --no-update
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress --no-suggest
+
+    - name: Validate code style
+      run: |
+        composer require "squizlabs/php_codesniffer=*"
+        bin/phpcs --standard="phpcs.xml" .
+
+    - name: Run test suite
+      run: composer run-script test
+
+    - name: Upload coverage results
+      if: matrix.php-versions == '7.4' && matrix.laravel-versions == '7.0'
+      env:
+        COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        composer require cedx/coveralls
+        bin/coveralls build/logs/clover.xml

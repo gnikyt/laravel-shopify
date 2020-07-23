@@ -57,12 +57,12 @@
             </div>
 
             <p>Welcome to your Shopify App powered by Laravel.</p>
-            <p>{{ ShopifyApp::shop()->shopify_domain }}</p>
+            <p>{{ Auth::user()->name }}</p>
 
             <div class="links">
-                <a href="https://github.com/ohmybrew/laravel-shopify" target="_blank">Package</a>
+                <a href="https://github.com/osiset/laravel-shopify" target="_blank">Package</a>
                 <a href="https://laravel.com" target="_blank">Laravel</a>
-                <a href="https://github.com/ohmybrew/laravel-shopify" target="_blank">GitHub</a>
+                <a href="https://github.com/osiset/laravel-shopify" target="_blank">GitHub</a>
             </div>
         </div>
     </div>

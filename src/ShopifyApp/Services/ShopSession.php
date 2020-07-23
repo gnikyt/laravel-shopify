@@ -1,83 +1,155 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Services;
+namespace Osiset\ShopifyApp\Services;
 
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Session;
-use OhMyBrew\ShopifyApp\Models\Shop;
 use stdClass;
+use Illuminate\Support\Carbon;
+use Illuminate\Auth\AuthManager;
+use Illuminate\Support\Facades\Session;
+use Osiset\BasicShopifyAPI\ResponseAccess;
+use Osiset\BasicShopifyAPI\BasicShopifyAPI;
+use Osiset\ShopifyApp\Objects\Enums\AuthMode;
+use Osiset\ShopifyApp\Traits\ConfigAccessible;
+use Osiset\ShopifyApp\Objects\Values\ShopDomain;
+use Osiset\ShopifyApp\Objects\Values\AccessToken;
+use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
+use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
+use Osiset\ShopifyApp\Objects\Values\NullableAccessToken;
+use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
+use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
+use Osiset\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
 
 /**
  * Responsible for handling session retreival and storage.
  */
 class ShopSession
 {
-    /**
-     * The session key for Shopify domain.
-     *
-     * @var string
-     */
-    const DOMAIN = 'shopify_domain';
+    use ConfigAccessible;
 
     /**
      * The session key for Shopify associated user.
      *
      * @var string
      */
-    const USER = 'shopify_user';
+    public const USER = 'shopify_user';
 
     /**
-     * The (session/database) key for Shopify access token.
+     * The session key for Shopify user access token.
      *
      * @var string
      */
-    const TOKEN = 'shopify_token';
+    public const USER_TOKEN = 'shopify_user_token';
 
     /**
-     * The offline grant key.
+     * The session key for Shopify user expiration.
      *
-     * @var string
+     * @var string|null
      */
-    const GRANT_OFFLINE = 'offline';
+    public const USER_EXPIRES = 'shopify_user_expires';
 
     /**
-     * The per-user grant key.
+     * Session token from Shopify.
      *
-     * @var string
+     * @var string|null
      */
-    const GRANT_PERUSER = 'per-user';
+    public const SESSION_TOKEN = 'shopify_session_token';
 
     /**
-     * The shop.
+     * The API helper.
      *
-     * @var \OhMyBrew\ShopifyApp\Models\Shop|null
+     * @var IApiHelper
      */
-    protected $shop;
+    protected $apiHelper;
+
+    /**
+     * The commands for shop.
+     *
+     * @var IShopCommand
+     */
+    protected $shopCommand;
+
+    /**
+     * The queries for shop.
+     *
+     * @var IShopQuery
+     */
+    protected $shopQuery;
+
+    /**
+     * The Laravel auth manager.
+     *
+     * @var AuthManager
+     */
+    protected $auth;
+
+    /**
+     * The cookie helper.
+     *
+     * @var CookieHelper
+     */
+    protected $cookieHelper;
+
+    /**
+     * API instance cached.
+     *
+     * @var BasicShopifyAPI
+     */
+    protected $api;
 
     /**
      * Constructor for shop session class.
      *
-     * @param object|null $shop The shop.
+     * @param AuthManager  $auth         The Laravel auth manager.
+     * @param IApiHelper   $apiHelper    The API helper.
+     * @param CookieHelper $cookieHelper The cookie helper.
+     * @param IShopCommand $shopCommand  The commands for shop.
+     * @param IShopQuery   $shopQuery    The queries for shop.
      *
      * @return self
      */
-    public function __construct($shop = null)
-    {
-        $this->setShop($shop);
+    public function __construct(
+        AuthManager $auth,
+        IApiHelper $apiHelper,
+        CookieHelper $cookieHelper,
+        IShopCommand $shopCommand,
+        IShopQuery $shopQuery
+    ) {
+        $this->auth = $auth;
+        $this->apiHelper = $apiHelper;
+        $this->cookieHelper = $cookieHelper;
+        $this->shopCommand = $shopCommand;
+        $this->shopQuery = $shopQuery;
     }
 
     /**
-     * Sets the shop.
+     * Login a shop.
      *
-     * @param object|null $shop The shop.
-     *
-     * @return self
+     * @return bool
      */
-    public function setShop($shop = null)
+    public function make(ShopDomainValue $domain): bool
     {
-        $this->shop = $shop;
+        // Get the shop
+        $shop = $this->shopQuery->getByDomain($domain, [], true);
+        if (!$shop) {
+            return false;
+        }
 
-        return $this;
+        // Log them in with the guard
+        $this->cookieHelper->setCookiePolicy();
+        $this->auth->guard()->login($shop);
+
+        return true;
+    }
+
+    /**
+     * Wrapper for auth->guard()->guest().
+     *
+     * @return bool
+     */
+    public function guest(): bool
+    {
+        return $this->auth->guard()->guest();
     }
 
     /**
@@ -85,84 +157,95 @@ class ShopSession
      *
      * @return string
      */
-    public function getType()
+    public function getType(): AuthMode
     {
-        $config = Config::get('shopify-app.api_grant_mode');
-        if ($config === self::GRANT_PERUSER) {
-            return self::GRANT_PERUSER;
-        }
-
-        return self::GRANT_OFFLINE;
+        return AuthMode::fromNative(strtoupper($this->getConfig('api_grant_mode')));
     }
 
     /**
      * Determines if the type of access matches.
      *
-     * @param string $type The type of access to check.
+     * @param AuthMode $type The type of access to check.
      *
-     * @return string
+     * @return bool
      */
-    public function isType(string $type)
+    public function isType(AuthMode $type): bool
     {
-        return $this->getType() === $type;
-    }
-
-    /**
-     * Sets the Shopify domain to session.
-     * `expire_on_close` must be set to avoid issue of cookies being deleted too early.
-     *
-     * @param string $shopDomain The Shopify domain.
-     *
-     * @return self
-     */
-    public function setDomain(string $shopDomain)
-    {
-        $this->fixLifetime();
-        Session::put(self::DOMAIN, $shopDomain);
-
-        return $this;
-    }
-
-    /**
-     * Gets the Shopify domain in session.
-     *
-     * @return void
-     */
-    public function getDomain()
-    {
-        return Session::get(self::DOMAIN);
+        return $this->getType()->isSame($type);
     }
 
     /**
      * Stores the access token and user (if any).
      * Uses database for acess token if it was an offline authentication.
      *
-     * @param stdClass $access
+     * @param ResponseAccess $access
      *
      * @return self
      */
-    public function setAccess(stdClass $access)
+    public function setAccess(ResponseAccess $access): self
     {
         // Grab the token
-        $token = $access->access_token;
+        $token = AccessToken::fromNative($access['access_token']);
 
         // Per-User
-        if (property_exists($access, 'associated_user')) {
+        if (isset($access['associated_user'])) {
+            // Modify the expire time to a timestamp
+            $now = Carbon::now();
+            $expires = $now->addSeconds($access['expires_in'] - 10);
+
             // We have a user, so access will live only in session
-            $this->user = $access->associated_user;
+            $this->sessionSet(self::USER, $access['associated_user']);
+            $this->sessionSet(self::USER_TOKEN, $token->toNative());
+            $this->sessionSet(self::USER_EXPIRES, $expires->toDateTimeString());
+        } else {
+            // Update the token in database
+            $this->shopCommand->setAccessToken($this->getShop()->getId(), $token);
 
-            $this->fixLifetime();
-            Session::put(self::USER, $this->user);
-            Session::put(self::TOKEN, $token);
-
-            return $this;
+            // Refresh the model
+            $this->getShop()->refresh();
         }
 
-        // Offline
-        $this->shop->{self::TOKEN} = $token;
-        $this->shop->save();
-
         return $this;
+    }
+
+    /**
+     * Sets the session token from Shopify.
+     *
+     * @param string $token The session token from Shopify.
+     *
+     * @return self
+     */
+    public function setSessionToken(string $token): self
+    {
+        $this->sessionSet(self::SESSION_TOKEN, $token);
+        return $this;
+    }
+
+    /**
+     * Get the Shopify session token.
+     *
+     * @return string|null
+     */
+    public function getSessionToken(): ?string
+    {
+        return Session::get(self::SESSION_TOKEN);
+    }
+
+    /**
+     * Compare session tokens from Shopify.
+     *
+     * @param string|null $incomingToken The session token from Shopify, from the request.
+     *
+     * @return bool
+     */
+    public function isSessionTokenValid(?string $incomingToken): bool
+    {
+        $currentToken = $this->getSessionToken();
+        if ($incomingToken === null || $currentToken === null) {
+            return true;
+        }
+
+        return $incomingToken === $currentToken;
     }
 
     /**
@@ -170,31 +253,35 @@ class ShopSession
      *
      * @param bool $strict Return the token matching the grant type (default: use either).
      *
-     * @return string
+     * @return AccessTokenValue
      */
-    public function getToken(bool $strict = false)
+    public function getToken(bool $strict = false): AccessTokenValue
     {
-        // Tokens
+        // Keys as strings
+        $peruser = AuthMode::PERUSER()->toNative();
+        $offline = AuthMode::OFFLINE()->toNative();
+
+        // Token mapping
         $tokens = [
-            self::GRANT_PERUSER => Session::get(self::TOKEN),
-            self::GRANT_OFFLINE => $this->shop->{self::TOKEN},
+            $peruser => NullableAccessToken::fromNative(Session::get(self::USER_TOKEN)),
+            $offline => $this->getShop()->getToken(),
         ];
 
         if ($strict) {
             // We need the token matching the type
-            return $tokens[$this->getType()];
+            return $tokens[$this->getType()->toNative()];
         }
 
         // We need a token either way...
-        return $tokens[self::GRANT_PERUSER] ?? $tokens[self::GRANT_OFFLINE];
+        return $tokens[$peruser]->isNull() ? $tokens[$offline] : $tokens[$peruser];
     }
 
     /**
      * Gets the associated user (if any).
      *
-     * @return stfClass|null
+     * @return ResponseAccess|null
      */
-    public function getUser()
+    public function getUser(): ?ResponseAccess
     {
         return Session::get(self::USER);
     }
@@ -204,22 +291,40 @@ class ShopSession
      *
      * @return bool
      */
-    public function hasUser()
+    public function hasUser(): bool
     {
         return $this->getUser() !== null;
     }
 
     /**
+     * Check if the user has expired.
+     *
+     * @return bool
+     */
+    public function isUserExpired(): bool
+    {
+        $now = Carbon::now();
+        $expires = new Carbon(Session::get(self::USER_EXPIRES));
+
+        return $now->greaterThanOrEqualTo($expires);
+    }
+
+    /**
      * Forgets anything in session.
+     * Log out a shop via auth()->guard()->logout().
      *
      * @return self
      */
-    public function forget()
+    public function forget(): self
     {
-        $keys = [self::DOMAIN, self::USER, self::TOKEN];
+        // Forget session values
+        $keys = [self::USER, self::USER_TOKEN, self::USER_EXPIRES, self::SESSION_TOKEN];
         foreach ($keys as $key) {
             Session::forget($key);
         }
+
+        // Logout the shop if logged in
+        $this->auth->guard()->logout();
 
         return $this;
     }
@@ -229,23 +334,58 @@ class ShopSession
      *
      * @return bool
      */
-    public function isValid()
+    public function isValid(): bool
     {
-        // No token set or domain in session?
-        $result = !empty($this->getToken(true))
-            && $this->getDomain() !== null
-            && $this->getDomain() == $this->shop->shopify_domain;
+        $currentShop = $this->getShop();
+        $currentToken = $this->getToken(true);
+        $currentDomain = $currentShop->getDomain();
 
-        return $result;
+        $baseValid = !$currentToken->isEmpty() && !$currentDomain->isNull();
+        if ($this->getUser() !== null) {
+            // Handle validation of per-user
+            return $baseValid && !$this->isUserExpired();
+        }
+
+        // Handle validation of standard
+        return $baseValid;
     }
 
     /**
-     * Fixes the lifetime of the session.
+     * Checks if the package has everything it needs in session (compare).
      *
-     * @return void
+     * @param ShopDomain $shopDomain The shop to compare validity to.
+     *
+     * @return bool
      */
-    protected function fixLifetime()
+    public function isValidCompare(ShopDomain $shopDomain): bool
     {
-        Config::set('session.expire_on_close', true);
+        // Ensure domains match
+        return $this->isValid() && $shopDomain->isSame($this->getShop()->getDomain());
+    }
+
+    /**
+     * Wrapper for auth->guard()->user().
+     *
+     * @return IShopModel|null
+     */
+    public function getShop(): ?IShopModel
+    {
+        return $this->auth->guard()->user();
+    }
+
+    /**
+     * Set a session key/value and fix cookie issues.
+     *
+     * @param string $key   The key.
+     * @param mixed  $value The value.
+     *
+     * @return self
+     */
+    protected function sessionSet(string $key, $value): self
+    {
+        $this->cookieHelper->setCookiePolicy();
+        Session::put($key, $value);
+
+        return $this;
     }
 }

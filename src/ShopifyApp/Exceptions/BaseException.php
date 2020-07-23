@@ -1,11 +1,11 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Exceptions;
+namespace Osiset\ShopifyApp\Exceptions;
 
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Redirect;
+use Osiset\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Base exception for all exceptions of the package.
@@ -13,18 +13,5 @@ use Illuminate\Support\Facades\Redirect;
  */
 abstract class BaseException extends Exception
 {
-    /**
-     * Render the exception into an HTTP response.
-     *
-     * @param \Illuminate\Http\Request The incoming request.
-     *
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function render(Request $request)
-    {
-        if (!Config::get('app.debug')) {
-            // If not in debug mode... show view
-            return Redirect::route('login')->with('error', $this->getMessage());
-        }
-    }
+    use ConfigAccessible;
 }

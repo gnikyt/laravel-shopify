@@ -1,121 +1,176 @@
 <?php
 
-namespace OhMyBrew\ShopifyApp\Test\Services;
+namespace Osiset\ShopifyApp\Test\Services;
 
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Session;
-use OhMyBrew\ShopifyApp\Models\Shop;
-use OhMyBrew\ShopifyApp\Services\ShopSession;
-use OhMyBrew\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\BasicShopifyAPI\ResponseAccess;
+use Osiset\ShopifyApp\Services\ShopSession;
+use Osiset\ShopifyApp\Objects\Enums\AuthMode;
+use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 
 class ShopSessionTest extends TestCase
 {
-    public function setUp() : void
+    protected $shopSession;
+    protected $model;
+
+    public function setUp(): void
     {
         parent::setUp();
 
-        $this->shop = factory(Shop::class)->create();
+        $this->shopSession = $this->app->make(ShopSession::class);
     }
 
-    public function testCanSetAccessPerUser()
+    public function testMakeLogsInShop(): void
     {
+        // Create the shop
+        $shop = factory($this->model)->create();
+
+        // Test initial state
+        $this->assertTrue($this->shopSession->guest());
+
+        // Login the shop
+        $status = $this->shopSession->make($shop->getDomain());
+
+        $this->assertFalse($this->shopSession->guest());
+        $this->assertTrue($status);
+    }
+
+    public function testMakeLogsInShopFailure(): void
+    {
+        // Login the shop
+        $status = $this->shopSession->make(ShopDomain::fromNative('non-existant.myshopify.com'));
+
+        $this->assertFalse($status);
+    }
+
+    public function testAuthModeType(): void
+    {
+        // Default
+        $this->assertTrue($this->shopSession->isType(AuthMode::OFFLINE()));
+
         // Change config
-        Config::set('shopify-app.api_grant_mode', ShopSession::GRANT_PERUSER);
-
-        // Get the access token JSON
-        $fixture = json_decode(file_get_contents(__DIR__.'/../fixtures/access_token_grant.json'));
-
-        // Assert defaults
-        $this->assertContains(Config::get('session.expire_on_close'), [null, false]);
-        $this->assertNull(Session::get(ShopSession::USER));
-        $this->assertNull(Session::get(ShopSession::TOKEN));
-
-        // Run the code
-        $ss = new ShopSession($this->shop);
-        $ss->setAccess($fixture);
-
-        // Confirm changes
-        $this->assertTrue(Config::get('session.expire_on_close'));
-        $this->assertEquals($fixture->associated_user, $ss->getUser());
-        $this->assertNotNull($ss->hasUser());
-        $this->assertEquals($fixture->access_token, $ss->getToken());
-        $this->assertEquals(ShopSession::GRANT_PERUSER, $ss->getType());
-        $this->assertTrue($ss->isType(ShopSession::GRANT_PERUSER));
-    }
-
-    public function testCanSetAccessOffline()
-    {
-        // Ensure config
-        Config::set('shopify-app.api_grant_mode', ShopSession::GRANT_OFFLINE);
-
-        // Get the access token JSON
-        $fixture = json_decode(file_get_contents(__DIR__.'/../fixtures/access_token.json'));
-
-        // Assert defaults
-        $this->assertNull(Session::get(ShopSession::USER));
-        $this->assertNull(Session::get(ShopSession::TOKEN));
-
-        // Run the code
-        $ss = new ShopSession($this->shop);
-        $ss->setAccess($fixture);
-
-        // Confirm changes
-        $this->assertNull($ss->getUser());
-        $this->assertEquals($fixture->access_token, $ss->getToken());
-        $this->assertEquals(ShopSession::GRANT_OFFLINE, $ss->getType());
-        $this->assertTrue($ss->isType(ShopSession::GRANT_OFFLINE));
-        $this->assertEquals($ss->getToken(), $this->shop->shopify_token);
-    }
-
-    public function testCanStrictlyGetToken()
-    {
-        // Change config
-        Config::set('shopify-app.api_grant_mode', ShopSession::GRANT_PERUSER);
-
-        // Create an isolated shop
-        $shop = factory(Shop::class)->create(['shopify_token' => 'abc']);
-
-        // Get the access token JSON
-        $fixture = json_decode(file_get_contents(__DIR__.'/../fixtures/access_token_grant.json'));
-
-        // Run the code
-        $ss = new ShopSession($shop);
-        $ss->setAccess($fixture);
-
-        // Confirm we always get per-user
-        $this->assertEquals('f85632530bf277ec9ac6f649fc327f17', $ss->getToken(true));
-        $this->assertEquals('f85632530bf277ec9ac6f649fc327f17', $ss->getToken());
-    }
-
-    public function testCanSetDomain()
-    {
-        // Assert defaults
-        $this->assertNull(Session::get(ShopSession::DOMAIN));
-
-        // Start the session
-        $ss = new ShopSession($this->shop);
-
-        // Confirm its not valid
-        $this->assertFalse($ss->isValid());
-
-        // Set the domain
-        $ss->setDomain($this->shop->shopify_domain);
-
-        // Confirm changes
-        $this->assertTrue($ss->isType(ShopSession::GRANT_OFFLINE));
-        $this->assertEquals($this->shop->shopify_domain, $ss->getDomain());
-        $this->assertTrue($ss->isValid());
-    }
-
-    public function testCanForget()
-    {
-        // Run the code
-        $ss = new ShopSession($this->shop);
-        $ss->forget();
+        $this->app['config']->set('shopify-app.api_grant_mode', AuthMode::PERUSER()->toNative());
 
         // Confirm
-        $this->assertNull(Session::get(ShopSession::USER));
-        $this->assertNull(Session::get(ShopSession::TOKEN));
-        $this->assertNull(Session::get(ShopSession::DOMAIN));
+        $this->assertTrue($this->shopSession->isType(AuthMode::PERUSER()));
+    }
+
+    public function testGetToken(): void
+    {
+        // Create the shop and log them in
+        $shop = factory($this->model)->create();
+        $this->shopSession->make($shop->getDomain());
+
+        // Offline token
+        $this->assertFalse($this->shopSession->getToken(true)->isNull());
+        $this->assertFalse($this->shopSession->getToken()->isNull());
+
+        // Per user token
+        $this->app['config']->set('shopify-app.api_grant_mode', AuthMode::PERUSER()->toNative());
+        $this->assertTrue($this->shopSession->getToken(true)->isNull());
+    }
+
+    public function testSetAccessUser(): void
+    {
+        // Set the data from a fixture
+        $this->shopSession->setAccess(
+            new ResponseAccess(
+                json_decode(file_get_contents(__DIR__.'/../fixtures/access_token_grant.json'), true)
+            )
+        );
+
+        $this->assertTrue($this->shopSession->hasUser());
+        $this->assertFalse($this->shopSession->isUserExpired());
+    }
+
+    public function testSetAccessNormal(): void
+    {
+        // Create the shop and log them in
+        $shop = factory($this->model)->create();
+        $this->shopSession->make($shop->getDomain());
+
+        // Set the data from a fixture
+        $data = new ResponseAccess(
+            json_decode(file_get_contents(__DIR__.'/../fixtures/access_token.json'), true)
+        );
+        $this->shopSession->setAccess($data);
+
+        $this->assertEquals(
+            $data->access_token,
+            $this->shopSession->getToken(true)->toNative()
+        );
+    }
+
+    public function testForget(): void
+    {
+        // Create the shop and log them in
+        $shop = factory($this->model)->create();
+        $this->shopSession->make($shop->getDomain());
+
+        // Ensure we are logged in
+        $this->assertFalse($this->shopSession->guest());
+
+        // Logout
+        $this->shopSession->forget();
+        $this->assertTrue($this->shopSession->guest());
+    }
+
+    public function testIsValidCompare(): void
+    {
+        // Create the shops
+        $shop = factory($this->model)->create();
+        $shop2 = factory($this->model)->create();
+
+        // Login the first shop
+        $this->shopSession->make($shop->getDomain());
+
+        // Itself should be valid
+        $this->assertTrue($this->shopSession->isValidCompare($shop->getDomain()));
+
+        // Compare to another shop
+        $this->assertFalse($this->shopSession->isValidCompare($shop2->getDomain()));
+    }
+
+    public function testIsValidNoCompare(): void
+    {
+        // Create the shop
+        $shop = factory($this->model)->create();
+
+        // Itself should be valid
+        $this->shopSession->make($shop->getDomain());
+        $this->assertTrue($this->shopSession->isValid());
+    }
+
+    public function testIsValidPerUser(): void
+    {
+        // Create the shop and log them in
+        $shop = factory($this->model)->create();
+        $this->shopSession->make($shop->getDomain());
+
+        // Set the data from a fixture
+        $data = new ResponseAccess(
+            json_decode(file_get_contents(__DIR__.'/../fixtures/access_token_grant.json'), true)
+        );
+        $this->shopSession->setAccess($data);
+
+        $this->assertTrue($this->shopSession->isValid());
+    }
+
+    public function testShopifySessionToken(): void
+    {
+        // Create the shop and log them in
+        $shop = factory($this->model)->create();
+        $this->shopSession->make($shop->getDomain());
+
+        // GOOD check (nothing to compare)
+        $this->assertTrue($this->shopSession->isSessionTokenValid('123abc'));
+
+        // GOOD check (with compare)
+        $this->shopSession->setSessionToken('123abc');
+        $this->assertEquals('123abc', $this->shopSession->getSessionToken());
+        $this->assertTrue($this->shopSession->isSessionTokenValid('123abc'));
+
+        // BAD check
+        $this->assertFalse($this->shopSession->isSessionTokenValid('xyz123'));
     }
 }
