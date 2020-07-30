@@ -101,6 +101,21 @@ class ApiHelperTest extends TestCase
         $this->assertInstanceOf(ResponseAccess::class, $data);
     }
 
+    public function testDeleteScriptTag(): void
+    {
+        // Create a shop
+        $shop = factory($this->model)->create();
+
+        // Response stubbing
+        $this->setApiStub();
+        ApiStub::stubResponses(['empty']);
+
+        $this->assertInstanceOf(
+            ResponseAccess::class,
+            $shop->apiHelper()->deleteScriptTag(1)
+        );
+    }
+
     public function testGetCharge(): void
     {
         // Create a shop

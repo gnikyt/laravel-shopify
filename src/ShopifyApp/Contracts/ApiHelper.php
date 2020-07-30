@@ -93,6 +93,15 @@ interface ApiHelper
     public function createScriptTag(array $payload): ResponseAccess;
 
     /**
+     * Delete a script.
+     *
+     * @param int $scriptTagId The script tag ID to delete.
+     *
+     * @return void
+     */
+    public function deleteScriptTag(int $scriptTagId);
+
+    /**
      * Get the charge record.
      *
      * @param ChargeType      $chargeType The type of charge (plural).

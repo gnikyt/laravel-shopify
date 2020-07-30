@@ -80,7 +80,7 @@ class DispatchScriptsTest extends TestCase
 
         // Setup API stub
         $this->setApiStub();
-        ApiStub::stubResponses(['get_script_tags']);
+        ApiStub::stubResponses(['get_script_tags', 'post_script_tags']);
 
         // Create the shop
         $shop = factory($this->model)->create();
