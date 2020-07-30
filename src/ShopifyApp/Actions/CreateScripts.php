@@ -72,6 +72,9 @@ class CreateScripts
 
         // Keep track of whats created
         $created = [];
+        $deleted = [];
+
+        $usedScriptTags = [];
         foreach ($configScripts as $scripttag) {
             // Check if the required scripttag exists on the shop
             if (!$exists($scripttag, $scripts)) {
@@ -81,8 +84,21 @@ class CreateScripts
                 // Keep track of what was created
                 $created[] = $scripttag;
             }
+
+            $usedScriptTags[] = $scripttag['src'];
         }
 
-        return $created;
+        // Delete unused script tags
+        foreach ($scripts as $scriptTag) {
+            if (! in_array($scriptTag->src, $usedScriptTags)) {
+                $apiHelper->deleteScriptTag($scriptTag->id);
+                $deleted[] = $scriptTag;
+            }
+        }
+
+        return [
+            'created' => $created,
+            'deleted' => $deleted,
+        ];
     }
 }

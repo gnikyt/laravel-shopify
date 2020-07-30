@@ -188,6 +188,23 @@ class ApiHelper implements IApiHelper
         return $response['body'];
     }
 
+
+
+    /**
+     * {@inheritdoc}
+     * TODO: Convert to GraphQL.
+     */
+    public function deleteScriptTag(int $scriptTagId): ResponseAccess
+    {
+        // Fire the request
+        $response = $this->doRequest(
+            ApiMethod::DELETE(),
+            "/admin/script_tags/{$scriptTagId}.json"
+        );
+
+        return $response['body'];
+    }
+
     /**
      * {@inheritdoc}
      * TODO: Convert to GraphQL.
