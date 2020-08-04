@@ -30,6 +30,7 @@ class CreateWebhooksTest extends TestCase
         $this->setApiStub();
         ApiStub::stubResponses([
             'get_webhooks',
+            'post_webhook',
         ]);
 
         // Create the shop
@@ -42,7 +43,9 @@ class CreateWebhooksTest extends TestCase
             $webhooks
         );
 
-        $this->assertEquals(0, count($result));
+        $this->assertEquals(0, count($result['created']));
+        $this->assertEquals(1, count($result['deleted']));
+        $this->assertTrue($result['deleted'][0]['address'] === 'http://apple.com/uninstall');
     }
 
     public function testShouldCreate(): void
@@ -51,7 +54,15 @@ class CreateWebhooksTest extends TestCase
         $webhooks = [
             [
                 'topic'   => 'orders/create',
+                'address' => 'https://localhost/webhooks/orders-create'
+            ],
+            [
+                'topic'   => 'orders/create',
                 'address' => 'https://localhost/webhooks/orders-create-different'
+            ],
+            [
+                'topic'   => 'app/uninstalled',
+                'address' => 'http://apple.com/uninstall'
             ]
         ];
         $this->app['config']->set('shopify-app.webhooks', $webhooks);
@@ -60,7 +71,7 @@ class CreateWebhooksTest extends TestCase
         $this->setApiStub();
         ApiStub::stubResponses([
             'get_webhooks',
-            'post_webhook'
+            'post_webhook',
         ]);
 
         // Create the shop
@@ -73,6 +84,7 @@ class CreateWebhooksTest extends TestCase
             $webhooks
         );
 
-        $this->assertEquals(1, count($result));
+        $this->assertEquals(1, count($result['created']));
+        $this->assertEquals(0, count($result['deleted']));
     }
 }

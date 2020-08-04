@@ -46,6 +46,10 @@ class DispatchWebhooksTest extends TestCase
             [
                 'topic'   => 'orders/create',
                 'address' => 'https://localhost/webhooks/orders-create'
+            ],
+            [
+                'topic'   => 'app/uninstalled',
+                'address' => 'http://apple.com/uninstall'
             ]
         ]);
 
@@ -77,6 +81,10 @@ class DispatchWebhooksTest extends TestCase
             [
                 'topic'   => 'orders/create',
                 'address' => 'https://localhost/webhooks/orders-create'
+            ],
+            [
+                'topic'   => 'app/uninstalled',
+                'address' => 'http://apple.com/uninstall'
             ]
         ]);
 

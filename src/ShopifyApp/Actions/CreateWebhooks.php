@@ -72,17 +72,31 @@ class CreateWebhooks
         $webhooks = $apiHelper->getWebhooks();
 
         $created = [];
+        $deleted = [];
+        $used = [];
         foreach ($configWebhooks as $webhook) {
             // Check if the required webhook exists on the shop
             if (!$exists($webhook, $webhooks)) {
                 // It does not... create the webhook
                 $apiHelper->createWebhook($webhook);
-
-                // Keep track of what was created
                 $created[] = $webhook;
+            }
+
+            $used[] = $webhook['address'];
+        }
+
+        // Delete unused webhooks
+        foreach ($webhooks as $webhook) {
+            if (!in_array($webhook->address, $used)) {
+                // Webhook should be deleted
+                $apiHelper->deleteWebhook($webhook->id);
+                $deleted[] = $webhook;
             }
         }
 
-        return $created;
+        return [
+            'created' => $created,
+            'deleted' => $deleted,
+        ];
     }
 }
