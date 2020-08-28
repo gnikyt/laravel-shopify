@@ -7,6 +7,10 @@
         "shopify-api",
         "api"
     ],
+    "support": {
+        "issues": "https://github.com/osiset/laravel-shopify/issues",
+        "source": "https://github.com/osiset/laravel-shopify"
+    },
     "license": "MIT",
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -46,7 +50,8 @@
         }
     },
     "config": {
-        "bin-dir": "bin"
+        "bin-dir": "bin",
+        "sort-packages": true
     },
     "scripts": {
         "test": "bin/phpunit"
