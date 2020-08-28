@@ -18,6 +18,9 @@ use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetails
 
 class ApiHelperTest extends TestCase
 {
+    /**
+     * @var \Osiset\ShopifyApp\Contracts\ApiHelper
+     */
     protected $api;
 
     public function setUp(): void

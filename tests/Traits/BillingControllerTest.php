@@ -11,6 +11,9 @@ use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
 
 class BillingControllerTest extends TestCase
 {
+    /**
+     * @var \Osiset\ShopifyApp\Services\ShopSession
+     */
     protected $shopSession;
 
     public function setUp(): void

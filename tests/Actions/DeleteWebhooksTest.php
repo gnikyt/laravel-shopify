@@ -8,6 +8,11 @@ use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
 
 class DeleteWebhooksTestTest extends TestCase
 {
+    /**
+     * @var \Osiset\ShopifyApp\Actions\DeleteWebhooks
+     */
+    protected $action;
+
     public function setUp(): void
     {
         parent::setUp();

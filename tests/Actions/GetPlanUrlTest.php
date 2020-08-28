@@ -10,6 +10,11 @@ use Osiset\ShopifyApp\Objects\Values\NullablePlanId;
 
 class GetPlanUrlTest extends TestCase
 {
+    /**
+     * @var \Osiset\ShopifyApp\Actions\GetPlanUrl
+     */
+    protected $action;
+
     public function setUp(): void
     {
         parent::setUp();

@@ -9,6 +9,9 @@ use Osiset\ShopifyApp\Test\TestCase;
 
 class PlanTest extends TestCase
 {
+    /**
+     * @var \Osiset\ShopifyApp\Contracts\Queries\Plan
+     */
     protected $query;
 
     public function setUp(): void

@@ -11,6 +11,9 @@ use Osiset\ShopifyApp\Http\Middleware\Billable as BillableMiddleware;
 
 class BillableTest extends TestCase
 {
+    /**
+     * @var \Osiset\ShopifyApp\Services\ShopSession
+     */
     protected $shopSession;
 
     public function setUp(): void
