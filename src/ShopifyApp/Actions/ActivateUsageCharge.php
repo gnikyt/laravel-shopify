@@ -47,7 +47,7 @@ class ActivateUsageCharge
      * @param IChargeCommand $chargeCommand The commands for charges.
      * @param IShopQuery     $shopQuery     The querier for shops.
      *
-     * @return self
+     * @return void
      */
     public function __construct(
         ChargeHelper $chargeHelper,

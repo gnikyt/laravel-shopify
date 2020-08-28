@@ -26,7 +26,7 @@ class AppLoggedIn
      *
      * @param IShopModel $shop The shop.
      *
-     * @return self
+     * @return void
      */
     public function __construct(IShopModel $shop)
     {

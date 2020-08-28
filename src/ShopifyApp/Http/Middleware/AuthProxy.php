@@ -32,7 +32,7 @@ class AuthProxy
      *
      * @param ShopSession $shopSession Shop session helper.
      *
-     * @return self
+     * @return void
      */
     public function __construct(ShopSession $shopSession)
     {

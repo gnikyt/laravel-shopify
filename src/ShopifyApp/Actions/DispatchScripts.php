@@ -41,7 +41,7 @@ class DispatchScripts
      * @param string     $jobClass    The job to dispatch.
      * @param callable   $actionClass The action to handle the job.
      *
-     * @return self
+     * @return void
      */
     public function __construct(IShopQuery $shopQuery, string $jobClass, callable $actionClass)
     {

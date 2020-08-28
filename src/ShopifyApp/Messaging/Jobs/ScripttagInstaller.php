@@ -47,7 +47,7 @@ class ScripttagInstaller implements ShouldQueue
      * @param string $createScriptsAction Action for creating scripttags.
      * @param array  $configScripts       The scripts to add.
      *
-     * @return self
+     * @return void
      */
     public function __construct(ShopId $shopId, callable $createScriptsAction, array $configScripts)
     {

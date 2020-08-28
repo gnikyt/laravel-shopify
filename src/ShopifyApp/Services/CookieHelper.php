@@ -22,7 +22,7 @@ class CookieHelper
     /**
      * Constructor.
      *
-     * @return self
+     * @return void
      */
     public function __construct()
     {

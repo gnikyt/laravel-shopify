@@ -106,7 +106,7 @@ class ShopSession
      * @param IShopCommand $shopCommand  The commands for shop.
      * @param IShopQuery   $shopQuery    The queries for shop.
      *
-     * @return self
+     * @return void
      */
     public function __construct(
         AuthManager $auth,

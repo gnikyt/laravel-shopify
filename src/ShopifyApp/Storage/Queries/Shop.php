@@ -26,7 +26,7 @@ class Shop implements IShopQuery
     /**
      * Setup.
      *
-     * @return self
+     * @return void
      */
     public function __construct()
     {

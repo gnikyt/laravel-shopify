@@ -40,7 +40,7 @@ class AuthShopify
      * @param IApiHelper  $apiHelper   The API helper.
      * @param ShopSession $shopSession The shop session helper.
      *
-     * @return self
+     * @return void
      */
     public function __construct(IApiHelper $apiHelper, ShopSession $shopSession)
     {
