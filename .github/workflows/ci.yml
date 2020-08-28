@@ -28,14 +28,14 @@ jobs:
     - name: Validate composer setup
       run: composer validate --strict
 
-    - name: Normalize composer file
-      run: composer normalize --dry-run
-
     - name: Install Laravel
       run: composer require "laravel/framework:^${{ matrix.laravel-versions }}" --no-update
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest
+
+    - name: Normalize composer file
+      run: composer normalize --dry-run
 
     - name: Validate code style
       run: |
