@@ -72,7 +72,7 @@ class AuthorizeShop
         $shop = $this->shopQuery->getByDomain($shopDomain, [], true);
         if ($shop === null) {
             // Shop does not exist, make them and re-get
-            $this->shopCommand->make($shopDomain, new NullAccessToken(null));
+            $this->shopCommand->make($shopDomain, NullAccessToken::fromNative(null));
             $shop = $this->shopQuery->getByDomain($shopDomain);
         }
         $apiHelper = $shop->apiHelper();

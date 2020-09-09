@@ -14,19 +14,4 @@ use Osiset\ShopifyApp\Traits\ConfigAccessible;
 abstract class BaseException extends Exception
 {
     use ConfigAccessible;
-
-    /**
-     * Render the exception into an HTTP response.
-     *
-     * @param Request The incoming request.
-     *
-     * @return \Illuminate\Http\RedirectResponse|void
-     */
-    public function render(Request $request)
-    {
-        if (!$this->getConfig('debug')) {
-            // If not in debug mode... show view
-            return Redirect::route('login')->with('error', $this->getMessage());
-        }
-    }
 }

@@ -2,13 +2,16 @@
 
 namespace Osiset\ShopifyApp\Test\Services;
 
-use Osiset\BasicShopifyAPI;
+use Exception;
 use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\BasicShopifyAPI\ResponseAccess;
+use Osiset\BasicShopifyAPI\BasicShopifyAPI;
 use Osiset\ShopifyApp\Objects\Enums\AuthMode;
 use Osiset\ShopifyApp\Exceptions\ApiException;
-use Osiset\ShopifyApp\Objects\Values\ChargeReference;
 use Osiset\ShopifyApp\Objects\Enums\ChargeType;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
+use Osiset\ShopifyApp\Objects\Enums\PlanInterval;
+use Osiset\ShopifyApp\Objects\Values\ChargeReference;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use Osiset\ShopifyApp\Objects\Transfers\PlanDetails as PlanDetailsTransfer;
 use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
@@ -33,7 +36,6 @@ class ApiHelperTest extends TestCase
         $api = $this->api->make()->getApi();
 
         $this->assertInstanceOf(BasicShopifyAPI::class, $api);
-        $this->assertEquals($this->app['config']->get('shopify-app.api_class'), BasicShopifyAPI::class);
         $this->assertEquals($this->app['config']->get('shopify-app.api_secret'), null);
         $this->assertEquals($this->app['config']->get('shopify-app.api_version'), '2020-01');
     }
@@ -80,9 +82,10 @@ class ApiHelperTest extends TestCase
         $this->setApiStub();
         ApiStub::stubResponses(['get_script_tags']);
 
-        $this->assertIsArray(
-            $shop->apiHelper()->getScriptTags()
-        );
+        $data = $shop->apiHelper()->getScriptTags();
+        $this->assertInstanceOf(ResponseAccess::class, $data);
+        $this->assertEquals('onload', $data[0]['event']);
+        $this->assertEquals(2, count($data));
     }
 
     public function testCreateScriptTags(): void
@@ -94,8 +97,22 @@ class ApiHelperTest extends TestCase
         $this->setApiStub();
         ApiStub::stubResponses(['empty']);
 
-        $this->assertIsObject(
-            $shop->apiHelper()->createScriptTag([])
+        $data = $shop->apiHelper()->createScriptTag([]);
+        $this->assertInstanceOf(ResponseAccess::class, $data);
+    }
+
+    public function testDeleteScriptTag(): void
+    {
+        // Create a shop
+        $shop = factory($this->model)->create();
+
+        // Response stubbing
+        $this->setApiStub();
+        ApiStub::stubResponses(['empty']);
+
+        $this->assertInstanceOf(
+            ResponseAccess::class,
+            $shop->apiHelper()->deleteScriptTag(1)
         );
     }
 
@@ -108,9 +125,10 @@ class ApiHelperTest extends TestCase
         $this->setApiStub();
         ApiStub::stubResponses(['get_application_charge']);
 
-        $this->assertIsObject(
-            $shop->apiHelper()->getCharge(ChargeType::CHARGE(), new ChargeReference(1234))
-        );
+        $data = $shop->apiHelper()->getCharge(ChargeType::CHARGE(), ChargeReference::fromNative(1234));
+        $this->assertInstanceOf(ResponseAccess::class, $data);
+        $this->assertEquals('iPod Cleaning', $data->name);
+        $this->assertEquals('accepted', $data['status']);
     }
 
     public function testActivateCharge(): void
@@ -122,9 +140,9 @@ class ApiHelperTest extends TestCase
         $this->setApiStub();
         ApiStub::stubResponses(['post_recurring_application_charges_activate']);
 
-        $this->assertIsObject(
-            $shop->apiHelper()->activateCharge(ChargeType::RECURRING(), new ChargeReference(1234))
-        );
+        $data = $shop->apiHelper()->activateCharge(ChargeType::RECURRING(), ChargeReference::fromNative(1234));
+        $this->assertInstanceOf(ResponseAccess::class, $data);
+        $this->assertEquals('Super Mega Plan', $data['name']);
     }
 
     public function testCreateCharge(): void
@@ -136,20 +154,20 @@ class ApiHelperTest extends TestCase
         $this->setApiStub();
         ApiStub::stubResponses(['post_recurring_application_charges']);
 
-        $this->assertIsObject(
-            $shop->apiHelper()->createCharge(
-                ChargeType::RECURRING(),
-                new PlanDetailsTransfer(
-                    'Test',
-                    12.00,
-                    true,
-                    7,
-                    null,
-                    null,
-                    null
-                )
-            )
+        // Build the details object
+        $transfer = new PlanDetailsTransfer();
+        $transfer->name = 'Test';
+        $transfer->price = 12.00;
+        $transfer->interval = PlanInterval::EVERY_30_DAYS()->toNative();
+        $transfer->test = true;
+        $transfer->trialDays = 7;
+
+        $data = $shop->apiHelper()->createCharge(
+            ChargeType::RECURRING(),
+            $transfer
         );
+        $this->assertInstanceOf(ResponseAccess::class, $data);
+        $this->assertEquals('Basic Plan', $data['name']);
     }
 
     public function testGetWebhooks(): void
@@ -161,9 +179,9 @@ class ApiHelperTest extends TestCase
         $this->setApiStub();
         ApiStub::stubResponses(['get_webhooks']);
 
-        $this->assertIsArray(
-            $shop->apiHelper()->getWebhooks()
-        );
+        $data = $shop->apiHelper()->getWebhooks();
+        $this->assertInstanceOf(ResponseAccess::class, $data);
+        $this->assertTrue(count($data) > 0);
     }
 
     public function testCreateWebhook(): void
@@ -175,9 +193,9 @@ class ApiHelperTest extends TestCase
         $this->setApiStub();
         ApiStub::stubResponses(['post_webhook']);
 
-        $this->assertIsObject(
-            $shop->apiHelper()->createWebhook([])
-        );
+        $data = $shop->apiHelper()->createWebhook([]);
+        $this->assertInstanceOf(ResponseAccess::class, $data);
+        $this->assertEquals('app/uninstalled', $data['topic']);
     }
 
     public function testDeleteWebhook(): void
@@ -189,7 +207,8 @@ class ApiHelperTest extends TestCase
         $this->setApiStub();
         ApiStub::stubResponses(['empty']);
 
-        $this->assertIsObject(
+        $this->assertInstanceOf(
+            ResponseAccess::class,
             $shop->apiHelper()->deleteWebhook(1)
         );
     }
@@ -203,14 +222,13 @@ class ApiHelperTest extends TestCase
         $this->setApiStub();
         ApiStub::stubResponses(['post_recurring_application_charges_usage_charges']);
 
-        $tranfer = new UsageChargeDetailsTransfer();
-        $tranfer->chargeReference = new ChargeReference(1);
-        $tranfer->price = 12.00;
-        $tranfer->description = 'Hello!';
+        $transfer = new UsageChargeDetailsTransfer();
+        $transfer->chargeReference = ChargeReference::fromNative(1);
+        $transfer->price = 12.00;
+        $transfer->description = 'Hello!';
 
-        $this->assertIsObject(
-            $shop->apiHelper()->createUsageCharge($tranfer)
-        );
+        $data = $shop->apiHelper()->createUsageCharge($transfer);
+        $this->assertInstanceOf(ResponseAccess::class, $data);
     }
 
     public function testErrors(): void
@@ -225,5 +243,26 @@ class ApiHelperTest extends TestCase
         ApiStub::stubResponses(['empty_with_error']);
 
         $shop->apiHelper()->deleteWebhook(1);
+    }
+
+    public function testErrorsGraphQL(): void
+    {
+        $this->expectException(Exception::class);
+
+        // Create a shop
+        $shop = factory($this->model)->create();
+
+        // Response stubbing
+        $this->setApiStub();
+        ApiStub::stubResponses(['empty_with_error_graphql']);
+
+        $transfer = new PlanDetailsTransfer();
+        $transfer->name = 'Test';
+        $transfer->price = 12.00;
+        $transfer->interval = PlanInterval::ANNUAL()->toNative();
+        $transfer->test = true;
+        $transfer->trialDays = 7;
+
+        $shop->apiHelper()->createChargeGraphQL($transfer);
     }
 }

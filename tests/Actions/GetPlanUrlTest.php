@@ -17,7 +17,7 @@ class GetPlanUrlTest extends TestCase
         $this->action = $this->app->make(GetPlanUrl::class);
     }
 
-    public function testRun(): void
+    public function testRun30Days(): void
     {
         // Create a plan
         factory(Plan::class)->states(['installable', 'type_recurring'])->create();
@@ -28,6 +28,27 @@ class GetPlanUrlTest extends TestCase
         // Setup API stub
         $this->setApiStub();
         ApiStub::stubResponses(['post_recurring_application_charges']);
+
+        $result = call_user_func(
+            $this->action,
+            $shop->getId(),
+            NullablePlanId::fromNative(null)
+        );
+
+        $this->assertNotEmpty($result);
+    }
+
+    public function testRunAnnual(): void
+    {
+        // Create a plan
+        factory(Plan::class)->states(['installable', 'type_recurring', 'interval_annual'])->create();
+
+        // Create the shop with no plan
+        $shop = factory($this->model)->create();
+
+        // Setup API stub
+        $this->setApiStub();
+        ApiStub::stubResponses(['graphql_app_subscription_create']);
 
         $result = call_user_func(
             $this->action,

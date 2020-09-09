@@ -2,15 +2,15 @@
 
 namespace Osiset\ShopifyApp\Contracts;
 
-use stdClass;
-use Osiset\BasicShopifyAPI;
+use Osiset\BasicShopifyAPI\Session;
 use GuzzleHttp\Exception\RequestException;
+use Osiset\BasicShopifyAPI\ResponseAccess;
+use Osiset\BasicShopifyAPI\BasicShopifyAPI;
 use Osiset\ShopifyApp\Objects\Enums\AuthMode;
 use Osiset\ShopifyApp\Objects\Enums\ChargeType;
 use Osiset\ShopifyApp\Objects\Transfers\PlanDetails;
 use Osiset\ShopifyApp\Objects\Values\ChargeReference;
 use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails;
-use Osiset\ShopifyApp\Objects\Transfers\ApiSession as ApiSessionTransfer;
 
 /**
  * Reprecents the API helper.
@@ -20,11 +20,11 @@ interface ApiHelper
     /**
      * Create an API instance (without a context to a shop).
      *
-     * @param ApiSessionTransfer $session The shop API session details.
+     * @param Session $session The shop API session details.
      *
      * @return self
      */
-    public function make(ApiSessionTransfer $session = null);
+    public function make(Session $session = null);
 
     /**
      * Set an existing API instance.
@@ -66,9 +66,9 @@ interface ApiHelper
      *
      * @param string $code The code from the request.
      *
-     * @return object
+     * @return ResponseAccess
      */
-    public function getAccessData(string $code);
+    public function getAccessData(string $code): ResponseAccess;
 
     /**
      * Get the script tags for the shop.
@@ -77,9 +77,9 @@ interface ApiHelper
      *
      * @throws RequestException
      *
-     * @return array
+     * @return ResponseAccess
      */
-    public function getScriptTags(array $params = []): array;
+    public function getScriptTags(array $params = []): ResponseAccess;
 
     /**
      * Create a script tag for the shop.
@@ -88,9 +88,18 @@ interface ApiHelper
      *
      * @throws RequestException
      *
-     * @return stdClass
+     * @return ResponseAccess
      */
-    public function createScriptTag(array $payload): stdClass;
+    public function createScriptTag(array $payload): ResponseAccess;
+
+    /**
+     * Delete a script.
+     *
+     * @param int $scriptTagId The script tag ID to delete.
+     *
+     * @return void
+     */
+    public function deleteScriptTag(int $scriptTagId);
 
     /**
      * Get the charge record.
@@ -100,9 +109,9 @@ interface ApiHelper
      *
      * @throws RequestException
      *
-     * @return stdClass
+     * @return ResponseAccess
      */
-    public function getCharge(ChargeType $chargeType, ChargeReference $chargeRef): stdClass;
+    public function getCharge(ChargeType $chargeType, ChargeReference $chargeRef): ResponseAccess;
 
     /**
      * Activate a charge.
@@ -110,11 +119,11 @@ interface ApiHelper
      * @param ChargeType      $chargeType The type of charge (plural).
      * @param ChargeReference $chargeRef  The charge ID.
      *
-     * @throws RequestExcpetion
+     * @throws RequestException
      *
-     * @return stdClass
+     * @return ResponseAccess
      */
-    public function activateCharge(ChargeType $chargeType, ChargeReference $chargeRef): stdClass;
+    public function activateCharge(ChargeType $chargeType, ChargeReference $chargeRef): ResponseAccess;
 
     /**
      * Create a charge.
@@ -122,9 +131,18 @@ interface ApiHelper
      * @param ChargeType  $chargeType The type of charge (plural).
      * @param PlanDetails $payload    The data for the charge creation.
      *
-     * @return stdClass
+     * @return ResponseAccess
      */
-    public function createCharge(ChargeType $chargeType, PlanDetails $payload): stdClass;
+    public function createCharge(ChargeType $chargeType, PlanDetails $payload): ResponseAccess;
+
+    /**
+     * Create a charge using GraphQL.
+     *
+     * @param PlanDetails $payload    The data for the charge creation.
+     *
+     * @return ResponseAccess
+     */
+    public function createChargeGraphQL(PlanDetails $payload): ResponseAccess;
 
     /**
      * Get webhooks for the shop.
@@ -133,18 +151,18 @@ interface ApiHelper
      *
      * @throws RequestException
      *
-     * @return array
+     * @return ResponseAccess
      */
-    public function getWebhooks(array $params = []): array;
+    public function getWebhooks(array $params = []): ResponseAccess;
 
     /**
      * Create a webhook.
      *
      * @param array $payload The data for the webhook creation.
      *
-     * @return stdClass
+     * @return ResponseAccess
      */
-    public function createWebhook(array $payload): stdClass;
+    public function createWebhook(array $payload): ResponseAccess;
 
     /**
      * Delete a webhook.
@@ -153,14 +171,14 @@ interface ApiHelper
      *
      * @return void
      */
-    public function deleteWebhook(int $webhookId): stdClass;
+    public function deleteWebhook(int $webhookId);
 
     /**
      * Creates a usage charge for a recurring charge.
      *
      * @param UsageChargeDetails $payload The data for the usage charge creation.
      *
-     * @return object
+     * @return ResponseAccess|bool Array if success, bool for error.
      */
-    public function createUsageCharge(UsageChargeDetails $payload): stdClass;
+    public function createUsageCharge(UsageChargeDetails $payload);
 }

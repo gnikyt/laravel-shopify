@@ -20,7 +20,7 @@ class AuthorizeShopTest extends TestCase
     {
         $result = call_user_func(
             $this->action,
-            new ShopDomain('non-existant.myshopify.com'),
+            ShopDomain::fromNative('non-existant.myshopify.com'),
             null
         );
 

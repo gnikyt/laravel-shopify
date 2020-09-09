@@ -29,7 +29,7 @@ trait WebhookController
         $jobData = json_decode($request->getContent());
 
         $jobClass::dispatch(
-            new ShopDomain($request->header('x-shopify-shop-domain')),
+            ShopDomain::fromNative($request->header('x-shopify-shop-domain')),
             $jobData
         );
 

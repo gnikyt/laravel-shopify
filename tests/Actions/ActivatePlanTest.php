@@ -45,7 +45,7 @@ class ActivatePlanTest extends TestCase
             $this->action,
             $shop->getId(),
             $plan->getId(),
-            new ChargeReference(12345)
+            ChargeReference::fromNative(12345)
         );
 
         $this->assertInstanceOf(ChargeId::class, $result);

@@ -21,7 +21,7 @@ class CancelChargeTest extends TestCase
     public function testCancel(): void
     {
         // Create a charge reference
-        $chargeRef = new ChargeReference(123456);
+        $chargeRef = ChargeReference::fromNative(123456);
 
         // Create a plan
         $plan = factory(Plan::class)->states('type_recurring')->create();
@@ -48,7 +48,7 @@ class CancelChargeTest extends TestCase
         $this->expectException(ChargeNotRecurringOrOnetimeException::class);
 
         // Create a charge reference
-        $chargeRef = new ChargeReference(123456);
+        $chargeRef = ChargeReference::fromNative(123456);
 
         // Create a plan
         $plan = factory(Plan::class)->states('type_recurring')->create();

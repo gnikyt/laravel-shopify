@@ -11,6 +11,7 @@ use Osiset\ShopifyApp\Actions\AuthorizeShop;
 use Illuminate\Contracts\View\View as ViewView;
 use Osiset\ShopifyApp\Actions\AuthenticateShop;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
+use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
 
 /**
  * Responsible for authenticating the shop.
@@ -18,38 +19,25 @@ use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 trait AuthController
 {
     /**
-     * Index route which displays the login page.
-     *
-     * @param Request $request The HTTP request.
-     *
-     * @return ViewView
-     */
-    public function index(Request $request): ViewView
-    {
-        return View::make(
-            'shopify-app::auth.index',
-            ['shopDomain' => $request->query('shop')]
-        );
-    }
-
-    /**
      * Authenticating a shop.
      *
      * @param AuthenticateShop $authenticateShop The action for authorizing and authenticating a shop.
+     *
+     * @throws SignatureVerificationException
      *
      * @return ViewView|RedirectResponse
      */
     public function authenticate(Request $request, AuthenticateShop $authenticateShop)
     {
         // Get the shop domain
-        $shopDomain = new ShopDomain($request->get('shop'));
+        $shopDomain = ShopDomain::fromNative($request->get('shop'));
 
         // Run the action, returns [result object, result status]
         list($result, $status) = $authenticateShop($request);
 
         if ($status === null) {
-            // Go to login, something is wrong
-            return Redirect::route('login');
+            // Show exception, something is wrong
+            throw new SignatureVerificationException('Invalid HMAC verification');
         } elseif ($status === false) {
             // No code, redirect to auth URL
             return $this->oauthFailure($result->url, $shopDomain);
@@ -77,7 +65,7 @@ trait AuthController
     public function oauth(Request $request, AuthorizeShop $authShop): ViewView
     {
         // Setup
-        $shopDomain = new ShopDomain($request->get('shop'));
+        $shopDomain = ShopDomain::fromNative($request->get('shop'));
         $result = $authShop($shopDomain, null);
 
         // Redirect

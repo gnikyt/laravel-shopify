@@ -2,6 +2,7 @@
 
 namespace Osiset\ShopifyApp\Test\Traits;
 
+use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
 use Osiset\ShopifyApp\Test\TestCase;
 use Osiset\ShopifyApp\Services\ShopSession;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
@@ -19,12 +20,6 @@ class AuthControllerTest extends TestCase
 
         // Shop session helper
         $this->shopSession = $this->app->make(ShopSession::class);
-    }
-
-    public function testLoginRoute(): void
-    {
-        $response = $this->get('/login');
-        $response->assertStatus(200);
     }
 
     public function testAuthRedirectsToShopifyWhenNoCode(): void
@@ -58,22 +53,20 @@ class AuthControllerTest extends TestCase
         $response->assertRedirect();
     }
 
-    public function testAuthRedirectToLoginForBadHmac(): void
+    public function testAuthThrowExceptionForBadHmac(): void
     {
         // Stub the responses
         ApiStub::stubResponses(['access_token_grant']);
 
-        // HMAC for regular tests
-        $hmac = 'badhmac';
         $hmacParams = [
-            'hmac'      => $hmac,
+            'hmac'      => 'badhmac',
             'shop'      => 'example.myshopify.com',
             'code'      => '1234678',
             'timestamp' => '1337178173',
         ];
 
         $response = $this->call('get', '/authenticate', $hmacParams);
-        $response->assertRedirect();
+        $response->assertStatus(500);
     }
 
     public function testReturnToMethod(): void

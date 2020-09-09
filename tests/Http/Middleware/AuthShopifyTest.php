@@ -5,6 +5,7 @@ namespace Osiset\ShopifyApp\Test\Http\Middleware;
 use Closure;
 use Osiset\ShopifyApp\Test\TestCase;
 use Illuminate\Support\Facades\Request;
+use Osiset\ShopifyApp\Exceptions\MissingShopDomainException;
 use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
 use Osiset\ShopifyApp\Http\Middleware\AuthShopify as AuthShopifyMiddleware;
 use Osiset\ShopifyApp\Services\ShopSession;
@@ -237,8 +238,9 @@ class AuthShopifyTest extends TestCase
         // Create the shop
         $shop = factory($this->model)->create();
 
-        // Set a session token
+        // Set a session token and login shop
         $this->shopSession->setSessionToken('123abc');
+        $this->shopSession->make($shop->getDomain());
 
         // Run the middleware
         $currentRequest = Request::instance();
@@ -269,9 +271,10 @@ class AuthShopifyTest extends TestCase
 
     public function testLoginShopWithoutShopDomain(): void
     {
+        $this->expectException(MissingShopDomainException::class);
+
         // Now, invalidation should cause redirect
-        $result = $this->runAuth();
-        $this->assertFalse($result);
+        $this->runAuth();
     }
 
     public function testLoginShopWithExistingSession(): void

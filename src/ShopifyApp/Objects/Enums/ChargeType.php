@@ -9,6 +9,7 @@ use Funeralzone\ValueObjects\ValueObject;
  * API types for charges.
  *
  * @method static ChargeType RECURRING()
+ * @method static ChargeType CHARGE()
  * @method static ChargeType ONETIME()
  * @method static ChargeType USAGE()
  * @method static ChargeType CREDIT()
@@ -30,6 +31,13 @@ final class ChargeType implements ValueObject
      * @var int
      */
     public const CHARGE = 2;
+
+    /**
+     * Charge: Alias for onetime.
+     *
+     * @var int
+     */
+    public const ONETIME = 2;
 
     /**
      * Charge: Usage.

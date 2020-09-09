@@ -68,9 +68,9 @@ class ActivateUsageCharge
      *
      * @throws ChargeNotRecurringException
      *
-     * @return ChargeId
+     * @return ChargeId|bool
      */
-    public function __invoke(ShopId $shopId, UsageChargeDetailsTransfer $ucd): ChargeId
+    public function __invoke(ShopId $shopId, UsageChargeDetailsTransfer $ucd)
     {
         // Get the shop
         $shop = $this->shopQuery->getById($shopId);
@@ -84,13 +84,17 @@ class ActivateUsageCharge
         // Create the usage charge
         $ucd->chargeReference = $currentCharge->getReference();
         $response = $shop->apiHelper()->createUsageCharge($ucd);
+        if (!$response) {
+            // Could not make usage charge, limit possibily reached
+            return false;
+        }
 
         // Create the transder
         $uct = new UsageChargeTransfer();
         $uct->shopId = $shopId;
         $uct->planId = $shop->plan->getId();
-        $uct->chargeReference = new ChargeReference($response->id);
-        $uct->billingOn = new Carbon($response->billing_on);
+        $uct->chargeReference = ChargeReference::fromNative((int) $response['id']);
+        $uct->billingOn = new Carbon($response['billing_on']);
         $uct->details = $ucd;
 
         // Save the usage charge

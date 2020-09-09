@@ -3,20 +3,22 @@
 namespace Osiset\ShopifyApp\Services;
 
 use Closure;
-use GuzzleHttp\Exception\RequestException;
+use Exception;
 use Illuminate\Support\Facades\URL;
-use Osiset\BasicShopifyAPI;
-use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
+use Osiset\BasicShopifyAPI\Options;
+use Osiset\BasicShopifyAPI\Session;
+use GuzzleHttp\Exception\RequestException;
+use Osiset\BasicShopifyAPI\ResponseAccess;
+use Osiset\BasicShopifyAPI\BasicShopifyAPI;
+use Osiset\ShopifyApp\Objects\Enums\AuthMode;
 use Osiset\ShopifyApp\Exceptions\ApiException;
 use Osiset\ShopifyApp\Objects\Enums\ApiMethod;
-use Osiset\ShopifyApp\Objects\Enums\AuthMode;
+use Osiset\ShopifyApp\Traits\ConfigAccessible;
 use Osiset\ShopifyApp\Objects\Enums\ChargeType;
-use Osiset\ShopifyApp\Objects\Transfers\ApiSession as ApiSessionTransfer;
+use Osiset\ShopifyApp\Objects\Values\ChargeReference;
+use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use Osiset\ShopifyApp\Objects\Transfers\PlanDetails as PlanDetailsTransfer;
 use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
-use Osiset\ShopifyApp\Objects\Values\ChargeReference;
-use Osiset\ShopifyApp\Traits\ConfigAccessible;
-use stdClass;
 
 /**
  * Basic helper class for API calls to Shopify.
@@ -35,31 +37,36 @@ class ApiHelper implements IApiHelper
     /**
      * {@inheritdoc}
      */
-    public function make(ApiSessionTransfer $session = null): self
+    public function make(Session $session = null): self
     {
-        // Create the instance
-        $apiClass = $this->getConfig('api_class');
-        $this->api = new $apiClass();
-        $this->api
-            ->setApiKey($this->getConfig('api_key'))
-            ->setApiSecret($this->getConfig('api_secret'))
-            ->setVersion($this->getConfig('api_version'));
+        // Create the options
+        $opts = new Options();
+        $opts->setApiKey($this->getConfig('api_key'));
+        $opts->setApiSecret($this->getConfig('api_secret'));
+        $opts->setVersion($this->getConfig('api_version'));
 
-        // Enable basic rate limiting?
-        if ($this->getConfig('api_rate_limiting_enabled') === true) {
-            $this->api->enableRateLimiting(
-                $this->getConfig('api_rate_limit_cycle'),
-                $this->getConfig('api_rate_limit_cycle_buffer')
+        // Create the instance
+        if ($this->getConfig('api_init')) {
+            // User-defined init function
+            $this->api = call_user_func($this->getConfig('api_init'), $opts);
+        } else {
+            // Default init
+            $ts = $this->getConfig('api_time_store');
+            $ls = $this->getConfig('api_limit_store');
+            $sd = $this->getConfig('api_deferrer');
+
+            $this->api = new BasicShopifyAPI(
+                $opts,
+                new $ts(),
+                new $ls(),
+                new $sd()
             );
         }
 
         // Set session?
         if ($session !== null) {
             // Set the session to the shop's domain/token
-            $this->api->setSession(
-                $session->domain->toNative(),
-                $session->token->toNative()
-            );
+            $this->api->setSession($session);
         }
 
         return $this;
@@ -135,15 +142,16 @@ class ApiHelper implements IApiHelper
      *
      * @codeCoverageIgnore No need to retest.
      */
-    public function getAccessData(string $code)
+    public function getAccessData(string $code): ResponseAccess
     {
         return $this->api->requestAccess($code);
     }
 
     /**
      * {@inheritdoc}
+     * TODO: Convert to GraphQL.
      */
-    public function getScriptTags(array $params = []): array
+    public function getScriptTags(array $params = []): ResponseAccess
     {
         // Setup the params
         $reqParams = array_merge(
@@ -161,13 +169,14 @@ class ApiHelper implements IApiHelper
             $reqParams
         );
 
-        return $response->body->script_tags;
+        return $response['body']['script_tags'];
     }
 
     /**
      * {@inheritdoc}
+     * TODO: Convert to GraphQL.
      */
-    public function createScriptTag(array $payload): stdClass
+    public function createScriptTag(array $payload): ResponseAccess
     {
         // Fire the request
         $response = $this->doRequest(
@@ -176,13 +185,31 @@ class ApiHelper implements IApiHelper
             ['script_tag' => $payload]
         );
 
-        return $response->body;
+        return $response['body'];
+    }
+
+
+
+    /**
+     * {@inheritdoc}
+     * TODO: Convert to GraphQL.
+     */
+    public function deleteScriptTag(int $scriptTagId): ResponseAccess
+    {
+        // Fire the request
+        $response = $this->doRequest(
+            ApiMethod::DELETE(),
+            "/admin/script_tags/{$scriptTagId}.json"
+        );
+
+        return $response['body'];
     }
 
     /**
      * {@inheritdoc}
+     * TODO: Convert to GraphQL.
      */
-    public function getCharge(ChargeType $chargeType, ChargeReference $chargeRef): stdClass
+    public function getCharge(ChargeType $chargeType, ChargeReference $chargeRef): ResponseAccess
     {
         // API path
         $typeString = $this->chargeApiPath($chargeType);
@@ -193,13 +220,14 @@ class ApiHelper implements IApiHelper
             "/admin/{$typeString}s/{$chargeRef->toNative()}.json"
         );
 
-        return $response->body->{$typeString};
+        return $response['body'][$typeString];
     }
 
     /**
      * {@inheritdoc}
+     * TODO: Convert to GraphQL.
      */
-    public function activateCharge(ChargeType $chargeType, ChargeReference $chargeRef): stdClass
+    public function activateCharge(ChargeType $chargeType, ChargeReference $chargeRef): ResponseAccess
     {
         // API path
         $typeString = $this->chargeApiPath($chargeType);
@@ -210,13 +238,14 @@ class ApiHelper implements IApiHelper
             "/admin/{$typeString}s/{$chargeRef->toNative()}/activate.json"
         );
 
-        return $response->body->{$typeString};
+        return $response['body'][$typeString];
     }
 
     /**
      * {@inheritdoc}
+     * TODO: Convert to GraphQL (merge createChargeGraphQL).
      */
-    public function createCharge(ChargeType $chargeType, PlanDetailsTransfer $payload): stdClass
+    public function createCharge(ChargeType $chargeType, PlanDetailsTransfer $payload): ResponseAccess
     {
         // API path
         $typeString = $this->chargeApiPath($chargeType);
@@ -228,13 +257,71 @@ class ApiHelper implements IApiHelper
             [$typeString => $payload->toArray()]
         );
 
-        return $response->body->{$typeString};
+        return $response['body'][$typeString];
     }
 
     /**
      * {@inheritdoc}
+     * @throws Exception
      */
-    public function getWebhooks(array $params = []): array
+    public function createChargeGraphQL(PlanDetailsTransfer $payload): ResponseAccess
+    {
+        $query = '
+        mutation appSubscriptionCreate(
+            $name: String!,
+            $returnUrl: URL!,
+            $trialDays: Int,
+            $test: Boolean,
+            $lineItems: [AppSubscriptionLineItemInput!]!
+        ) {
+            appSubscriptionCreate(
+                name: $name,
+                returnUrl: $returnUrl,
+                trialDays: $trialDays,
+                test: $test,
+                lineItems: $lineItems
+            ) {
+                appSubscription {
+                    id
+                }
+                confirmationUrl
+                userErrors {
+                    field
+                    message
+                }
+            }
+        }
+        ';
+        $variables = [
+            'name'      => $payload->name,
+            'returnUrl' => $payload->returnUrl,
+            'trialDays' => $payload->trialDays,
+            'test'      => $payload->test,
+            'lineItems' => [
+                [
+                    'plan' => [
+                        'appRecurringPricingDetails' => [
+                            'price'    => [
+                                'amount'       => $payload->price,
+                                'currencyCode' => 'USD',
+                            ],
+                            'interval' => $payload->interval,
+                        ],
+                    ]
+                ]
+            ],
+        ];
+
+        $response = $this->doRequestGraphQL($query, $variables);
+
+        return $response['body']['data']['appSubscriptionCreate'];
+    }
+
+    /**
+     * {@inheritdoc}
+     * TODO: Convert to GraphQL.
+     */
+    public function getWebhooks(array $params = []): ResponseAccess
     {
         // Setup the params
         $reqParams = array_merge(
@@ -252,13 +339,14 @@ class ApiHelper implements IApiHelper
             $reqParams
         );
 
-        return $response->body->webhooks;
+        return $response['body']['webhooks'];
     }
 
     /**
      * {@inheritdoc}
+     * TODO: Convert to GraphQL.
      */
-    public function createWebhook(array $payload): stdClass
+    public function createWebhook(array $payload): ResponseAccess
     {
         // Fire the request
         $response = $this->doRequest(
@@ -267,13 +355,14 @@ class ApiHelper implements IApiHelper
             ['webhook' => $payload]
         );
 
-        return $response->body->webhook;
+        return $response['body']['webhook'];
     }
 
     /**
      * {@inheritdoc}
+     * TODO: Convert to GraphQL.
      */
-    public function deleteWebhook(int $webhookId): stdClass
+    public function deleteWebhook(int $webhookId): ResponseAccess
     {
         // Fire the request
         $response = $this->doRequest(
@@ -281,13 +370,14 @@ class ApiHelper implements IApiHelper
             "/admin/webhooks/{$webhookId}.json"
         );
 
-        return $response->body;
+        return $response['body'];
     }
 
     /**
      * {@inheritdoc}
+     * TODO: Convert to GraphQL.
      */
-    public function createUsageCharge(UsageChargeDetailsTransfer $payload): stdClass
+    public function createUsageCharge(UsageChargeDetailsTransfer $payload)
     {
         // Fire the request
         $response = $this->doRequest(
@@ -301,7 +391,8 @@ class ApiHelper implements IApiHelper
             ]
         );
 
-        return $response->body->usage_charge;
+        return isset($response['body']) && isset($response['body']['usage_charge'])
+            ? $response['body']['usage_charge'] : false;
     }
 
     /**
@@ -314,9 +405,13 @@ class ApiHelper implements IApiHelper
     protected function chargeApiPath(ChargeType $chargeType): string
     {
         // Convert to API path
-        $format = $chargeType->isSame(ChargeType::RECURRING()) ?
-            '%s_application_charge' :
-            'application_%s';
+        if ($chargeType->isSame(ChargeType::RECURRING())) {
+            $format =  '%s_application_charge';
+        } elseif ($chargeType->isSame(ChargeType::CHARGE())) {
+            $format = 'application_charge';
+        } else {
+            $format = 'application_%s';
+        }
 
         return sprintf($format, strtolower($chargeType->toNative()));
     }
@@ -324,24 +419,48 @@ class ApiHelper implements IApiHelper
     /**
      * Fire the request using the API instance.
      *
-     * @param ApiMode $method  The HTTP method.
-     * @param string  $path    The endpoint path.
-     * @param array   $payload The optional payload to send to the endpoint.
+     * @param ApiMethod $method  The HTTP method.
+     * @param string    $path    The endpoint path.
+     * @param array     $payload The optional payload to send to the endpoint.
      *
      * @throws RequestException
      *
-     * @return stdClass
+     * @return array
      */
     protected function doRequest(ApiMethod $method, string $path, array $payload = null)
     {
         $response = $this->api->rest($method->toNative(), $path, $payload);
-        if (property_exists($response, 'errors') && $response->errors === true) {
+        if ($response['errors'] === true) {
             // Request error somewhere, throw the exception
             throw new ApiException(
-                is_string($response->body) ? $response->body : 'Unknown error',
+                is_string($response['body']) ? $response['body'] : 'Unknown error',
                 0,
-                $response->exception
+                $response['exception']
             );
+        }
+
+        return $response;
+    }
+
+    /**
+     * Fire the request using the GraphQL API Instance.
+     *
+     * @param string $query   The query of GraphQL
+     * @param array  $payload The option payload to using on the query
+     *
+     * @throws Exception
+     *
+     * @return array
+     */
+    protected function doRequestGraphQL(string $query, array $payload = null)
+    {
+        $response = $this->api->graph($query, $payload);
+        if ($response['errors'] !== false) {
+            $message = is_array($response['errors'])
+                ? $response['errors'][0]['message'] : $response['errors'];
+
+            // Request error somewhere, throw the exception
+            throw new Exception($message);
         }
 
         return $response;

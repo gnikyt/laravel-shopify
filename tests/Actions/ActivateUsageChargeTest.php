@@ -86,4 +86,40 @@ class ActivateUsageChargeTest extends TestCase
             $ucd
         );
     }
+
+    public function testRunWithLimitReached(): void
+    {
+        // Create a plan
+        $plan = factory(Plan::class)->states('type_recurring')->create();
+
+        // Create the shop with the plan attached
+        $shop = factory($this->model)->create([
+            'plan_id' => $plan->getId()->toNative()
+        ]);
+
+        // Create a charge for the plan and shop
+        factory(Charge::class)->states('type_recurring')->create([
+            'charge_id' => 12345,
+            'plan_id'   => $plan->getId()->toNative(),
+            'user_id'   => $shop->getId()->toNative()
+        ]);
+
+        // Create the transfer
+        $ucd = new UsageChargeDetails();
+        $ucd->price = 12.00;
+        $ucd->description = 'Hello!';
+
+        // Setup API stub
+        $this->setApiStub();
+        ApiStub::stubResponses(['empty']);
+
+        // Activate the charge
+        $result = call_user_func(
+            $this->action,
+            $shop->getId(),
+            $ucd
+        );
+
+        $this->assertFalse($result);
+    }
 }
