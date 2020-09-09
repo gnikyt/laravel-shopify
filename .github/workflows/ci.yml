@@ -12,17 +12,17 @@ jobs:
         php-versions: ['7.2', '7.3', '7.4']
         laravel-versions: ['5.8', '6.0', '7.0', '8.0']
         include:
-            - laravel-versions: 8.*
+            - laravel-versions: 8.0
               testbench: 6.*
-            - laravel-versions: 7.*
+            - laravel-versions: 7.0
               testbench: 5.*
-            - laravel-versions: 6.*
+            - laravel-versions: 6.0
               testbench: 4.*
-            - laravel-versions: 5.8.*
+            - laravel-versions: 5.8
               testbench: 3.8.*
         exclude:
             - php-versions: 7.4
-              laravel-versions: 5.8.*
+              laravel-versions: 5.8
 
     name: PHP ${{ matrix.php-versions }} / Laravel ${{ matrix.laravel-versions }}
 
