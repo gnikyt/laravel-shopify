@@ -13,13 +13,13 @@ jobs:
         laravel: ['5.8', '6.0', '7.0', '8.0']
         include:
             - laravel: 8.0
-              orchestra-testbench: 6.*
+              testbench: 6.*
             - laravel: 7.0
-              orchestra-testbench: 5.*
+              testbench: 5.*
             - laravel: 6.0
-              orchestra-testbench: 4.*
+              testbench: 4.*
             - laravel: 5.8
-              orchestra-testbench: 3.8.*
+              testbench: 3.8.*
         exclude:
             - php: 7.4
               laravel: 5.8
@@ -42,8 +42,8 @@ jobs:
     - name: Validate composer setup
       run: composer validate
 
-    - name: Install Laravel and orchestra-testbench
-      run: composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/orchestra-testbench:${{ matrix.orchestra-testbench }}" --no-interaction --no-update
+    - name: Install Laravel and Orechestra Testbench
+      run: composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest
