@@ -23,6 +23,8 @@ jobs:
         exclude:
             - php-versions: 7.4
               laravel-versions: 5.8
+            - php-versions: 7.2
+              laravel-versions: 8.0
 
     name: PHP ${{ matrix.php-versions }} / Laravel ${{ matrix.laravel-versions }}
 
