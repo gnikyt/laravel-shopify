@@ -41,7 +41,7 @@ jobs:
       run: composer validate
 
     - name: Install Laravel and Testbench
-      run: composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
+      run: composer require "laravel/framework:${{ matrix.laravel-versions }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest
