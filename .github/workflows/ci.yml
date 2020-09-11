@@ -14,7 +14,6 @@ jobs:
         include:
             - laravel: 8.0
               testbench: 6.*
-              legacy: "laravel/legacy-factories:^1.0.4"
             - laravel: 7.0
               testbench: 5.*
             - laravel: 6.0
@@ -43,8 +42,12 @@ jobs:
     - name: Validate composer setup
       run: composer validate --strict
 
-    - name: Install Laravel and Orechestra Testbench
-      run: composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" ${{ matrix.legacy }} --no-interaction --no-update
+    - name: Install Laravel and Orchestra Testbench
+      run: composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
+
+    - name: Install Laravel legacy factories support
+      if: matrix.laravel == '8.0'
+      run: composer require "laravel/legacy-factories:^1.0" --no-interaction --no-update
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest
