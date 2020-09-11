@@ -49,7 +49,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
-        "test": "bin/phpunit"
+        "test": "vendor/bin/phpunit"
     },
     "support": {
         "issues": "https://github.com/osiset/laravel-shopify/issues",
