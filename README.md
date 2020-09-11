@@ -73,6 +73,7 @@ Currently this repository is maintained by:
 
 - [@osiset](https://github.com/osiset)
 - [@kyon147](https://github.com/kyon147)
+- [@lucasmichot](https://github.com/lucasmichot)
 
 Looking to become a maintainer? E-mail @osiset directly.
 
