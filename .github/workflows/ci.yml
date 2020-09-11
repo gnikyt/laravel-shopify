@@ -41,13 +41,16 @@ jobs:
         tools: composer
 
     - name: Validate composer setup
-      run: composer validate
+      run: composer validate --strict
 
     - name: Install Laravel and Orechestra Testbench
       run: composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" ${{ matrix.legacy }} --no-interaction --no-update
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest
+
+    - name: Normalize composer file
+      run: composer normalize --dry-run
 
     - name: Validate code style
       run: |
