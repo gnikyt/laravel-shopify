@@ -55,10 +55,10 @@ jobs:
     - name: Validate code style
       run: |
         composer require "squizlabs/php_codesniffer=*"
-        bin/phpcs --standard="phpcs.xml" .
+        vendor/bin/phpcs --standard="phpcs.xml" .
 
     - name: Run test suite
-      run: composer run-script test
+      run: vendor/bin/phpunit
 
     - name: Upload coverage results
       if: matrix.php == '7.4' && matrix.laravel == '7.0'
@@ -66,4 +66,4 @@ jobs:
         COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         composer require cedx/coveralls
-        bin/coveralls build/logs/clover.xml
+        vendor/bin/coveralls build/logs/clover.xml
