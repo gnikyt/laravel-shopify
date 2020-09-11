@@ -10,8 +10,10 @@ use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 
 class ShopSessionTest extends TestCase
 {
+    /**
+     * @var \Osiset\ShopifyApp\Services\ShopSession
+     */
     protected $shopSession;
-    protected $model;
 
     public function setUp(): void
     {

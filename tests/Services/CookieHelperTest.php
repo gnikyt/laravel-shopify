@@ -7,8 +7,19 @@ use Osiset\ShopifyApp\Test\TestCase;
 
 class CookieHelperTest extends TestCase
 {
+    /**
+     * @var array
+     */
     protected $incompatibleUserAgents;
+
+    /**
+     * @var array
+     */
     protected $compatibleUserAgents;
+
+    /**
+     * @var array
+     */
     protected $badUserAgents;
 
     public function setUp(): void

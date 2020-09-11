@@ -18,6 +18,9 @@ use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetails
 
 class ChargeTest extends TestCase
 {
+    /**
+     * @var \Osiset\ShopifyApp\Contracts\Commands\Charge
+     */
     protected $command;
 
     public function setUp(): void
