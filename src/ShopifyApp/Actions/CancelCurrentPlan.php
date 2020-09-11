@@ -40,7 +40,7 @@ class CancelCurrentPlan
      * @param IChargeCommand $chargeCommand The commands for charges.
      * @param ChargeHelper   $chargeType    The charge helper.
      *
-     * @return self
+     * @return void
      */
     public function __construct(IShopQuery $shopQuery, IChargeCommand $chargeCommand, ChargeHelper $chargeHelper)
     {

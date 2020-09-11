@@ -66,7 +66,7 @@ final class UsageCharge extends AbstractTransfer
     /**
      * Constructor.
      *
-     * @return self
+     * @return void
      */
     public function __construct()
     {

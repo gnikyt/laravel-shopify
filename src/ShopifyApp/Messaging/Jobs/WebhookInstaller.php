@@ -46,7 +46,7 @@ class WebhookInstaller implements ShouldQueue
      * @param string $createWebhooksAction Action for creating webhooks.
      * @param array  $configWebhooks       The webhooks to add.
      *
-     * @return self
+     * @return void
      */
     public function __construct(ShopId $shopId, callable $createWebhooksAction, array $configWebhooks)
     {

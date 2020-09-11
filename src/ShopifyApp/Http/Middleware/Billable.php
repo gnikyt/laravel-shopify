@@ -28,7 +28,7 @@ class Billable
      *
      * @param ShopSession $shopSession The shop session helper.
      *
-     * @return self
+     * @return void
      */
     public function __construct(ShopSession $shopSession)
     {

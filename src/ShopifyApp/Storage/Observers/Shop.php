@@ -25,7 +25,7 @@ class Shop
      *
      * @param IShopCommand $shopCommand The commands for shop.
      *
-     * @return self
+     * @return void
      */
     public function __construct(IShopCommand $shopCommand)
     {

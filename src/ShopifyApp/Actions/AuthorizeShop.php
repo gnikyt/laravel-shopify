@@ -45,7 +45,7 @@ class AuthorizeShop
      * @param IShopQuery  $shopQuery   The querier for the shop.
      * @param ShopSession $shopSession The shop session handler.
      *
-     * @return self
+     * @return void
      */
     public function __construct(
         IShopQuery $shopQuery,

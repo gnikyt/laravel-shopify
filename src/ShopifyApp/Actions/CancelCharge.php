@@ -34,7 +34,7 @@ class CancelCharge
      * @param IChargeCommand $chargeCommand The commands for charges.
      * @param ChargeHelper   $chargeHelper  The charge helper.
      *
-     * @return self
+     * @return void
      */
     public function __construct(IChargeCommand $chargeCommand, ChargeHelper $chargeHelper)
     {

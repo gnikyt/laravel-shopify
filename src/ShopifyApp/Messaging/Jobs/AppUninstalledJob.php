@@ -43,7 +43,7 @@ class AppUninstalledJob implements ShouldQueue
      * @param ShopDomain $domain  The shop domain.
      * @param stdClass   $data   The webhook data (JSON decoded).
      *
-     * @return self
+     * @return void
      */
     public function __construct(ShopDomain $domain, stdClass $data)
     {

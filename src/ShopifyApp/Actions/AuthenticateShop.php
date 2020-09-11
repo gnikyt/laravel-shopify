@@ -67,7 +67,7 @@ class AuthenticateShop
      * @param DispatchWebhooks $dispatchWebhooksAction The action for dispatching webhooks.
      * @param AfterAuthorize   $afterAuthorizeAction   The action for after authorize actions.
      *
-     * @return self
+     * @return void
      */
     public function __construct(
         ShopSession $shopSession,
