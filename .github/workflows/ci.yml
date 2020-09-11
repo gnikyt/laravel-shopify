@@ -46,7 +46,7 @@ jobs:
       run: composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
 
     - name: Install Laravel legacy factories support
-      if: matrix.php == '7.2' && matrix.laravel == '8.0'
+      if: matrix.php > '7.2' && matrix.laravel == '8.0'
       run: composer require "laravel/legacy-factories:^1.0" --no-interaction --no-update
 
     - name: Install dependencies
