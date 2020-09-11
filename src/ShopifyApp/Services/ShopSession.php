@@ -2,23 +2,22 @@
 
 namespace Osiset\ShopifyApp\Services;
 
-use stdClass;
-use Illuminate\Support\Carbon;
 use Illuminate\Auth\AuthManager;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Session;
-use Osiset\BasicShopifyAPI\ResponseAccess;
 use Osiset\BasicShopifyAPI\BasicShopifyAPI;
-use Osiset\ShopifyApp\Objects\Enums\AuthMode;
-use Osiset\ShopifyApp\Traits\ConfigAccessible;
-use Osiset\ShopifyApp\Objects\Values\ShopDomain;
-use Osiset\ShopifyApp\Objects\Values\AccessToken;
+use Osiset\BasicShopifyAPI\ResponseAccess;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
-use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
-use Osiset\ShopifyApp\Objects\Values\NullableAccessToken;
-use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
-use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
 use Osiset\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
+use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
+use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
+use Osiset\ShopifyApp\Objects\Enums\AuthMode;
+use Osiset\ShopifyApp\Objects\Values\AccessToken;
+use Osiset\ShopifyApp\Objects\Values\NullableAccessToken;
+use Osiset\ShopifyApp\Objects\Values\ShopDomain;
+use Osiset\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Responsible for handling session retreival and storage.
@@ -131,7 +130,7 @@ class ShopSession
     {
         // Get the shop
         $shop = $this->shopQuery->getByDomain($domain, [], true);
-        if (!$shop) {
+        if (! $shop) {
             return false;
         }
 
@@ -218,6 +217,7 @@ class ShopSession
     public function setSessionToken(string $token): self
     {
         $this->sessionSet(self::SESSION_TOKEN, $token);
+
         return $this;
     }
 
@@ -340,10 +340,10 @@ class ShopSession
         $currentToken = $this->getToken(true);
         $currentDomain = $currentShop->getDomain();
 
-        $baseValid = !$currentToken->isEmpty() && !$currentDomain->isNull();
+        $baseValid = ! $currentToken->isEmpty() && ! $currentDomain->isNull();
         if ($this->getUser() !== null) {
             // Handle validation of per-user
-            return $baseValid && !$this->isUserExpired();
+            return $baseValid && ! $this->isUserExpired();
         }
 
         // Handle validation of standard

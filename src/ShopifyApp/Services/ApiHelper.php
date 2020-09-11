@@ -4,21 +4,21 @@ namespace Osiset\ShopifyApp\Services;
 
 use Closure;
 use Exception;
-use Illuminate\Support\Facades\URL;
-use Osiset\BasicShopifyAPI\Options;
-use Osiset\BasicShopifyAPI\Session;
 use GuzzleHttp\Exception\RequestException;
-use Osiset\BasicShopifyAPI\ResponseAccess;
+use Illuminate\Support\Facades\URL;
 use Osiset\BasicShopifyAPI\BasicShopifyAPI;
-use Osiset\ShopifyApp\Objects\Enums\AuthMode;
+use Osiset\BasicShopifyAPI\Options;
+use Osiset\BasicShopifyAPI\ResponseAccess;
+use Osiset\BasicShopifyAPI\Session;
+use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use Osiset\ShopifyApp\Exceptions\ApiException;
 use Osiset\ShopifyApp\Objects\Enums\ApiMethod;
-use Osiset\ShopifyApp\Traits\ConfigAccessible;
+use Osiset\ShopifyApp\Objects\Enums\AuthMode;
 use Osiset\ShopifyApp\Objects\Enums\ChargeType;
-use Osiset\ShopifyApp\Objects\Values\ChargeReference;
-use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use Osiset\ShopifyApp\Objects\Transfers\PlanDetails as PlanDetailsTransfer;
 use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
+use Osiset\ShopifyApp\Objects\Values\ChargeReference;
+use Osiset\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Basic helper class for API calls to Shopify.
@@ -188,8 +188,6 @@ class ApiHelper implements IApiHelper
         return $response['body'];
     }
 
-
-
     /**
      * {@inheritdoc}
      * TODO: Convert to GraphQL.
@@ -307,8 +305,8 @@ class ApiHelper implements IApiHelper
                             ],
                             'interval' => $payload->interval,
                         ],
-                    ]
-                ]
+                    ],
+                ],
             ],
         ];
 
@@ -406,7 +404,7 @@ class ApiHelper implements IApiHelper
     {
         // Convert to API path
         if ($chargeType->isSame(ChargeType::RECURRING())) {
-            $format =  '%s_application_charge';
+            $format = '%s_application_charge';
         } elseif ($chargeType->isSame(ChargeType::CHARGE())) {
             $format = 'application_charge';
         } else {

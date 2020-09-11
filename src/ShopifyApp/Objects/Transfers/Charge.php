@@ -21,11 +21,11 @@ final class Charge extends AbstractTransfer
      */
     public $shopId;
 
-     /**
-      * Plan ID.
-      *
-      * @var PlanId
-      */
+    /**
+     * Plan ID.
+     *
+     * @var PlanId
+     */
     public $planId;
 
     /**
@@ -45,7 +45,7 @@ final class Charge extends AbstractTransfer
     /**
      * Charge status.
      *
-     * @var ChargeStatus $chargeStatus
+     * @var ChargeStatus
      */
     public $chargeStatus;
 

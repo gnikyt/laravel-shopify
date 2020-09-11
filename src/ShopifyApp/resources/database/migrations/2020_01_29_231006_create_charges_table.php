@@ -107,6 +107,7 @@ class CreateChargesTable extends Migration
     private function getLaravelVersion()
     {
         $version = Application::VERSION;
+
         return (float) substr($version, 0, strrpos($version, '.'));
     }
 }

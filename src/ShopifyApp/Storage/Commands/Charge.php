@@ -5,13 +5,13 @@ namespace Osiset\ShopifyApp\Storage\Commands;
 use Illuminate\Support\Carbon;
 use Osiset\ShopifyApp\Contracts\Commands\Charge as ChargeCommand;
 use Osiset\ShopifyApp\Contracts\Queries\Charge as ChargeQuery;
-use Osiset\ShopifyApp\Storage\Models\Charge as ChargeModel;
 use Osiset\ShopifyApp\Objects\Enums\ChargeStatus;
 use Osiset\ShopifyApp\Objects\Transfers\Charge as ChargeTransfer;
 use Osiset\ShopifyApp\Objects\Transfers\UsageCharge as UsageChargeTransfer;
 use Osiset\ShopifyApp\Objects\Values\ChargeId;
 use Osiset\ShopifyApp\Objects\Values\ChargeReference;
 use Osiset\ShopifyApp\Objects\Values\ShopId;
+use Osiset\ShopifyApp\Storage\Models\Charge as ChargeModel;
 
 /**
  * Reprecents the commands for charges.

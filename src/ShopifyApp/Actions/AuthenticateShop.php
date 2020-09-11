@@ -3,12 +3,9 @@
 namespace Osiset\ShopifyApp\Actions;
 
 use Illuminate\Http\Request;
-use Osiset\ShopifyApp\Services\ShopSession;
-use Osiset\ShopifyApp\Actions\AfterAuthorize;
-use Osiset\ShopifyApp\Actions\DispatchScripts;
-use Osiset\ShopifyApp\Actions\DispatchWebhooks;
-use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
+use Osiset\ShopifyApp\Objects\Values\ShopDomain;
+use Osiset\ShopifyApp\Services\ShopSession;
 
 /**
  * Authenticates a shop and fires post authentication actions.
@@ -100,14 +97,14 @@ class AuthenticateShop
 
         // Run the check
         $result = call_user_func($this->authorizeShopAction, $shopDomain, $code);
-        if (!$result->completed) {
+        if (! $result->completed) {
             // No code, redirect to auth URL
             return [$result, false];
         }
 
         // Determine if the HMAC is correct
         $this->apiHelper->make();
-        if (!$this->apiHelper->verifyRequest($request->all())) {
+        if (! $this->apiHelper->verifyRequest($request->all())) {
             // Throw exception, something is wrong
             return [$result, null];
         }

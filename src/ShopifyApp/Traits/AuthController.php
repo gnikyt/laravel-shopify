@@ -2,16 +2,16 @@
 
 namespace Osiset\ShopifyApp\Traits;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\View;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Redirect;
-use Osiset\ShopifyApp\Actions\AuthorizeShop;
 use Illuminate\Contracts\View\View as ViewView;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\View;
 use Osiset\ShopifyApp\Actions\AuthenticateShop;
-use Osiset\ShopifyApp\Objects\Values\ShopDomain;
+use Osiset\ShopifyApp\Actions\AuthorizeShop;
 use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
+use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 
 /**
  * Responsible for authenticating the shop.
@@ -33,7 +33,7 @@ trait AuthController
         $shopDomain = ShopDomain::fromNative($request->get('shop'));
 
         // Run the action, returns [result object, result status]
-        list($result, $status) = $authenticateShop($request);
+        [$result, $status] = $authenticateShop($request);
 
         if ($status === null) {
             // Show exception, something is wrong
@@ -46,6 +46,7 @@ trait AuthController
             $return_to = Session::get('return_to');
             if ($return_to) {
                 Session::forget('return_to');
+
                 return Redirect::to($return_to);
             }
 

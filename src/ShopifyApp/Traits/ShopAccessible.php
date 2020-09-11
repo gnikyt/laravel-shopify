@@ -26,6 +26,7 @@ trait ShopAccessible
     public function setShop(IShopModel $shop): self
     {
         $this->shop = $shop;
+
         return $this;
     }
 }

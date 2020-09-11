@@ -3,16 +3,16 @@
 namespace Osiset\ShopifyApp\Actions;
 
 use Illuminate\Support\Carbon;
-use Osiset\ShopifyApp\Objects\Values\ShopId;
-use Osiset\ShopifyApp\Services\ChargeHelper;
-use Osiset\ShopifyApp\Objects\Values\ChargeId;
-use Osiset\ShopifyApp\Objects\Enums\ChargeType;
-use Osiset\ShopifyApp\Objects\Values\ChargeReference;
+use Osiset\ShopifyApp\Contracts\Commands\Charge as IChargeCommand;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use Osiset\ShopifyApp\Exceptions\ChargeNotRecurringException;
-use Osiset\ShopifyApp\Contracts\Commands\Charge as IChargeCommand;
+use Osiset\ShopifyApp\Objects\Enums\ChargeType;
 use Osiset\ShopifyApp\Objects\Transfers\UsageCharge as UsageChargeTransfer;
 use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
+use Osiset\ShopifyApp\Objects\Values\ChargeId;
+use Osiset\ShopifyApp\Objects\Values\ChargeReference;
+use Osiset\ShopifyApp\Objects\Values\ShopId;
+use Osiset\ShopifyApp\Services\ChargeHelper;
 
 /**
  * Activates a usage charge for a shop.
@@ -77,14 +77,14 @@ class ActivateUsageCharge
 
         // Ensure we have a recurring charge
         $currentCharge = $this->chargeHelper->chargeForPlan($shop->plan->getId(), $shop);
-        if (!$currentCharge->isType(ChargeType::RECURRING())) {
+        if (! $currentCharge->isType(ChargeType::RECURRING())) {
             throw new ChargeNotRecurringException('Can only create usage charges for recurring charge.');
         }
 
         // Create the usage charge
         $ucd->chargeReference = $currentCharge->getReference();
         $response = $shop->apiHelper()->createUsageCharge($ucd);
-        if (!$response) {
+        if (! $response) {
             // Could not make usage charge, limit possibily reached
             return false;
         }

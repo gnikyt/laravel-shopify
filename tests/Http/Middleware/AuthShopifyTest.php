@@ -3,12 +3,12 @@
 namespace Osiset\ShopifyApp\Test\Http\Middleware;
 
 use Closure;
-use Osiset\ShopifyApp\Test\TestCase;
 use Illuminate\Support\Facades\Request;
 use Osiset\ShopifyApp\Exceptions\MissingShopDomainException;
 use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
 use Osiset\ShopifyApp\Http\Middleware\AuthShopify as AuthShopifyMiddleware;
 use Osiset\ShopifyApp\Services\ShopSession;
+use Osiset\ShopifyApp\Test\TestCase;
 
 class AuthShopifyTest extends TestCase
 {

@@ -3,8 +3,6 @@
 namespace Osiset\ShopifyApp\Exceptions;
 
 use Exception;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
 use Osiset\ShopifyApp\Traits\ConfigAccessible;
 
 /**

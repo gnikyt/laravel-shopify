@@ -2,10 +2,10 @@
 
 namespace Osiset\ShopifyApp\Test\Actions;
 
-use Osiset\ShopifyApp\Test\TestCase;
 use Illuminate\Support\Facades\Request;
 use Osiset\ShopifyApp\Actions\AuthenticateShop;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
+use Osiset\ShopifyApp\Test\TestCase;
 
 class AuthenticateShopTest extends TestCase
 {
@@ -44,7 +44,7 @@ class AuthenticateShopTest extends TestCase
         Request::swap($newRequest);
 
         // Run the action
-        list($result, $status) = call_user_func($this->action, $newRequest);
+        [$result, $status] = call_user_func($this->action, $newRequest);
 
         $this->assertFalse($status);
     }
@@ -81,7 +81,7 @@ class AuthenticateShopTest extends TestCase
         ApiStub::stubResponses(['access_token']);
 
         // Run the action
-        list($result, $status) = call_user_func($this->action, $newRequest);
+        [$result, $status] = call_user_func($this->action, $newRequest);
 
         $this->assertNull($status);
     }
@@ -118,7 +118,7 @@ class AuthenticateShopTest extends TestCase
         ApiStub::stubResponses(['access_token']);
 
         // Run the action
-        list($result, $status) = call_user_func($this->action, $newRequest);
+        [$result, $status] = call_user_func($this->action, $newRequest);
 
         $this->assertTrue($status);
     }
