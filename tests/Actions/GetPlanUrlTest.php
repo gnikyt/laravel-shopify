@@ -2,11 +2,11 @@
 
 namespace Osiset\ShopifyApp\Test\Actions;
 
-use Osiset\ShopifyApp\Test\TestCase;
 use Osiset\ShopifyApp\Actions\GetPlanUrl;
+use Osiset\ShopifyApp\Objects\Values\NullablePlanId;
 use Osiset\ShopifyApp\Storage\Models\Plan;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
-use Osiset\ShopifyApp\Objects\Values\NullablePlanId;
+use Osiset\ShopifyApp\Test\TestCase;
 
 class GetPlanUrlTest extends TestCase
 {

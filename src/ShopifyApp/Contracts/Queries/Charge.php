@@ -2,9 +2,9 @@
 
 namespace Osiset\ShopifyApp\Contracts\Queries;
 
-use Osiset\ShopifyApp\Objects\Values\ShopId;
 use Osiset\ShopifyApp\Objects\Values\ChargeId;
 use Osiset\ShopifyApp\Objects\Values\ChargeReference;
+use Osiset\ShopifyApp\Objects\Values\ShopId;
 use Osiset\ShopifyApp\Storage\Models\Charge as ChargeModel;
 
 /**

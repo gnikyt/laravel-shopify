@@ -4,8 +4,8 @@ namespace Osiset\ShopifyApp\Test\Storage\Models;
 
 use Osiset\ShopifyApp\Objects\Enums\PlanType;
 use Osiset\ShopifyApp\Objects\Values\PlanId;
-use Osiset\ShopifyApp\Test\TestCase;
 use Osiset\ShopifyApp\Storage\Models\Plan;
+use Osiset\ShopifyApp\Test\TestCase;
 
 class PlanTest extends TestCase
 {

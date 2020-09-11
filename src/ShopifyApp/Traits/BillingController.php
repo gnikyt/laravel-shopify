@@ -2,20 +2,20 @@
 
 namespace Osiset\ShopifyApp\Traits;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\View;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Redirect;
-use Osiset\ShopifyApp\Actions\GetPlanUrl;
-use Osiset\ShopifyApp\Actions\ActivatePlan;
-use Osiset\ShopifyApp\Services\ShopSession;
-use Osiset\ShopifyApp\Objects\Values\PlanId;
 use Illuminate\Contracts\View\View as ViewView;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\View;
+use Osiset\ShopifyApp\Actions\ActivatePlan;
 use Osiset\ShopifyApp\Actions\ActivateUsageCharge;
-use Osiset\ShopifyApp\Objects\Values\NullablePlanId;
+use Osiset\ShopifyApp\Actions\GetPlanUrl;
 use Osiset\ShopifyApp\Http\Requests\StoreUsageCharge;
-use Osiset\ShopifyApp\Objects\Values\ChargeReference;
 use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
+use Osiset\ShopifyApp\Objects\Values\ChargeReference;
+use Osiset\ShopifyApp\Objects\Values\NullablePlanId;
+use Osiset\ShopifyApp\Objects\Values\PlanId;
+use Osiset\ShopifyApp\Services\ShopSession;
 
 /**
  * Responsible for billing a shop for plans and usage charges.

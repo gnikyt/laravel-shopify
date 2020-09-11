@@ -56,7 +56,7 @@ class Plan extends Model
     }
 
     /**
-     * Gets the interval of plan
+     * Gets the interval of plan.
      *
      * @return PlanInterval
      */

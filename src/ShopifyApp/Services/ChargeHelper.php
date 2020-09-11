@@ -4,14 +4,14 @@ namespace Osiset\ShopifyApp\Services;
 
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\URL;
-use Osiset\ShopifyApp\Storage\Models\Plan;
-use Osiset\ShopifyApp\Objects\Values\PlanId;
-use Osiset\ShopifyApp\Objects\Values\ChargeReference;
-use Osiset\ShopifyApp\Objects\Enums\ChargeType;
-use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
-use Osiset\ShopifyApp\Storage\Models\Charge as ChargeModel;
 use Osiset\ShopifyApp\Contracts\Queries\Charge as IChargeQuery;
+use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
+use Osiset\ShopifyApp\Objects\Enums\ChargeType;
 use Osiset\ShopifyApp\Objects\Transfers\PlanDetails as PlanDetailsTransfer;
+use Osiset\ShopifyApp\Objects\Values\ChargeReference;
+use Osiset\ShopifyApp\Objects\Values\PlanId;
+use Osiset\ShopifyApp\Storage\Models\Charge as ChargeModel;
+use Osiset\ShopifyApp\Storage\Models\Plan;
 use Osiset\ShopifyApp\Traits\ConfigAccessible;
 
 /**
@@ -107,7 +107,7 @@ class ChargeHelper
      */
     public function remainingTrialDays(): ?int
     {
-        if (!$this->charge->isTrial()) {
+        if (! $this->charge->isTrial()) {
             return null;
         }
 
@@ -123,7 +123,7 @@ class ChargeHelper
      */
     public function remainingTrialDaysFromCancel(): ?int
     {
-        if (!$this->charge->isTrial()) {
+        if (! $this->charge->isTrial()) {
             return null;
         }
 
@@ -218,7 +218,7 @@ class ChargeHelper
      */
     public function usedTrialDays(): ?int
     {
-        if (!$this->charge->isTrial()) {
+        if (! $this->charge->isTrial()) {
             return null;
         }
 
@@ -285,7 +285,7 @@ class ChargeHelper
      */
     protected function determineTrialDaysRemaining(Plan $plan, IShopModel $shop): ?int
     {
-        if (!$plan->hasTrial()) {
+        if (! $plan->hasTrial()) {
             // Not a trial-type plan, return none
             return 0;
         }

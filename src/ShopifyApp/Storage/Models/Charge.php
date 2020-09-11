@@ -3,13 +3,13 @@
 namespace Osiset\ShopifyApp\Storage\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Osiset\ShopifyApp\Objects\Values\ChargeId;
-use Osiset\ShopifyApp\Traits\ConfigAccessible;
-use Osiset\ShopifyApp\Objects\Enums\ChargeType;
-use Osiset\ShopifyApp\Objects\Enums\ChargeStatus;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Osiset\ShopifyApp\Objects\Enums\ChargeStatus;
+use Osiset\ShopifyApp\Objects\Enums\ChargeType;
+use Osiset\ShopifyApp\Objects\Values\ChargeId;
 use Osiset\ShopifyApp\Objects\Values\ChargeReference;
+use Osiset\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Responsible for reprecenting a charge record.
@@ -152,7 +152,7 @@ class Charge extends Model
      */
     public function isTrial(): bool
     {
-        return !is_null($this->trial_ends_on);
+        return ! is_null($this->trial_ends_on);
     }
 
     /**
@@ -214,7 +214,7 @@ class Charge extends Model
      */
     public function isCancelled(): bool
     {
-        return !is_null($this->cancelled_on) || $this->isStatus(ChargeStatus::CANCELLED());
+        return ! is_null($this->cancelled_on) || $this->isStatus(ChargeStatus::CANCELLED());
     }
 
     /**
@@ -224,6 +224,6 @@ class Charge extends Model
      */
     public function isOngoing(): bool
     {
-        return $this->isActive() && !$this->isCancelled();
+        return $this->isActive() && ! $this->isCancelled();
     }
 }

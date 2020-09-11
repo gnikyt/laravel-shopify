@@ -3,10 +3,10 @@
 namespace Osiset\ShopifyApp\Test\Actions;
 
 use Illuminate\Support\Facades\Queue;
-use Osiset\ShopifyApp\Test\TestCase;
 use Osiset\ShopifyApp\Actions\DispatchWebhooks;
-use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
 use Osiset\ShopifyApp\Messaging\Jobs\WebhookInstaller;
+use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
+use Osiset\ShopifyApp\Test\TestCase;
 
 class DispatchWebhooksTest extends TestCase
 {
@@ -50,12 +50,12 @@ class DispatchWebhooksTest extends TestCase
         $this->app['config']->set('shopify-app.webhooks', [
             [
                 'topic'   => 'orders/create',
-                'address' => 'https://localhost/webhooks/orders-create'
+                'address' => 'https://localhost/webhooks/orders-create',
             ],
             [
                 'topic'   => 'app/uninstalled',
-                'address' => 'http://apple.com/uninstall'
-            ]
+                'address' => 'http://apple.com/uninstall',
+            ],
         ]);
 
         // Setup API stub
@@ -85,12 +85,12 @@ class DispatchWebhooksTest extends TestCase
         $this->app['config']->set('shopify-app.webhooks', [
             [
                 'topic'   => 'orders/create',
-                'address' => 'https://localhost/webhooks/orders-create'
+                'address' => 'https://localhost/webhooks/orders-create',
             ],
             [
                 'topic'   => 'app/uninstalled',
-                'address' => 'http://apple.com/uninstall'
-            ]
+                'address' => 'http://apple.com/uninstall',
+            ],
         ]);
 
         // Setup API stub

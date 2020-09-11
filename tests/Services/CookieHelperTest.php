@@ -49,6 +49,7 @@ class CookieHelperTest extends TestCase
             'firefox 1.0',
         ];
     }
+
     /**
      * Originally from @jedimdan in previous iteration.
      */

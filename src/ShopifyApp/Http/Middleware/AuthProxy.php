@@ -6,12 +6,10 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use function Osiset\ShopifyApp\createHmac;
+use Osiset\ShopifyApp\Objects\Values\NullableShopDomain;
 use function Osiset\ShopifyApp\parseQueryString;
 use Osiset\ShopifyApp\Services\ShopSession;
 use Osiset\ShopifyApp\Traits\ConfigAccessible;
-use Osiset\ShopifyApp\Objects\Values\ShopDomain;
-use Osiset\ShopifyApp\Objects\Values\NullShopDomain;
-use Osiset\ShopifyApp\Objects\Values\NullableShopDomain;
 
 /**
  * Responsible for ensuring a proper app proxy request.

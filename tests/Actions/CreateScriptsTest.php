@@ -2,9 +2,9 @@
 
 namespace Osiset\ShopifyApp\Test\Actions;
 
-use Osiset\ShopifyApp\Test\TestCase;
 use Osiset\ShopifyApp\Actions\CreateScripts;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
+use Osiset\ShopifyApp\Test\TestCase;
 
 class CreateScriptsTest extends TestCase
 {
@@ -29,7 +29,7 @@ class CreateScriptsTest extends TestCase
             ],
             [
                 'src' => 'https://js-aplenty.com/bar.js',
-            ]
+            ],
         ];
         $this->app['config']->set('shopify-app.scripttags', $scripts);
 
@@ -102,7 +102,7 @@ class CreateScriptsTest extends TestCase
             ],
             [
                 'src' => 'https://js-aplenty.com/bar.js',
-            ]
+            ],
         ];
         $this->app['config']->set('shopify-app.scripttags', $scripts);
 
@@ -110,7 +110,7 @@ class CreateScriptsTest extends TestCase
         $this->setApiStub();
         ApiStub::stubResponses([
             'get_script_tags',
-            'post_script_tags'
+            'post_script_tags',
         ]);
 
         // Create the shop

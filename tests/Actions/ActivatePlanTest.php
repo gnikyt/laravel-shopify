@@ -2,13 +2,13 @@
 
 namespace Osiset\ShopifyApp\Test\Actions;
 
-use Osiset\ShopifyApp\Test\TestCase;
-use Osiset\ShopifyApp\Storage\Models\Plan;
 use Osiset\ShopifyApp\Actions\ActivatePlan;
 use Osiset\ShopifyApp\Objects\Values\ChargeId;
 use Osiset\ShopifyApp\Objects\Values\ChargeReference;
 use Osiset\ShopifyApp\Storage\Models\Charge;
+use Osiset\ShopifyApp\Storage\Models\Plan;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
+use Osiset\ShopifyApp\Test\TestCase;
 
 class ActivatePlanTest extends TestCase
 {
@@ -31,14 +31,14 @@ class ActivatePlanTest extends TestCase
 
         // Create the shop with the plan attached
         $shop = factory($this->model)->create([
-            'plan_id' => $plan->getId()->toNative()
+            'plan_id' => $plan->getId()->toNative(),
         ]);
 
         // Create a charge for the plan and shop
         factory(Charge::class)->states('type_recurring')->create([
             'charge_id' => 12345,
             'plan_id'   => $plan->getId()->toNative(),
-            'user_id'   => $shop->getId()->toNative()
+            'user_id'   => $shop->getId()->toNative(),
         ]);
 
         // Setup API stub

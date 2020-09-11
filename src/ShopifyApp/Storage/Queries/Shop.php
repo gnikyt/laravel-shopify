@@ -3,11 +3,11 @@
 namespace Osiset\ShopifyApp\Storage\Queries;
 
 use Illuminate\Support\Collection;
+use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
+use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use Osiset\ShopifyApp\Contracts\ShopModel;
 use Osiset\ShopifyApp\Objects\Values\ShopId;
 use Osiset\ShopifyApp\Traits\ConfigAccessible;
-use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
-use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 
 /**
  * Reprecents shop queries.

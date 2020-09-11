@@ -2,10 +2,10 @@
 
 namespace Osiset\ShopifyApp\Actions;
 
+use Osiset\ShopifyApp\Contracts\Commands\Charge as IChargeCommand;
+use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use Osiset\ShopifyApp\Objects\Values\ShopId;
 use Osiset\ShopifyApp\Services\ChargeHelper;
-use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
-use Osiset\ShopifyApp\Contracts\Commands\Charge as IChargeCommand;
 
 /**
  * Cancel's the shop's current plan (in the database).
@@ -62,14 +62,14 @@ class CancelCurrentPlan
         $shop = $this->shopQuery->getById($shopId);
         $plan = $shop->plan;
 
-        if (!$plan) {
+        if (! $plan) {
             // Shop has no plan...
             return false;
         }
 
         // Cancel the last charge
         $planCharge = $this->chargeHelper->chargeForPlan($shop->plan->getId(), $shop);
-        if ($planCharge && !$planCharge->isDeclined() && !$planCharge->isCancelled()) {
+        if ($planCharge && ! $planCharge->isDeclined() && ! $planCharge->isCancelled()) {
             $this->chargeCommand->cancel($planCharge->getReference());
 
             // Charge has been cancelled

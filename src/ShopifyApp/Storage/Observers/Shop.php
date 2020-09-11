@@ -45,12 +45,12 @@ class Shop
         $namespace = $this->getConfig('namespace');
         $freemium = $this->getConfig('billing_freemium_enabled');
 
-        if (!empty($namespace) && !isset($shop->shopify_namespace)) {
+        if (! empty($namespace) && ! isset($shop->shopify_namespace)) {
             // Automatically add the current namespace to new records
             $this->shopCommand->setNamespaceByRef($shop, $namespace);
         }
 
-        if ($freemium === true && !isset($shop->shopify_freemium)) {
+        if ($freemium === true && ! isset($shop->shopify_freemium)) {
             // Add the freemium flag to the shop
             $this->shopCommand->setAsFreemiumByRef($shop);
         }

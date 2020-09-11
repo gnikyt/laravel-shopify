@@ -2,9 +2,9 @@
 
 namespace Osiset\ShopifyApp\Actions;
 
+use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use Osiset\ShopifyApp\Objects\Values\ShopId;
 use Osiset\ShopifyApp\Traits\ConfigAccessible;
-use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 
 /**
  * Attempt to install webhooks on a shop.
