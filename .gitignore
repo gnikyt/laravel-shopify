@@ -4,6 +4,7 @@ composer.lock
 vendor/
 build/
 tests/tmp/
+bin/
 .phpunit.result*
 
 # IDE and editor specific files #
