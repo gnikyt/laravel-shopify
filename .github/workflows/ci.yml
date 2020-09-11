@@ -9,23 +9,20 @@ jobs:
     strategy:
       max-parallel: 3
       matrix:
-        php: ['7.2', '7.3', '7.4']
-        laravel: ['5.8', '6.0', '7.0', '8.0']
-        include:
-            - laravel: 8.0
-              testbench: 6.*
-              legacy: "laravel/legacy-factories:^1.0.4"
-            - laravel: 7.0
-              testbench: 5.*
-            - laravel: 6.0
-              testbench: 4.*
-            - laravel: 5.8
-              testbench: 3.8.*
+        php:
+          - '7.2'
+          - '7.3'
+          - '7.4'
+        laravel:
+            - '5.8'
+            - '6.0'
+            - '7.0'
+            - '8.0'
         exclude:
-            - php: 7.4
-              laravel: 5.8
-            - php: 7.2
-              laravel: 8.0
+            - php: '7.4'
+              laravel: '5.8'
+            - php: '7.2'
+              laravel: '8.0'
 
     name: PHP ${{ matrix.php }} / Laravel ${{ matrix.laravel }}
 
@@ -43,8 +40,12 @@ jobs:
     - name: Validate composer setup
       run: composer validate --strict
 
-    - name: Install Laravel and Orechestra Testbench
-      run: composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" ${{ matrix.legacy }} --no-interaction --no-update
+    - name: Install Laravel legacy factories support
+      if: matrix.php > '7.2' && matrix.laravel == '8.0'
+      run: composer require "laravel/legacy-factories:^1.0" --no-interaction --no-update
+
+    - name: Install Laravel and Orchestra Testbench
+      run: composer require "illuminate/contracts:${{ matrix.laravel }}" --no-interaction --no-update
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest
@@ -55,10 +56,10 @@ jobs:
     - name: Validate code style
       run: |
         composer require "squizlabs/php_codesniffer=*"
-        bin/phpcs --standard="phpcs.xml" .
+        vendor/bin/phpcs --standard="phpcs.xml" .
 
     - name: Run test suite
-      run: composer run-script test
+      run: vendor/bin/phpunit
 
     - name: Upload coverage results
       if: matrix.php == '7.4' && matrix.laravel == '7.0'
@@ -66,4 +67,4 @@ jobs:
         COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         composer require cedx/coveralls
-        bin/coveralls build/logs/clover.xml
+        vendor/bin/coveralls build/logs/clover.xml

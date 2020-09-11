@@ -3,7 +3,6 @@
 composer.lock
 vendor/
 build/
-bin/*
 tests/tmp/
 .phpunit.result*
 
