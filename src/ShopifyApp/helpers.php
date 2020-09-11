@@ -68,7 +68,7 @@ function parseQueryString(string $qs, string $d = null): array
         list($k, $v) = strpos($p, '=') !== false ? explode('=', $p, 2) : [$p, null];
 
         $k = urldecode($k);
-        $v = $v != null ? urldecode($v) : $v;
+        $v = $v !== null ? urldecode($v) : $v;
 
         if (isset($params[$k])) {
             $cur = $params[$k];

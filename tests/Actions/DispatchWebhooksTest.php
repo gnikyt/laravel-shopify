@@ -10,6 +10,11 @@ use Osiset\ShopifyApp\Messaging\Jobs\WebhookInstaller;
 
 class DispatchWebhooksTest extends TestCase
 {
+    /**
+     * @var \Osiset\ShopifyApp\Actions\DispatchWebhooks
+     */
+    protected $action;
+
     public function setUp(): void
     {
         parent::setUp();

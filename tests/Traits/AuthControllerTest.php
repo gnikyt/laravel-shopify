@@ -9,6 +9,9 @@ use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
 
 class AuthControllerTest extends TestCase
 {
+    /**
+     * @var \Osiset\ShopifyApp\Services\ShopSession
+     */
     protected $shopSession;
 
     public function setUp(): void

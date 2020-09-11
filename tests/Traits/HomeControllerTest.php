@@ -7,6 +7,9 @@ use Osiset\ShopifyApp\Services\ShopSession;
 
 class HomeControllerTest extends TestCase
 {
+    /**
+     * @var \Osiset\ShopifyApp\Services\ShopSession
+     */
     protected $shopSession;
 
     public function setUp(): void

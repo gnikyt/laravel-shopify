@@ -12,6 +12,9 @@ use Osiset\ShopifyApp\Services\ShopSession;
 
 class AuthShopifyTest extends TestCase
 {
+    /**
+     * @var \Osiset\ShopifyApp\Services\ShopSession
+     */
     protected $shopSession;
 
     public function setUp(): void

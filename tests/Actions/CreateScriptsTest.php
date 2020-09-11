@@ -8,6 +8,11 @@ use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
 
 class CreateScriptsTest extends TestCase
 {
+    /**
+     * @var \Osiset\ShopifyApp\Actions\CreateScripts
+     */
+    protected $action;
+
     public function setUp(): void
     {
         parent::setUp();

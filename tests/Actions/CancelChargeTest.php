@@ -11,6 +11,11 @@ use Osiset\ShopifyApp\Storage\Models\Charge;
 
 class CancelChargeTest extends TestCase
 {
+    /**
+     * @var \Osiset\ShopifyApp\Actions\CancelCharge
+     */
+    protected $action;
+
     public function setUp(): void
     {
         parent::setUp();

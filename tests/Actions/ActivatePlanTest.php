@@ -12,6 +12,11 @@ use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
 
 class ActivatePlanTest extends TestCase
 {
+    /**
+     * @var \Osiset\ShopifyApp\Actions\ActivatePlan
+     */
+    protected $action;
+
     public function setUp(): void
     {
         parent::setUp();

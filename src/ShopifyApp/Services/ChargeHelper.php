@@ -171,7 +171,7 @@ class ChargeHelper
     {
         $pastDaysForPeriod = $this->pastDaysForPeriod();
         if (is_null($pastDaysForPeriod) ||
-            ($pastDaysForPeriod == 0 && Carbon::parse($this->charge->cancelled_on)->lt(Carbon::today()))
+            ($pastDaysForPeriod === 0 && Carbon::parse($this->charge->cancelled_on)->lt(Carbon::today()))
         ) {
             return 0;
         }

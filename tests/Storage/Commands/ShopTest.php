@@ -11,6 +11,9 @@ use Osiset\ShopifyApp\Test\TestCase;
 
 class ShopTest extends TestCase
 {
+    /**
+     * @var \Osiset\ShopifyApp\Contracts\Commands\Shop
+     */
     protected $command;
 
     public function setUp(): void

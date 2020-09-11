@@ -11,7 +11,14 @@ use Osiset\ShopifyApp\Contracts\Queries\Charge as IChargeQuery;
 
 class ChargeTest extends TestCase
 {
+    /**
+     * @var \Osiset\ShopifyApp\Contracts\Queries\Charge
+     */
     protected $query;
+
+    /**
+     * @var \Illuminate\Database\Eloquent\Model
+     */
     protected $shop;
 
     public function setUp(): void
