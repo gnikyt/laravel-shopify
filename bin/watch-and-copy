@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+while true; do
+  inotifywait -q -e create,move,delete,close_write -r ./src/ShopifyApp |
+    /bin/cp -r ./src/ ~/Development/TestGround/laravel-shopify/vendor/osiset/laravel-shopify/ && echo "Copied"
+done
