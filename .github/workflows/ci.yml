@@ -9,27 +9,42 @@ jobs:
     strategy:
       max-parallel: 3
       matrix:
-        php-versions: ['7.4']
-        laravel-versions: ['5.8', '6.0', '7.0']
+        php: ['7.2', '7.3', '7.4']
+        laravel: ['5.8', '6.0', '7.0', '8.0']
+        include:
+            - laravel: 8.0
+              testbench: 6.*
+              legacy: "laravel/legacy-factories:^1.0.4"
+            - laravel: 7.0
+              testbench: 5.*
+            - laravel: 6.0
+              testbench: 4.*
+            - laravel: 5.8
+              testbench: 3.8.*
+        exclude:
+            - php: 7.4
+              laravel: 5.8
+            - php: 7.2
+              laravel: 8.0
 
-    name: PHP ${{ matrix.php-versions }} / Laravel ${{ matrix.laravel-versions }}
+    name: PHP ${{ matrix.php }} / Laravel ${{ matrix.laravel }}
 
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-  
+
     - name: Setup PHP
       uses: shivammathur/setup-php@v1
       with:
-        php-version: ${{ matrix.php-versions }}
+        php-version: ${{ matrix.php }}
         coverage: xdebug
         tools: composer
 
     - name: Validate composer setup
       run: composer validate
 
-    - name: Install Laravel
-      run: composer require "laravel/framework:^${{ matrix.laravel-versions }}" --no-update
+    - name: Install Laravel and Orechestra Testbench
+      run: composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" ${{ matrix.legacy }} --no-interaction --no-update
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest
@@ -43,7 +58,7 @@ jobs:
       run: composer run-script test
 
     - name: Upload coverage results
-      if: matrix.php-versions == '7.4' && matrix.laravel-versions == '7.0'
+      if: matrix.php == '7.4' && matrix.laravel == '7.0'
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
