@@ -51,6 +51,6 @@ class PlanTest extends TestCase
         factory(Plan::class)->states('type_onetime')->create();
 
         // Ensure we get a result
-        $this->assertEquals(1, $this->query->getAll()->count());
+        $this->assertCount(1, $this->query->getAll());
     }
 }

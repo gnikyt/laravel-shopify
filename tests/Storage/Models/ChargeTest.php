@@ -35,7 +35,7 @@ class ChargeTest extends TestCase
         $this->assertFalse($charge->isDeclined());
         $this->assertFalse($charge->isCancelled());
         $this->assertFalse($charge->isOngoing());
-        $this->assertEquals('recurring_application_charge', $charge->getTypeApiString());
-        $this->assertEquals('recurring_application_charges', $charge->getTypeApiString(true));
+        $this->assertSame('recurring_application_charge', $charge->getTypeApiString());
+        $this->assertSame('recurring_application_charges', $charge->getTypeApiString(true));
     }
 }

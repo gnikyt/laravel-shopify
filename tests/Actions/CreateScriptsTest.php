@@ -49,8 +49,8 @@ class CreateScriptsTest extends TestCase
             $scripts
         );
 
-        $this->assertEquals(0, count($result['created']));
-        $this->assertEquals(0, count($result['deleted']));
+        $this->assertCount(0, $result['created']);
+        $this->assertCount(0, $result['deleted']);
     }
 
     public function testShouldCreateOnlyNewOnesAndDeleteUnusedScripts(): void
@@ -82,12 +82,12 @@ class CreateScriptsTest extends TestCase
             $scripts
         );
 
-        $this->assertEquals(1, count($result['created']));
-        $this->assertEquals(2, count($result['deleted']));
+        $this->assertCount(1, $result['created']);
+        $this->assertCount(2, $result['deleted']);
 
-        $this->assertTrue($result['created'][0]['src'] === 'https://js-aplenty.com/some-new-script.js');
-        $this->assertTrue($result['deleted'][0]['src'] === 'https://js-aplenty.com/bar.js');
-        $this->assertTrue($result['deleted'][1]['src'] === 'https://js-aplenty.com/foo.js');
+        $this->assertSame($result['created'][0]['src'], 'https://js-aplenty.com/some-new-script.js');
+        $this->assertSame($result['deleted'][0]['src'], 'https://js-aplenty.com/bar.js');
+        $this->assertSame($result['deleted'][1]['src'], 'https://js-aplenty.com/foo.js');
     }
 
     public function testShouldCreate(): void
@@ -123,9 +123,9 @@ class CreateScriptsTest extends TestCase
             $scripts
         );
 
-        $this->assertEquals(1, count($result['created']));
-        $this->assertEquals(0, count($result['deleted']));
+        $this->assertCount(1, $result['created']);
+        $this->assertCount(0, $result['deleted']);
 
-        $this->assertTrue($result['created'][0]['src'] === 'https://js-aplenty.com/foo-bar.js');
+        $this->assertSame($result['created'][0]['src'], 'https://js-aplenty.com/foo-bar.js');
     }
 }

@@ -39,8 +39,8 @@ class ApiHelperTest extends TestCase
         $api = $this->api->make()->getApi();
 
         $this->assertInstanceOf(BasicShopifyAPI::class, $api);
-        $this->assertEquals($this->app['config']->get('shopify-app.api_secret'), null);
-        $this->assertEquals($this->app['config']->get('shopify-app.api_version'), '2020-01');
+        $this->assertEmpty($this->app['config']->get('shopify-app.api_secret'));
+        $this->assertSame($this->app['config']->get('shopify-app.api_version'), '2020-01');
     }
 
     public function testSetAndGetApi(): void
@@ -87,8 +87,8 @@ class ApiHelperTest extends TestCase
 
         $data = $shop->apiHelper()->getScriptTags();
         $this->assertInstanceOf(ResponseAccess::class, $data);
-        $this->assertEquals('onload', $data[0]['event']);
-        $this->assertEquals(2, count($data));
+        $this->assertSame('onload', $data[0]['event']);
+        $this->assertCount(2, $data);
     }
 
     public function testCreateScriptTags(): void
@@ -130,8 +130,8 @@ class ApiHelperTest extends TestCase
 
         $data = $shop->apiHelper()->getCharge(ChargeType::CHARGE(), ChargeReference::fromNative(1234));
         $this->assertInstanceOf(ResponseAccess::class, $data);
-        $this->assertEquals('iPod Cleaning', $data->name);
-        $this->assertEquals('accepted', $data['status']);
+        $this->assertSame('iPod Cleaning', $data->name);
+        $this->assertSame('accepted', $data['status']);
     }
 
     public function testActivateCharge(): void
@@ -145,7 +145,7 @@ class ApiHelperTest extends TestCase
 
         $data = $shop->apiHelper()->activateCharge(ChargeType::RECURRING(), ChargeReference::fromNative(1234));
         $this->assertInstanceOf(ResponseAccess::class, $data);
-        $this->assertEquals('Super Mega Plan', $data['name']);
+        $this->assertSame('Super Mega Plan', $data['name']);
     }
 
     public function testCreateCharge(): void
@@ -170,7 +170,7 @@ class ApiHelperTest extends TestCase
             $transfer
         );
         $this->assertInstanceOf(ResponseAccess::class, $data);
-        $this->assertEquals('Basic Plan', $data['name']);
+        $this->assertSame('Basic Plan', $data['name']);
     }
 
     public function testGetWebhooks(): void
@@ -198,7 +198,7 @@ class ApiHelperTest extends TestCase
 
         $data = $shop->apiHelper()->createWebhook([]);
         $this->assertInstanceOf(ResponseAccess::class, $data);
-        $this->assertEquals('app/uninstalled', $data['topic']);
+        $this->assertSame('app/uninstalled', $data['topic']);
     }
 
     public function testDeleteWebhook(): void

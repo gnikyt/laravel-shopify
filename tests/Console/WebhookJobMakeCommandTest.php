@@ -42,7 +42,7 @@ class WebhookJobMakeCommandTest extends TestCase
         ];
         foreach ($jobs as $className => $route) {
             $result = $method->invoke($command, $className);
-            $this->assertEquals($result, $route);
+            $this->assertSame($result, $route);
         }
     }
 }

@@ -122,6 +122,6 @@ class ShopTest extends TestCase
 
         $shop->refresh();
 
-        $this->assertEquals($namespace, $shop->shopify_namespace);
+        $this->assertSame($namespace, $shop->shopify_namespace);
     }
 }
