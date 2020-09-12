@@ -33,6 +33,16 @@
     "config": {
         "sort-packages": true
     },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Osiset\\ShopifyApp\\ShopifyAppProvider"
+            ],
+            "aliases": {
+                "ShopifyApp": "Osiset\\ShopifyApp\\Facades\\ShopifyApp"
+            }
+        }
+    },
     "autoload": {
         "psr-4": {
             "Osiset\\ShopifyApp\\": "src/ShopifyApp"
