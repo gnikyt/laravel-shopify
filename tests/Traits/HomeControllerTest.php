@@ -28,8 +28,8 @@ class HomeControllerTest extends TestCase
         $response = $this->get('/');
         $response->assertStatus(200);
 
-        $this->assertNotSame(strpos($response->content(), "apiKey: ''"), false);
-        $this->assertNotSame(strpos($response->content(), "shopOrigin: '{$shop->name}'"), false);
+        $this->assertNotFalse(strpos($response->content(), "apiKey: ''"));
+        $this->assertNotFalse(strpos($response->content(), "shopOrigin: '{$shop->name}'"));
     }
 
     public function testHomeRouteWithNoAppBridge(): void
