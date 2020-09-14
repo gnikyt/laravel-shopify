@@ -6,6 +6,7 @@ build/
 tests/tmp/
 bin/
 .phpunit.result*
+phpunit.xml
 
 # IDE and editor specific files #
 #################################
