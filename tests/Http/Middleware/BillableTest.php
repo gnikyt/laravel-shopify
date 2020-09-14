@@ -35,7 +35,7 @@ class BillableTest extends TestCase
 
         // Assert it was not called and redirect happened
         $this->assertFalse($result[1]);
-        $this->assertTrue(strpos($result[0], 'Redirecting to http://localhost/billing') !== false);
+        $this->assertNotFalse(strpos($result[0], 'Redirecting to http://localhost/billing'));
     }
 
     public function testEnabledBillingWithPaidShop(): void

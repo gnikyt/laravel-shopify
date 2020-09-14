@@ -73,7 +73,7 @@ class AuthProxyTest extends TestCase
 
         // Assert it was not processed and our status
         $this->assertFalse($result[1]);
-        $this->assertEquals(401, $result[0]->status());
+        $this->assertSame(401, $result[0]->status());
     }
 
     public function testDoesNotRunForInvalidSignature(): void
@@ -89,7 +89,7 @@ class AuthProxyTest extends TestCase
 
         // Assert it was not processed and our status
         $this->assertFalse($result[1]);
-        $this->assertEquals(401, $result[0]->status());
+        $this->assertSame(401, $result[0]->status());
     }
 
     public function testQueryStringArrayFormatParsedProperly(): void

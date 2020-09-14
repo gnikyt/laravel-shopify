@@ -48,9 +48,9 @@ class CreateWebhooksTest extends TestCase
             $webhooks
         );
 
-        $this->assertEquals(0, count($result['created']));
-        $this->assertEquals(1, count($result['deleted']));
-        $this->assertTrue($result['deleted'][0]['address'] === 'http://apple.com/uninstall');
+        $this->assertCount(0, $result['created']);
+        $this->assertCount(1, $result['deleted']);
+        $this->assertSame($result['deleted'][0]['address'], 'http://apple.com/uninstall');
     }
 
     public function testShouldCreate(): void
@@ -89,7 +89,7 @@ class CreateWebhooksTest extends TestCase
             $webhooks
         );
 
-        $this->assertEquals(1, count($result['created']));
-        $this->assertEquals(0, count($result['deleted']));
+        $this->assertCount(1, $result['created']);
+        $this->assertCount(0, $result['deleted']);
     }
 }

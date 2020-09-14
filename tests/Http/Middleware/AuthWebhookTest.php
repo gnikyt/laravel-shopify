@@ -36,7 +36,7 @@ class AuthWebhookTest extends TestCase
         });
 
         // Assert we get a proper response
-        $this->assertEquals(401, $response->status());
+        $this->assertSame(401, $response->status());
     }
 
     public function testDenysForMissingHmacHeader(): void
@@ -67,7 +67,7 @@ class AuthWebhookTest extends TestCase
         });
 
         // Assert we get a proper response
-        $this->assertEquals(401, $response->status());
+        $this->assertSame(401, $response->status());
     }
 
     public function testRuns(): void

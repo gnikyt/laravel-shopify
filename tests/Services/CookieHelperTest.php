@@ -85,7 +85,7 @@ class CookieHelperTest extends TestCase
         $ch->setCookiePolicy();
 
         $this->assertNotTrue($this->app['config']->get('session.secure'));
-        $this->assertNotEquals('none', $this->app['config']->get('session.same_site'));
+        $this->assertNotSame('none', $this->app['config']->get('session.same_site'));
 
         // Compatible check
         $_SERVER['HTTP_USER_AGENT'] = $this->compatibleUserAgents[0];
@@ -94,6 +94,6 @@ class CookieHelperTest extends TestCase
 
         $this->assertTrue($this->app['config']->get('session.expire_on_close'));
         $this->assertTrue($this->app['config']->get('session.secure'));
-        $this->assertEquals('none', $this->app['config']->get('session.same_site'));
+        $this->assertSame('none', $this->app['config']->get('session.same_site'));
     }
 }
