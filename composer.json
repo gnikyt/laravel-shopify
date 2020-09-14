@@ -37,10 +37,7 @@
         "laravel": {
             "providers": [
                 "Osiset\\ShopifyApp\\ShopifyAppProvider"
-            ],
-            "aliases": {
-                "ShopifyApp": "Osiset\\ShopifyApp\\Facades\\ShopifyApp"
-            }
+            ]
         }
     },
     "autoload": {
