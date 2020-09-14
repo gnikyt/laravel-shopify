@@ -16,7 +16,6 @@ class HomeControllerTest extends TestCase
     {
         parent::setUp();
 
-        // Shop session helper
         $this->shopSession = $this->app->make(ShopSession::class);
     }
 
@@ -25,11 +24,10 @@ class HomeControllerTest extends TestCase
         $shop = factory($this->model)->create();
         $this->shopSession->make($shop->getDomain());
 
-        $response = $this->get('/');
-        $response->assertStatus(200);
-
-        $this->assertTrue(strpos($response->content(), "apiKey: ''") !== false);
-        $this->assertTrue(strpos($response->content(), "shopOrigin: '{$shop->name}'") !== false);
+        $this->get('/')
+            ->assertOk()
+            ->assertSee("apiKey: ''", false)
+            ->assertSee("shopOrigin: '{$shop->name}'", false);
     }
 
     public function testHomeRouteWithNoAppBridge(): void
@@ -37,12 +35,10 @@ class HomeControllerTest extends TestCase
         $shop = factory($this->model)->create();
         $this->shopSession->make($shop->getDomain());
 
-        // Turn off AppBridge
         $this->app['config']->set('shopify-app.appbridge_enabled', false);
 
-        $response = $this->get('/');
-
-        $response->assertStatus(200);
-        $this->assertFalse(strpos($response->content(), '@shopify'));
+        $this->get('/')
+            ->assertOk()
+            ->assertDontSee('@shopify');
     }
 }

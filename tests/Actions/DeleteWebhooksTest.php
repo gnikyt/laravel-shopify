@@ -36,6 +36,6 @@ class DeleteWebhooksTestTest extends TestCase
         // Run
         $result = call_user_func($this->action, $shop->getId());
 
-        $this->assertEquals(2, count($result)); // 2 from fixture file
+        $this->assertCount(2, $result); // 2 from fixture file
     }
 }

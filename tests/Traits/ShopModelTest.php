@@ -27,7 +27,7 @@ class ShopModelTest extends TestCase
         $this->assertInstanceOf(AccessToken::class, $shop->getToken());
         $this->assertFalse($shop->isGrandfathered());
         $this->assertFalse($shop->isFreemium());
-        $this->assertEquals(0, $shop->charges->count());
+        $this->assertCount(0, $shop->charges);
         $this->assertFalse($shop->hasCharges());
         $this->assertInstanceOf(Plan::class, $shop->plan);
         $this->assertTrue($shop->hasOfflineAccess());
@@ -42,7 +42,7 @@ class ShopModelTest extends TestCase
 
         $shop = factory($this->model)->create();
 
-        $this->assertEquals('app', $shop->shopify_namespace);
+        $this->assertSame('app', $shop->shopify_namespace);
         $this->assertTrue($shop->isFreemium());
     }
 }

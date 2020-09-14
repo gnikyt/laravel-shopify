@@ -76,6 +76,6 @@ class AuthorizeShopTest extends TestCase
         $shop->refresh();
 
         $this->assertTrue($result->completed);
-        $this->assertNotEquals($currentToken->toNative(), $shop->getToken()->toNative());
+        $this->assertNotSame($currentToken->toNative(), $shop->getToken()->toNative());
     }
 }
