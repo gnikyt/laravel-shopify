@@ -3,21 +3,24 @@
 namespace Osiset\ShopifyApp\Test\Services;
 
 use Exception;
-use Osiset\ShopifyApp\Test\TestCase;
-use Osiset\BasicShopifyAPI\ResponseAccess;
 use Osiset\BasicShopifyAPI\BasicShopifyAPI;
-use Osiset\ShopifyApp\Objects\Enums\AuthMode;
-use Osiset\ShopifyApp\Exceptions\ApiException;
-use Osiset\ShopifyApp\Objects\Enums\ChargeType;
-use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
-use Osiset\ShopifyApp\Objects\Enums\PlanInterval;
-use Osiset\ShopifyApp\Objects\Values\ChargeReference;
+use Osiset\BasicShopifyAPI\ResponseAccess;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
+use Osiset\ShopifyApp\Exceptions\ApiException;
+use Osiset\ShopifyApp\Objects\Enums\AuthMode;
+use Osiset\ShopifyApp\Objects\Enums\ChargeType;
+use Osiset\ShopifyApp\Objects\Enums\PlanInterval;
 use Osiset\ShopifyApp\Objects\Transfers\PlanDetails as PlanDetailsTransfer;
 use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
+use Osiset\ShopifyApp\Objects\Values\ChargeReference;
+use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
+use Osiset\ShopifyApp\Test\TestCase;
 
 class ApiHelperTest extends TestCase
 {
+    /**
+     * @var \Osiset\ShopifyApp\Contracts\ApiHelper
+     */
     protected $api;
 
     public function setUp(): void
@@ -36,8 +39,8 @@ class ApiHelperTest extends TestCase
         $api = $this->api->make()->getApi();
 
         $this->assertInstanceOf(BasicShopifyAPI::class, $api);
-        $this->assertEquals($this->app['config']->get('shopify-app.api_secret'), null);
-        $this->assertEquals($this->app['config']->get('shopify-app.api_version'), '2020-01');
+        $this->assertEmpty($this->app['config']->get('shopify-app.api_secret'));
+        $this->assertSame($this->app['config']->get('shopify-app.api_version'), '2020-01');
     }
 
     public function testSetAndGetApi(): void
@@ -84,8 +87,8 @@ class ApiHelperTest extends TestCase
 
         $data = $shop->apiHelper()->getScriptTags();
         $this->assertInstanceOf(ResponseAccess::class, $data);
-        $this->assertEquals('onload', $data[0]['event']);
-        $this->assertEquals(2, count($data));
+        $this->assertSame('onload', $data[0]['event']);
+        $this->assertCount(2, $data);
     }
 
     public function testCreateScriptTags(): void
@@ -101,6 +104,21 @@ class ApiHelperTest extends TestCase
         $this->assertInstanceOf(ResponseAccess::class, $data);
     }
 
+    public function testDeleteScriptTag(): void
+    {
+        // Create a shop
+        $shop = factory($this->model)->create();
+
+        // Response stubbing
+        $this->setApiStub();
+        ApiStub::stubResponses(['empty']);
+
+        $this->assertInstanceOf(
+            ResponseAccess::class,
+            $shop->apiHelper()->deleteScriptTag(1)
+        );
+    }
+
     public function testGetCharge(): void
     {
         // Create a shop
@@ -112,8 +130,8 @@ class ApiHelperTest extends TestCase
 
         $data = $shop->apiHelper()->getCharge(ChargeType::CHARGE(), ChargeReference::fromNative(1234));
         $this->assertInstanceOf(ResponseAccess::class, $data);
-        $this->assertEquals('iPod Cleaning', $data->name);
-        $this->assertEquals('accepted', $data['status']);
+        $this->assertSame('iPod Cleaning', $data->name);
+        $this->assertSame('accepted', $data['status']);
     }
 
     public function testActivateCharge(): void
@@ -127,7 +145,7 @@ class ApiHelperTest extends TestCase
 
         $data = $shop->apiHelper()->activateCharge(ChargeType::RECURRING(), ChargeReference::fromNative(1234));
         $this->assertInstanceOf(ResponseAccess::class, $data);
-        $this->assertEquals('Super Mega Plan', $data['name']);
+        $this->assertSame('Super Mega Plan', $data['name']);
     }
 
     public function testCreateCharge(): void
@@ -152,7 +170,7 @@ class ApiHelperTest extends TestCase
             $transfer
         );
         $this->assertInstanceOf(ResponseAccess::class, $data);
-        $this->assertEquals('Basic Plan', $data['name']);
+        $this->assertSame('Basic Plan', $data['name']);
     }
 
     public function testGetWebhooks(): void
@@ -180,7 +198,7 @@ class ApiHelperTest extends TestCase
 
         $data = $shop->apiHelper()->createWebhook([]);
         $this->assertInstanceOf(ResponseAccess::class, $data);
-        $this->assertEquals('app/uninstalled', $data['topic']);
+        $this->assertSame('app/uninstalled', $data['topic']);
     }
 
     public function testDeleteWebhook(): void

@@ -2,13 +2,15 @@
 
 namespace Osiset\ShopifyApp\Test\Traits;
 
-use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
-use Osiset\ShopifyApp\Test\TestCase;
 use Osiset\ShopifyApp\Services\ShopSession;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
+use Osiset\ShopifyApp\Test\TestCase;
 
 class AuthControllerTest extends TestCase
 {
+    /**
+     * @var \Osiset\ShopifyApp\Services\ShopSession
+     */
     protected $shopSession;
 
     public function setUp(): void

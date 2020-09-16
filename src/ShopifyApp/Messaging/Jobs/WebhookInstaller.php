@@ -3,10 +3,10 @@
 namespace Osiset\ShopifyApp\Messaging\Jobs;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Osiset\ShopifyApp\Objects\Values\ShopId;
 
 /**
@@ -46,7 +46,7 @@ class WebhookInstaller implements ShouldQueue
      * @param string $createWebhooksAction Action for creating webhooks.
      * @param array  $configWebhooks       The webhooks to add.
      *
-     * @return self
+     * @return void
      */
     public function __construct(ShopId $shopId, callable $createWebhooksAction, array $configWebhooks)
     {

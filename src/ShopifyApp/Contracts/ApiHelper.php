@@ -2,15 +2,15 @@
 
 namespace Osiset\ShopifyApp\Contracts;
 
-use Osiset\BasicShopifyAPI\Session;
 use GuzzleHttp\Exception\RequestException;
-use Osiset\BasicShopifyAPI\ResponseAccess;
 use Osiset\BasicShopifyAPI\BasicShopifyAPI;
+use Osiset\BasicShopifyAPI\ResponseAccess;
+use Osiset\BasicShopifyAPI\Session;
 use Osiset\ShopifyApp\Objects\Enums\AuthMode;
 use Osiset\ShopifyApp\Objects\Enums\ChargeType;
 use Osiset\ShopifyApp\Objects\Transfers\PlanDetails;
-use Osiset\ShopifyApp\Objects\Values\ChargeReference;
 use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails;
+use Osiset\ShopifyApp\Objects\Values\ChargeReference;
 
 /**
  * Reprecents the API helper.
@@ -91,6 +91,15 @@ interface ApiHelper
      * @return ResponseAccess
      */
     public function createScriptTag(array $payload): ResponseAccess;
+
+    /**
+     * Delete a script.
+     *
+     * @param int $scriptTagId The script tag ID to delete.
+     *
+     * @return void
+     */
+    public function deleteScriptTag(int $scriptTagId);
 
     /**
      * Get the charge record.

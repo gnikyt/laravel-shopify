@@ -2,14 +2,14 @@
 
 namespace Osiset\ShopifyApp\Actions;
 
-use stdClass;
-use Osiset\ShopifyApp\Services\ShopSession;
-use Osiset\ShopifyApp\Objects\Enums\AuthMode;
-use Osiset\ShopifyApp\Traits\ConfigAccessible;
-use Osiset\ShopifyApp\Objects\Values\ShopDomain;
-use Osiset\ShopifyApp\Objects\Values\NullAccessToken;
-use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
+use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use Osiset\ShopifyApp\Objects\Enums\AuthMode;
+use Osiset\ShopifyApp\Objects\Values\NullAccessToken;
+use Osiset\ShopifyApp\Objects\Values\ShopDomain;
+use Osiset\ShopifyApp\Services\ShopSession;
+use Osiset\ShopifyApp\Traits\ConfigAccessible;
+use stdClass;
 
 /**
  * Authenticates a shop via HTTP request.
@@ -45,7 +45,7 @@ class AuthorizeShop
      * @param IShopQuery  $shopQuery   The querier for the shop.
      * @param ShopSession $shopSession The shop session handler.
      *
-     * @return self
+     * @return void
      */
     public function __construct(
         IShopQuery $shopQuery,

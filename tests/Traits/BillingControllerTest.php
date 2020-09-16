@@ -2,15 +2,18 @@
 
 namespace Osiset\ShopifyApp\Test\Traits;
 
-use Osiset\ShopifyApp\Test\TestCase;
 use function Osiset\ShopifyApp\createHmac;
-use Osiset\ShopifyApp\Storage\Models\Plan;
 use Osiset\ShopifyApp\Services\ShopSession;
 use Osiset\ShopifyApp\Storage\Models\Charge;
+use Osiset\ShopifyApp\Storage\Models\Plan;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
+use Osiset\ShopifyApp\Test\TestCase;
 
 class BillingControllerTest extends TestCase
 {
+    /**
+     * @var \Osiset\ShopifyApp\Services\ShopSession
+     */
     protected $shopSession;
 
     public function setUp(): void

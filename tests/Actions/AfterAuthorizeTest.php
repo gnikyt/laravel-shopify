@@ -3,13 +3,18 @@
 namespace Osiset\ShopifyApp\Test\Actions;
 
 use Illuminate\Support\Facades\Queue;
-use Osiset\ShopifyApp\Test\TestCase;
 use Osiset\ShopifyApp\Actions\AfterAuthorize;
+use Osiset\ShopifyApp\Test\TestCase;
 
 require_once __DIR__.'/../Stubs/AfterAuthorizeJob.php';
 
 class AfterAuthorizeTest extends TestCase
 {
+    /**
+     * @var \Osiset\ShopifyApp\Actions\AfterAuthorize
+     */
+    protected $action;
+
     public function setUp(): void
     {
         parent::setUp();

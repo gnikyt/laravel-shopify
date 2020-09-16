@@ -2,11 +2,10 @@
 
 namespace Osiset\ShopifyApp\Test\Stubs;
 
-use stdClass;
-use Exception;
 use ErrorException;
-use Osiset\BasicShopifyAPI\ResponseAccess;
+use Exception;
 use Osiset\BasicShopifyAPI\BasicShopifyAPI;
+use Osiset\BasicShopifyAPI\ResponseAccess;
 
 class Api extends BasicShopifyAPI
 {

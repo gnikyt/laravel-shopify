@@ -25,7 +25,7 @@ class AddIntervalColumnToChargesTable extends Migration
      */
     public function down()
     {
-        Schema::table('plans', function (Blueprint $table) {
+        Schema::table('charges', function (Blueprint $table) {
             $table->dropColumn('interval');
         });
     }

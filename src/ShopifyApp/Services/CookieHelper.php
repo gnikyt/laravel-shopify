@@ -22,7 +22,7 @@ class CookieHelper
     /**
      * Constructor.
      *
-     * @return self
+     * @return void
      */
     public function __construct()
     {
@@ -82,7 +82,7 @@ class CookieHelper
         }
 
         if ($this->agent->is('OS X') &&
-            ($this->agent->is('Safari') && !$this->agent->is('iOS')) &&
+            ($this->agent->is('Safari') && ! $this->agent->is('iOS')) &&
             $platform['float'] > 10.14
         ) {
             $compatible = true;

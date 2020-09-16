@@ -2,16 +2,16 @@
 
 namespace Osiset\ShopifyApp\Messaging\Jobs;
 
-use stdClass;
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Osiset\ShopifyApp\Actions\CancelCurrentPlan;
+use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
-use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
+use stdClass;
 
 /**
  * Webhook job responsible for handling when the app is uninstalled.
@@ -43,7 +43,7 @@ class AppUninstalledJob implements ShouldQueue
      * @param ShopDomain $domain  The shop domain.
      * @param stdClass   $data   The webhook data (JSON decoded).
      *
-     * @return self
+     * @return void
      */
     public function __construct(ShopDomain $domain, stdClass $data)
     {
@@ -71,7 +71,7 @@ class AppUninstalledJob implements ShouldQueue
 
         // Cancel the current plan
         $cancelCurrentPlanAction($shopId);
-        
+
         // Purge shop of token, plan, etc.
         $shopCommand->clean($shopId);
 

@@ -3,11 +3,11 @@
 namespace Osiset\ShopifyApp\Actions;
 
 use Illuminate\Support\Carbon;
-use Osiset\ShopifyApp\Services\ChargeHelper;
-use Osiset\ShopifyApp\Objects\Enums\ChargeType;
-use Osiset\ShopifyApp\Objects\Values\ChargeReference;
 use Osiset\ShopifyApp\Contracts\Commands\Charge as IChargeCommand;
 use Osiset\ShopifyApp\Exceptions\ChargeNotRecurringOrOnetimeException;
+use Osiset\ShopifyApp\Objects\Enums\ChargeType;
+use Osiset\ShopifyApp\Objects\Values\ChargeReference;
+use Osiset\ShopifyApp\Services\ChargeHelper;
 
 /**
  * Cancels a charge for a shop.
@@ -34,7 +34,7 @@ class CancelCharge
      * @param IChargeCommand $chargeCommand The commands for charges.
      * @param ChargeHelper   $chargeHelper  The charge helper.
      *
-     * @return self
+     * @return void
      */
     public function __construct(IChargeCommand $chargeCommand, ChargeHelper $chargeHelper)
     {
@@ -57,7 +57,7 @@ class CancelCharge
         $helper = $this->chargeHelper->useCharge($chargeRef);
         $charge = $helper->getCharge();
 
-        if (!$charge->isType(ChargeType::CHARGE()) && !$charge->isType(ChargeType::RECURRING())) {
+        if (! $charge->isType(ChargeType::CHARGE()) && ! $charge->isType(ChargeType::RECURRING())) {
             // Not a recurring or one-time charge, someone trying to cancel a usage charge?
             throw new ChargeNotRecurringOrOnetimeException(
                 'Cancel may only be called for single and recurring charges.'

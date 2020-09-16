@@ -2,12 +2,11 @@
 
 namespace Osiset\ShopifyApp\Test\Messaging\Jobs;
 
-use Osiset\ShopifyApp\Actions\CancelCurrentPlan;
-use Osiset\ShopifyApp\Test\TestCase;
-use Osiset\ShopifyApp\Storage\Models\Plan;
-use Osiset\ShopifyApp\Storage\Models\Charge;
-use Osiset\ShopifyApp\Objects\Enums\ChargeStatus;
 use Osiset\ShopifyApp\Messaging\Jobs\AppUninstalledJob;
+use Osiset\ShopifyApp\Objects\Enums\ChargeStatus;
+use Osiset\ShopifyApp\Storage\Models\Charge;
+use Osiset\ShopifyApp\Storage\Models\Plan;
+use Osiset\ShopifyApp\Test\TestCase;
 
 class AppUninstalledTest extends TestCase
 {
