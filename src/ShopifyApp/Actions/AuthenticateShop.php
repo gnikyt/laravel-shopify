@@ -104,7 +104,7 @@ class AuthenticateShop
 
         // Determine if the HMAC is correct
         $this->apiHelper->make();
-        if (!$this->apiHelper->verifyRequest($request->all())) {
+        if (! $this->apiHelper->verifyRequest($request->all())) {
             // Throw exception, something is wrong
             return [$result, null];
         }
