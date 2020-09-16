@@ -16,7 +16,7 @@ return [
     | Manual migrations
     |--------------------------------------------------------------------------
     |
-    | This option option allows you to use:
+    | This option allows you to use:
     | `php artisan vendor:publish --tag=shopify-migrations` to push migrations
     | to your app's folder so you're free to modify before migrating.
     |
@@ -41,7 +41,7 @@ return [
     | Shopify Jobs Namespace
     |--------------------------------------------------------------------------
     |
-    | This option option allows you to change out the default job namespace
+    | This option allows you to change out the default job namespace
     | which is \App\Jobs. This option is mainly used if any custom configuration
     | is done in autoload and does not need to be changed unless required.
     |

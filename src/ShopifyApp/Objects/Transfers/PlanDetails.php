@@ -55,7 +55,7 @@ final class PlanDetails extends AbstractTransfer
      */
     public $terms;
     /**
-     * cappedTerms
+     * cappedTerms.
      *
      * @var mixed
      */
@@ -69,7 +69,7 @@ final class PlanDetails extends AbstractTransfer
     public $returnUrl;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function toArray(): array
     {
@@ -82,7 +82,7 @@ final class PlanDetails extends AbstractTransfer
             'return_url'    => $this->returnUrl,
             'cappedTerms'   => $this->cappedTerms,
             'terms'         => $this->terms,
-            'capped_amount' => $this->cappedAmount
+            'capped_amount' => $this->cappedAmount,
         ];
     }
 }

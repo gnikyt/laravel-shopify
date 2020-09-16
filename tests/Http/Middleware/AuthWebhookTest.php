@@ -2,9 +2,9 @@
 
 namespace Osiset\ShopifyApp\Test\Http\Middleware;
 
-use Osiset\ShopifyApp\Test\TestCase;
 use Illuminate\Support\Facades\Request;
 use Osiset\ShopifyApp\Http\Middleware\AuthWebhook as AuthWebhookMiddleware;
+use Osiset\ShopifyApp\Test\TestCase;
 
 class AuthWebhookTest extends TestCase
 {
@@ -36,7 +36,7 @@ class AuthWebhookTest extends TestCase
         });
 
         // Assert we get a proper response
-        $this->assertEquals(401, $response->status());
+        $this->assertSame(401, $response->status());
     }
 
     public function testDenysForMissingHmacHeader(): void
@@ -67,7 +67,7 @@ class AuthWebhookTest extends TestCase
         });
 
         // Assert we get a proper response
-        $this->assertEquals(401, $response->status());
+        $this->assertSame(401, $response->status());
     }
 
     public function testRuns(): void
@@ -88,7 +88,7 @@ class AuthWebhookTest extends TestCase
             // This valid referer should be ignored as there is a get variable
             array_merge(Request::server(), [
                 'HTTP_X_Shopify_Hmac_Sha256' => 'thNnmggU2ex3L5XXeMNfxf8Wl8STcVZTxscSFEKSxa0=',
-                'HTTP_X_Shopify_Shop_Domain' => 'example.myshopify.com'
+                'HTTP_X_Shopify_Shop_Domain' => 'example.myshopify.com',
             ])
         );
         Request::swap($newRequest);

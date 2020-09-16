@@ -2,10 +2,9 @@
 
 namespace Osiset\ShopifyApp\Test\Console;
 
-use ReflectionMethod;
-use Osiset\ShopifyApp\Test\TestCase;
-use Symfony\Component\Console\Tester\CommandTester;
 use Osiset\ShopifyApp\Console\WebhookJobMakeCommand;
+use Osiset\ShopifyApp\Test\TestCase;
+use ReflectionMethod;
 use Symfony\Component\Console\Application as ConsoleApplication;
 
 class WebhookJobMakeCommandTest extends TestCase
@@ -43,7 +42,7 @@ class WebhookJobMakeCommandTest extends TestCase
         ];
         foreach ($jobs as $className => $route) {
             $result = $method->invoke($command, $className);
-            $this->assertEquals($result, $route);
+            $this->assertSame($result, $route);
         }
     }
 }

@@ -2,9 +2,9 @@
 
 namespace Osiset\ShopifyApp\Actions;
 
+use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use Osiset\ShopifyApp\Objects\Values\ShopId;
 use Osiset\ShopifyApp\Traits\ConfigAccessible;
-use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 
 /**
  * Attempt to install webhooks on a shop.
@@ -41,7 +41,7 @@ class DispatchWebhooks
      * @param string     $jobClass    The job to dispatch.
      * @param callable   $actionClass The action to handle the job.
      *
-     * @return self
+     * @return void
      */
     public function __construct(IShopQuery $shopQuery, string $jobClass, callable $actionClass)
     {

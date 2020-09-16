@@ -2,15 +2,17 @@
 
 namespace Osiset\ShopifyApp\Test\Http\Middleware;
 
-use Osiset\ShopifyApp\Test\Http\Middleware\LegacyAuthProxy as LegacyAuthProxyMiddleware;
-use Osiset\ShopifyApp\Test\TestCase;
 use Illuminate\Support\Facades\Request;
 use Osiset\ShopifyApp\Http\Middleware\AuthProxy as AuthProxyMiddleware;
+use Osiset\ShopifyApp\Test\Http\Middleware\LegacyAuthProxy as LegacyAuthProxyMiddleware;
+use Osiset\ShopifyApp\Test\TestCase;
 
 class AuthProxyTest extends TestCase
 {
-    protected $queryString, $queryParams;
-    protected $queryStringArrayFormat, $queryParamsArrayFormat;
+    protected $queryString;
+    protected $queryParams;
+    protected $queryStringArrayFormat;
+    protected $queryParamsArrayFormat;
 
     public function setUp(): void
     {
@@ -71,7 +73,7 @@ class AuthProxyTest extends TestCase
 
         // Assert it was not processed and our status
         $this->assertFalse($result[1]);
-        $this->assertEquals(401, $result[0]->status());
+        $this->assertSame(401, $result[0]->status());
     }
 
     public function testDoesNotRunForInvalidSignature(): void
@@ -80,14 +82,14 @@ class AuthProxyTest extends TestCase
         $query = $this->queryParams;
         $query['oops'] = 'i-did-it-again';
         Request::merge($query);
-        Request::instance()->server->set('QUERY_STRING', $this->queryString . '&oops=i-did-it-again');
+        Request::instance()->server->set('QUERY_STRING', $this->queryString.'&oops=i-did-it-again');
 
         // Run the middleware
         $result = $this->runAuthProxy();
 
         // Assert it was not processed and our status
         $this->assertFalse($result[1]);
-        $this->assertEquals(401, $result[0]->status());
+        $this->assertSame(401, $result[0]->status());
     }
 
     public function testQueryStringArrayFormatParsedProperly(): void

@@ -79,7 +79,7 @@ class WebhookJobMakeCommand extends JobMakeCommand
     {
         $name = parent::getNameInput();
         $suffix = 'Job';
-        if (!Str::endsWith($name, $suffix)) {
+        if (! Str::endsWith($name, $suffix)) {
             $name .= $suffix;
         }
 

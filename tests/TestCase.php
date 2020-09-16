@@ -4,12 +4,12 @@ namespace Osiset\ShopifyApp\Test;
 
 use Closure;
 use Illuminate\Support\Facades\App;
+use Orchestra\Database\ConsoleServiceProvider;
+use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use Osiset\BasicShopifyAPI\Options;
 use Osiset\ShopifyApp\ShopifyAppProvider;
-use Orchestra\Database\ConsoleServiceProvider;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
 use Osiset\ShopifyApp\Test\Stubs\User as UserStub;
-use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 abstract class TestCase extends OrchestraTestCase
 {
@@ -90,7 +90,7 @@ abstract class TestCase extends OrchestraTestCase
                 $ts = $this->app['config']->get('shopify-app.api_time_store');
                 $ls = $this->app['config']->get('shopify-app.api_limit_store');
                 $sd = $this->app['config']->get('shopify-app.api_deferrer');
-    
+
                 return new ApiStub(
                     $opts,
                     new $ts(),

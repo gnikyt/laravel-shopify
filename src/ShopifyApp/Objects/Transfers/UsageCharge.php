@@ -3,11 +3,10 @@
 namespace Osiset\ShopifyApp\Objects\Transfers;
 
 use Illuminate\Support\Carbon;
-use Osiset\ShopifyApp\Objects\Values\ShopId;
-use Osiset\ShopifyApp\Objects\Enums\ChargeType;
-use Osiset\ShopifyApp\Objects\Enums\ChargeStatus;
 use Osiset\ShopifyApp\Contracts\Objects\Values\PlanId;
-use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails;
+use Osiset\ShopifyApp\Objects\Enums\ChargeStatus;
+use Osiset\ShopifyApp\Objects\Enums\ChargeType;
+use Osiset\ShopifyApp\Objects\Values\ShopId;
 
 /**
  * Reprecents create usage charge.
@@ -66,7 +65,7 @@ final class UsageCharge extends AbstractTransfer
     /**
      * Constructor.
      *
-     * @return self
+     * @return void
      */
     public function __construct()
     {

@@ -5,9 +5,8 @@ namespace Osiset\ShopifyApp\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
-use Osiset\ShopifyApp\Traits\ConfigAccessible;
-
 use function Osiset\ShopifyApp\createHmac;
+use Osiset\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Response for ensuring a proper webhook request.
@@ -31,7 +30,7 @@ class AuthWebhook
         $data = $request->getContent();
         $hmacLocal = createHmac(['data' => $data, 'raw' => true, 'encode' => true], $this->getConfig('api_secret'));
 
-        if (!hash_equals($hmac, $hmacLocal) || empty($shop)) {
+        if (! hash_equals($hmac, $hmacLocal) || empty($shop)) {
             // Issue with HMAC or missing shop header
             return Response::make('Invalid webhook signature.', 401);
         }

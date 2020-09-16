@@ -9,6 +9,9 @@ use Osiset\ShopifyApp\Test\TestCase;
 
 class ShopTest extends TestCase
 {
+    /**
+     * @var \Osiset\ShopifyApp\Contracts\Queries\Shop
+     */
     protected $query;
 
     public function setUp(): void
@@ -48,6 +51,6 @@ class ShopTest extends TestCase
         $shop = factory($this->model)->create();
 
         // Ensure we get a result
-        $this->assertEquals(1, $this->query->getAll()->count());
+        $this->assertCount(1, $this->query->getAll());
     }
 }

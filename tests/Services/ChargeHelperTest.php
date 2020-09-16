@@ -6,15 +6,18 @@ use Illuminate\Support\Carbon;
 use Osiset\BasicShopifyAPI\ResponseAccess;
 use Osiset\ShopifyApp\Objects\Enums\ChargeStatus;
 use Osiset\ShopifyApp\Objects\Transfers\PlanDetails;
-use Osiset\ShopifyApp\Test\TestCase;
-use Osiset\ShopifyApp\Storage\Models\Plan;
 use Osiset\ShopifyApp\Services\ChargeHelper;
 use Osiset\ShopifyApp\Storage\Models\Charge;
+use Osiset\ShopifyApp\Storage\Models\Plan;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
+use Osiset\ShopifyApp\Test\TestCase;
 use stdClass;
 
 class ChargeHelperTest extends TestCase
 {
+    /**
+     * @var \Osiset\ShopifyApp\Services\ChargeHelper
+     */
     protected $chargeHelper;
 
     public function setUp(): void
@@ -30,7 +33,7 @@ class ChargeHelperTest extends TestCase
         $seed = $this->seedData();
         $this->chargeHelper->useCharge($seed->charge->getReference());
 
-        $this->assertEquals(
+        $this->assertSame(
             $seed->charge->id,
             $this->chargeHelper->getCharge()->id
         );
@@ -48,7 +51,7 @@ class ChargeHelperTest extends TestCase
 
         $data = $this->chargeHelper->retrieve($seed->shop);
         $this->assertInstanceOf(ResponseAccess::class, $data);
-        $this->assertEquals('accepted', $data->status);
+        $this->assertSame('accepted', $data->status);
     }
 
     public function testTrial(): void
@@ -61,10 +64,10 @@ class ChargeHelperTest extends TestCase
         $this->chargeHelper->useCharge($seed->charge->getReference());
 
         $this->assertTrue($this->chargeHelper->isActiveTrial());
-        $this->assertEquals(7, $this->chargeHelper->remainingTrialDays());
-        $this->assertEquals(0, $this->chargeHelper->remainingTrialDaysFromCancel());
+        $this->assertSame(7, $this->chargeHelper->remainingTrialDays());
+        $this->assertSame(0, $this->chargeHelper->remainingTrialDaysFromCancel());
         $this->assertFalse($this->chargeHelper->hasExpired());
-        $this->assertEquals(0, $this->chargeHelper->usedTrialDays());
+        $this->assertSame(0, $this->chargeHelper->usedTrialDays());
     }
 
     public function testNonTrial(): void
@@ -77,9 +80,9 @@ class ChargeHelperTest extends TestCase
 
         $this->assertFalse($this->chargeHelper->isActiveTrial());
         $this->assertNull($this->chargeHelper->remainingTrialDays());
-        $this->assertEquals(0, $this->chargeHelper->remainingTrialDaysFromCancel());
+        $this->assertNull($this->chargeHelper->remainingTrialDaysFromCancel());
         $this->assertFalse($this->chargeHelper->hasExpired());
-        $this->assertEquals(0, $this->chargeHelper->usedTrialDays());
+        $this->assertNull($this->chargeHelper->usedTrialDays());
     }
 
     public function testTrialCancelled(): void
@@ -95,10 +98,10 @@ class ChargeHelperTest extends TestCase
         $this->chargeHelper->useCharge($seed->charge->getReference());
 
         $this->assertFalse($this->chargeHelper->isActiveTrial());
-        $this->assertEquals(5, $this->chargeHelper->remainingTrialDaysFromCancel());
+        $this->assertSame(5, $this->chargeHelper->remainingTrialDaysFromCancel());
         $this->assertNull($this->chargeHelper->pastDaysForPeriod());
         $this->assertTrue($this->chargeHelper->hasExpired());
-        $this->assertEquals(0, $this->chargeHelper->remainingDaysForPeriod());
+        $this->assertSame(0, $this->chargeHelper->remainingDaysForPeriod());
     }
 
     public function testBeginEndPeriod(): void
@@ -107,16 +110,16 @@ class ChargeHelperTest extends TestCase
         $seed = $this->seedData();
         $this->chargeHelper->useCharge($seed->charge->getReference());
 
-        $this->assertEquals(
+        $this->assertSame(
             Carbon::today()->format('Y-m-d'),
             $this->chargeHelper->periodBeginDate()
         );
-        $this->assertEquals(
+        $this->assertSame(
             Carbon::today()->addDays(30)->format('Y-m-d'),
             $this->chargeHelper->periodEndDate()
         );
-        $this->assertEquals(30, $this->chargeHelper->remainingDaysForPeriod());
-        $this->assertEquals(0, $this->chargeHelper->pastDaysForPeriod());
+        $this->assertSame(30, $this->chargeHelper->remainingDaysForPeriod());
+        $this->assertSame(0, $this->chargeHelper->pastDaysForPeriod());
     }
 
     public function testChargeForPlan(): void
@@ -152,7 +155,7 @@ class ChargeHelperTest extends TestCase
 
         // Create the shop with the plan attached
         $shop = factory($this->model)->create([
-            'plan_id' => $plan->getId()->toNative()
+            'plan_id' => $plan->getId()->toNative(),
         ]);
 
         $result = $this->chargeHelper->details($plan, $shop);
@@ -171,7 +174,7 @@ class ChargeHelperTest extends TestCase
 
         // Create the shop with the plan attached
         $shop = factory($this->model)->create([
-            'plan_id' => $plan->getId()->toNative()
+            'plan_id' => $plan->getId()->toNative(),
         ]);
 
         // Create a charge for the plan and shop
@@ -180,7 +183,7 @@ class ChargeHelperTest extends TestCase
                 [
                     'charge_id' => 12345,
                     'plan_id'   => $plan->getId()->toNative(),
-                    'user_id'   => $shop->getId()->toNative()
+                    'user_id'   => $shop->getId()->toNative(),
                 ],
                 $extraCharge
             )
@@ -189,7 +192,7 @@ class ChargeHelperTest extends TestCase
         return (object) [
             'plan'   => $plan,
             'shop'   => $shop,
-            'charge' => $charge
+            'charge' => $charge,
         ];
     }
 }

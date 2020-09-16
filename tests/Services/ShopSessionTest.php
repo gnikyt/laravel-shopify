@@ -2,16 +2,18 @@
 
 namespace Osiset\ShopifyApp\Test\Services;
 
-use Osiset\ShopifyApp\Test\TestCase;
 use Osiset\BasicShopifyAPI\ResponseAccess;
-use Osiset\ShopifyApp\Services\ShopSession;
 use Osiset\ShopifyApp\Objects\Enums\AuthMode;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
+use Osiset\ShopifyApp\Services\ShopSession;
+use Osiset\ShopifyApp\Test\TestCase;
 
 class ShopSessionTest extends TestCase
 {
+    /**
+     * @var \Osiset\ShopifyApp\Services\ShopSession
+     */
     protected $shopSession;
-    protected $model;
 
     public function setUp(): void
     {
@@ -95,7 +97,7 @@ class ShopSessionTest extends TestCase
         );
         $this->shopSession->setAccess($data);
 
-        $this->assertEquals(
+        $this->assertSame(
             $data->access_token,
             $this->shopSession->getToken(true)->toNative()
         );
@@ -167,7 +169,7 @@ class ShopSessionTest extends TestCase
 
         // GOOD check (with compare)
         $this->shopSession->setSessionToken('123abc');
-        $this->assertEquals('123abc', $this->shopSession->getSessionToken());
+        $this->assertSame('123abc', $this->shopSession->getSessionToken());
         $this->assertTrue($this->shopSession->isSessionTokenValid('123abc'));
 
         // BAD check

@@ -3,9 +3,9 @@
 namespace Osiset\ShopifyApp\Actions;
 
 use Osiset\BasicShopifyAPI\ResponseAccess;
+use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use Osiset\ShopifyApp\Objects\Values\ShopId;
 use Osiset\ShopifyApp\Traits\ConfigAccessible;
-use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 
 /**
  * Create scripttags for this app on the shop.
@@ -26,7 +26,7 @@ class CreateScripts
      *
      * @param IShopQuery $shopQuery The querier for the shop.
      *
-     * @return self
+     * @return void
      */
     public function __construct(IShopQuery $shopQuery)
     {
@@ -70,19 +70,33 @@ class CreateScripts
         // Get the scripts existing in for the shop
         $scripts = $apiHelper->getScriptTags();
 
-        // Keep track of whats created
+        // Keep track of whats created, deleted, and used
         $created = [];
+        $deleted = [];
+        $used = [];
         foreach ($configScripts as $scripttag) {
             // Check if the required scripttag exists on the shop
-            if (!$exists($scripttag, $scripts)) {
+            if (! $exists($scripttag, $scripts)) {
                 // It does not... create the scripttag
                 $apiHelper->createScriptTag($scripttag);
-
-                // Keep track of what was created
                 $created[] = $scripttag;
+            }
+
+            $used[] = $scripttag['src'];
+        }
+
+        // Delete unused scripttags
+        foreach ($scripts as $scriptTag) {
+            if (! in_array($scriptTag->src, $used)) {
+                // Scripttag should be deleted
+                $apiHelper->deleteScriptTag($scriptTag->id);
+                $deleted[] = $scriptTag;
             }
         }
 
-        return $created;
+        return [
+            'created' => $created,
+            'deleted' => $deleted,
+        ];
     }
 }

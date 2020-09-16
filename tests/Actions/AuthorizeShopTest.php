@@ -2,13 +2,18 @@
 
 namespace Osiset\ShopifyApp\Test\Actions;
 
-use Osiset\ShopifyApp\Test\TestCase;
 use Osiset\ShopifyApp\Actions\AuthorizeShop;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
+use Osiset\ShopifyApp\Test\TestCase;
 
 class AuthorizeShopTest extends TestCase
 {
+    /**
+     * @var \Osiset\ShopifyApp\Actions\AuthorizeShop
+     */
+    protected $action;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -71,6 +76,6 @@ class AuthorizeShopTest extends TestCase
         $shop->refresh();
 
         $this->assertTrue($result->completed);
-        $this->assertNotEquals($currentToken->toNative(), $shop->getToken()->toNative());
+        $this->assertNotSame($currentToken->toNative(), $shop->getToken()->toNative());
     }
 }

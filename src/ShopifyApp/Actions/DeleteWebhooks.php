@@ -22,7 +22,7 @@ class DeleteWebhooks
      *
      * @param IShopQuery $shopQuery The querier for the shop.
      *
-     * @return self
+     * @return void
      */
     public function __construct(IShopQuery $shopQuery)
     {
