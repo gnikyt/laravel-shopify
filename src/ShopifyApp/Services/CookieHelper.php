@@ -50,10 +50,12 @@ class CookieHelper
     public function setCookiePolicy(): void
     {
         $this->setConfig('session.expire_on_close', true);
+        // TODO: Undo this. Unencrypted is for testing.
         $this->setConfig('session.encrypt', false);
 
         if ($this->checkSameSiteNoneCompatible()) {
             $this->setConfigArray([
+                // TODO: Undo this. Unencrypted is for testing.
                 'session.encrypt'   => false,
                 'session.secure'    => true,
                 'session.same_site' => 'none',

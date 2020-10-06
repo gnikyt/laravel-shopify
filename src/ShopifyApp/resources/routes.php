@@ -126,4 +126,12 @@ Route::group(['middleware' => ['api']], function () {
     )
     ->middleware('auth.webhook')
     ->name('webhook');
+
+    // API
+    Route::group(['prefix' => 'api', 'middleware' => ['auth.token']], function () {
+        Route::get(
+            '/me',
+            'Osiset\ShopifyApp\Http\Controllers\ApiController@getSelf'
+        );
+    });
 });

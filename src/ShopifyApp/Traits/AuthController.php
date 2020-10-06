@@ -30,6 +30,7 @@ trait AuthController
      */
     public function authenticate(Request $request, AuthenticateShop $authenticateShop)
     {
+        //dd('AUTHENTICATE! AUTHENTICATE!');
         Log::info('-- authenticate --');
         // Get the shop domain
         $shopDomain = ShopDomain::fromNative($request->get('shop'));

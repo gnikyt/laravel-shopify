@@ -10,9 +10,11 @@
             document.addEventListener('DOMContentLoaded', function () {
                 var redirectUrl = "{!! $authUrl !!}";
                 if (window.top == window.self) {
+                    console.log('auth type 1');
                     // If the current window is the 'parent', change the URL by setting location.href
                     window.top.location.href = redirectUrl;
                 } else {
+                    console.log('auth type 2');
                     // If the current window is the 'child', change the parent's URL with postMessage
                     normalizedLink = document.createElement('a');
                     normalizedLink.href = redirectUrl;

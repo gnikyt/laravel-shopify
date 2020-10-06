@@ -18,6 +18,7 @@ use Osiset\ShopifyApp\Actions\DispatchScripts as DispatchScriptsAction;
 use Osiset\ShopifyApp\Actions\DispatchWebhooks as DispatchWebhooksAction;
 use Osiset\ShopifyApp\Actions\GetPlanUrl as GetPlanUrlAction;
 use Osiset\ShopifyApp\Console\WebhookJobMakeCommand;
+use Osiset\ShopifyApp\Console\EnableJwtSupportCommand;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use Osiset\ShopifyApp\Contracts\Commands\Charge as IChargeCommand;
 use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
@@ -26,6 +27,7 @@ use Osiset\ShopifyApp\Contracts\Queries\Plan as IPlanQuery;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use Osiset\ShopifyApp\Http\Middleware\AuthProxy;
 use Osiset\ShopifyApp\Http\Middleware\AuthShopify;
+use Osiset\ShopifyApp\Http\Middleware\AuthToken;
 use Osiset\ShopifyApp\Http\Middleware\AuthWebhook;
 use Osiset\ShopifyApp\Http\Middleware\Billable;
 use Osiset\ShopifyApp\Messaging\Jobs\ScripttagInstaller;
@@ -90,6 +92,7 @@ class ShopifyAppProvider extends ServiceProvider
         // Commands
         $this->commands([
             WebhookJobMakeCommand::class,
+            EnableJwtSupportCommand::class,
         ]);
 
         // Binds
@@ -108,9 +111,11 @@ class ShopifyAppProvider extends ServiceProvider
                     $modelInstance
                 );
             }],
+
             IPlanQuery::class => [self::CSINGLETON, function () {
                 return new PlanQuery();
             }],
+
             IChargeQuery::class => [self::CSINGLETON, function () {
                 return new ChargeQuery();
             }],
@@ -121,6 +126,7 @@ class ShopifyAppProvider extends ServiceProvider
                     $app->make(IChargeQuery::class)
                 );
             }],
+
             IShopCommand::class => [self::CSINGLETON, function ($app) {
                 return new ShopCommand(
                     $app->make(IShopQuery::class)
@@ -135,6 +141,7 @@ class ShopifyAppProvider extends ServiceProvider
                     $app->make(ShopSession::class)
                 );
             }],
+
             AuthenticateShopAction::class => [self::CBIND, function ($app) {
                 return new AuthenticateShopAction(
                     $app->make(ShopSession::class),
@@ -145,6 +152,7 @@ class ShopifyAppProvider extends ServiceProvider
                     $app->make(AfterAuthorizeAction::class)
                 );
             }],
+
             GetPlanUrlAction::class => [self::CBIND, function ($app) {
                 return new GetPlanUrlAction(
                     $app->make(ChargeHelper::class),
@@ -152,6 +160,7 @@ class ShopifyAppProvider extends ServiceProvider
                     $app->make(IShopQuery::class)
                 );
             }],
+
             CancelCurrentPlanAction::class => [self::CBIND, function ($app) {
                 return new CancelCurrentPlanAction(
                     $app->make(IShopQuery::class),
@@ -159,6 +168,7 @@ class ShopifyAppProvider extends ServiceProvider
                     $app->make(ChargeHelper::class)
                 );
             }],
+
             DispatchWebhooksAction::class => [self::CBIND, function ($app) {
                 return new DispatchWebhooksAction(
                     $app->make(IShopQuery::class),
@@ -166,6 +176,7 @@ class ShopifyAppProvider extends ServiceProvider
                     $app->make(CreateWebhooksAction::class)
                 );
             }],
+
             DispatchScriptsAction::class => [self::CBIND, function ($app) {
                 return new DispatchScriptsAction(
                     $app->make(IShopQuery::class),
@@ -173,11 +184,13 @@ class ShopifyAppProvider extends ServiceProvider
                     $app->make(CreateScriptsAction::class)
                 );
             }],
+
             AfterAuthorizeAction::class => [self::CBIND, function ($app) {
                 return new AfterAuthorizeAction(
                     $app->make(IShopQuery::class)
                 );
             }],
+
             ActivatePlanAction::class => [self::CBIND, function ($app) {
                 return new ActivatePlanAction(
                     $app->make(CancelCurrentPlanAction::class),
@@ -188,6 +201,7 @@ class ShopifyAppProvider extends ServiceProvider
                     $app->make(IShopCommand::class)
                 );
             }],
+
             ActivateUsageChargeAction::class => [self::CBIND, function ($app) {
                 return new ActivateUsageChargeAction(
                     $app->make(ChargeHelper::class),
@@ -195,21 +209,25 @@ class ShopifyAppProvider extends ServiceProvider
                     $app->make(IShopQuery::class)
                 );
             }],
+
             DeleteWebhooksAction::class => [self::CBIND, function ($app) {
                 return new DeleteWebhooksAction(
                     $app->make(IShopQuery::class)
                 );
             }],
+
             CreateWebhooksAction::class => [self::CBIND, function ($app) {
                 return new CreateWebhooksAction(
                     $app->make(IShopQuery::class)
                 );
             }],
+
             CreateScriptsAction::class => [self::CBIND, function ($app) {
                 return new CreateScriptsAction(
                     $app->make(IShopQuery::class)
                 );
             }],
+
             CancelChargeAction::class => [self::CBIND, function ($app) {
                 return new CancelChargeAction(
                     $app->make(IChargeCommand::class),
@@ -234,15 +252,22 @@ class ShopifyAppProvider extends ServiceProvider
                     $app->make(IShopQuery::class)
                 );
             }],
+
             ChargeHelper::class => [self::CBIND, function ($app) {
                 return new ChargeHelper(
                     $app->make(IChargeQuery::class)
                 );
             }],
+
             CookieHelper::class => [self::CBIND, function () {
                 return new CookieHelper();
             }],
+
+            JWTHelper::class => [self::CBIND, function () {
+                return new JWTHelper();
+            }],
         ];
+
         foreach ($binds as $key => $fn) {
             $this->app->{$fn[0]}($key, $fn[1]);
         }
@@ -278,6 +303,15 @@ class ShopifyAppProvider extends ServiceProvider
             ],
             'shopify-views'
         );
+
+        if ($this->app['config']->get('shopify-app.jwt_authentication_enabled')) {
+            $this->publishes(
+                [
+                    __DIR__.'/resources/views' => resource_path('views/vendor/shopify-app'),
+                ],
+                'shopify-views'
+            );
+        }
     }
 
     /**
@@ -352,6 +386,7 @@ class ShopifyAppProvider extends ServiceProvider
     {
         // Middlewares
         $this->app['router']->aliasMiddleware('auth.shopify', AuthShopify::class);
+        $this->app['router']->aliasMiddleware('auth.token', AuthToken::class);
         $this->app['router']->aliasMiddleware('auth.webhook', AuthWebhook::class);
         $this->app['router']->aliasMiddleware('auth.proxy', AuthProxy::class);
         $this->app['router']->aliasMiddleware('billable', Billable::class);

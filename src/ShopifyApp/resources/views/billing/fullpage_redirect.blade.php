@@ -6,7 +6,7 @@
 
         <title>Redirecting...</title>
 
-        <script type="text/javascript">window.top.location.href = "{!! $url !!}";</script>
+        <script type="text/javascript">console.log('billing redirect', window.self, window.top, window.parent); window.top.location.href = "{!! $url !!}";</script>
     </head>
     <body>
     </body>

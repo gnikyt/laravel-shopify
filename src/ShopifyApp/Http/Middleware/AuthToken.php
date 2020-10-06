@@ -5,51 +5,18 @@ namespace Osiset\ShopifyApp\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Session;
-use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
-use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
+use Osiset\ShopifyApp\Exceptions\InvalidTokenException;
 use Osiset\ShopifyApp\Exceptions\MissingShopDomainException;
+use Osiset\ShopifyApp\Exceptions\MissingTokenException;
 use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
-use Osiset\ShopifyApp\Objects\Enums\DataSource;
-use Osiset\ShopifyApp\Objects\Values\NullShopDomain;
-use Osiset\ShopifyApp\Objects\Values\ShopDomain;
-use Osiset\ShopifyApp\Services\ShopSession;
+use Osiset\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Response for ensuring an authenticated request.
  */
-class AuthShopify
+class AuthToken
 {
-    /**
-     * The API helper.
-     *
-     * @var IApiHelper
-     */
-    protected $apiHelper;
-
-    /**
-     * The shop session helper.
-     *
-     * @var ShopSession
-     */
-    protected $shopSession;
-
-    /**
-     * Constructor.
-     *
-     * @param IApiHelper  $apiHelper   The API helper.
-     * @param ShopSession $shopSession The shop session helper.
-     *
-     * @return void
-     */
-    public function __construct(IApiHelper $apiHelper, ShopSession $shopSession)
-    {
-        Log::info('> constructing shopify auth <');
-        $this->shopSession = $shopSession;
-        $this->apiHelper = $apiHelper;
-        $this->apiHelper->make();
-    }
+    use ConfigAccessible;
 
     /**
      * Handle an incoming request.
@@ -59,12 +26,64 @@ class AuthShopify
      * @param Request  $request The request object.
      * @param \Closure $next    The next action.
      *
+     * @throws MissingTokenException
+     * @throws InvalidTokenException
      * @throws SignatureVerificationException
      *
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
     {
+        $token = $request->bearerToken();
+
+        if (!$token) {
+            throw new MissingTokenException('Missing authentication token.');
+        }
+
+        if (!preg_match('/^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_+\/=]*$/', $token)) {
+            throw new InvalidTokenException('Malformed token.');
+        }
+
+        if (!$this->checkSignature($token)) {
+            throw new SignatureVerificationException('Unable to verify signature.');
+        }
+
+
+        $parts = explode('.', $token);
+
+        $header = base64_decode($parts[0]);
+        $body = base64_decode($parts[1]);
+        $signature = $parts[2];
+
+        if (!$header || !$body || !$signature) {
+            throw new InvalidTokenException('Malformed token.');
+        }
+
+        if ($header !== '{"alg":"HS256","typ":"JWT"}') {
+            throw new InvalidTokenException('Malformed token.');
+        }
+
+        $body = json_decode($body);
+
+        if (!$body ||
+            !isset($body->iss) ||
+            !isset($body->dest) ||
+            !isset($body->aud) ||
+            !isset($body->sub) ||
+            !isset($body->exp) ||
+            !isset($body->nbf) ||
+            !isset($body->iat) ||
+            !isset($body->jti) ||
+            !isset($body->sid)) {
+            throw new InvalidTokenException('Malformed token.');
+        }
+
+        dd($header, $body);
+
+
+
+
+        return response()->json($request->headers->get('Authorization'));
         // Grab the domain and check the HMAC (if present)
         $domain = $this->getShopDomainFromData($request);
         $hmac = $this->verifyHmac($request);
