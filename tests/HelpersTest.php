@@ -32,4 +32,13 @@ class HelpersTest extends TestCase
             createHmac(['data' => $data, 'buildQuery' => true], $secret)
         );
     }
+
+    public function testRegisterPackageRoutes(): void
+    {
+        // Routes to exclude
+        $routes = explode(',', 'home,billing');
+
+        $this->assertTrue(registerPackageRoute('authenticate', $routes));
+        $this->assertFalse(registerPackageRoute('home', $routes));
+    }
 }
