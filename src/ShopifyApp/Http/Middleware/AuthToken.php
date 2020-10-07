@@ -45,6 +45,8 @@ class AuthToken
      */
     public function handle(Request $request, Closure $next)
     {
+        $now = time();
+
         $token = $request->bearerToken();
 
         if (!$token) {
@@ -85,9 +87,7 @@ class AuthToken
             return Response::make('Malformed token', 400);
         }
 
-        $now = time();
-
-        if (($now >= $body->exp) || ($now <= $body->nbf) || ($now <= $body->iat)) {
+        if (($now > $body->exp) || ($now < $body->nbf) || ($now < $body->iat)) {
             return Response::make('Expired token', 403);
         }
 
