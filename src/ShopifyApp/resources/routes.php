@@ -127,11 +127,24 @@ Route::group(['middleware' => ['api']], function () {
     ->middleware('auth.webhook')
     ->name('webhook');
 
-    // API
+    /*
+    |--------------------------------------------------------------------------
+    | API Routes
+    |--------------------------------------------------------------------------
+    |
+    | Exposes endpoints for the current user data, and all plans.
+    |
+    */
+
     Route::group(['prefix' => 'api', 'middleware' => ['auth.token']], function () {
         Route::get(
             '/me',
             'Osiset\ShopifyApp\Http\Controllers\ApiController@getSelf'
+        );
+
+        Route::get(
+            '/plans',
+            'Osiset\ShopifyApp\Http\Controllers\ApiController@getPlans'
         );
     });
 });

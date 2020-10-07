@@ -17,10 +17,6 @@ trait HomeController
      */
     public function index(): ViewView
     {
-        if (config('shopify-app.jwt_authentication_enabled')) {
-            return View::make('shopify-app::layouts.spa');
-        }
-
         return View::make('shopify-app::home.index');
     }
 }

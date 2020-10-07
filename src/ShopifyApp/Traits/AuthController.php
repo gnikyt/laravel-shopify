@@ -76,6 +76,12 @@ trait AuthController
     {
         Log::info('-- oauth --');
         // Setup
+        $shop = $request->get('shop');
+
+        if (!$shop) {
+            return Redirect::route('home');
+        }
+
         $shopDomain = ShopDomain::fromNative($request->get('shop'));
         $result = $authShop($shopDomain, null);
 
