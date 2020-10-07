@@ -95,5 +95,5 @@ function parseQueryString(string $qs, string $d = null): array
  */
 function registerPackageRoute(string $routeName, $routes): bool
 {
-    return !(is_array($routes) && in_array($routeName, $routes));
+    return ! (is_array($routes) && in_array($routeName, $routes));
 }
