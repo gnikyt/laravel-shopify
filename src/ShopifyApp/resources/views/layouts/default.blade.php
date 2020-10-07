@@ -20,7 +20,6 @@
 
         @if(config('shopify-app.appbridge_enabled'))
             <script src="https://unpkg.com/@shopify/app-bridge{{ config('shopify-app.appbridge_version') ? '@'.config('shopify-app.appbridge_version') : '' }}"></script>
-
             <script>
                 var AppBridge = window['app-bridge'];
                 var createApp = AppBridge.default;

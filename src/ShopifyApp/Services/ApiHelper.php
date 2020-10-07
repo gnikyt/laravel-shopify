@@ -5,7 +5,6 @@ namespace Osiset\ShopifyApp\Services;
 use Closure;
 use Exception;
 use GuzzleHttp\Exception\RequestException;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use Osiset\BasicShopifyAPI\BasicShopifyAPI;
 use Osiset\BasicShopifyAPI\Options;
@@ -40,7 +39,6 @@ class ApiHelper implements IApiHelper
      */
     public function make(Session $session = null): self
     {
-        Log::info('make api helper');
         // Create the options
         $opts = new Options();
         $opts->setApiKey($this->getConfig('api_key'));
@@ -119,7 +117,6 @@ class ApiHelper implements IApiHelper
      */
     public function buildAuthUrl(AuthMode $mode, string $scopes): string
     {
-        Log::info('build auth url');
         // Fix for peruser => per-user
         $mode = $mode->isSame(AuthMode::PERUSER()) ? 'PER-USER' : $mode->toNative();
 
@@ -212,7 +209,6 @@ class ApiHelper implements IApiHelper
      */
     public function getCharge(ChargeType $chargeType, ChargeReference $chargeRef): ResponseAccess
     {
-        Log::info('get charge');
         // API path
         $typeString = $this->chargeApiPath($chargeType);
 
@@ -231,7 +227,6 @@ class ApiHelper implements IApiHelper
      */
     public function activateCharge(ChargeType $chargeType, ChargeReference $chargeRef): ResponseAccess
     {
-        Log::info('activate charge');
         // API path
         $typeString = $this->chargeApiPath($chargeType);
 
@@ -250,7 +245,6 @@ class ApiHelper implements IApiHelper
      */
     public function createCharge(ChargeType $chargeType, PlanDetailsTransfer $payload): ResponseAccess
     {
-        Log::info('create charge');
         // API path
         $typeString = $this->chargeApiPath($chargeType);
 
@@ -270,7 +264,6 @@ class ApiHelper implements IApiHelper
      */
     public function createChargeGraphQL(PlanDetailsTransfer $payload): ResponseAccess
     {
-        Log::info('create charge graphql');
         $query = '
         mutation appSubscriptionCreate(
             $name: String!,
@@ -353,7 +346,6 @@ class ApiHelper implements IApiHelper
      */
     public function createWebhook(array $payload): ResponseAccess
     {
-        Log::info('create webhook');
         // Fire the request
         $response = $this->doRequest(
             ApiMethod::POST(),
@@ -370,7 +362,6 @@ class ApiHelper implements IApiHelper
      */
     public function deleteWebhook(int $webhookId): ResponseAccess
     {
-        Log::info('delete webhook');
         // Fire the request
         $response = $this->doRequest(
             ApiMethod::DELETE(),
@@ -386,7 +377,6 @@ class ApiHelper implements IApiHelper
      */
     public function createUsageCharge(UsageChargeDetailsTransfer $payload)
     {
-        Log::info('create usage charge');
         // Fire the request
         $response = $this->doRequest(
             ApiMethod::POST(),
@@ -412,7 +402,6 @@ class ApiHelper implements IApiHelper
      */
     protected function chargeApiPath(ChargeType $chargeType): string
     {
-        Log::info('charge api path');
         // Convert to API path
         if ($chargeType->isSame(ChargeType::RECURRING())) {
             $format = '%s_application_charge';
@@ -422,9 +411,7 @@ class ApiHelper implements IApiHelper
             $format = 'application_%s';
         }
 
-        $return = sprintf($format, strtolower($chargeType->toNative()));
-        Log::info($return);
-        return $return;
+        return sprintf($format, strtolower($chargeType->toNative()));
     }
 
     /**
@@ -440,10 +427,7 @@ class ApiHelper implements IApiHelper
      */
     protected function doRequest(ApiMethod $method, string $path, array $payload = null)
     {
-        Log::info('do request to api');
-        Log::debug(json_encode($payload));
         $response = $this->api->rest($method->toNative(), $path, $payload);
-        Log::info(json_encode($response));
         if ($response['errors'] === true) {
             // Request error somewhere, throw the exception
             throw new ApiException(
@@ -468,7 +452,6 @@ class ApiHelper implements IApiHelper
      */
     protected function doRequestGraphQL(string $query, array $payload = null)
     {
-        Log::info('do graphql request');
         $response = $this->api->graph($query, $payload);
         if ($response['errors'] !== false) {
             $message = is_array($response['errors'])

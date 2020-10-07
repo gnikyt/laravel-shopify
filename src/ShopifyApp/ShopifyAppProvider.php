@@ -260,10 +260,6 @@ class ShopifyAppProvider extends ServiceProvider
             CookieHelper::class => [self::CBIND, function () {
                 return new CookieHelper();
             }],
-
-            JWTHelper::class => [self::CBIND, function () {
-                return new JWTHelper();
-            }],
         ];
 
         foreach ($binds as $key => $fn) {
@@ -301,15 +297,6 @@ class ShopifyAppProvider extends ServiceProvider
             ],
             'shopify-views'
         );
-
-        if ($this->app['config']->get('shopify-app.jwt_authentication_enabled')) {
-            $this->publishes(
-                [
-                    __DIR__.'/resources/views' => resource_path('views/vendor/shopify-app'),
-                ],
-                'shopify-views'
-            );
-        }
     }
 
     /**

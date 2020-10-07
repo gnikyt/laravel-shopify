@@ -56,9 +56,8 @@
                 Laravel &amp; Shopify
             </div>
 
-            <p>Welcome to your Shopify App powered by Laravel!!</p>
-            <p>{{ Auth::user()->name }} ....</p>
-xssss
+            <p>Welcome to your Shopify App powered by Laravel.</p>
+            <p>{{ Auth::user()->name }}</p>
 
             <div class="links">
                 <a href="https://github.com/osiset/laravel-shopify" target="_blank">Package</a>

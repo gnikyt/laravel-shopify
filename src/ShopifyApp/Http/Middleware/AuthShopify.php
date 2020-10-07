@@ -4,7 +4,6 @@ namespace Osiset\ShopifyApp\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
@@ -45,7 +44,6 @@ class AuthShopify
      */
     public function __construct(IApiHelper $apiHelper, ShopSession $shopSession)
     {
-        Log::info('> constructing shopify auth <');
         $this->shopSession = $shopSession;
         $this->apiHelper = $apiHelper;
         $this->apiHelper->make();
@@ -71,11 +69,7 @@ class AuthShopify
 
         $checks = [];
         if ($this->shopSession->guest()) {
-            Log::info('> guest session <<');
-            // dd($domain);
             if ($hmac === null) {
-                dd($request, $domain);
-                Log::info('> empty hmac <<');
                 // Auth flow required if not yet logged in
                 return $this->handleBadVerification($request, $domain);
             }
@@ -89,7 +83,6 @@ class AuthShopify
 
         // Loop all checks needing to be done, if we get a false, handle it
         foreach ($checks as $check) {
-            Log::info('> checking... <<');
             $result = call_user_func([$this, $check], $request, $domain);
             if ($result === false) {
                 return $this->handleBadVerification($request, $domain);
@@ -110,10 +103,8 @@ class AuthShopify
      */
     private function verifyHmac(Request $request): ?bool
     {
-        Log::info('> verify hmac <<');
         $hmac = $this->getHmac($request);
         if ($hmac === null) {
-            Log::info('> no hmac <<');
             // No HMAC, move on...
             return null;
         }
@@ -121,11 +112,9 @@ class AuthShopify
         // We have HMAC, validate it
         $data = $this->getData($request, $hmac[1]);
         if ($this->apiHelper->verifyRequest($data)) {
-            Log::info('> verified. <<');
             return true;
         }
 
-        Log::info('> not verified! <<');
         // Something didn't match
         throw new SignatureVerificationException('Unable to verify signature.');
     }
@@ -140,7 +129,6 @@ class AuthShopify
      */
     private function loginShop(Request $request, ShopDomainValue $domain): bool
     {
-        Log::info('> login shop. <<');
         // Log the shop in
         $status = $this->shopSession->make($domain);
         if (! $status || ! $this->shopSession->isValid()) {
@@ -161,10 +149,8 @@ class AuthShopify
      */
     private function verifyShop(Request $request, ShopDomainValue $domain): bool
     {
-        Log::info('> verify shop. <<');
         // Grab the domain
         if (! $domain->isNull() && ! $this->shopSession->isValidCompare($domain)) {
-            Log::info('> domain set but not a valid compare. <<');
             // Somethings not right with the validation
             return false;
         }
@@ -182,19 +168,15 @@ class AuthShopify
      */
     private function verifyShopifySessionToken(Request $request, ShopDomainValue $domain): bool
     {
-        Log::info('> verify shopify session token (not jwt). <<');
         // Ensure Shopify session token is OK
         $incomingToken = $request->query('session');
         if ($incomingToken) {
-            Log::info('> has incoming');
             if (! $this->shopSession->isSessionTokenValid($incomingToken)) {
-                Log::info('>  incoming does not match!');
                 // Tokens do not match
                 return false;
             }
 
             // Save the session token
-            Log::info('setting token.....');
             $this->shopSession->setSessionToken($incomingToken);
         }
 
@@ -215,7 +197,6 @@ class AuthShopify
      */
     private function getHmac(Request $request): ?array
     {
-        Log::info('get hmac');
         // All possible methods
         $options = [
             // GET/POST
@@ -230,7 +211,6 @@ class AuthShopify
                     return null;
                 }
 
-                Log::info('returning hmac');
                 return $refererQueryParams['hmac'];
             },
         ];
@@ -239,12 +219,10 @@ class AuthShopify
         foreach ($options as $method => $value) {
             $result = is_callable($value) ? $value() : $value;
             if ($result !== null) {
-                Log::info('returning hmac 2');
                 return [$result, $method];
             }
         }
 
-        Log::info('returning null.. ');
         return null;
     }
 
@@ -258,12 +236,10 @@ class AuthShopify
      */
     private function getData(Request $request, string $source): array
     {
-        Log::info('getting data...');
         // All possible methods
         $options = [
             // GET/POST
             DataSource::INPUT()->toNative() => function () use ($request): array {
-                Log::info('>> get / post <<');
                 // Verify
                 $verify = [];
                 foreach ($request->query() as $key => $value) {
@@ -274,7 +250,6 @@ class AuthShopify
             },
             // Headers
             DataSource::HEADER()->toNative() => function () use ($request): array {
-                Log::info('>> always present? <<');
                 // Always present
                 $shop = $request->header('X-Shop-Domain');
                 $signature = $request->header('X-Shop-Signature');
@@ -303,8 +278,6 @@ class AuthShopify
             },
             // Headers: Referer
             DataSource::REFERER()->toNative() => function () use ($request): array {
-                Log::info('>> referer?? <<');
-
                 $url = parse_url($request->header('referer'), PHP_URL_QUERY);
                 parse_str($url, $refererQueryParams);
 
@@ -330,7 +303,6 @@ class AuthShopify
      */
     private function getShopDomainFromData(Request $request): ShopDomainValue
     {
-        Log::info('>> getting shop domain from data <<');
         $options = [
             DataSource::INPUT()->toNative(),
             DataSource::HEADER()->toNative(),
@@ -340,11 +312,9 @@ class AuthShopify
             $result = $this->getData($request, $option);
             if (isset($result['shop'])) {
                 // Found a shop
-                Log::info('>> found a shop! <<');
                 return ShopDomain::fromNative($result['shop']);
             }
         }
-        Log::info('>> no shop! :( <<');
 
         // No shop domain found in any source
         return NullShopDomain::fromNative(null);
@@ -362,11 +332,8 @@ class AuthShopify
      */
     private function handleBadVerification(Request $request, ShopDomainValue $domain)
     {
-        Log::info('bad verification... handle it');
         if ($domain->isNull()) {
-            Log::info('missing domain...');
             // We have no idea of knowing who this is, this should not happen
-            dd($request, $domain, $domain->isNull());
             throw new MissingShopDomainException();
         }
 

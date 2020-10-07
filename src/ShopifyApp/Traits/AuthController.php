@@ -5,7 +5,6 @@ namespace Osiset\ShopifyApp\Traits;
 use Illuminate\Contracts\View\View as ViewView;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
@@ -30,8 +29,6 @@ trait AuthController
      */
     public function authenticate(Request $request, AuthenticateShop $authenticateShop)
     {
-        //dd('AUTHENTICATE! AUTHENTICATE!');
-        Log::info('-- authenticate --');
         // Get the shop domain
         $shopDomain = ShopDomain::fromNative($request->get('shop'));
 
@@ -39,25 +36,19 @@ trait AuthController
         [$result, $status] = $authenticateShop($request);
 
         if ($status === null) {
-            Log::info('-- null status --');
             // Show exception, something is wrong
             throw new SignatureVerificationException('Invalid HMAC verification');
         } elseif ($status === false) {
-            Log::info('-- false status --');
             // No code, redirect to auth URL
             return $this->oauthFailure($result->url, $shopDomain);
         } else {
-            Log::info('-- other status --');
             // Everything's good... determine if we need to redirect back somewhere
             $return_to = Session::get('return_to');
             if ($return_to) {
-                Log::info('-- return to --');
                 Session::forget('return_to');
 
                 return Redirect::to($return_to);
             }
-
-            Log::info('-- no return to going home --');
 
             // No return_to, go to home route
             return Redirect::route('home');
@@ -74,15 +65,7 @@ trait AuthController
      */
     public function oauth(Request $request, AuthorizeShop $authShop): ViewView
     {
-        Log::info('-- oauth --');
-        // Setup
-        $shop = $request->get('shop');
-
-        if (!$shop) {
-            return Redirect::route('home');
-        }
-
-        $shopDomain = ShopDomain::fromNative($request->get('shop'));
+        $shopDomain = ShopDomain::fromNative($shop);
         $result = $authShop($shopDomain, null);
 
         // Redirect
@@ -99,7 +82,6 @@ trait AuthController
      */
     private function oauthFailure(string $authUrl, ShopDomain $shopDomain): ViewView
     {
-        Log::info('-- oauth failure --');
         return View::make(
             'shopify-app::auth.fullpage_redirect',
             [
