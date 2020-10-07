@@ -18,7 +18,6 @@ use Osiset\ShopifyApp\Actions\DispatchScripts as DispatchScriptsAction;
 use Osiset\ShopifyApp\Actions\DispatchWebhooks as DispatchWebhooksAction;
 use Osiset\ShopifyApp\Actions\GetPlanUrl as GetPlanUrlAction;
 use Osiset\ShopifyApp\Console\WebhookJobMakeCommand;
-use Osiset\ShopifyApp\Console\EnableJwtSupportCommand;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use Osiset\ShopifyApp\Contracts\Commands\Charge as IChargeCommand;
 use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
@@ -92,7 +91,6 @@ class ShopifyAppProvider extends ServiceProvider
         // Commands
         $this->commands([
             WebhookJobMakeCommand::class,
-            EnableJwtSupportCommand::class,
         ]);
 
         // Binds
