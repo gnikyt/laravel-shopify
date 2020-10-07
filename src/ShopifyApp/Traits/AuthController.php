@@ -65,7 +65,8 @@ trait AuthController
      */
     public function oauth(Request $request, AuthorizeShop $authShop): ViewView
     {
-        $shopDomain = ShopDomain::fromNative($shop);
+        // Setup
+        $shopDomain = ShopDomain::fromNative($request->get('shop'));
         $result = $authShop($shopDomain, null);
 
         // Redirect

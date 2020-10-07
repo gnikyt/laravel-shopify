@@ -109,11 +109,9 @@ class ShopifyAppProvider extends ServiceProvider
                     $modelInstance
                 );
             }],
-
             IPlanQuery::class => [self::CSINGLETON, function () {
                 return new PlanQuery();
             }],
-
             IChargeQuery::class => [self::CSINGLETON, function () {
                 return new ChargeQuery();
             }],
@@ -124,7 +122,6 @@ class ShopifyAppProvider extends ServiceProvider
                     $app->make(IChargeQuery::class)
                 );
             }],
-
             IShopCommand::class => [self::CSINGLETON, function ($app) {
                 return new ShopCommand(
                     $app->make(IShopQuery::class)
@@ -139,7 +136,6 @@ class ShopifyAppProvider extends ServiceProvider
                     $app->make(ShopSession::class)
                 );
             }],
-
             AuthenticateShopAction::class => [self::CBIND, function ($app) {
                 return new AuthenticateShopAction(
                     $app->make(ShopSession::class),
@@ -150,7 +146,6 @@ class ShopifyAppProvider extends ServiceProvider
                     $app->make(AfterAuthorizeAction::class)
                 );
             }],
-
             GetPlanUrlAction::class => [self::CBIND, function ($app) {
                 return new GetPlanUrlAction(
                     $app->make(ChargeHelper::class),
@@ -158,7 +153,6 @@ class ShopifyAppProvider extends ServiceProvider
                     $app->make(IShopQuery::class)
                 );
             }],
-
             CancelCurrentPlanAction::class => [self::CBIND, function ($app) {
                 return new CancelCurrentPlanAction(
                     $app->make(IShopQuery::class),
@@ -166,7 +160,6 @@ class ShopifyAppProvider extends ServiceProvider
                     $app->make(ChargeHelper::class)
                 );
             }],
-
             DispatchWebhooksAction::class => [self::CBIND, function ($app) {
                 return new DispatchWebhooksAction(
                     $app->make(IShopQuery::class),
@@ -174,7 +167,6 @@ class ShopifyAppProvider extends ServiceProvider
                     $app->make(CreateWebhooksAction::class)
                 );
             }],
-
             DispatchScriptsAction::class => [self::CBIND, function ($app) {
                 return new DispatchScriptsAction(
                     $app->make(IShopQuery::class),
@@ -182,13 +174,11 @@ class ShopifyAppProvider extends ServiceProvider
                     $app->make(CreateScriptsAction::class)
                 );
             }],
-
             AfterAuthorizeAction::class => [self::CBIND, function ($app) {
                 return new AfterAuthorizeAction(
                     $app->make(IShopQuery::class)
                 );
             }],
-
             ActivatePlanAction::class => [self::CBIND, function ($app) {
                 return new ActivatePlanAction(
                     $app->make(CancelCurrentPlanAction::class),
@@ -199,7 +189,6 @@ class ShopifyAppProvider extends ServiceProvider
                     $app->make(IShopCommand::class)
                 );
             }],
-
             ActivateUsageChargeAction::class => [self::CBIND, function ($app) {
                 return new ActivateUsageChargeAction(
                     $app->make(ChargeHelper::class),
@@ -207,25 +196,21 @@ class ShopifyAppProvider extends ServiceProvider
                     $app->make(IShopQuery::class)
                 );
             }],
-
             DeleteWebhooksAction::class => [self::CBIND, function ($app) {
                 return new DeleteWebhooksAction(
                     $app->make(IShopQuery::class)
                 );
             }],
-
             CreateWebhooksAction::class => [self::CBIND, function ($app) {
                 return new CreateWebhooksAction(
                     $app->make(IShopQuery::class)
                 );
             }],
-
             CreateScriptsAction::class => [self::CBIND, function ($app) {
                 return new CreateScriptsAction(
                     $app->make(IShopQuery::class)
                 );
             }],
-
             CancelChargeAction::class => [self::CBIND, function ($app) {
                 return new CancelChargeAction(
                     $app->make(IChargeCommand::class),
@@ -250,18 +235,15 @@ class ShopifyAppProvider extends ServiceProvider
                     $app->make(IShopQuery::class)
                 );
             }],
-
             ChargeHelper::class => [self::CBIND, function ($app) {
                 return new ChargeHelper(
                     $app->make(IChargeQuery::class)
                 );
             }],
-
             CookieHelper::class => [self::CBIND, function () {
                 return new CookieHelper();
             }],
         ];
-
         foreach ($binds as $key => $fn) {
             $this->app->{$fn[0]}($key, $fn[1]);
         }
