@@ -138,6 +138,11 @@ Route::group(['middleware' => ['api']], function () {
 
     Route::group(['prefix' => 'api', 'middleware' => ['auth.token']], function () {
         Route::get(
+            '/',
+            'Osiset\ShopifyApp\Http\Controllers\ApiController@index'
+        );
+
+        Route::get(
             '/me',
             'Osiset\ShopifyApp\Http\Controllers\ApiController@getSelf'
         );
