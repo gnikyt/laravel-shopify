@@ -328,17 +328,4 @@ return [
         'scripttags'         => env('SCRIPTTAGS_JOB_QUEUE', null),
         'after_authenticate' => env('AFTER_AUTHENTICATE_JOB_QUEUE', null),
     ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Frontend JWT Authentication
-    |--------------------------------------------------------------------------
-    |
-    | JWT is disabled by default. Set to true to enable.
-    |
-    | More info: https://shopify.dev/tutorials/authenticate-your-app-using-session-tokens
-    |
-    */
-
-    'jwt_authentication_enabled' => (bool) env('SHOPIFY_JWT_ENABLED', true),
 ];
