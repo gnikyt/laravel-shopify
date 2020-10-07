@@ -19,16 +19,19 @@ if ($manualRoutes) {
     $manualRoutes = explode(',', $manualRoutes);
 }
 
-/**
- * Checks if the route should be registered or not.
- *
- * @param string     $routeName
- * @param bool|array $routes
- *
- * @return bool
- */
-function registerPackageRoute(string $routeName, $routes): bool {
-    return !(is_array($routes) && in_array($routeName, $routes));
+if (!function_exists('registerPackageRoutes')) {
+    /**
+     * Checks if the route should be registered or not.
+     *
+     * @param string     $routeName
+     * @param bool|array $routes
+     *
+     * @return bool
+     */
+    function registerPackageRoute(string $routeName, $routes): bool
+    {
+        return !(is_array($routes) && in_array($routeName, $routes));
+    }
 }
 
 Route::group(['prefix' => config('shopify-app.prefix'), 'middleware' => ['web']], function () use ($manualRoutes) {
