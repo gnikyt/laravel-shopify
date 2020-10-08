@@ -256,7 +256,8 @@ class ShopifyAppProvider extends ServiceProvider
      */
     private function bootRoutes(): void
     {
-        $this->loadRoutesFrom(__DIR__.'/resources/routes.php');
+        $this->loadRoutesFrom(__DIR__.'/resources/routes/shopify.php');
+        $this->loadRoutesFrom(__DIR__.'/resources/routes/api.php');
     }
 
     /**
