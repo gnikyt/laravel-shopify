@@ -35,7 +35,7 @@ return [
     | Example: `home,billing` would ignore both "home" and "billing" routes.
     |
     */
-    'manual_routes' => (bool) env('SHOPIFY_MANUAL_ROUTES', false),
+    'manual_routes' => env('SHOPIFY_MANUAL_ROUTES', false),
 
     /*
     |--------------------------------------------------------------------------
