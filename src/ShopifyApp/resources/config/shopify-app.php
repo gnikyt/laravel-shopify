@@ -25,6 +25,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Manual routes
+    |--------------------------------------------------------------------------
+    |
+    | This option allows you to ignore the package's built-in routes.
+    | Use `false` (default) for allowing the built-in routes. Otherwise, you
+    | can list out which route "names" you would like excluded.
+    | See `resources/routes.php` for list of route names available.
+    | Example: `home,billing` would ignore both "home" and "billing" routes.
+    |
+    */
+    'manual_routes' => env('SHOPIFY_MANUAL_ROUTES', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | Namespace
     |--------------------------------------------------------------------------
     |
