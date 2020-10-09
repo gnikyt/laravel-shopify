@@ -78,23 +78,23 @@ class AuthorizeShop
 
         $apiHelper = $shop->apiHelper();
 
-        // Access/grant mode
-        $grantMode = $shop->hasOfflineAccess() ?
-            AuthMode::fromNative($this->getConfig('api_grant_mode')) :
-            AuthMode::OFFLINE();
-
-        $authUrl = $apiHelper->buildAuthUrl($grantMode, $this->getConfig('api_scopes'));
-
         // Return data
         $return = [
             'completed' => false,
-            'url'       => $authUrl,
+            'url'       => null,
         ];
 
         // If there's no code
         if (empty($code)) {
             return (object) $return;
         }
+
+        // Access/grant mode
+        $grantMode = $shop->hasOfflineAccess() ?
+            AuthMode::fromNative($this->getConfig('api_grant_mode')) :
+            AuthMode::OFFLINE();
+
+        $return['url'] = $apiHelper->buildAuthUrl($grantMode, $this->getConfig('api_scopes'));
 
         // if the store has been deleted, restore the store to set the access token
         if ($shop->trashed()) {
