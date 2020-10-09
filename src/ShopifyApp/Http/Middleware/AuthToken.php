@@ -72,6 +72,8 @@ class AuthToken
             return Response::make('Malformed token', 400);
         }
 
+
+
         $body = json_decode($body);
 
         if (!$body ||
