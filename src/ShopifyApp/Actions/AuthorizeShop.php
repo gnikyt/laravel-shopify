@@ -76,18 +76,13 @@ class AuthorizeShop
             $shop = $this->shopQuery->getByDomain($shopDomain);
         }
 
-        $apiHelper = $shop->apiHelper();
-
         // Return data
         $return = [
             'completed' => false,
             'url'       => null,
         ];
 
-        // If there's no code
-        if (empty($code)) {
-            return (object) $return;
-        }
+        $apiHelper = $shop->apiHelper();
 
         // Access/grant mode
         $grantMode = $shop->hasOfflineAccess() ?
@@ -95,6 +90,11 @@ class AuthorizeShop
             AuthMode::OFFLINE();
 
         $return['url'] = $apiHelper->buildAuthUrl($grantMode, $this->getConfig('api_scopes'));
+
+        // If there's no code
+        if (empty($code)) {
+            return (object) $return;
+        }
 
         // if the store has been deleted, restore the store to set the access token
         if ($shop->trashed()) {

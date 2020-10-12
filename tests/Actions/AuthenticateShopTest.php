@@ -94,7 +94,7 @@ class AuthenticateShopTest extends TestCase
             // Query Params
             [
                 'shop'      => 'mystore123.myshopify.com',
-                'hmac'      => '9f4d79eb5ab1806c390b3dda0bfc7be714a92df165d878f22cf3cc8145249ca8',
+                'hmac'      => '3d9768c9cc44b8bd66125cb82b6a59a3d835432f560d19b3f79b9fc696ef6396',
                 'timestamp' => '1565631587',
                 'code'      => '123',
                 'locale'    => 'de',
