@@ -35,7 +35,7 @@ class AuthShopifyTest extends TestCase
             // Query Params
             [
                 'shop'      => 'mystore123.myshopify.com',
-                'hmac'      => '9f4d79eb5ab1806c390b3dda0bfc7be714a92df165d878f22cf3cc8145249ca8',
+                'hmac'      => '3d9768c9cc44b8bd66125cb82b6a59a3d835432f560d19b3f79b9fc696ef6396',
                 'timestamp' => '1565631587',
                 'code'      => '123',
                 'locale'    => 'de',
@@ -119,7 +119,7 @@ class AuthShopifyTest extends TestCase
             null,
             // Server vars
             array_merge(Request::server(), [
-                'HTTP_REFERER' => 'https://xxx.com?shop=example.myshopify.com&hmac=a7448f7c42c9bc025b077ac8b73e7600b6f8012719d21cbeb88db66e5dbbd163&timestamp=1337178173&code=1234678',
+                'HTTP_REFERER' => 'https://xxx.com?shop=example.myshopify.com&hmac=6f16da24e8185e717f22a3373a1928fcaea7ea2401be40ab0d160f5bed7fe55a&timestamp=1337178173&code=1234678',
             ])
         );
 
@@ -155,7 +155,7 @@ class AuthShopifyTest extends TestCase
         );
 
         $newRequest->headers->set('X-Shop-Domain', 'example.myshopify.com');
-        $newRequest->headers->set('X-Shop-Signature', 'a7448f7c42c9bc025b077ac8b73e7600b6f8012719d21cbeb88db66e5dbbd163');
+        $newRequest->headers->set('X-Shop-Signature', '6f16da24e8185e717f22a3373a1928fcaea7ea2401be40ab0d160f5bed7fe55a');
         $newRequest->headers->set('X-Shop-Time', '1337178173');
         $newRequest->headers->set('X-Shop-Code', '1234678');
 
