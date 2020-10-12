@@ -3,7 +3,6 @@
 namespace Osiset\ShopifyApp\Test\Traits;
 
 use Illuminate\Support\Facades\Request;
-use function Osiset\ShopifyApp\base64url_decode;
 use function Osiset\ShopifyApp\base64url_encode;
 use Osiset\ShopifyApp\Objects\Enums\PlanType;
 use Osiset\ShopifyApp\Storage\Models\Plan;

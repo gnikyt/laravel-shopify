@@ -177,7 +177,7 @@ class AuthTokenTest extends TestCase
             'nbf' => '<time in seconds>',
             'iat' => '<time in seconds>',
             'jti' => '<random UUID>',
-            'sid' => '<session ID>'
+            'sid' => '<session ID>',
         ]));
 
         $invalidPayload = sprintf('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.%s', $invalidBody);

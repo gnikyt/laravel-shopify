@@ -51,17 +51,17 @@ class AuthToken
 
         $token = $request->bearerToken();
 
-        if (!$token) {
+        if (! $token) {
             return Response::make('Missing authentication token', 401);
         }
 
         // It's "url safe" base64, so `+` is `-` and `/` is `_`
         // The header is fixed so include it here
-        if (!preg_match('/^eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\.[A-Za-z0-9\-\_=]+\.[A-Za-z0-9\-\_\=]*$/', $token)) {
+        if (! preg_match('/^eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\.[A-Za-z0-9\-\_=]+\.[A-Za-z0-9\-\_\=]*$/', $token)) {
             return Response::make('Malformed token', 400);
         }
 
-        if (!$this->checkSignature($token)) {
+        if (! $this->checkSignature($token)) {
             return Response::make('Unable to verify signature', 400);
         }
 
@@ -72,16 +72,16 @@ class AuthToken
 
         $body = json_decode($body);
 
-        if (!$body ||
-            !isset($body->iss) ||
-            !isset($body->dest) ||
-            !isset($body->aud) ||
-            !isset($body->sub) ||
-            !isset($body->exp) ||
-            !isset($body->nbf) ||
-            !isset($body->iat) ||
-            !isset($body->jti) ||
-            !isset($body->sid)) {
+        if (! $body ||
+            ! isset($body->iss) ||
+            ! isset($body->dest) ||
+            ! isset($body->aud) ||
+            ! isset($body->sub) ||
+            ! isset($body->exp) ||
+            ! isset($body->nbf) ||
+            ! isset($body->iat) ||
+            ! isset($body->jti) ||
+            ! isset($body->sid)) {
             return Response::make('Malformed token', 400);
         }
 
@@ -89,7 +89,7 @@ class AuthToken
             return Response::make('Expired token', 403);
         }
 
-        if (!stristr($body->iss, $body->dest)) {
+        if (! stristr($body->iss, $body->dest)) {
             return Response::make('Invalid token', 400);
         }
 

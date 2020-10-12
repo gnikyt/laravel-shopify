@@ -12,7 +12,7 @@ use Osiset\ShopifyApp\Storage\Models\Plan;
 trait ApiController
 {
     /**
-     * 200 Response
+     * 200 Response.
      *
      * @return JsonResponse
      */
@@ -21,7 +21,12 @@ trait ApiController
         return response()->json();
     }
 
-    public function getSelf() : JsonResponse
+    /**
+     * Returns authenticated users details.
+     *
+     * @return JsonResponse
+     */
+    public function getSelf(): JsonResponse
     {
         return response()->json(Auth::user()->only([
             'name',
@@ -31,7 +36,12 @@ trait ApiController
         ]));
     }
 
-    public function getPlans() : JsonResponse
+    /**
+     * Returns currently available plans.
+     *
+     * @return JsonResponse
+     */
+    public function getPlans(): JsonResponse
     {
         return response()->json(Plan::all());
     }
