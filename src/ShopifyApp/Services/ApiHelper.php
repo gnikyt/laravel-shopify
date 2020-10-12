@@ -41,6 +41,7 @@ class ApiHelper implements IApiHelper
     {
         // Create the options
         $opts = new Options();
+
         $opts->setApiKey($this->getConfig('api_key'));
         $opts->setApiSecret($this->getConfig('api_secret'));
         $opts->setVersion($this->getConfig('api_version'));

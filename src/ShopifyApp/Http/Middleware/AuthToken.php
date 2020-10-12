@@ -5,6 +5,8 @@ namespace Osiset\ShopifyApp\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
+use function Osiset\ShopifyApp\base64url_decode;
+use function Osiset\ShopifyApp\base64url_encode;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Services\ShopSession;
 use Osiset\ShopifyApp\Traits\ConfigAccessible;
@@ -65,14 +67,8 @@ class AuthToken
 
         $parts = explode('.', $token);
 
-        $body = $this->base64url_decode($parts[1]);
+        $body = base64url_decode($parts[1]);
         $signature = $parts[2];
-
-        if (!$body || !$signature) {
-            return Response::make('Malformed token', 400);
-        }
-
-
 
         $body = json_decode($body);
 
@@ -118,16 +114,8 @@ class AuthToken
 
         $secret = $this->getConfig('api_secret');
         $hmac = hash_hmac('sha256', $check, $secret, true);
-        $encoded = $this->base64url_encode($hmac);
+        $encoded = base64url_encode($hmac);
 
         return $encoded === $signature;
-    }
-
-    private function base64url_encode($data) {
-        return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
-    }
-
-    private function base64url_decode($data) {
-        return base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT));
     }
 }

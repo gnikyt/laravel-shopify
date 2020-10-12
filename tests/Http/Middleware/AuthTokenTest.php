@@ -3,6 +3,8 @@
 namespace Osiset\ShopifyApp\Test\Http\Middleware;
 
 use Illuminate\Support\Facades\Request;
+use function Osiset\ShopifyApp\base64url_decode;
+use function Osiset\ShopifyApp\base64url_encode;
 use Osiset\ShopifyApp\Http\Middleware\AuthToken as AuthTokenMiddleware;
 use Osiset\ShopifyApp\Test\TestCase;
 
@@ -133,9 +135,41 @@ class AuthTokenTest extends TestCase
         $this->assertSame('Unable to verify signature', $response->getContent());
     }
 
+    public function testDenysForValidRegexMissingContent(): void
+    {
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            [],
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            // This valid referer should be ignored as there is a get variable
+            array_merge(Request::server(), [
+                'HTTP_AUTHORIZATION' => 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..',
+            ])
+        );
+        Request::swap($newRequest);
+
+        // Run the middleware
+        $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
+            // ...
+        });
+
+        // Assert we get a proper response
+        $this->assertSame(400, $response->status());
+        $this->assertSame('Malformed token', $response->getContent());
+    }
+
     public function testDenysForValidRegexValidSignatureBadBody(): void
     {
-        $invalidBody = $this->base64url_encode(json_encode([
+        $invalidBody = base64url_encode(json_encode([
             'dest' => '<shop-name.myshopify.com>',
             'aud' => '<api key>',
             'sub' => '<user ID>',
@@ -150,7 +184,7 @@ class AuthTokenTest extends TestCase
 
         $secret = env('SHOPIFY_API_SECRET');
 
-        $hmac = $this->base64url_encode(hash_hmac('sha256', $invalidPayload, $secret, true));
+        $hmac = base64url_encode(hash_hmac('sha256', $invalidPayload, $secret, true));
 
         $validTokenInvalidBody = sprintf('%s.%s', $invalidPayload, $hmac);
 
@@ -188,7 +222,7 @@ class AuthTokenTest extends TestCase
     {
         $now = time();
 
-        $expiredBody = $this->base64url_encode(json_encode([
+        $expiredBody = base64url_encode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
             'aud' => env('SHOPIFY_API_KEY'),
@@ -204,7 +238,7 @@ class AuthTokenTest extends TestCase
 
         $secret = env('SHOPIFY_API_SECRET');
 
-        $hmac = $this->base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
 
         $expiredTokenBody = sprintf('%s.%s', $payload, $hmac);
 
@@ -242,7 +276,7 @@ class AuthTokenTest extends TestCase
     {
         $now = time();
 
-        $expiredBody = $this->base64url_encode(json_encode([
+        $expiredBody = base64url_encode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
             'aud' => env('SHOPIFY_API_KEY'),
@@ -258,7 +292,7 @@ class AuthTokenTest extends TestCase
 
         $secret = env('SHOPIFY_API_SECRET');
 
-        $hmac = $this->base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
 
         $expiredTokenBody = sprintf('%s.%s', $payload, $hmac);
 
@@ -296,7 +330,7 @@ class AuthTokenTest extends TestCase
     {
         $now = time();
 
-        $expiredBody = $this->base64url_encode(json_encode([
+        $expiredBody = base64url_encode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://another-name.myshopify.com',
             'aud' => env('SHOPIFY_API_KEY'),
@@ -312,7 +346,7 @@ class AuthTokenTest extends TestCase
 
         $secret = env('SHOPIFY_API_SECRET');
 
-        $hmac = $this->base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
 
         $expiredTokenBody = sprintf('%s.%s', $payload, $hmac);
 
@@ -350,7 +384,7 @@ class AuthTokenTest extends TestCase
     {
         $now = time();
 
-        $expiredBody = $this->base64url_encode(json_encode([
+        $expiredBody = base64url_encode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
             'aud' => 'invalid',
@@ -366,7 +400,7 @@ class AuthTokenTest extends TestCase
 
         $secret = env('SHOPIFY_API_SECRET');
 
-        $hmac = $this->base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
 
         $expiredTokenBody = sprintf('%s.%s', $payload, $hmac);
 
@@ -404,7 +438,7 @@ class AuthTokenTest extends TestCase
     {
         $now = time();
 
-        $body = $this->base64url_encode(json_encode([
+        $body = base64url_encode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
             'aud' => env('SHOPIFY_API_KEY'),
@@ -420,7 +454,7 @@ class AuthTokenTest extends TestCase
 
         $secret = env('SHOPIFY_API_SECRET');
 
-        $hmac = $this->base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
@@ -452,13 +486,5 @@ class AuthTokenTest extends TestCase
 
         // Assert we get a proper response
         $this->assertTrue($called);
-    }
-
-    private function base64url_encode($data) {
-        return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
-    }
-
-    private function base64url_decode($data) {
-        return base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT));
     }
 }
