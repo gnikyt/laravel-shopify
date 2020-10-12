@@ -1,6 +1,17 @@
 <?php
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Route;
+use function Osiset\ShopifyApp\registerPackageRoute;
 
-Route::group(['middleware' => ['api']], function () {
+// Check if manual routes override is to be use
+$manualRoutes = Config::get('shopify-app.manual_routes');
+
+if ($manualRoutes) {
+    // Get a list of route names to exclude
+    $manualRoutes = explode(',', $manualRoutes);
+}
+
+Route::group(['middleware' => ['api']], function ($manualRoutes) {
     /*
     |--------------------------------------------------------------------------
     | API Routes
@@ -10,22 +21,24 @@ Route::group(['middleware' => ['api']], function () {
     |
     */
 
-    Route::group(['prefix' => 'api', 'middleware' => ['auth.token']], function () {
-        Route::get(
-            '/',
-            'Osiset\ShopifyApp\Http\Controllers\ApiController@index'
-        );
+    if (registerPackageRoute('api', $manualRoutes)) {
+        Route::group(['prefix' => 'api', 'middleware' => ['auth.token']], function () {
+            Route::get(
+                '/',
+                'Osiset\ShopifyApp\Http\Controllers\ApiController@index'
+            );
 
-        Route::get(
-            '/me',
-            'Osiset\ShopifyApp\Http\Controllers\ApiController@getSelf'
-        );
+            Route::get(
+                '/me',
+                'Osiset\ShopifyApp\Http\Controllers\ApiController@getSelf'
+            );
 
-        Route::get(
-            '/plans',
-            'Osiset\ShopifyApp\Http\Controllers\ApiController@getPlans'
-        );
-    });
+            Route::get(
+                '/plans',
+                'Osiset\ShopifyApp\Http\Controllers\ApiController@getPlans'
+            );
+        });
+    }
 
     /*
     |--------------------------------------------------------------------------
@@ -36,10 +49,12 @@ Route::group(['middleware' => ['api']], function () {
     |
     */
 
-    Route::post(
-        '/webhook/{type}',
-        'Osiset\ShopifyApp\Http\Controllers\WebhookController@handle'
-    )
-    ->middleware('auth.webhook')
-    ->name('webhook');
+    if (registerPackageRoute('webhook', $manualRoutes)) {
+        Route::post(
+            '/webhook/{type}',
+            'Osiset\ShopifyApp\Http\Controllers\WebhookController@handle'
+        )
+        ->middleware('auth.webhook')
+        ->name('webhook');
+    }
 });

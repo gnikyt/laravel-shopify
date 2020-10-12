@@ -94,3 +94,16 @@ function base64url_decode($data)
 {
     return base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT));
 }
+
+/**
+ * Checks if the route should be registered or not.
+ *
+ * @param string     $routeName The route name to check.
+ * @param bool|array $routes    The routes which are to be excluded.
+ *
+ * @return bool
+ */
+function registerPackageRoute(string $routeName, $routes): bool
+{
+    return ! (is_array($routes) && in_array($routeName, $routes));
+}
