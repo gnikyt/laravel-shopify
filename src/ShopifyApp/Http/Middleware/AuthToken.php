@@ -106,6 +106,13 @@ class AuthToken
         return $next($request);
     }
 
+    /**
+     * Checks the validity of the signature sent with the token.
+     *
+     * @param string  $token The token to check.
+     *
+     * @return bool
+     */
     private function checkSignature($token)
     {
         $parts = explode('.', $token);

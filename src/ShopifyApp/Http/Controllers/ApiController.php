@@ -6,7 +6,7 @@ use Illuminate\Routing\Controller;
 use Osiset\ShopifyApp\Traits\ApiController as ApiControllerTrait;
 
 /**
- * Responsible for showing the main homescreen for the app.
+ * Authenticates with a JWT through auth.token Middleware
  */
 class ApiController extends Controller
 {
