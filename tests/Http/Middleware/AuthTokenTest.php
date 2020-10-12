@@ -25,7 +25,7 @@ class AuthTokenTest extends TestCase
             // Files
             null,
             // Server vars
-            null,
+            null
         );
         Request::swap($newRequest);
 
