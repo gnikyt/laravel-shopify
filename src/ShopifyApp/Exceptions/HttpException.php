@@ -11,7 +11,7 @@ class HttpException extends BaseException
     {
         if ($request->expectsJson()) {
             return response()->json([
-                'error' => $this->getMessage()
+                'error' => $this->getMessage(),
             ], $this->getCode());
         }
 
