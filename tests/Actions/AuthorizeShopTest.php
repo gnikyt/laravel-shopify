@@ -30,7 +30,7 @@ class AuthorizeShopTest extends TestCase
         );
 
         $this->assertStringContainsString(
-            '/admin/oauth/authorize?client_id=&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalhost%2Fauthenticate',
+            '/admin/oauth/authorize?client_id='.env('SHOPIFY_API_KEY').'&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalhost%2Fauthenticate',
             $result->url
         );
         $this->assertFalse($result->completed);
@@ -48,7 +48,7 @@ class AuthorizeShopTest extends TestCase
         );
 
         $this->assertStringContainsString(
-            '/admin/oauth/authorize?client_id=&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalhost%2Fauthenticate',
+            '/admin/oauth/authorize?client_id='.env('SHOPIFY_API_KEY').'&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalhost%2Fauthenticate',
             $result->url
         );
         $this->assertFalse($result->completed);
@@ -58,6 +58,33 @@ class AuthorizeShopTest extends TestCase
     {
         // Create the shop
         $shop = factory($this->model)->create();
+
+        // Get the current access token
+        $currentToken = $shop->getToken();
+
+        // Setup API stub
+        $this->setApiStub();
+        ApiStub::stubResponses(['access_token']);
+
+        $result = call_user_func(
+            $this->action,
+            $shop->getDomain(),
+            '12345678'
+        );
+
+        // Refresh to see changes
+        $shop->refresh();
+
+        $this->assertTrue($result->completed);
+        $this->assertNotSame($currentToken->toNative(), $shop->getToken()->toNative());
+    }
+
+    public function testWithCodeSoftDeletedShop(): void
+    {
+        // Create the shop
+        $shop = factory($this->model)->create([
+            'deleted_at' => time(),
+        ]);
 
         // Get the current access token
         $currentToken = $shop->getToken();

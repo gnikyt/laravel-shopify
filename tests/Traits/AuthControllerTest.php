@@ -33,7 +33,7 @@ class AuthControllerTest extends TestCase
         $response->assertViewHas('shopDomain', 'example.myshopify.com');
         $response->assertViewHas(
             'authUrl',
-            'https://example.myshopify.com/admin/oauth/authorize?client_id=&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalhost%2Fauthenticate'
+            'https://example.myshopify.com/admin/oauth/authorize?client_id='.env('SHOPIFY_API_KEY').'&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalhost%2Fauthenticate'
         );
     }
 
@@ -43,7 +43,7 @@ class AuthControllerTest extends TestCase
         ApiStub::stubResponses(['access_token_grant']);
 
         // HMAC for regular tests
-        $hmac = 'a7448f7c42c9bc025b077ac8b73e7600b6f8012719d21cbeb88db66e5dbbd163';
+        $hmac = '6f16da24e8185e717f22a3373a1928fcaea7ea2401be40ab0d160f5bed7fe55a';
         $hmacParams = [
             'hmac'      => $hmac,
             'shop'      => 'example.myshopify.com',
@@ -80,7 +80,7 @@ class AuthControllerTest extends TestCase
         $this->app['session']->put('return_to', 'http://localhost/orders');
 
         // HMAC for regular tests
-        $hmac = 'a7448f7c42c9bc025b077ac8b73e7600b6f8012719d21cbeb88db66e5dbbd163';
+        $hmac = '6f16da24e8185e717f22a3373a1928fcaea7ea2401be40ab0d160f5bed7fe55a';
         $hmacParams = [
             'hmac'      => $hmac,
             'shop'      => 'example.myshopify.com',
@@ -98,7 +98,7 @@ class AuthControllerTest extends TestCase
         $response = $this->call('get', '/authenticate/oauth', ['shop' => 'example.myshopify.com']);
         $response->assertViewHas(
             'authUrl',
-            'https://example.myshopify.com/admin/oauth/authorize?client_id=&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalhost%2Fauthenticate'
+            'https://example.myshopify.com/admin/oauth/authorize?client_id='.env('SHOPIFY_API_KEY').'&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalhost%2Fauthenticate'
         );
     }
 }

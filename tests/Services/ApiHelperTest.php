@@ -39,7 +39,8 @@ class ApiHelperTest extends TestCase
         $api = $this->api->make()->getApi();
 
         $this->assertInstanceOf(BasicShopifyAPI::class, $api);
-        $this->assertEmpty($this->app['config']->get('shopify-app.api_secret'));
+        $this->assertSame(env('SHOPIFY_API_SECRET'), $this->app['config']->get('shopify-app.api_secret'));
+        $this->assertSame(env('SHOPIFY_API_KEY'), $this->app['config']->get('shopify-app.api_key'));
         $this->assertSame($this->app['config']->get('shopify-app.api_version'), '2020-01');
     }
 

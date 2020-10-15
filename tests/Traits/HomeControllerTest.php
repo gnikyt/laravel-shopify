@@ -26,7 +26,7 @@ class HomeControllerTest extends TestCase
 
         $this->get('/')
             ->assertOk()
-            ->assertSee("apiKey: ''", false)
+            ->assertSee("apiKey: '".env('SHOPIFY_API_KEY')."'", false)
             ->assertSee("shopOrigin: '{$shop->name}'", false);
     }
 

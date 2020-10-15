@@ -75,7 +75,6 @@ class AuthorizeShop
             $this->shopCommand->make($shopDomain, NullAccessToken::fromNative(null));
             $shop = $this->shopQuery->getByDomain($shopDomain);
         }
-        $apiHelper = $shop->apiHelper();
 
         // Return data
         $return = [
@@ -83,26 +82,34 @@ class AuthorizeShop
             'url'       => null,
         ];
 
-        // Start the process
+        $apiHelper = $shop->apiHelper();
+
+        // Access/grant mode
+        $grantMode = $shop->hasOfflineAccess() ?
+            AuthMode::fromNative($this->getConfig('api_grant_mode')) :
+            AuthMode::OFFLINE();
+
+        $return['url'] = $apiHelper->buildAuthUrl($grantMode, $this->getConfig('api_scopes'));
+
+        // If there's no code
         if (empty($code)) {
-            // Access/grant mode
-            $grantMode = $shop->hasOfflineAccess() ?
-                AuthMode::fromNative($this->getConfig('api_grant_mode')) :
-                AuthMode::OFFLINE();
+            return (object) $return;
+        }
 
-            // Call the partial callback with the shop and auth URL as params
-            $return['url'] = $apiHelper->buildAuthUrl($grantMode, $this->getConfig('api_scopes'));
-        } else {
-            // if the store has been deleted, restore the store to set the access token
-            if ($shop->trashed()) {
-                $shop->restore();
-            }
+        // if the store has been deleted, restore the store to set the access token
+        if ($shop->trashed()) {
+            $shop->restore();
+        }
 
-            // We have a good code, get the access details
-            $this->shopSession->make($shop->getDomain());
+        // We have a good code, get the access details
+        $this->shopSession->make($shop->getDomain());
+
+        try {
             $this->shopSession->setAccess($apiHelper->getAccessData($code));
-
+            $return['url'] = null;
             $return['completed'] = true;
+        } catch (\Exception $e) {
+            // Just return the default setting
         }
 
         return (object) $return;

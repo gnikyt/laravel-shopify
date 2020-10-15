@@ -41,5 +41,7 @@
     <logging/>
     <php>
         <env name="APP_KEY" value="AckfSECXIvnK5r28GVIWUAxmbBSjTsmF"/>
+        <env name="SHOPIFY_API_KEY" value="00000000000000000000000000000000"/>
+        <env name="SHOPIFY_API_SECRET" value="00000000000000000000000000000000"/>
     </php>
 </phpunit>

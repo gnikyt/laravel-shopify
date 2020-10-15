@@ -15,6 +15,7 @@ use function Osiset\ShopifyApp\registerPackageRoute;
 
 // Check if manual routes override is to be use
 $manualRoutes = Config::get('shopify-app.manual_routes');
+
 if ($manualRoutes) {
     // Get a list of route names to exclude
     $manualRoutes = explode(',', $manualRoutes);
@@ -130,25 +131,5 @@ Route::group(['prefix' => config('shopify-app.prefix'), 'middleware' => ['web']]
         )
         ->middleware(['auth.shopify'])
         ->name('billing.usage_charge');
-    }
-});
-
-Route::group(['middleware' => ['api']], function () use ($manualRoutes) {
-    /*
-    |--------------------------------------------------------------------------
-    | Webhook Handler
-    |--------------------------------------------------------------------------
-    |
-    | Handles incoming webhooks.
-    |
-    */
-
-    if (registerPackageRoute('webhook', $manualRoutes)) {
-        Route::post(
-            '/webhook/{type}',
-            'Osiset\ShopifyApp\Http\Controllers\WebhookController@handle'
-        )
-        ->middleware('auth.webhook')
-        ->name('webhook');
     }
 });
