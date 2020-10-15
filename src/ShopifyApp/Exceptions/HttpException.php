@@ -7,4 +7,14 @@ namespace Osiset\ShopifyApp\Exceptions;
  */
 class HttpException extends BaseException
 {
+    public function render($request)
+    {
+        if ($request->expectsJson()) {
+            return response()->json([
+                'error' => $this->getMessage()
+            ], $this->getCode());
+        }
+
+        return response($this->getMessage(), $this->getCode());
+    }
 }
