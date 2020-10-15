@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use function Osiset\ShopifyApp\base64url_decode;
 use function Osiset\ShopifyApp\base64url_encode;
+use Osiset\ShopifyApp\Exceptions\HttpException;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Services\ShopSession;
 use Osiset\ShopifyApp\Traits\ConfigAccessible;
@@ -40,6 +41,8 @@ class AuthToken
      * Get the bearer token, validate and verify, and create a
      * session based on the contents.
      *
+     * The token is "url safe" (`+` is `-` and `/` is `_`) base64.
+     *
      * @param Request  $request The request object.
      * @param \Closure $next    The next action.
      *
@@ -52,17 +55,16 @@ class AuthToken
         $token = $request->bearerToken();
 
         if (! $token) {
-            return Response::make('Missing authentication token', 401);
+            throw new HttpException('Missing authentication token', 401);
         }
 
-        // It's "url safe" base64, so `+` is `-` and `/` is `_`
         // The header is fixed so include it here
         if (! preg_match('/^eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\.[A-Za-z0-9\-\_=]+\.[A-Za-z0-9\-\_\=]*$/', $token)) {
-            return Response::make('Malformed token', 400);
+            throw new HttpException('Malformed token', 400);
         }
 
         if (! $this->checkSignature($token)) {
-            return Response::make('Unable to verify signature', 400);
+            throw new HttpException('Unable to verify signature', 400);
         }
 
         $parts = explode('.', $token);
@@ -82,19 +84,19 @@ class AuthToken
             ! isset($body->iat) ||
             ! isset($body->jti) ||
             ! isset($body->sid)) {
-            return Response::make('Malformed token', 400);
+            throw new HttpException('Malformed token', 400);
         }
 
         if (($now > $body->exp) || ($now < $body->nbf) || ($now < $body->iat)) {
-            return Response::make('Expired token', 403);
+            throw new HttpException('Expired token', 403);
         }
 
         if (! stristr($body->iss, $body->dest)) {
-            return Response::make('Invalid token', 400);
+            throw new HttpException('Invalid token', 400);
         }
 
         if ($body->aud !== $this->getConfig('api_key')) {
-            return Response::make('Invalid token', 400);
+            throw new HttpException('Invalid token', 400);
         }
 
         // All is well, login

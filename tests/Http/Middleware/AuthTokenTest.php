@@ -4,6 +4,7 @@ namespace Osiset\ShopifyApp\Test\Http\Middleware;
 
 use Illuminate\Support\Facades\Request;
 use function Osiset\ShopifyApp\base64url_encode;
+use Osiset\ShopifyApp\Exceptions\HttpException;
 use Osiset\ShopifyApp\Http\Middleware\AuthToken as AuthTokenMiddleware;
 use Osiset\ShopifyApp\Test\TestCase;
 
@@ -28,14 +29,14 @@ class AuthTokenTest extends TestCase
         );
         Request::swap($newRequest);
 
+        $this->expectException(HttpException::class);
+        $this->expectExceptionMessage('Missing authentication token');
+        $this->expectExceptionCode(401);
+
         // Run the middleware
-        $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
+        $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function ($r) {
             // ...
         });
-
-        // Assert we get a proper response
-        $this->assertSame(401, $response->status());
-        $this->assertSame('Missing authentication token', $response->getContent());
     }
 
     public function testDenysForBearerNoJwt(): void
@@ -60,14 +61,14 @@ class AuthTokenTest extends TestCase
         );
         Request::swap($newRequest);
 
+        $this->expectException(HttpException::class);
+        $this->expectExceptionMessage('Missing authentication token');
+        $this->expectExceptionCode(401);
+
         // Run the middleware
         $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
             // ...
         });
-
-        // Assert we get a proper response
-        $this->assertSame(401, $response->status());
-        $this->assertSame('Missing authentication token', $response->getContent());
     }
 
     public function testDenysForInvalidJwt(): void
@@ -92,14 +93,14 @@ class AuthTokenTest extends TestCase
         );
         Request::swap($newRequest);
 
+        $this->expectException(HttpException::class);
+        $this->expectExceptionMessage('Malformed token');
+        $this->expectExceptionCode(400);
+
         // Run the middleware
         $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
             // ...
         });
-
-        // Assert we get a proper response
-        $this->assertSame(400, $response->status());
-        $this->assertSame('Malformed token', $response->getContent());
     }
 
     public function testDenysForValidRegexBadContent(): void
@@ -124,14 +125,14 @@ class AuthTokenTest extends TestCase
         );
         Request::swap($newRequest);
 
+        $this->expectException(HttpException::class);
+        $this->expectExceptionMessage('Unable to verify signature');
+        $this->expectExceptionCode(400);
+
         // Run the middleware
         $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
             // ...
         });
-
-        // Assert we get a proper response
-        $this->assertSame(400, $response->status());
-        $this->assertSame('Unable to verify signature', $response->getContent());
     }
 
     public function testDenysForValidRegexMissingContent(): void
@@ -156,14 +157,14 @@ class AuthTokenTest extends TestCase
         );
         Request::swap($newRequest);
 
+        $this->expectException(HttpException::class);
+        $this->expectExceptionMessage('Malformed token');
+        $this->expectExceptionCode(400);
+
         // Run the middleware
         $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
             // ...
         });
-
-        // Assert we get a proper response
-        $this->assertSame(400, $response->status());
-        $this->assertSame('Malformed token', $response->getContent());
     }
 
     public function testDenysForValidRegexValidSignatureBadBody(): void
@@ -207,14 +208,14 @@ class AuthTokenTest extends TestCase
         );
         Request::swap($newRequest);
 
+        $this->expectException(HttpException::class);
+        $this->expectExceptionMessage('Malformed token');
+        $this->expectExceptionCode(400);
+
         // Run the middleware
         $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
             // ...
         });
-
-        // Assert we get a proper response
-        $this->assertSame(400, $response->status());
-        $this->assertSame('Malformed token', $response->getContent());
     }
 
     public function testDenysForExpiredToken(): void
@@ -261,14 +262,14 @@ class AuthTokenTest extends TestCase
         );
         Request::swap($newRequest);
 
+        $this->expectException(HttpException::class);
+        $this->expectExceptionMessage('Expired token');
+        $this->expectExceptionCode(403);
+
         // Run the middleware
         $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
             // ...
         });
-
-        // Assert we get a proper response
-        $this->assertSame(403, $response->status());
-        $this->assertSame('Expired token', $response->getContent());
     }
 
     public function testDenysForFutureToken(): void
@@ -315,14 +316,14 @@ class AuthTokenTest extends TestCase
         );
         Request::swap($newRequest);
 
+        $this->expectException(HttpException::class);
+        $this->expectExceptionMessage('Expired token');
+        $this->expectExceptionCode(403);
+
         // Run the middleware
         $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
             // ...
         });
-
-        // Assert we get a proper response
-        $this->assertSame(403, $response->status());
-        $this->assertSame('Expired token', $response->getContent());
     }
 
     public function testDenysForInvalidUrl(): void
@@ -369,14 +370,14 @@ class AuthTokenTest extends TestCase
         );
         Request::swap($newRequest);
 
+        $this->expectException(HttpException::class);
+        $this->expectExceptionMessage('Invalid token');
+        $this->expectExceptionCode(400);
+
         // Run the middleware
         $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
             // ...
         });
-
-        // Assert we get a proper response
-        $this->assertSame(400, $response->status());
-        $this->assertSame('Invalid token', $response->getContent());
     }
 
     public function testDenysForInvalidApiKey(): void
@@ -423,14 +424,14 @@ class AuthTokenTest extends TestCase
         );
         Request::swap($newRequest);
 
+        $this->expectException(HttpException::class);
+        $this->expectExceptionMessage('Invalid token');
+        $this->expectExceptionCode(400);
+
         // Run the middleware
         $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
             // ...
         });
-
-        // Assert we get a proper response
-        $this->assertSame(400, $response->status());
-        $this->assertSame('Invalid token', $response->getContent());
     }
 
     public function testRuns(): void
