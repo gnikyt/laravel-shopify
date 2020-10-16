@@ -31,11 +31,34 @@ return [
     | This option allows you to ignore the package's built-in routes.
     | Use `false` (default) for allowing the built-in routes. Otherwise, you
     | can list out which route "names" you would like excluded.
-    | See `resources/routes.php` for list of route names available.
+    | See `resources/routes/shopify.php` and `resources/routes/api.php`
+    | for a list of available route names.
     | Example: `home,billing` would ignore both "home" and "billing" routes.
+    |
+    | Please note that if you override the route names (see "route_names" below),
+    | the route names that are used in this option DO NOT change!
     |
     */
     'manual_routes' => env('SHOPIFY_MANUAL_ROUTES', false),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Route names
+    |--------------------------------------------------------------------------
+    |
+    | This option allows you to override the package's built-in route names.
+    | This can help you avoid collisions with your existing route names.
+    |
+    */
+    'route_names' => [
+        'home' => env('SHOPIFY_ROUTE_NAME_HOME', 'home'),
+        'authenticate' => env('SHOPIFY_ROUTE_NAME_AUTHENTICATE', 'authenticate'),
+        'authenticate.oauth' => env('SHOPIFY_ROUTE_NAME_AUTHENTICATE_OAUTH', 'authenticate.oauth'),
+        'billing' => env('SHOPIFY_ROUTE_NAME_BILLING', 'billing'),
+        'billing.process' => env('SHOPIFY_ROUTE_NAME_BILLING_PROCESS', 'billing.process'),
+        'billing.usage_charge' => env('SHOPIFY_ROUTE_NAME_BILLING_USAGE_CHARGE', 'billing.usage_charge'),
+        'webhook' => env('SHOPIFY_ROUTE_NAME_WEBHOOK', 'webhook'),
+    ],
 
     /*
     |--------------------------------------------------------------------------
