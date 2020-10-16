@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Osiset\ShopifyApp\Services\ConfigHelper;
 use function Osiset\ShopifyApp\registerPackageRoute;
+use Osiset\ShopifyApp\Services\ConfigHelper;
 
 // Check if manual routes override is to be use
 $manualRoutes = ConfigHelper::get('manual_routes');

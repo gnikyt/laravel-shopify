@@ -5,7 +5,7 @@ namespace Osiset\ShopifyApp\Services;
 use Osiset\ShopifyApp\Traits\ConfigAccessible;
 
 /**
- * Basic helper class to set/get config values
+ * Basic helper class to set/get config values.
  *
  * This allows you to use the `ConfigAccessible` trait methods in situations where
  * you are unable to use the trait because you are not in a class scope
