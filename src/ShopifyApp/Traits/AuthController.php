@@ -18,6 +18,8 @@ use Osiset\ShopifyApp\Objects\Values\ShopDomain;
  */
 trait AuthController
 {
+    use ConfigAccessible;
+
     /**
      * Authenticating a shop.
      *
@@ -51,7 +53,7 @@ trait AuthController
             }
 
             // No return_to, go to home route
-            return Redirect::route('home');
+            return Redirect::route($this->getConfig('route_names.home'));
         }
     }
 

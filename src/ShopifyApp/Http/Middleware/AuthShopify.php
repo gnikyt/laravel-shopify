@@ -3,6 +3,7 @@
 namespace Osiset\ShopifyApp\Http\Middleware;
 
 use Closure;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
@@ -14,12 +15,15 @@ use Osiset\ShopifyApp\Objects\Enums\DataSource;
 use Osiset\ShopifyApp\Objects\Values\NullShopDomain;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Services\ShopSession;
+use Osiset\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Response for ensuring an authenticated request.
  */
 class AuthShopify
 {
+    use ConfigAccessible;
+
     /**
      * The API helper.
      *
@@ -328,7 +332,7 @@ class AuthShopify
      *
      * @throws MissingShopDomainException
      *
-     * @return void
+     * @return RedirectResponse
      */
     private function handleBadVerification(Request $request, ShopDomainValue $domain)
     {
@@ -345,7 +349,7 @@ class AuthShopify
 
         // Mis-match of shops
         return Redirect::route(
-            'authenticate.oauth',
+            $this->getConfig('route_names.authenticate.oauth'),
             ['shop' => $domain->toNative()]
         );
     }
