@@ -2,6 +2,7 @@
 
 namespace Osiset\ShopifyApp\Traits;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 
 /**
@@ -23,7 +24,7 @@ trait ConfigAccessible
             ['user_model' => Config::get('auth.providers.users.model')]
         );
 
-        return $this->config[$key];
+        return Arr::get($this->config, $key);
     }
 
     /**
