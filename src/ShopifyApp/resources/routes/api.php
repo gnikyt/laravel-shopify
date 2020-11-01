@@ -1,11 +1,11 @@
 <?php
 
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
 use function Osiset\ShopifyApp\registerPackageRoute;
+use Osiset\ShopifyApp\Services\ConfigHelper;
 
 // Check if manual routes override is to be use
-$manualRoutes = Config::get('shopify-app.manual_routes');
+$manualRoutes = ConfigHelper::get('manual_routes');
 
 if ($manualRoutes) {
     // Get a list of route names to exclude
@@ -56,6 +56,6 @@ Route::group(['middleware' => ['api']], function ($manualRoutes) {
             'Osiset\ShopifyApp\Http\Controllers\WebhookController@handle'
         )
         ->middleware('auth.webhook')
-        ->name('webhook');
+        ->name(ConfigHelper::get('route_names.webhook'));
     }
 });

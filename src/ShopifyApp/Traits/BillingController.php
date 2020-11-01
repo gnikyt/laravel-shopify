@@ -22,6 +22,8 @@ use Osiset\ShopifyApp\Services\ShopSession;
  */
 trait BillingController
 {
+    use ConfigAccessible;
+
     /**
      * Redirects to billing screen for Shopify.
      *
@@ -70,7 +72,7 @@ trait BillingController
         );
 
         // Go to homepage of app
-        return Redirect::route('home')->with(
+        return Redirect::route($this->getConfig('route_names.home'))->with(
             $result ? 'success' : 'failure',
             'billing'
         );

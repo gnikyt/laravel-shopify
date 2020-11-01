@@ -2,6 +2,7 @@
 
 namespace Osiset\ShopifyApp;
 
+use Osiset\ShopifyApp\Services\ConfigHelper;
 use Osiset\ShopifyApp\Test\TestCase;
 
 class HelpersTest extends TestCase
@@ -40,5 +41,20 @@ class HelpersTest extends TestCase
 
         $this->assertTrue(registerPackageRoute('authenticate', $routes));
         $this->assertFalse(registerPackageRoute('home', $routes));
+    }
+
+    public function testRouteNames(): void
+    {
+        // non-dot-notation route name
+        $this->assertSame(
+            ConfigHelper::get('route_names.home'),
+            'home'
+        );
+
+        // dot-notation route name
+        $this->assertSame(
+            ConfigHelper::get('route_names.authenticate.oauth'),
+            'authenticate.oauth'
+        );
     }
 }

@@ -9,19 +9,19 @@
 |
 */
 
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
 use function Osiset\ShopifyApp\registerPackageRoute;
+use Osiset\ShopifyApp\Services\ConfigHelper;
 
 // Check if manual routes override is to be use
-$manualRoutes = Config::get('shopify-app.manual_routes');
+$manualRoutes = ConfigHelper::get('manual_routes');
 
 if ($manualRoutes) {
     // Get a list of route names to exclude
     $manualRoutes = explode(',', $manualRoutes);
 }
 
-Route::group(['prefix' => config('shopify-app.prefix'), 'middleware' => ['web']], function () use ($manualRoutes) {
+Route::group(['prefix' => ConfigHelper::get('prefix'), 'middleware' => ['web']], function () use ($manualRoutes) {
     /*
     |--------------------------------------------------------------------------
     | Home Route
@@ -38,7 +38,7 @@ Route::group(['prefix' => config('shopify-app.prefix'), 'middleware' => ['web']]
             'Osiset\ShopifyApp\Http\Controllers\HomeController@index'
         )
         ->middleware(['auth.shopify', 'billable'])
-        ->name('home');
+        ->name(ConfigHelper::get('route_names.home'));
     }
 
     /*
@@ -56,7 +56,7 @@ Route::group(['prefix' => config('shopify-app.prefix'), 'middleware' => ['web']]
             '/authenticate',
             'Osiset\ShopifyApp\Http\Controllers\AuthController@authenticate'
         )
-        ->name('authenticate');
+        ->name(ConfigHelper::get('route_names.authenticate'));
     }
 
     /*
@@ -73,7 +73,7 @@ Route::group(['prefix' => config('shopify-app.prefix'), 'middleware' => ['web']]
             '/authenticate/oauth',
             'Osiset\ShopifyApp\Http\Controllers\AuthController@oauth'
         )
-        ->name('authenticate.oauth');
+        ->name(ConfigHelper::get('route_names.authenticate.oauth'));
     }
 
     /*
@@ -92,7 +92,7 @@ Route::group(['prefix' => config('shopify-app.prefix'), 'middleware' => ['web']]
         )
         ->middleware(['auth.shopify'])
         ->where('plan', '^([0-9]+|)$')
-        ->name('billing');
+        ->name(ConfigHelper::get('route_names.billing'));
     }
 
     /*
@@ -111,7 +111,7 @@ Route::group(['prefix' => config('shopify-app.prefix'), 'middleware' => ['web']]
         )
         ->middleware(['auth.shopify'])
         ->where('plan', '^([0-9]+|)$')
-        ->name('billing.process');
+        ->name(ConfigHelper::get('route_names.billing.process'));
     }
 
     /*
@@ -130,6 +130,6 @@ Route::group(['prefix' => config('shopify-app.prefix'), 'middleware' => ['web']]
             'Osiset\ShopifyApp\Http\Controllers\BillingController@usageCharge'
         )
         ->middleware(['auth.shopify'])
-        ->name('billing.usage_charge');
+        ->name(ConfigHelper::get('route_names.billing.usage_charge'));
     }
 });
