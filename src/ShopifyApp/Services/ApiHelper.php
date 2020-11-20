@@ -49,7 +49,11 @@ class ApiHelper implements IApiHelper
         // Create the instance
         if ($this->getConfig('api_init')) {
             // User-defined init function
-            $this->api = call_user_func($this->getConfig('api_init'), $opts);
+            $this->api = call_user_func(
+                $this->getConfig('api_init'),
+                $opts,
+                $session
+            );
         } else {
             // Default init
             $ts = $this->getConfig('api_time_store');
