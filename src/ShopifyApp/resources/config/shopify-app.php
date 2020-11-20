@@ -233,7 +233,8 @@ return [
     |--------------------------------------------------------------------------
     |
     | This option is for initing the BasicShopifyAPI package optionally yourself.
-    | The first param injected in the current options (\Osiset\BasicShopifyAPI\Options).
+    | The first param injected in is the current options (\Osiset\BasicShopifyAPI\Options).
+    | The second param injected in is the session (if available) (\Osiset\BasicShopifyAPI\Session).
     | With this, you can customize the options, change params, and more.
     |
     | Value for this option must be a callable (callable, Closure, etc).
