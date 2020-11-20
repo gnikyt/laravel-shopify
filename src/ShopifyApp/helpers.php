@@ -118,12 +118,24 @@ function base64url_decode($data)
 /**
  * Checks if the route should be registered or not.
  *
- * @param string     $routeName The route name to check.
- * @param bool|array $routes    The routes which are to be excluded.
+ * @param string     $routeToCheck The route name to check.
+ * @param bool|array $routesToExclude The routes which are to be excluded.
  *
  * @return bool
  */
-function registerPackageRoute(string $routeName, $routes): bool
+function registerPackageRoute(string $routeToCheck, $routesToExclude): bool
 {
-    return ! (is_array($routes) && in_array($routeName, $routes));
+    if ($routesToExclude === false) {
+        return true;
+    }
+
+    if ($routesToExclude === true) {
+        throw new \LogicException('Excluded routes can be false, or an array');
+    }
+
+    if (is_array($routesToExclude) === false) {
+        throw new \LogicException('Excluded routes must be an array');
+    }
+
+    return in_array($routeToCheck, $routesToExclude, true) === false;
 }
