@@ -12,7 +12,7 @@ if ($manualRoutes) {
     $manualRoutes = explode(',', $manualRoutes);
 }
 
-Route::group(['middleware' => ['api']], function ($manualRoutes) {
+Route::group(['middleware' => ['api']], function () use ($manualRoutes) {
     /*
     |--------------------------------------------------------------------------
     | API Routes
