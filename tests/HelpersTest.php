@@ -39,8 +39,13 @@ class HelpersTest extends TestCase
         // Routes to exclude
         $routes = explode(',', 'home,billing');
 
+        $this->assertTrue(registerPackageRoute('authenticate', false));
+        $this->assertTrue(registerPackageRoute('authenticate', []));
         $this->assertTrue(registerPackageRoute('authenticate', $routes));
         $this->assertFalse(registerPackageRoute('home', $routes));
+
+        $this->expectErrorMessage('Excluded routes must be an array');
+        registerPackageRoute('home', \stdClass::class);
     }
 
     public function testRouteNames(): void
