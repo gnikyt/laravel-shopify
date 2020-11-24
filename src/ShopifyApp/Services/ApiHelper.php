@@ -54,7 +54,7 @@ class ApiHelper implements IApiHelper
                 $this->getConfig('api_init'),
                 $opts,
                 $session,
-                Request::instance()
+                Request::all()
             );
         } else {
             // Default init
