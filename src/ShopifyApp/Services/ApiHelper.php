@@ -5,6 +5,7 @@ namespace Osiset\ShopifyApp\Services;
 use Closure;
 use Exception;
 use GuzzleHttp\Exception\RequestException;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\URL;
 use Osiset\BasicShopifyAPI\BasicShopifyAPI;
 use Osiset\BasicShopifyAPI\Options;
@@ -52,7 +53,8 @@ class ApiHelper implements IApiHelper
             $this->api = call_user_func(
                 $this->getConfig('api_init'),
                 $opts,
-                $session
+                $session,
+                Request::instance()
             );
         } else {
             // Default init
