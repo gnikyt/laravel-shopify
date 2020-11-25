@@ -28,26 +28,17 @@ class DispatchWebhooks
     protected $jobClass;
 
     /**
-     * The action to handle the job.
-     *
-     * @var callable
-     */
-    protected $actionClass;
-
-    /**
      * Setup.
      *
-     * @param IShopQuery $shopQuery   The querier for the shop.
-     * @param string     $jobClass    The job to dispatch.
-     * @param callable   $actionClass The action to handle the job.
+     * @param IShopQuery $shopQuery The querier for the shop.
+     * @param string     $jobClass  The job to dispatch.
      *
      * @return void
      */
-    public function __construct(IShopQuery $shopQuery, string $jobClass, callable $actionClass)
+    public function __construct(IShopQuery $shopQuery, string $jobClass)
     {
         $this->shopQuery = $shopQuery;
         $this->jobClass = $jobClass;
-        $this->actionClass = $actionClass;
     }
 
     /**
@@ -74,13 +65,11 @@ class DispatchWebhooks
         if ($inline) {
             ($this->jobClass)::dispatchNow(
                 $shop->getId(),
-                $this->actionClass,
                 $webhooks
             );
         } else {
             ($this->jobClass)::dispatch(
                 $shop->getId(),
-                $this->actionClass,
                 $webhooks
             )->onQueue($this->getConfig('job_queues')['webhooks']);
         }

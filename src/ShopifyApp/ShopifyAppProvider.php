@@ -163,15 +163,13 @@ class ShopifyAppProvider extends ServiceProvider
             DispatchWebhooksAction::class => [self::CBIND, function ($app) {
                 return new DispatchWebhooksAction(
                     $app->make(IShopQuery::class),
-                    WebhookInstaller::class,
-                    $app->make(CreateWebhooksAction::class)
+                    WebhookInstaller::class
                 );
             }],
             DispatchScriptsAction::class => [self::CBIND, function ($app) {
                 return new DispatchScriptsAction(
                     $app->make(IShopQuery::class),
-                    ScripttagInstaller::class,
-                    $app->make(CreateScriptsAction::class)
+                    ScripttagInstaller::class
                 );
             }],
             AfterAuthorizeAction::class => [self::CBIND, function ($app) {

@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Osiset\ShopifyApp\Actions\CreateScripts as CreateScriptsAction;
 use Osiset\ShopifyApp\Objects\Values\ShopId;
 
 /**
@@ -27,13 +28,6 @@ class ScripttagInstaller implements ShouldQueue
     protected $shopId;
 
     /**
-     * Action for creating scripttags.
-     *
-     * @var string
-     */
-    protected $createScriptsAction;
-
-    /**
      * The scripts to add.
      *
      * @var array
@@ -43,28 +37,28 @@ class ScripttagInstaller implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param ShopId $shopId              The shop ID.
-     * @param string $createScriptsAction Action for creating scripttags.
-     * @param array  $configScripts       The scripts to add.
+     * @param ShopId $shopId        The shop ID.
+     * @param array  $configScripts The scripts to add.
      *
      * @return void
      */
-    public function __construct(ShopId $shopId, callable $createScriptsAction, array $configScripts)
+    public function __construct(ShopId $shopId, array $configScripts)
     {
         $this->shopId = $shopId;
-        $this->createScriptsAction = $createScriptsAction;
         $this->configScripts = $configScripts;
     }
 
     /**
      * Execute the job.
      *
+     * @param CreateScriptsAction $createScriptsAction The action for creating scripttags.
+     *
      * @return array
      */
-    public function handle(): array
+    public function handle(CreateScriptsAction $createScriptsAction): array
     {
         return call_user_func(
-            $this->createScriptsAction,
+            $createScriptsAction,
             $this->shopId,
             $this->configScripts
         );
