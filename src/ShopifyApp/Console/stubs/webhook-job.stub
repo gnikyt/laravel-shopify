@@ -15,7 +15,7 @@ class DummyClass implements ShouldQueue
     /**
      * Shop's myshopify domain
      *
-     * @var ShopDomain
+     * @var ShopDomain|string
      */
     public $shopDomain;
 
@@ -29,8 +29,8 @@ class DummyClass implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param ShopDomain $shopDomain The shop's myshopify domain
-     * @param stdClass   $data       The webhook data (JSON decoded)
+     * @param string   $shopDomain The shop's myshopify domain.
+     * @param stdClass $data       The webhook data (JSON decoded).
      *
      * @return void
      */
@@ -47,6 +47,9 @@ class DummyClass implements ShouldQueue
      */
     public function handle()
     {
+        // Convert domain
+        $this->shopDomain = ShopDomain::fromNative($this->domain);
+
         // Do what you wish with the data
         // Access domain name as $this->shopDomain->toNative()
     }

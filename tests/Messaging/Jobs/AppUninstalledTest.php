@@ -38,7 +38,7 @@ class AppUninstalledTest extends TestCase
 
         // Run the job
         AppUninstalledJob::dispatchNow(
-            $shop->getDomain(),
+            $shop->getDomain()->toNative(),
             json_decode(file_get_contents(__DIR__.'/../../fixtures/app_uninstalled.json'))
         );
 
