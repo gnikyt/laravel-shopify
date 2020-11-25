@@ -2,16 +2,16 @@
 
 namespace Osiset\ShopifyApp\Messaging\Jobs;
 
+use stdClass;
 use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 use Osiset\ShopifyApp\Actions\CancelCurrentPlan;
-use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
-use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain;
+use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
-use stdClass;
+use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
 
 /**
  * Webhook job responsible for handling when the app is uninstalled.
@@ -26,7 +26,7 @@ class AppUninstalledJob implements ShouldQueue
     /**
      * The shop domain.
      *
-     * @var ShopDomain
+     * @var ShopDomain|string
      */
     protected $domain;
 
@@ -40,12 +40,12 @@ class AppUninstalledJob implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param ShopDomain $domain  The shop domain.
-     * @param stdClass   $data   The webhook data (JSON decoded).
+     * @param string   $domain The shop domain.
+     * @param stdClass $data   The webhook data (JSON decoded).
      *
      * @return void
      */
-    public function __construct(ShopDomain $domain, stdClass $data)
+    public function __construct(string $domain, stdClass $data)
     {
         $this->domain = $domain;
         $this->data = $data;
@@ -65,6 +65,9 @@ class AppUninstalledJob implements ShouldQueue
         IShopQuery $shopQuery,
         CancelCurrentPlan $cancelCurrentPlanAction
     ): bool {
+        // Convert the domain
+        $this->domain = ShopDomain::fromNative($this->domain);
+
         // Get the shop
         $shop = $shopQuery->getByDomain($this->domain);
         $shopId = $shop->getId();
