@@ -3,12 +3,12 @@
 namespace Osiset\ShopifyApp\Messaging\Jobs;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Osiset\ShopifyApp\Objects\Values\ShopId;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Osiset\ShopifyApp\Actions\CreateScripts as CreateScriptsAction;
+use Osiset\ShopifyApp\Objects\Values\ShopId;
 
 /**
  * Webhook job responsible for handling installing scripttag.
