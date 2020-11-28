@@ -13,7 +13,6 @@ jobs:
           - '7.2'
           - '7.3'
           - '7.4'
-          - '8.0'
         laravel:
             - '5.8'
             - '6.0'
@@ -24,10 +23,6 @@ jobs:
               laravel: '5.8'
             - php: '7.2'
               laravel: '8.0'
-            - php: '8.0'
-              laravel: '5.8'
-            - php: '8.0'
-              laravel: '6.0'
 
     name: PHP ${{ matrix.php }} / Laravel ${{ matrix.laravel }}
 
