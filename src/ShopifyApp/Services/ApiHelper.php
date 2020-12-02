@@ -5,6 +5,7 @@ namespace Osiset\ShopifyApp\Services;
 use Closure;
 use Exception;
 use GuzzleHttp\Exception\RequestException;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\URL;
 use Osiset\BasicShopifyAPI\BasicShopifyAPI;
@@ -43,9 +44,10 @@ class ApiHelper implements IApiHelper
         // Create the options
         $opts = new Options();
 
-        $opts->setApiKey($this->getConfig('api_key'));
-        $opts->setApiSecret($this->getConfig('api_secret'));
-        $opts->setVersion($this->getConfig('api_version'));
+        $shop = $session ? $session->getShop() : Arr::get(Request::all(), 'shop');
+        $opts->setApiKey($this->getConfig('api_key', $shop));
+        $opts->setApiSecret($this->getConfig('api_secret', $shop));
+        $opts->setVersion($this->getConfig('api_version', $shop));
 
         // Create the instance
         if ($this->getConfig('api_init')) {
@@ -58,9 +60,9 @@ class ApiHelper implements IApiHelper
             );
         } else {
             // Default init
-            $ts = $this->getConfig('api_time_store');
-            $ls = $this->getConfig('api_limit_store');
-            $sd = $this->getConfig('api_deferrer');
+            $ts = $this->getConfig('api_time_store', $shop);
+            $ls = $this->getConfig('api_limit_store', $shop);
+            $sd = $this->getConfig('api_deferrer', $shop);
 
             $this->api = new BasicShopifyAPI(
                 $opts,
