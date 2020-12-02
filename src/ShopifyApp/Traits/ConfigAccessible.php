@@ -14,11 +14,12 @@ trait ConfigAccessible
     /**
      * Get the config value for a key.
      *
-     * @param string $key The key to lookup.
+     * @param string $key  The key to lookup.
+     * @param mixed  $shop The shop domain (string, ShopDomain, etc).
      *
      * @return mixed
      */
-    public function getConfig(string $key)
+    public function getConfig(string $key, $shop = null)
     {
         $this->config = array_merge(
             Config::get('shopify-app'),
@@ -33,6 +34,18 @@ trait ConfigAccessible
             return Arr::get(
                 $this->config['route_names'],
                 Str::after($key, '.')
+            );
+        }
+
+        // Check if config API callback is defined
+        if (Str::startsWith($key, 'api')
+            && Arr::exists($this->config, 'config_api_callback')
+            && is_callable($this->config['config_api_callback'])) {
+            // It is, use this to get the config value
+            return call_user_func(
+                Arr::get($this->config, 'config_api_callback'),
+                $key,
+                $shop
             );
         }
 
@@ -62,7 +75,7 @@ trait ConfigAccessible
     public function setConfigArray(array $kvs): void
     {
         foreach ($kvs as $key => $value) {
-            Config::set($key, $value);
+            $this->setConfig($key, $value);
         }
     }
 }

@@ -158,7 +158,7 @@ class ShopSession
      */
     public function getType(): AuthMode
     {
-        return AuthMode::fromNative(strtoupper($this->getConfig('api_grant_mode')));
+        return AuthMode::fromNative(strtoupper($this->getConfig('api_grant_mode', $this->getShop())));
     }
 
     /**

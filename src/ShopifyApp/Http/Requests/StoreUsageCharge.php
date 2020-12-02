@@ -3,6 +3,7 @@
 namespace Osiset\ShopifyApp\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Validation\Validator;
 use function Osiset\ShopifyApp\createHmac;
 use Osiset\ShopifyApp\Traits\ConfigAccessible;
@@ -49,7 +50,13 @@ class StoreUsageCharge extends FormRequest
             unset($data['signature']);
 
             // Confirm the charge hasn't been tampered with
-            $signatureLocal = createHmac(['data' => $data, 'buildQuery' => true], $this->getConfig('api_secret'));
+            $signatureLocal = createHmac(
+                [
+                    'data'       => $data,
+                    'buildQuery' => true,
+                ],
+                $this->getConfig('api_secret')
+            );
             if (! hash_equals($signature, $signatureLocal)) {
                 // Possible tampering
                 $validator->errors()->add('signature', 'Signature does not match.');

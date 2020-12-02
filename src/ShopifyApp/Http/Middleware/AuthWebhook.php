@@ -28,7 +28,14 @@ class AuthWebhook
         $hmac = $request->header('x-shopify-hmac-sha256') ?: '';
         $shop = $request->header('x-shopify-shop-domain');
         $data = $request->getContent();
-        $hmacLocal = createHmac(['data' => $data, 'raw' => true, 'encode' => true], $this->getConfig('api_secret'));
+        $hmacLocal = createHmac(
+            [
+                'data'   => $data,
+                'raw'    => true,
+                'encode' => true,
+            ],
+            $this->getConfig('api_secret', $shop)
+        );
 
         if (! hash_equals($hmac, $hmacLocal) || empty($shop)) {
             // Issue with HMAC or missing shop header

@@ -67,11 +67,7 @@ class AuthToken
         }
 
         $parts = explode('.', $token);
-
-        $body = base64url_decode($parts[1]);
-        $signature = $parts[2];
-
-        $body = json_decode($body);
+        $body = json_decode(base64url_decode($parts[1]));
 
         if (! $body ||
             ! isset($body->iss) ||
@@ -110,17 +106,26 @@ class AuthToken
     /**
      * Checks the validity of the signature sent with the token.
      *
-     * @param string  $token The token to check.
+     * @param string $token The token to check.
      *
      * @return bool
      */
     private function checkSignature($token)
     {
+        // Get the signature data
         $parts = explode('.', $token);
         $signature = array_pop($parts);
         $check = implode('.', $parts);
 
-        $secret = $this->getConfig('api_secret');
+        // Get the shop
+        $shop = null;
+        $body = json_decode(base64url_decode($parts[1]));
+        if (isset($body->dest)) {
+            $url = parse_url($body->dest);
+            $shop = isset($url['host']) ? $url['host'] : null;
+        }
+
+        $secret = $this->getConfig('api_secret', $shop);
         $hmac = hash_hmac('sha256', $check, $secret, true);
         $encoded = base64url_encode($hmac);
 
