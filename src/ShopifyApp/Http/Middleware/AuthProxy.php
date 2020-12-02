@@ -63,7 +63,7 @@ class AuthProxy
                 'data'       => $query,
                 'buildQuery' => true,
             ],
-            $this->getConfig('api_secret', ['shop' => $shop])
+            $this->getConfig('api_secret', $shop)
         );
         if ($signature !== $signatureLocal || $shop->isNull()) {
             // Issue with HMAC or missing shop header
