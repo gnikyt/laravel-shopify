@@ -18,15 +18,16 @@ class ConfigHelper
     /**
      * Get the config value for a key.
      *
-     * @param string $key The key to lookup.
+     * @param string $key  The key to lookup.
+     * @param mixed  $shop The shop domain (string, ShopDomain, etc).
      *
      * @return mixed
      *
      * @see \Osiset\ShopifyApp\Traits\ConfigAccessible::getConfig()
      */
-    public static function get(string $key)
+    public static function get(string $key, $shop = null)
     {
-        return (new static)->getConfig($key);
+        return (new static)->getConfig($key, $shop);
     }
 
     /**

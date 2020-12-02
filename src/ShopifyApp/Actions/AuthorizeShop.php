@@ -86,10 +86,10 @@ class AuthorizeShop
 
         // Access/grant mode
         $grantMode = $shop->hasOfflineAccess() ?
-            AuthMode::fromNative($this->getConfig('api_grant_mode')) :
+            AuthMode::fromNative($this->getConfig('api_grant_mode', $shop)) :
             AuthMode::OFFLINE();
 
-        $return['url'] = $apiHelper->buildAuthUrl($grantMode, $this->getConfig('api_scopes'));
+        $return['url'] = $apiHelper->buildAuthUrl($grantMode, $this->getConfig('api_scopes', $shop));
 
         // If there's no code
         if (empty($code)) {

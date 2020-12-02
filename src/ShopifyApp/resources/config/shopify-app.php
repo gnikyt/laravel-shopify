@@ -367,4 +367,20 @@ return [
         'scripttags'         => env('SCRIPTTAGS_JOB_QUEUE', null),
         'after_authenticate' => env('AFTER_AUTHENTICATE_JOB_QUEUE', null),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Config API Callback
+    |--------------------------------------------------------------------------
+    |
+    | This option can be used to modify what returns when `getConfig('api_*')` is used.
+    | A use-case for this is modifying the return of `api_secret` or something similar.
+    |
+    | A closure/callable is required.
+    | The first argument will be the key string.
+    | The second argument will be something to help identify the shop.
+    |
+    */
+
+    'config_api_callback' => null,
 ];

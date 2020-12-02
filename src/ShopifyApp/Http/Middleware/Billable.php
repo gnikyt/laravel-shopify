@@ -44,8 +44,8 @@ class Billable
      */
     public function handle(Request $request, Closure $next)
     {
+        $shop = $this->shopSession->getShop();
         if ($this->getConfig('billing_enabled') === true) {
-            $shop = $this->shopSession->getShop();
             if (! $shop->isFreemium() && ! $shop->isGrandfathered() && ! $shop->plan) {
                 // They're not grandfathered in, and there is no charge or charge was declined... redirect to billing
                 return Redirect::route($this->getConfig('route_names.billing'), $request->input());
