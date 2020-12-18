@@ -3,12 +3,12 @@
 namespace Osiset\ShopifyApp\Objects\Values;
 
 use Funeralzone\ValueObjects\Scalars\IntegerTrait;
-use Funeralzone\ValueObjects\ValueObject;
+use Osiset\ShopifyApp\Contracts\Objects\Values\ShopId as ShopIdValue;
 
 /**
  * Value object for shop's ID.
  */
-final class ShopId implements ValueObject
+final class ShopId implements ShopIdValue
 {
     use IntegerTrait;
 }
