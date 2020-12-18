@@ -10,6 +10,7 @@ use Osiset\BasicShopifyAPI\Session;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use Osiset\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
+use Osiset\ShopifyApp\Contracts\Objects\Values\ShopId as ShopIdValue;
 use Osiset\ShopifyApp\Objects\Values\AccessToken;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Objects\Values\ShopId;
@@ -47,7 +48,7 @@ trait ShopModel
     /**
      * {@inheritdoc}
      */
-    public function getId(): ShopId
+    public function getId(): ShopIdValue
     {
         return ShopId::fromNative($this->id);
     }
