@@ -19,7 +19,9 @@ class CreateShopsTable extends Migration
             $table->boolean('shopify_freemium')->default(false);
             $table->integer('plan_id')->unsigned()->nullable();
 
-            $table->softDeletes();
+            if (! Schema::hasColumn('users', 'deleted_at')) {
+                $table->softDeletes();
+            }
 
             $table->foreign('plan_id')->references('id')->on('plans');
         });
