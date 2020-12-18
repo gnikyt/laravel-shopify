@@ -2,14 +2,14 @@
 
 namespace Osiset\ShopifyApp\Contracts;
 
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Osiset\BasicShopifyAPI\BasicShopifyAPI;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
-use Osiset\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
+use Osiset\ShopifyApp\Contracts\Objects\Values\ShopId as ShopIdValue;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
-use Osiset\ShopifyApp\Objects\Values\ShopId;
+use Osiset\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
 
 /**
  * Reprecents the shop model.
@@ -19,9 +19,9 @@ interface ShopModel extends Authenticatable
     /**
      * Get shop ID as a value object.
      *
-     * @return ShopId
+     * @return ShopIdValue
      */
-    public function getId(): ShopId;
+    public function getId(): ShopIdValue;
 
     /**
      * Get shop domain as a value object.
