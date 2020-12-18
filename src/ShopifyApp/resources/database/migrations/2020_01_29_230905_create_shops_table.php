@@ -19,7 +19,7 @@ class CreateShopsTable extends Migration
             $table->boolean('shopify_freemium')->default(false);
             $table->integer('plan_id')->unsigned()->nullable();
 
-            if (!Schema::hasColumn('users', 'deleted_at')) {
+            if (! Schema::hasColumn('users', 'deleted_at')) {
                 $table->softDeletes();
             }
 
