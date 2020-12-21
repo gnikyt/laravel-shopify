@@ -2,10 +2,10 @@
 
 namespace Osiset\ShopifyApp\Actions;
 
-use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
-use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
-use Osiset\ShopifyApp\Objects\Values\ShopId;
 use Osiset\ShopifyApp\Traits\ConfigAccessible;
+use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
+use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use Osiset\ShopifyApp\Contracts\Objects\Values\ShopId as ShopIdValue;
 
 /**
  * Run after authentication jobs.
@@ -37,11 +37,11 @@ class AfterAuthorize
      * Execution.
      * TODO: Rethrow an API exception.
      *
-     * @param ShopId $shopId The shop ID.
+     * @param ShopIdValue $shopId The shop ID.
      *
      * @return bool
      */
-    public function __invoke(ShopId $shopId): bool
+    public function __invoke(ShopIdValue $shopId): bool
     {
         /**
          * Fires the job.
