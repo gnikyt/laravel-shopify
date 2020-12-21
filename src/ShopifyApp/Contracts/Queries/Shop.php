@@ -3,9 +3,9 @@
 namespace Osiset\ShopifyApp\Contracts\Queries;
 
 use Illuminate\Support\Collection;
-use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
-use Osiset\ShopifyApp\Contracts\Objects\Values\ShopId as ShopIdValue;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
+use Osiset\ShopifyApp\Contracts\Objects\Values\ShopId as ShopIdValue;
+use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
 
 /**
  * Reprecents a queries for shops.
