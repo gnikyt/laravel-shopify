@@ -8,7 +8,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Osiset\ShopifyApp\Actions\CreateWebhooks as CreateWebhooksAction;
-use Osiset\ShopifyApp\Objects\Values\ShopId;
+use Osiset\ShopifyApp\Contracts\Objects\Values\ShopId as ShopIdValue;
 
 /**
  * Webhook job responsible for handling installation of webhook listeners.
@@ -23,7 +23,7 @@ class WebhookInstaller implements ShouldQueue
     /**
      * The shop's ID.
      *
-     * @var int
+     * @var ShopIdValue
      */
     protected $shopId;
 
@@ -37,12 +37,12 @@ class WebhookInstaller implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param ShopId $shopId         The shop ID.
-     * @param array  $configWebhooks The webhooks to add.
+     * @param ShopIdValue $shopId         The shop ID.
+     * @param array       $configWebhooks The webhooks to add.
      *
      * @return void
      */
-    public function __construct(ShopId $shopId, array $configWebhooks)
+    public function __construct(ShopIdValue $shopId, array $configWebhooks)
     {
         $this->shopId = $shopId;
         $this->configWebhooks = $configWebhooks;

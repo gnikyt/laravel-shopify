@@ -2,8 +2,8 @@
 
 namespace Osiset\ShopifyApp\Actions;
 
+use Osiset\ShopifyApp\Contracts\Objects\Values\ShopId as ShopIdValue;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
-use Osiset\ShopifyApp\Objects\Values\ShopId;
 use Osiset\ShopifyApp\Traits\ConfigAccessible;
 
 /**
@@ -44,12 +44,12 @@ class DispatchWebhooks
     /**
      * Execution.
      *
-     * @param ShopId $shopId The shop ID.
-     * @param bool   $inline Fire the job inlin e (now) or queue.
+     * @param ShopIdValue $shopId The shop ID.
+     * @param bool        $inline Fire the job inlin e (now) or queue.
      *
      * @return bool
      */
-    public function __invoke(ShopId $shopId, bool $inline = false): bool
+    public function __invoke(ShopIdValue $shopId, bool $inline = false): bool
     {
         // Get the shop
         $shop = $this->shopQuery->getById($shopId);

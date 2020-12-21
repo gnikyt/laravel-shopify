@@ -8,7 +8,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Osiset\ShopifyApp\Actions\CreateScripts as CreateScriptsAction;
-use Osiset\ShopifyApp\Objects\Values\ShopId;
+use Osiset\ShopifyApp\Contracts\Objects\Values\ShopId as ShopIdValue;
 
 /**
  * Webhook job responsible for handling installing scripttag.
@@ -23,7 +23,7 @@ class ScripttagInstaller implements ShouldQueue
     /**
      * The shop's ID.
      *
-     * @var ShopId
+     * @var ShopIdValue
      */
     protected $shopId;
 
@@ -37,12 +37,12 @@ class ScripttagInstaller implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param ShopId $shopId        The shop ID.
-     * @param array  $configScripts The scripts to add.
+     * @param ShopIdValue $shopId        The shop ID.
+     * @param array       $configScripts The scripts to add.
      *
      * @return void
      */
-    public function __construct(ShopId $shopId, array $configScripts)
+    public function __construct(ShopIdValue $shopId, array $configScripts)
     {
         $this->shopId = $shopId;
         $this->configScripts = $configScripts;

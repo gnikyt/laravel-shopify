@@ -3,8 +3,8 @@
 namespace Osiset\ShopifyApp\Actions;
 
 use Osiset\BasicShopifyAPI\ResponseAccess;
+use Osiset\ShopifyApp\Contracts\Objects\Values\ShopId as ShopIdValue;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
-use Osiset\ShopifyApp\Objects\Values\ShopId;
 use Osiset\ShopifyApp\Traits\ConfigAccessible;
 
 /**
@@ -37,12 +37,12 @@ class CreateWebhooks
      * Execution.
      * TODO: Rethrow an API exception.
      *
-     * @param ShopId $shopId         The shop ID.
-     * @param array  $configWebhooks The webhooks to add.
+     * @param ShopIdValue $shopId         The shop ID.
+     * @param array       $configWebhooks The webhooks to add.
      *
      * @return array
      */
-    public function __invoke(ShopId $shopId, array $configWebhooks): array
+    public function __invoke(ShopIdValue $shopId, array $configWebhooks): array
     {
         /**
          * Checks if a webhooks exists already in the shop.

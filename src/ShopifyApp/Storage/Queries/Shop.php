@@ -4,9 +4,9 @@ namespace Osiset\ShopifyApp\Storage\Queries;
 
 use Illuminate\Support\Collection;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
+use Osiset\ShopifyApp\Contracts\Objects\Values\ShopId as ShopIdValue;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use Osiset\ShopifyApp\Contracts\ShopModel;
-use Osiset\ShopifyApp\Objects\Values\ShopId;
 use Osiset\ShopifyApp\Traits\ConfigAccessible;
 
 /**
@@ -36,7 +36,7 @@ class Shop implements IShopQuery
     /**
      * {@inheritdoc}
      */
-    public function getByID(ShopId $shopId, array $with = [], bool $withTrashed = false): ?ShopModel
+    public function getByID(ShopIdValue $shopId, array $with = [], bool $withTrashed = false): ?ShopModel
     {
         $result = $this->model::with($with);
         if ($withTrashed) {

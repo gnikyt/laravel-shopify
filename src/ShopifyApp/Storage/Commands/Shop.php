@@ -6,9 +6,9 @@ use Osiset\ShopifyApp\Contracts\Commands\Shop as ShopCommand;
 use Osiset\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
 use Osiset\ShopifyApp\Contracts\Objects\Values\PlanId as PlanIdValue;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
+use Osiset\ShopifyApp\Contracts\Objects\Values\ShopId as ShopIdValue;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
 use Osiset\ShopifyApp\Contracts\ShopModel;
-use Osiset\ShopifyApp\Objects\Values\ShopId;
 use Osiset\ShopifyApp\Traits\ConfigAccessible;
 
 /**
@@ -44,7 +44,7 @@ class Shop implements ShopCommand
     /**
      * {@inheritdoc}
      */
-    public function make(ShopDomainValue $domain, AccessTokenValue $token): ShopId
+    public function make(ShopDomainValue $domain, AccessTokenValue $token): ShopIdValue
     {
         $model = $this->model;
         $shop = new $model();
@@ -59,7 +59,7 @@ class Shop implements ShopCommand
     /**
      * {@inheritdoc}
      */
-    public function setToPlan(ShopId $shopId, PlanIdValue $planId): bool
+    public function setToPlan(ShopIdValue $shopId, PlanIdValue $planId): bool
     {
         $shop = $this->getShop($shopId);
         $shop->plan_id = $planId->toNative();
@@ -71,7 +71,7 @@ class Shop implements ShopCommand
     /**
      * {@inheritdoc}
      */
-    public function setAccessToken(ShopId $shopId, AccessTokenValue $token): bool
+    public function setAccessToken(ShopIdValue $shopId, AccessTokenValue $token): bool
     {
         $shop = $this->getShop($shopId);
         $shop->password = $token->toNative();
@@ -82,7 +82,7 @@ class Shop implements ShopCommand
     /**
      * {@inheritdoc}
      */
-    public function clean(ShopId $shopId): bool
+    public function clean(ShopIdValue $shopId): bool
     {
         $shop = $this->getShop($shopId);
         $shop->password = '';
@@ -94,7 +94,7 @@ class Shop implements ShopCommand
     /**
      * {@inheritdoc}
      */
-    public function softDelete(ShopId $shopId): bool
+    public function softDelete(ShopIdValue $shopId): bool
     {
         $shop = $this->getShop($shopId);
         $shop->charges()->delete();
@@ -105,7 +105,7 @@ class Shop implements ShopCommand
     /**
      * {@inheritdoc}
      */
-    public function restore(ShopId $shopId): bool
+    public function restore(ShopIdValue $shopId): bool
     {
         $shop = $this->getShop($shopId, true);
         $shop->charges()->restore();
@@ -116,7 +116,7 @@ class Shop implements ShopCommand
     /**
      * {@inheritdoc}
      */
-    public function setAsFreemium(ShopId $shopId): bool
+    public function setAsFreemium(ShopIdValue $shopId): bool
     {
         $shop = $this->getShop($shopId);
         $this->setAsFreemiumByRef($shop);
@@ -127,7 +127,7 @@ class Shop implements ShopCommand
     /**
      * {@inheritdoc}
      */
-    public function setNamespace(ShopId $shopId, string $namespace): bool
+    public function setNamespace(ShopIdValue $shopId, string $namespace): bool
     {
         $shop = $this->getShop($shopId);
         $this->setNamespaceByRef($shop, $namespace);
@@ -163,12 +163,12 @@ class Shop implements ShopCommand
     /**
      * Helper to get the shop.
      *
-     * @param ShopId $shopId      The shop's ID.
-     * @param bool   $withTrashed Include trashed shops?
+     * @param ShopIdValue $shopId      The shop's ID.
+     * @param bool        $withTrashed Include trashed shops?
      *
      * @return ShopModel|null
      */
-    protected function getShop(ShopId $shopId, bool $withTrashed = false): ?ShopModel
+    protected function getShop(ShopIdValue $shopId, bool $withTrashed = false): ?ShopModel
     {
         return $this->query->getById($shopId, [], $withTrashed);
     }
