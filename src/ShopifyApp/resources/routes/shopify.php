@@ -21,7 +21,7 @@ if ($manualRoutes) {
     $manualRoutes = explode(',', $manualRoutes);
 }
 
-Route::group(['prefix' => ConfigHelper::get('prefix'), 'middleware' => ['web']], function () use ($manualRoutes) {
+Route::group(['prefix' => ConfigHelper::get('prefix'), 'middleware' => ['itp', 'web']], function () use ($manualRoutes) {
     /*
     |--------------------------------------------------------------------------
     | Home Route
@@ -132,4 +132,7 @@ Route::group(['prefix' => ConfigHelper::get('prefix'), 'middleware' => ['web']],
         ->middleware(['auth.shopify'])
         ->name(ConfigHelper::get('route_names.billing.usage_charge'));
     }
+
+    Route::get('/itp', 'Osiset\ShopifyApp\Http\Controllers\ItpController@handle')
+        ->name('itp');
 });
