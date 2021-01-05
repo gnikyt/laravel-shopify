@@ -25,6 +25,7 @@ class ITP
      */
     public function handle(Request $request, Closure $next)
     {
+        Log::info('Exists: ' . ($request->cookie('itp') ? 'yes' : 'no') . ' -- ' . $request->path());
         if (! $request->cookie('itp') && $request->path() !== 'itp') {
             return Response::make(
                 View::make(
