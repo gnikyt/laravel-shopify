@@ -133,6 +133,22 @@ Route::group(['prefix' => ConfigHelper::get('prefix'), 'middleware' => ['itp', '
         ->name(ConfigHelper::get('route_names.billing.usage_charge'));
     }
 
-    Route::get('/itp', 'Osiset\ShopifyApp\Http\Controllers\ItpController@handle')
-        ->name('itp');
+    /*
+    |--------------------------------------------------------------------------
+    | ITP
+    |--------------------------------------------------------------------------
+    |
+    | Handles ITP and issues with it.
+    |
+    */
+
+    if (registerPackageRoute('itp', $manualRoutes)) {
+        Route::get('/itp', 'Osiset\ShopifyApp\Http\Controllers\ItpController@attempt')
+            ->name(ConfigHelper::get('route_names.itp'));
+    }
+
+    if (registerPackageRoute('itp.ask', $manualRoutes)) {
+        Route::get('/itp/ask', 'Osiset\ShopifyApp\Http\Controllers\ItpController@ask')
+            ->name(ConfigHelper::get('route_names.itp.ask'));
+    }
 });
