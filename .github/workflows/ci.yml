@@ -16,10 +16,10 @@ jobs:
           - '8.0'
         laravel:
             - '7.0'
-            - '8.0'
+            - '8.22'
         exclude:
             - php: '7.2'
-              laravel: '8.0'
+              laravel: '8.22'
             - php: '8.0'
               laravel: '7.0'
 
