@@ -4,9 +4,9 @@ namespace Osiset\ShopifyApp\Test\Http\Middleware;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
-use Osiset\ShopifyApp\Test\TestCase;
 use Illuminate\Support\Facades\Request;
 use Osiset\ShopifyApp\Http\Middleware\ITP as ITPMiddleware;
+use Osiset\ShopifyApp\Test\TestCase;
 
 class ITPTest extends TestCase
 {
