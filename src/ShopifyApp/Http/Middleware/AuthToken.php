@@ -7,14 +7,12 @@ use Illuminate\Http\Request;
 use function Osiset\ShopifyApp\base64url_decode;
 use function Osiset\ShopifyApp\base64url_encode;
 use Osiset\ShopifyApp\Exceptions\HttpException;
+use function Osiset\ShopifyApp\getShopifyConfig;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Services\ShopSession;
-use Osiset\ShopifyApp\Traits\ConfigAccessible;
 
 class AuthToken
 {
-    use ConfigAccessible;
-
     /**
      * The shop session helper.
      *
@@ -90,7 +88,7 @@ class AuthToken
             throw new HttpException('Invalid token', 400);
         }
 
-        if ($body->aud !== $this->getConfig('api_key')) {
+        if ($body->aud !== getShopifyConfig('api_key')) {
             throw new HttpException('Invalid token', 400);
         }
 
@@ -125,7 +123,7 @@ class AuthToken
             $shop = isset($url['host']) ? $url['host'] : null;
         }
 
-        $secret = $this->getConfig('api_secret', $shop);
+        $secret = getShopifyConfig('api_secret', $shop);
         $hmac = hash_hmac('sha256', $check, $secret, true);
         $encoded = base64url_encode($hmac);
 

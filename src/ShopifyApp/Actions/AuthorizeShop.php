@@ -4,11 +4,11 @@ namespace Osiset\ShopifyApp\Actions;
 
 use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use function Osiset\ShopifyApp\getShopifyConfig;
 use Osiset\ShopifyApp\Objects\Enums\AuthMode;
 use Osiset\ShopifyApp\Objects\Values\NullAccessToken;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Services\ShopSession;
-use Osiset\ShopifyApp\Traits\ConfigAccessible;
 use stdClass;
 
 /**
@@ -16,8 +16,6 @@ use stdClass;
  */
 class AuthorizeShop
 {
-    use ConfigAccessible;
-
     /**
      * Querier for shops.
      *
@@ -86,10 +84,10 @@ class AuthorizeShop
 
         // Access/grant mode
         $grantMode = $shop->hasOfflineAccess() ?
-            AuthMode::fromNative($this->getConfig('api_grant_mode', $shop)) :
+            AuthMode::fromNative(getShopifyConfig('api_grant_mode', $shop)) :
             AuthMode::OFFLINE();
 
-        $return['url'] = $apiHelper->buildAuthUrl($grantMode, $this->getConfig('api_scopes', $shop));
+        $return['url'] = $apiHelper->buildAuthUrl($grantMode, getShopifyConfig('api_scopes', $shop));
 
         // If there's no code
         if (empty($code)) {

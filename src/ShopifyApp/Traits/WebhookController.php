@@ -5,14 +5,13 @@ namespace Osiset\ShopifyApp\Traits;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response as ResponseResponse;
 use Illuminate\Support\Facades\Response;
+use function Osiset\ShopifyApp\getShopifyConfig;
 
 /**
  * Responsible for handling incoming webhook requests.
  */
 trait WebhookController
 {
-    use ConfigAccessible;
-
     /**
      * Handles an incoming webhook.
      *
@@ -24,7 +23,7 @@ trait WebhookController
     public function handle(string $type, Request $request): ResponseResponse
     {
         // Get the job class and dispatch
-        $jobClass = $this->getConfig('job_namespace').str_replace('-', '', ucwords($type, '-')).'Job';
+        $jobClass = getShopifyConfig('job_namespace').str_replace('-', '', ucwords($type, '-')).'Job';
         $jobData = json_decode($request->getContent());
 
         $jobClass::dispatch(

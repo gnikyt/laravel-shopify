@@ -9,15 +9,13 @@ use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopId as ShopIdValue;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
 use Osiset\ShopifyApp\Contracts\ShopModel;
-use Osiset\ShopifyApp\Traits\ConfigAccessible;
+use function Osiset\ShopifyApp\getShopifyConfig;
 
 /**
  * Reprecents the commands for shops.
  */
 class Shop implements ShopCommand
 {
-    use ConfigAccessible;
-
     /**
      * The shop model (configurable).
      *
@@ -38,7 +36,7 @@ class Shop implements ShopCommand
     public function __construct(ShopQuery $query)
     {
         $this->query = $query;
-        $this->model = $this->getConfig('user_model');
+        $this->model = getShopifyConfig('user_model');
     }
 
     /**

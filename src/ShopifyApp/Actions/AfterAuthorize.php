@@ -5,15 +5,13 @@ namespace Osiset\ShopifyApp\Actions;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopId as ShopIdValue;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
-use Osiset\ShopifyApp\Traits\ConfigAccessible;
+use function Osiset\ShopifyApp\getShopifyConfig;
 
 /**
  * Run after authentication jobs.
  */
 class AfterAuthorize
 {
-    use ConfigAccessible;
-
     /**
      * Querier for shops.
      *
@@ -59,7 +57,7 @@ class AfterAuthorize
             } else {
                 // Run later
                 $job::dispatch($shop)
-                    ->onQueue($this->getConfig('job_queues')['after_authenticate']);
+                    ->onQueue(getShopifyConfig('job_queues')['after_authenticate']);
             }
 
             return true;
@@ -69,7 +67,7 @@ class AfterAuthorize
         $shop = $this->shopQuery->getById($shopId);
 
         // Grab the jobs config
-        $jobsConfig = $this->getConfig('after_authenticate_job');
+        $jobsConfig = getShopifyConfig('after_authenticate_job');
 
         if (isset($jobsConfig[0])) {
             // We have multi-jobs

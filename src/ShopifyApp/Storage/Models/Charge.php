@@ -5,11 +5,11 @@ namespace Osiset\ShopifyApp\Storage\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use function Osiset\ShopifyApp\getShopifyConfig;
 use Osiset\ShopifyApp\Objects\Enums\ChargeStatus;
 use Osiset\ShopifyApp\Objects\Enums\ChargeType;
 use Osiset\ShopifyApp\Objects\Values\ChargeId;
 use Osiset\ShopifyApp\Objects\Values\ChargeReference;
-use Osiset\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Responsible for reprecenting a charge record.
@@ -17,7 +17,6 @@ use Osiset\ShopifyApp\Traits\ConfigAccessible;
 class Charge extends Model
 {
     use SoftDeletes;
-    use ConfigAccessible;
 
     /**
      * The attributes that are mass assignable.
@@ -78,7 +77,7 @@ class Charge extends Model
     public function shop(): BelongsTo
     {
         return $this->belongsTo(
-            $this->getConfig('user_model'),
+            getShopifyConfig('user_model'),
             'user_id',
             'id'
         );

@@ -6,18 +6,16 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use function Osiset\ShopifyApp\createHmac;
+use function Osiset\ShopifyApp\getShopifyConfig;
 use Osiset\ShopifyApp\Objects\Values\NullableShopDomain;
 use function Osiset\ShopifyApp\parseQueryString;
 use Osiset\ShopifyApp\Services\ShopSession;
-use Osiset\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Responsible for ensuring a proper app proxy request.
  */
 class AuthProxy
 {
-    use ConfigAccessible;
-
     /**
      * Shop session helper.
      *
@@ -63,7 +61,7 @@ class AuthProxy
                 'data'       => $query,
                 'buildQuery' => true,
             ],
-            $this->getConfig('api_secret', $shop)
+            getShopifyConfig('api_secret', $shop)
         );
         if ($signature !== $signatureLocal || $shop->isNull()) {
             // Issue with HMAC or missing shop header

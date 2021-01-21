@@ -5,16 +5,14 @@ namespace Osiset\ShopifyApp\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use function Osiset\ShopifyApp\getShopifyConfig;
 use Osiset\ShopifyApp\Services\ShopSession;
-use Osiset\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Responsible for ensuring the shop is being billed.
  */
 class Billable
 {
-    use ConfigAccessible;
-
     /**
      * The shop session helper.
      *
@@ -44,11 +42,11 @@ class Billable
      */
     public function handle(Request $request, Closure $next)
     {
-        if ($this->getConfig('billing_enabled') === true) {
+        if (getShopifyConfig('billing_enabled') === true) {
             $shop = $this->shopSession->getShop();
             if (! $shop->isFreemium() && ! $shop->isGrandfathered() && ! $shop->plan) {
                 // They're not grandfathered in, and there is no charge or charge was declined... redirect to billing
-                return Redirect::route($this->getConfig('route_names.billing'), $request->input());
+                return Redirect::route(getShopifyConfig('route_names.billing'), $request->input());
             }
         }
 

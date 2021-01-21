@@ -1,5 +1,5 @@
 <script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         var Toast = actions.Toast;
 
         @if (session()->has('notice'))

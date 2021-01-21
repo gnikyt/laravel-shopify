@@ -6,15 +6,13 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use function Osiset\ShopifyApp\createHmac;
-use Osiset\ShopifyApp\Traits\ConfigAccessible;
+use function Osiset\ShopifyApp\getShopifyConfig;
 
 /**
  * Response for ensuring a proper webhook request.
  */
 class AuthWebhook
 {
-    use ConfigAccessible;
-
     /**
      * Handle an incoming request to ensure webhook is valid.
      *
@@ -34,7 +32,7 @@ class AuthWebhook
                 'raw'    => true,
                 'encode' => true,
             ],
-            $this->getConfig('api_secret', $shop)
+            getShopifyConfig('api_secret', $shop)
         );
 
         if (! hash_equals($hmac, $hmacLocal) || empty($shop)) {

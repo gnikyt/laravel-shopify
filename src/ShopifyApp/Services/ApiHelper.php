@@ -14,21 +14,19 @@ use Osiset\BasicShopifyAPI\ResponseAccess;
 use Osiset\BasicShopifyAPI\Session;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use Osiset\ShopifyApp\Exceptions\ApiException;
+use function Osiset\ShopifyApp\getShopifyConfig;
 use Osiset\ShopifyApp\Objects\Enums\ApiMethod;
 use Osiset\ShopifyApp\Objects\Enums\AuthMode;
 use Osiset\ShopifyApp\Objects\Enums\ChargeType;
 use Osiset\ShopifyApp\Objects\Transfers\PlanDetails as PlanDetailsTransfer;
 use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
 use Osiset\ShopifyApp\Objects\Values\ChargeReference;
-use Osiset\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Basic helper class for API calls to Shopify.
  */
 class ApiHelper implements IApiHelper
 {
-    use ConfigAccessible;
-
     /**
      * The API instance.
      *
@@ -45,24 +43,24 @@ class ApiHelper implements IApiHelper
         $opts = new Options();
 
         $shop = $session ? $session->getShop() : Arr::get(Request::all(), 'shop');
-        $opts->setApiKey($this->getConfig('api_key', $shop));
-        $opts->setApiSecret($this->getConfig('api_secret', $shop));
-        $opts->setVersion($this->getConfig('api_version', $shop));
+        $opts->setApiKey(getShopifyConfig('api_key', $shop));
+        $opts->setApiSecret(getShopifyConfig('api_secret', $shop));
+        $opts->setVersion(getShopifyConfig('api_version', $shop));
 
         // Create the instance
-        if ($this->getConfig('api_init')) {
+        if (getShopifyConfig('api_init')) {
             // User-defined init function
             $this->api = call_user_func(
-                $this->getConfig('api_init'),
+                getShopifyConfig('api_init'),
                 $opts,
                 $session,
                 Request::all()
             );
         } else {
             // Default init
-            $ts = $this->getConfig('api_time_store', $shop);
-            $ls = $this->getConfig('api_limit_store', $shop);
-            $sd = $this->getConfig('api_deferrer', $shop);
+            $ts = getShopifyConfig('api_time_store', $shop);
+            $ls = getShopifyConfig('api_limit_store', $shop);
+            $sd = getShopifyConfig('api_deferrer', $shop);
 
             $this->api = new BasicShopifyAPI(
                 $opts,
@@ -131,7 +129,7 @@ class ApiHelper implements IApiHelper
 
         return $this->api->getAuthUrl(
             $scopes,
-            URL::secure($this->getConfig('api_redirect')),
+            URL::secure(getShopifyConfig('api_redirect')),
             strtolower($mode)
         );
     }

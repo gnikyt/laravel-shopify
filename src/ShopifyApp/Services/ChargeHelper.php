@@ -6,13 +6,13 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\URL;
 use Osiset\ShopifyApp\Contracts\Queries\Charge as IChargeQuery;
 use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
+use function Osiset\ShopifyApp\getShopifyConfig;
 use Osiset\ShopifyApp\Objects\Enums\ChargeType;
 use Osiset\ShopifyApp\Objects\Transfers\PlanDetails as PlanDetailsTransfer;
 use Osiset\ShopifyApp\Objects\Values\ChargeReference;
 use Osiset\ShopifyApp\Objects\Values\PlanId;
 use Osiset\ShopifyApp\Storage\Models\Charge as ChargeModel;
 use Osiset\ShopifyApp\Storage\Models\Plan;
-use Osiset\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Basic helper class for charges which encapsulates
@@ -21,8 +21,6 @@ use Osiset\ShopifyApp\Traits\ConfigAccessible;
  */
 class ChargeHelper
 {
-    use ConfigAccessible;
-
     /**
      * The querier for charges.
      *
@@ -267,7 +265,7 @@ class ChargeHelper
         $transfer->cappedAmount = $isCapped ? $plan->capped_amount : null;
         $transfer->terms = $isCapped ? $plan->terms : null;
         $transfer->returnUrl = URL::secure(
-            $this->getConfig('billing_redirect'),
+            getShopifyConfig('billing_redirect'),
             ['plan' => $plan->getId()->toNative()]
         );
 

@@ -3,7 +3,6 @@
 namespace Osiset\ShopifyApp\Exceptions;
 
 use Exception;
-use Osiset\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Base exception for all exceptions of the package.
@@ -11,5 +10,4 @@ use Osiset\ShopifyApp\Traits\ConfigAccessible;
  */
 abstract class BaseException extends Exception
 {
-    use ConfigAccessible;
 }

@@ -2,6 +2,11 @@
 
 namespace Osiset\ShopifyApp;
 
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Str;
+use LogicException;
+
 /**
  * HMAC creation helper.
  *
@@ -129,13 +134,52 @@ function registerPackageRoute(string $routeToCheck, $routesToExclude): bool
         return true;
     }
 
-    if ($routesToExclude === true) {
-        throw new \LogicException('Excluded routes can be false, or an array');
-    }
-
     if (is_array($routesToExclude) === false) {
-        throw new \LogicException('Excluded routes must be an array');
+        throw new LogicException('Excluded routes must be an array');
     }
 
     return in_array($routeToCheck, $routesToExclude, true) === false;
+}
+
+/**
+ * Get the config value for a key.
+ * Used as a helper function so it is accessible in Blade.
+ * The second param of `shop` is important for `config_api_callback`.
+ *
+ * @param string $key  The key to lookup.
+ * @param mixed  $shop The shop domain (string, ShopDomain, etc).
+ *
+ * @return mixed
+ */
+function getShopifyConfig(string $key, $shop = null)
+{
+    $config = array_merge(
+        Config::get('shopify-app', []),
+        ['user_model' => Config::get('auth.providers.users.model')]
+    );
+
+    if (Str::is('route_names.*', $key)) {
+        // scope the Arr::get() call to the "route_names" array
+        // to allow for dot-notation keys like "authenticate.oauth"
+        // this is necessary because Arr::get() only finds dot-notation keys
+        // if they are at the top level of the given array
+        return Arr::get(
+            $config['route_names'],
+            Str::after($key, '.')
+        );
+    }
+
+    // Check if config API callback is defined
+    if (Str::startsWith($key, 'api')
+        && Arr::exists($config, 'config_api_callback')
+        && is_callable($config['config_api_callback'])) {
+        // It is, use this to get the config value
+        return call_user_func(
+            Arr::get($config, 'config_api_callback'),
+            $key,
+            $shop
+        );
+    }
+
+    return Arr::get($config, $key);
 }

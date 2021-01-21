@@ -29,6 +29,7 @@ use Osiset\ShopifyApp\Http\Middleware\AuthShopify;
 use Osiset\ShopifyApp\Http\Middleware\AuthToken;
 use Osiset\ShopifyApp\Http\Middleware\AuthWebhook;
 use Osiset\ShopifyApp\Http\Middleware\Billable;
+use Osiset\ShopifyApp\Http\Middleware\ITP;
 use Osiset\ShopifyApp\Messaging\Jobs\ScripttagInstaller;
 use Osiset\ShopifyApp\Messaging\Jobs\WebhookInstaller;
 use Osiset\ShopifyApp\Services\ApiHelper;
@@ -356,5 +357,6 @@ class ShopifyAppProvider extends ServiceProvider
         $this->app['router']->aliasMiddleware('auth.webhook', AuthWebhook::class);
         $this->app['router']->aliasMiddleware('auth.proxy', AuthProxy::class);
         $this->app['router']->aliasMiddleware('billable', Billable::class);
+        $this->app['router']->aliasMiddleware('itp', ITP::class);
     }
 }

@@ -5,15 +5,12 @@ namespace Osiset\ShopifyApp\Actions;
 use Osiset\BasicShopifyAPI\ResponseAccess;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopId as ShopIdValue;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
-use Osiset\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Create scripttags for this app on the shop.
  */
 class CreateScripts
 {
-    use ConfigAccessible;
-
     /**
      * Querier for shops.
      *

@@ -13,19 +13,17 @@ use Osiset\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
+use function Osiset\ShopifyApp\getShopifyConfig;
 use Osiset\ShopifyApp\Objects\Enums\AuthMode;
 use Osiset\ShopifyApp\Objects\Values\AccessToken;
 use Osiset\ShopifyApp\Objects\Values\NullableAccessToken;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
-use Osiset\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Responsible for handling session retreival and storage.
  */
 class ShopSession
 {
-    use ConfigAccessible;
-
     /**
      * The session key for Shopify associated user.
      *
@@ -158,7 +156,7 @@ class ShopSession
      */
     public function getType(): AuthMode
     {
-        return AuthMode::fromNative(strtoupper($this->getConfig('api_grant_mode', $this->getShop())));
+        return AuthMode::fromNative(strtoupper(getShopifyConfig('api_grant_mode', $this->getShop())));
     }
 
     /**

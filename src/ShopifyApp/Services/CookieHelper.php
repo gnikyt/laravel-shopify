@@ -2,16 +2,14 @@
 
 namespace Osiset\ShopifyApp\Services;
 
+use Illuminate\Support\Facades\Config;
 use Jenssegers\Agent\Agent;
-use Osiset\ShopifyApp\Traits\ConfigAccessible;
 
 /**
  * Helper for dealing with cookie and cookie issues.
  */
 class CookieHelper
 {
-    use ConfigAccessible;
-
     /**
      * The HTTP agent helper.
      *
@@ -49,13 +47,11 @@ class CookieHelper
      */
     public function setCookiePolicy(): void
     {
-        $this->setConfig('session.expire_on_close', true);
+        Config::set('session.expire_on_close', true);
 
         if ($this->checkSameSiteNoneCompatible()) {
-            $this->setConfigArray([
-                'session.secure'    => true,
-                'session.same_site' => 'none',
-            ]);
+            Config::set('session.secure', true);
+            Config::set('session.same_site', 'none');
         }
     }
 

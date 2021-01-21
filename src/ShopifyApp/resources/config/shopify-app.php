@@ -51,13 +51,15 @@ return [
     |
     */
     'route_names' => [
-        'home' => env('SHOPIFY_ROUTE_NAME_HOME', 'home'),
-        'authenticate' => env('SHOPIFY_ROUTE_NAME_AUTHENTICATE', 'authenticate'),
-        'authenticate.oauth' => env('SHOPIFY_ROUTE_NAME_AUTHENTICATE_OAUTH', 'authenticate.oauth'),
-        'billing' => env('SHOPIFY_ROUTE_NAME_BILLING', 'billing'),
-        'billing.process' => env('SHOPIFY_ROUTE_NAME_BILLING_PROCESS', 'billing.process'),
+        'home'                 => env('SHOPIFY_ROUTE_NAME_HOME', 'home'),
+        'authenticate'         => env('SHOPIFY_ROUTE_NAME_AUTHENTICATE', 'authenticate'),
+        'authenticate.oauth'   => env('SHOPIFY_ROUTE_NAME_AUTHENTICATE_OAUTH', 'authenticate.oauth'),
+        'billing'              => env('SHOPIFY_ROUTE_NAME_BILLING', 'billing'),
+        'billing.process'      => env('SHOPIFY_ROUTE_NAME_BILLING_PROCESS', 'billing.process'),
         'billing.usage_charge' => env('SHOPIFY_ROUTE_NAME_BILLING_USAGE_CHARGE', 'billing.usage_charge'),
-        'webhook' => env('SHOPIFY_ROUTE_NAME_WEBHOOK', 'webhook'),
+        'webhook'              => env('SHOPIFY_ROUTE_NAME_WEBHOOK', 'webhook'),
+        'itp'                  => env('SHOPIFY_ROUTE_NAME_ITP', 'itp'),
+        'itp.ask'              => env('SHOPIFY_ROUTE_NAME_ITP_ASK', 'itp.ask'),
     ],
 
     /*
