@@ -134,10 +134,6 @@ function registerPackageRoute(string $routeToCheck, $routesToExclude): bool
         return true;
     }
 
-    if ($routesToExclude === true) {
-        throw new LogicException('Excluded routes can be false, or an array');
-    }
-
     if (is_array($routesToExclude) === false) {
         throw new LogicException('Excluded routes must be an array');
     }
