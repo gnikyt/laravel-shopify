@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Redirect;
-use Osiset\ShopifyApp\Traits\ConfigAccessible;
 use Illuminate\Contracts\View\View as ViewView;
 
 /**
@@ -15,9 +14,7 @@ use Illuminate\Contracts\View\View as ViewView;
  */
 trait ItpController
 {
-    use ConfigAccessible;
-
-/**
+    /**
      * First-pass of ITP mitigation.
      * Attempt to set ITP cookie.
      *

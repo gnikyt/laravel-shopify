@@ -10,18 +10,19 @@
 */
 
 use Illuminate\Support\Facades\Route;
+
+use function Osiset\ShopifyApp\getShopifyConfig;
 use function Osiset\ShopifyApp\registerPackageRoute;
-use Osiset\ShopifyApp\Services\ConfigHelper;
 
 // Check if manual routes override is to be use
-$manualRoutes = ConfigHelper::get('manual_routes');
+$manualRoutes = getShopifyConfig('manual_routes');
 
 if ($manualRoutes) {
     // Get a list of route names to exclude
     $manualRoutes = explode(',', $manualRoutes);
 }
 
-Route::group(['prefix' => ConfigHelper::get('prefix'), 'middleware' => ['itp', 'web']], function () use ($manualRoutes) {
+Route::group(['prefix' => getShopifyConfig('prefix'), 'middleware' => ['itp', 'web']], function () use ($manualRoutes) {
     /*
     |--------------------------------------------------------------------------
     | Home Route
@@ -38,7 +39,7 @@ Route::group(['prefix' => ConfigHelper::get('prefix'), 'middleware' => ['itp', '
             'Osiset\ShopifyApp\Http\Controllers\HomeController@index'
         )
         ->middleware(['auth.shopify', 'billable'])
-        ->name(ConfigHelper::get('route_names.home'));
+        ->name(getShopifyConfig('route_names.home'));
     }
 
     /*
@@ -56,7 +57,7 @@ Route::group(['prefix' => ConfigHelper::get('prefix'), 'middleware' => ['itp', '
             '/authenticate',
             'Osiset\ShopifyApp\Http\Controllers\AuthController@authenticate'
         )
-        ->name(ConfigHelper::get('route_names.authenticate'));
+        ->name(getShopifyConfig('route_names.authenticate'));
     }
 
     /*
@@ -73,7 +74,7 @@ Route::group(['prefix' => ConfigHelper::get('prefix'), 'middleware' => ['itp', '
             '/authenticate/oauth',
             'Osiset\ShopifyApp\Http\Controllers\AuthController@oauth'
         )
-        ->name(ConfigHelper::get('route_names.authenticate.oauth'));
+        ->name(getShopifyConfig('route_names.authenticate.oauth'));
     }
 
     /*
@@ -92,7 +93,7 @@ Route::group(['prefix' => ConfigHelper::get('prefix'), 'middleware' => ['itp', '
         )
         ->middleware(['auth.shopify'])
         ->where('plan', '^([0-9]+|)$')
-        ->name(ConfigHelper::get('route_names.billing'));
+        ->name(getShopifyConfig('route_names.billing'));
     }
 
     /*
@@ -111,7 +112,7 @@ Route::group(['prefix' => ConfigHelper::get('prefix'), 'middleware' => ['itp', '
         )
         ->middleware(['auth.shopify'])
         ->where('plan', '^([0-9]+|)$')
-        ->name(ConfigHelper::get('route_names.billing.process'));
+        ->name(getShopifyConfig('route_names.billing.process'));
     }
 
     /*
@@ -130,7 +131,7 @@ Route::group(['prefix' => ConfigHelper::get('prefix'), 'middleware' => ['itp', '
             'Osiset\ShopifyApp\Http\Controllers\BillingController@usageCharge'
         )
         ->middleware(['auth.shopify'])
-        ->name(ConfigHelper::get('route_names.billing.usage_charge'));
+        ->name(getShopifyConfig('route_names.billing.usage_charge'));
     }
 
     /*
@@ -144,11 +145,11 @@ Route::group(['prefix' => ConfigHelper::get('prefix'), 'middleware' => ['itp', '
 
     if (registerPackageRoute('itp', $manualRoutes)) {
         Route::get('/itp', 'Osiset\ShopifyApp\Http\Controllers\ItpController@attempt')
-            ->name(ConfigHelper::get('route_names.itp'));
+            ->name(getShopifyConfig('route_names.itp'));
     }
 
     if (registerPackageRoute('itp.ask', $manualRoutes)) {
         Route::get('/itp/ask', 'Osiset\ShopifyApp\Http\Controllers\ItpController@ask')
-            ->name(ConfigHelper::get('route_names.itp.ask'));
+            ->name(getShopifyConfig('route_names.itp.ask'));
     }
 });

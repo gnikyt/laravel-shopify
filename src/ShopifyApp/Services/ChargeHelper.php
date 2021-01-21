@@ -12,7 +12,8 @@ use Osiset\ShopifyApp\Objects\Values\ChargeReference;
 use Osiset\ShopifyApp\Objects\Values\PlanId;
 use Osiset\ShopifyApp\Storage\Models\Charge as ChargeModel;
 use Osiset\ShopifyApp\Storage\Models\Plan;
-use Osiset\ShopifyApp\Traits\ConfigAccessible;
+
+use function Osiset\ShopifyApp\getShopifyConfig;
 
 /**
  * Basic helper class for charges which encapsulates
@@ -21,8 +22,6 @@ use Osiset\ShopifyApp\Traits\ConfigAccessible;
  */
 class ChargeHelper
 {
-    use ConfigAccessible;
-
     /**
      * The querier for charges.
      *
@@ -267,7 +266,7 @@ class ChargeHelper
         $transfer->cappedAmount = $isCapped ? $plan->capped_amount : null;
         $transfer->terms = $isCapped ? $plan->terms : null;
         $transfer->returnUrl = URL::secure(
-            $this->getConfig('billing_redirect'),
+            getShopifyConfig('billing_redirect'),
             ['plan' => $plan->getId()->toNative()]
         );
 

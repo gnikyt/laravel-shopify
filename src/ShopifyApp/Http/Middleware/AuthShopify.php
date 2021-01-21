@@ -17,15 +17,14 @@ use Osiset\ShopifyApp\Objects\Enums\DataSource;
 use Osiset\ShopifyApp\Objects\Values\NullShopDomain;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Services\ShopSession;
-use Osiset\ShopifyApp\Traits\ConfigAccessible;
+
+use function Osiset\ShopifyApp\getShopifyConfig;
 
 /**
  * Response for ensuring an authenticated request.
  */
 class AuthShopify
 {
-    use ConfigAccessible;
-
     /**
      * The API helper.
      *
@@ -351,7 +350,7 @@ class AuthShopify
 
         // Mis-match of shops
         return Redirect::route(
-            $this->getConfig('route_names.authenticate.oauth'),
+            getShopifyConfig('route_names.authenticate.oauth'),
             ['shop' => $domain->toNative()]
         );
     }

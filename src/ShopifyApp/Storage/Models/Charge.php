@@ -9,7 +9,8 @@ use Osiset\ShopifyApp\Objects\Enums\ChargeStatus;
 use Osiset\ShopifyApp\Objects\Enums\ChargeType;
 use Osiset\ShopifyApp\Objects\Values\ChargeId;
 use Osiset\ShopifyApp\Objects\Values\ChargeReference;
-use Osiset\ShopifyApp\Traits\ConfigAccessible;
+
+use function Osiset\ShopifyApp\getShopifyConfig;
 
 /**
  * Responsible for reprecenting a charge record.
@@ -17,7 +18,6 @@ use Osiset\ShopifyApp\Traits\ConfigAccessible;
 class Charge extends Model
 {
     use SoftDeletes;
-    use ConfigAccessible;
 
     /**
      * The attributes that are mass assignable.
@@ -78,7 +78,7 @@ class Charge extends Model
     public function shop(): BelongsTo
     {
         return $this->belongsTo(
-            $this->getConfig('user_model'),
+            getShopifyConfig('user_model'),
             'user_id',
             'id'
         );

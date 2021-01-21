@@ -13,13 +13,13 @@ use Osiset\ShopifyApp\Actions\AuthorizeShop;
 use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 
+use function Osiset\ShopifyApp\getShopifyConfig;
+
 /**
  * Responsible for authenticating the shop.
  */
 trait AuthController
 {
-    use ConfigAccessible;
-
     /**
      * Authenticating a shop.
      *
@@ -53,7 +53,7 @@ trait AuthController
             }
 
             // No return_to, go to home route
-            return Redirect::route($this->getConfig('route_names.home'));
+            return Redirect::route(getShopifyConfig('route_names.home'));
         }
     }
 

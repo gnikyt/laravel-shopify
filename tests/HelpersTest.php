@@ -2,8 +2,8 @@
 
 namespace Osiset\ShopifyApp;
 
-use Osiset\ShopifyApp\Services\ConfigHelper;
 use Osiset\ShopifyApp\Test\TestCase;
+use Illuminate\Support\Facades\Config;
 
 class HelpersTest extends TestCase
 {
@@ -52,14 +52,31 @@ class HelpersTest extends TestCase
     {
         // non-dot-notation route name
         $this->assertSame(
-            ConfigHelper::get('route_names.home'),
+            getShopifyConfig('route_names.home'),
             'home'
         );
 
         // dot-notation route name
         $this->assertSame(
-            ConfigHelper::get('route_names.authenticate.oauth'),
+            getShopifyConfig('route_names.authenticate.oauth'),
             'authenticate.oauth'
         );
+    }
+
+    public function testGetShopifyConfig(): void
+    {
+        Config::set('shopify-app.config_api_callback', function (string $key, $shop) {
+            if ($key === 'api_secret') {
+                return 'hello world';
+            }
+
+            return Config::get("shopify-app.{$key}");
+        });
+
+        $secret = getShopifyConfig('api_secret');
+        $grantMode = getShopifyConfig('api_grant_mode');
+
+        $this->assertEquals('hello world', $secret);
+        $this->assertEquals('OFFLINE', $grantMode);
     }
 }

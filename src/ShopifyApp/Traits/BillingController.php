@@ -17,13 +17,13 @@ use Osiset\ShopifyApp\Objects\Values\NullablePlanId;
 use Osiset\ShopifyApp\Objects\Values\PlanId;
 use Osiset\ShopifyApp\Services\ShopSession;
 
+use function Osiset\ShopifyApp\getShopifyConfig;
+
 /**
  * Responsible for billing a shop for plans and usage charges.
  */
 trait BillingController
 {
-    use ConfigAccessible;
-
     /**
      * Redirects to billing screen for Shopify.
      *
@@ -72,7 +72,7 @@ trait BillingController
         );
 
         // Go to homepage of app
-        return Redirect::route($this->getConfig('route_names.home'))->with(
+        return Redirect::route(getShopifyConfig('route_names.home'))->with(
             $result ? 'success' : 'failure',
             'billing'
         );
