@@ -5,12 +5,11 @@ namespace Osiset\ShopifyApp\Storage\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use function Osiset\ShopifyApp\getShopifyConfig;
 use Osiset\ShopifyApp\Objects\Enums\ChargeStatus;
 use Osiset\ShopifyApp\Objects\Enums\ChargeType;
 use Osiset\ShopifyApp\Objects\Values\ChargeId;
 use Osiset\ShopifyApp\Objects\Values\ChargeReference;
-
-use function Osiset\ShopifyApp\getShopifyConfig;
 
 /**
  * Responsible for reprecenting a charge record.

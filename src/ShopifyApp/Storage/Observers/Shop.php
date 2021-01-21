@@ -4,7 +4,6 @@ namespace Osiset\ShopifyApp\Storage\Observers;
 
 use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
 use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
-
 use function Osiset\ShopifyApp\getShopifyConfig;
 
 /**

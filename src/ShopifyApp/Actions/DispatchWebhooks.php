@@ -4,7 +4,6 @@ namespace Osiset\ShopifyApp\Actions;
 
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopId as ShopIdValue;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
-
 use function Osiset\ShopifyApp\getShopifyConfig;
 
 /**

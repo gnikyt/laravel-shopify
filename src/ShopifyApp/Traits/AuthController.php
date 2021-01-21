@@ -11,9 +11,8 @@ use Illuminate\Support\Facades\View;
 use Osiset\ShopifyApp\Actions\AuthenticateShop;
 use Osiset\ShopifyApp\Actions\AuthorizeShop;
 use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
-use Osiset\ShopifyApp\Objects\Values\ShopDomain;
-
 use function Osiset\ShopifyApp\getShopifyConfig;
+use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 
 /**
  * Responsible for authenticating the shop.

@@ -9,7 +9,6 @@ use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopId as ShopIdValue;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
 use Osiset\ShopifyApp\Contracts\ShopModel;
-
 use function Osiset\ShopifyApp\getShopifyConfig;
 
 /**

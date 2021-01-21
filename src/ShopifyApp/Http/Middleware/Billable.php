@@ -5,9 +5,8 @@ namespace Osiset\ShopifyApp\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
-use Osiset\ShopifyApp\Services\ShopSession;
-
 use function Osiset\ShopifyApp\getShopifyConfig;
+use Osiset\ShopifyApp\Services\ShopSession;
 
 /**
  * Responsible for ensuring the shop is being billed.

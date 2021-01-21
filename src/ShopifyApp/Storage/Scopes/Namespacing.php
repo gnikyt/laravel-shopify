@@ -5,7 +5,6 @@ namespace Osiset\ShopifyApp\Storage\Scopes;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
-
 use function Osiset\ShopifyApp\getShopifyConfig;
 
 /**

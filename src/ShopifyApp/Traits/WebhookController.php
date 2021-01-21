@@ -5,7 +5,6 @@ namespace Osiset\ShopifyApp\Traits;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response as ResponseResponse;
 use Illuminate\Support\Facades\Response;
-
 use function Osiset\ShopifyApp\getShopifyConfig;
 
 /**

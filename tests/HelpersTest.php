@@ -2,8 +2,8 @@
 
 namespace Osiset\ShopifyApp;
 
-use Osiset\ShopifyApp\Test\TestCase;
 use Illuminate\Support\Facades\Config;
+use Osiset\ShopifyApp\Test\TestCase;
 
 class HelpersTest extends TestCase
 {

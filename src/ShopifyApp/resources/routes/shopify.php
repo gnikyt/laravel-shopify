@@ -10,7 +10,6 @@
 */
 
 use Illuminate\Support\Facades\Route;
-
 use function Osiset\ShopifyApp\getShopifyConfig;
 use function Osiset\ShopifyApp\registerPackageRoute;
 

@@ -6,9 +6,8 @@ use Closure;
 use Illuminate\Http\Request;
 use function Osiset\ShopifyApp\base64url_decode;
 use function Osiset\ShopifyApp\base64url_encode;
-use function Osiset\ShopifyApp\getShopifyConfig;
-
 use Osiset\ShopifyApp\Exceptions\HttpException;
+use function Osiset\ShopifyApp\getShopifyConfig;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Services\ShopSession;
 

@@ -2,10 +2,10 @@
 
 namespace Osiset\ShopifyApp;
 
-use LogicException;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Str;
+use LogicException;
 
 /**
  * HMAC creation helper.

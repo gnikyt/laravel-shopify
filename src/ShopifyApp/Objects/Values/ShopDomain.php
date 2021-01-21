@@ -4,7 +4,6 @@ namespace Osiset\ShopifyApp\Objects\Values;
 
 use Funeralzone\ValueObjects\Scalars\StringTrait;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
-
 use function Osiset\ShopifyApp\getShopifyConfig;
 
 /**

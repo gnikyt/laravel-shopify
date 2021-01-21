@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use function Osiset\ShopifyApp\createHmac;
 use function Osiset\ShopifyApp\getShopifyConfig;
-
 use Osiset\ShopifyApp\Objects\Values\NullableShopDomain;
 use function Osiset\ShopifyApp\parseQueryString;
 use Osiset\ShopifyApp\Services\ShopSession;
