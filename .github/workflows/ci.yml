@@ -13,16 +13,15 @@ jobs:
           - '7.2'
           - '7.3'
           - '7.4'
+          - '8.0'
         laravel:
-            - '5.8'
-            - '6.0'
             - '7.0'
-            - '8.0'
+            - '8.22'
         exclude:
-            - php: '7.4'
-              laravel: '5.8'
             - php: '7.2'
-              laravel: '8.0'
+              laravel: '8.22'
+            - php: '8.0'
+              laravel: '7.0'
 
     name: PHP ${{ matrix.php }} / Laravel ${{ matrix.laravel }}
 
@@ -41,7 +40,7 @@ jobs:
       run: composer validate --strict
 
     - name: Install Laravel legacy factories support
-      if: matrix.laravel == '8.0'
+      if: matrix.laravel == '8.22'
       run: composer require "laravel/legacy-factories:^1.0" --no-interaction --no-update
 
     - name: Install Laravel and Orchestra Testbench
@@ -62,7 +61,7 @@ jobs:
       run: vendor/bin/phpunit
 
     - name: Upload coverage results
-      if: matrix.php == '7.4' && matrix.laravel == '8.0'
+      if: matrix.php == '8.22' && matrix.laravel == '8.22'
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |

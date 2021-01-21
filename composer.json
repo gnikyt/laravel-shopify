@@ -17,9 +17,9 @@
     "require": {
         "php": ">=7.2",
         "doctrine/dbal": "~2.5",
-        "funeralzone/valueobjects": "^0.4.5",
+        "funeralzone/valueobjects": "^0.5",
         "jenssegers/agent": "^2.6",
-        "laravel/framework": "~5.8 || ^6.0 || ^7.0 || ^8.0",
+        "laravel/framework": "^7.0 || ^8.0",
         "osiset/basic-shopify-api": "^9.0 || ^10.0"
     },
     "require-dev": {
