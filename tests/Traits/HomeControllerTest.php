@@ -24,7 +24,7 @@ class HomeControllerTest extends TestCase
         $shop = factory($this->model)->create();
         $this->shopSession->make($shop->getDomain());
 
-        $this->get('/')
+        $this->call('get', '/', [], ['itp' => true])
             ->assertOk()
             ->assertSee("apiKey: '".env('SHOPIFY_API_KEY')."'", false)
             ->assertSee("shopOrigin: '{$shop->name}'", false);
@@ -37,7 +37,7 @@ class HomeControllerTest extends TestCase
 
         $this->app['config']->set('shopify-app.appbridge_enabled', false);
 
-        $this->get('/')
+        $this->call('get', '/', [], ['itp' => true])
             ->assertOk()
             ->assertDontSee('@shopify');
     }
