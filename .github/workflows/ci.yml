@@ -15,17 +15,11 @@ jobs:
           - '7.4'
           - '8.0'
         laravel:
-            - '5.8'
-            - '6.0'
             - '7.0'
             - '8.0'
         exclude:
-            - php: '7.4'
-              laravel: '5.8'
             - php: '7.2'
               laravel: '8.0'
-            - php: '8.0'
-              laravel: '5.8'
 
     name: PHP ${{ matrix.php }} / Laravel ${{ matrix.laravel }}
 

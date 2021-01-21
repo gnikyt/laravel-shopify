@@ -7,7 +7,7 @@
 
 ----
 
-A full-featured Laravel package for aiding in Shopify App development, similar to `shopify_app` for Rails. Works for Laravel 5.6+
+A full-featured Laravel package for aiding in Shopify App development, similar to `shopify_app` for Rails. Works for Laravel 7 and up.
 
 ![Screenshot](https://github.com/osiset/laravel-shopify/raw/master/screenshot.png)
 ![Screenshot: Billable](https://github.com/osiset/laravel-shopify/raw/master/screenshot-billable.png)
