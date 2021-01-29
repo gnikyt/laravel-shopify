@@ -25,7 +25,7 @@ trait ItpController
     public function attempt(Request $request)
     {
         // Create samesite cookie
-        Cookie::queue('itp', true, 6000, null, null, true, true, false, 'none');
+        Cookie::queue('itp', true, 6000);
 
         return Redirect::route('home', [
             'shop' => $request->query('shop'),
