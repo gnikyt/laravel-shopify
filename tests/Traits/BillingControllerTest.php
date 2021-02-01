@@ -43,7 +43,7 @@ class BillingControllerTest extends TestCase
         factory(Plan::class)->states('type_recurring', 'installable')->create();
 
         // Run the call
-        $response = $this->call('get', '/billing', [], ['itp' => true]);
+        $response = $this->call('get', '/billing', []);
         $response->assertViewHas(
             'url',
             'https://example.myshopify.com/admin/charges/1029266947/confirm_recurring_application_charge?signature=BAhpBANeWT0%3D--64de8739eb1e63a8f848382bb757b20343eb414f'
@@ -66,7 +66,7 @@ class BillingControllerTest extends TestCase
         $plan = factory(Plan::class)->states('type_recurring')->create();
 
         // Run the call
-        $response = $this->call('get', "/billing/process/{$plan->id}", ['charge_id' => 1], ['itp' => true]);
+        $response = $this->call('get', "/billing/process/{$plan->id}", ['charge_id' => 1]);
 
         // Refresh the model
         $shop->refresh();
@@ -103,7 +103,7 @@ class BillingControllerTest extends TestCase
         $signature = createHmac(['data' => $data, 'buildQuery' => true], $secret);
 
         // Run the call
-        $response = $this->call('post', '/billing/usage-charge', array_merge($data, ['signature' => $signature]), ['itp' => true]);
+        $response = $this->call('post', '/billing/usage-charge', array_merge($data, ['signature' => $signature]));
         $response->assertRedirect($data['redirect']);
         $response->assertSessionHas('success');
 
@@ -112,7 +112,7 @@ class BillingControllerTest extends TestCase
         $signature = createHmac(['data' => $data, 'buildQuery' => true], $secret);
 
         // Run the call
-        $response = $this->call('post', '/billing/usage-charge', array_merge($data, ['signature' => $signature]), ['itp' => true]);
+        $response = $this->call('post', '/billing/usage-charge', array_merge($data, ['signature' => $signature]));
         $response->assertRedirect('http://localhost');
         $response->assertSessionHas('success');
     }

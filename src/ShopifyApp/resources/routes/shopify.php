@@ -21,6 +21,7 @@ if ($manualRoutes) {
     $manualRoutes = explode(',', $manualRoutes);
 }
 
+// Route which require ITP checks
 Route::group(['prefix' => getShopifyConfig('prefix'), 'middleware' => ['itp', 'web']], function () use ($manualRoutes) {
     /*
     |--------------------------------------------------------------------------
@@ -41,6 +42,28 @@ Route::group(['prefix' => getShopifyConfig('prefix'), 'middleware' => ['itp', 'w
         ->name(getShopifyConfig('route_names.home'));
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | ITP
+    |--------------------------------------------------------------------------
+    |
+    | Handles ITP and issues with it.
+    |
+    */
+
+    if (registerPackageRoute('itp', $manualRoutes)) {
+        Route::get('/itp', 'Osiset\ShopifyApp\Http\Controllers\ItpController@attempt')
+            ->name(getShopifyConfig('route_names.itp'));
+    }
+
+    if (registerPackageRoute('itp.ask', $manualRoutes)) {
+        Route::get('/itp/ask', 'Osiset\ShopifyApp\Http\Controllers\ItpController@ask')
+            ->name(getShopifyConfig('route_names.itp.ask'));
+    }
+});
+
+// Routes without ITP checks
+Route::group(['prefix' => getShopifyConfig('prefix'), 'middleware' => ['web']], function () use ($manualRoutes) {
     /*
     |--------------------------------------------------------------------------
     | Authenticate Method
@@ -131,24 +154,5 @@ Route::group(['prefix' => getShopifyConfig('prefix'), 'middleware' => ['itp', 'w
         )
         ->middleware(['auth.shopify'])
         ->name(getShopifyConfig('route_names.billing.usage_charge'));
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | ITP
-    |--------------------------------------------------------------------------
-    |
-    | Handles ITP and issues with it.
-    |
-    */
-
-    if (registerPackageRoute('itp', $manualRoutes)) {
-        Route::get('/itp', 'Osiset\ShopifyApp\Http\Controllers\ItpController@attempt')
-            ->name(getShopifyConfig('route_names.itp'));
-    }
-
-    if (registerPackageRoute('itp.ask', $manualRoutes)) {
-        Route::get('/itp/ask', 'Osiset\ShopifyApp\Http\Controllers\ItpController@ask')
-            ->name(getShopifyConfig('route_names.itp.ask'));
     }
 });
