@@ -76,6 +76,8 @@
         </main>
 
         <script type="text/javascript">
+            var tryBtn = 'TriggerAllowCookiesPrompt';
+            var manualBtn = 'TriggerAllowCookiesPrompt2';
             var isSupported = document.requestStorageAccess !== undefined;
 
             /**
@@ -91,7 +93,14 @@
             /**
              * Handle accessing browser storage.
              */
-            function handleStorageAccess(e) {
+            function handleStorageAccess(e, btn) {
+                /**
+                 * Redirect back to the app.
+                 */
+                var redirect = function () {
+                    window.location.href = '{!! $redirect !!}';
+                };
+
                 /**
                  * Try and set items to the browser storage.
                  * Throw on error.
@@ -106,7 +115,7 @@
                     }
 
                     // Storage is OK... redirect back to home page of app
-                    window.location.href = '{!! $redirect !!}';
+                    redirect();
                 };
 
                 /**
@@ -122,6 +131,11 @@
                  * Common function for supported and unsupported browsers.
                  */
                 var execute = function () {
+                    if (btn === manualBtn) {
+                        redirect();
+                        return;
+                    }
+
                     try {
                         attempt();
                     } catch (error) {
@@ -144,8 +158,11 @@
             }
 
             // Add event listeners
-            document.getElementById('TriggerAllowCookiesPrompt').addEventListener('click', handleStorageAccess);
-            document.getElementById('TriggerAllowCookiesPrompt2').addEventListener('click', handleStorageAccess);
+            for (var btn of [tryBtn, manualBtn]) {
+                document.getElementById(btn).addEventListener('click', function (e) {
+                    handleStorageAccess(e, btn);
+                });
+            }
         </script>
     </body>
 </html>
