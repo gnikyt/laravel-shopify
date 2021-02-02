@@ -76,37 +76,93 @@
         </main>
 
         <script type="text/javascript">
-            function handleStorageAccess(e) {
-                document.requestStorageAccess().then(
-                    function () {
-                        try {
-                            // Attempt to set storage and same-site cookie
-                            sessionStorage.setItem('itp', true);
-                            document.cookie = 'itp=true; secure; SameSite=None';
+            var tryBtn = 'TriggerAllowCookiesPrompt';
+            var manualBtn = 'TriggerAllowCookiesPrompt2';
+            var isSupported = document.requestStorageAccess !== undefined;
 
-                            if (!document.cookie) {
-                                // Still unable to set, must be blocked
-                                throw 'Cannot set third-party cookie.';
-                            }
-
-                            // Storage is OK... redirect back to home page of app
-                            window.location.href = '{!! $redirect !!}';
-                        } catch (error) {
-                            // Show manual cookie card
-                            console.warn('Storage access may be blocked.', error);
-
-                            // Hide the attempt card and show the error card
-                            var attemptCard = document.getElementById('attempt');
-                            var errorCard = document.getElementById('error');
-                            attemptCard.classList.add('Polaris-Card--hide');
-                            errorCard.classList.remove('Polaris-Card--hide');
-                        }
-                    }
-                );
+            /**
+             * Handle swapping the request card with the manual card.
+             */
+            function swapCards() {
+                var attemptCard = document.getElementById('attempt');
+                var errorCard = document.getElementById('error');
+                attemptCard.classList.add('Polaris-Card--hide');
+                errorCard.classList.remove('Polaris-Card--hide');
             }
 
-            document.getElementById('TriggerAllowCookiesPrompt').addEventListener('click', handleStorageAccess);
-            document.getElementById('TriggerAllowCookiesPrompt2').addEventListener('click', handleStorageAccess);
+            /**
+             * Handle accessing browser storage.
+             */
+            function handleStorageAccess(e, btn) {
+                /**
+                 * Redirect back to the app.
+                 */
+                var redirect = function () {
+                    window.location.href = '{!! $redirect !!}';
+                };
+
+                /**
+                 * Try and set items to the browser storage.
+                 * Throw on error.
+                 */
+                var attempt = function () {
+                    sessionStorage.setItem('itp', true);
+                    document.cookie = 'itp=true; secure; SameSite=None';
+
+                    if (!document.cookie) {
+                        // Unable to set, storage must be blocked...
+                        throw 'Cannot set third-party cookie.';
+                    }
+
+                    // Storage is OK... redirect back to home page of app
+                    redirect();
+                };
+
+                /**
+                 * Unable to access storage.
+                 */
+                var failure = function (error) {
+                    // Show manual cookie card
+                    console.warn('Storage access may be blocked.', error);
+                    swapCards();
+                };
+
+                /**
+                 * Common function for supported and unsupported browsers.
+                 */
+                var execute = function () {
+                    if (btn === manualBtn) {
+                        redirect();
+                        return;
+                    }
+
+                    try {
+                        attempt();
+                    } catch (error) {
+                        failure(error);
+                    }
+                };
+
+                if (isSupported) {
+                    // Supported... try it
+                    document.requestStorageAccess().then(execute);
+                } else {
+                    // Unsupported... show manual cookie card
+                    execute();
+                }
+            }
+
+            if (!isSupported) {
+                // Unsupported... show manual cookie card
+                swapCards();
+            }
+
+            // Add event listeners
+            for (var btn of [tryBtn, manualBtn]) {
+                document.getElementById(btn).addEventListener('click', function (e) {
+                    handleStorageAccess(e, btn);
+                });
+            }
         </script>
     </body>
 </html>
