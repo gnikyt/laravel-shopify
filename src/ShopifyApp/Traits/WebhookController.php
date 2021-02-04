@@ -29,7 +29,7 @@ trait WebhookController
         $jobClass::dispatch(
             $request->header('x-shopify-shop-domain'),
             $jobData
-        );
+        )->onQueue(getShopifyConfig('job_queues')['webhooks']);
 
         return Response::make('', 201);
     }
