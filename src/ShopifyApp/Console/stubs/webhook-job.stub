@@ -6,7 +6,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain;
+use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 
 class DummyClass implements ShouldQueue
 {
