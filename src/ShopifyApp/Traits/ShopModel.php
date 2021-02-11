@@ -114,7 +114,7 @@ trait ShopModel
      */
     public function hasOfflineAccess(): bool
     {
-        return ! $this->getToken()->isNull();
+        return ! $this->getToken()->isNull() && !empty($this->password);
     }
 
     /**

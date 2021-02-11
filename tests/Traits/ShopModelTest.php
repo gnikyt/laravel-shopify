@@ -35,6 +35,21 @@ class ShopModelTest extends TestCase
         $this->assertInstanceOf(IApiHelper::class, $shop->apiHelper());
     }
 
+    public function testOfflineToken(): void
+    {
+        // No token
+        $shop = factory($this->model)->create([
+            'password' => '',
+        ]);
+        $this->assertFalse($shop->hasOfflineAccess());
+
+        // With token
+        $shop->password = 'abc123';
+        $shop->save();
+        $shop->refresh();
+        $this->assertTrue($shop->hasOfflineAccess());
+    }
+
     public function testNamespacingAndFreemium()
     {
         $this->app['config']->set('shopify-app.billing_freemium_enabled', true);
