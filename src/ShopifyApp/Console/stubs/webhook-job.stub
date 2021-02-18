@@ -48,7 +48,7 @@ class DummyClass implements ShouldQueue
     public function handle()
     {
         // Convert domain
-        $this->shopDomain = ShopDomain::fromNative($this->domain);
+        $this->shopDomain = ShopDomain::fromNative($this->shopDomain);
 
         // Do what you wish with the data
         // Access domain name as $this->shopDomain->toNative()
