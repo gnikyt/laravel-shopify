@@ -42,7 +42,6 @@ class Shop implements IShopQuery
         }
 
         return $result
-            ->get()
             ->where('id', $shopId->toNative())
             ->first();
     }
@@ -58,7 +57,6 @@ class Shop implements IShopQuery
         }
 
         return $result
-            ->get()
             ->where('name', $domain->toNative())
             ->first();
     }
