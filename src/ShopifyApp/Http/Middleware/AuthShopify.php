@@ -247,7 +247,7 @@ class AuthShopify
                 // Verify
                 $verify = [];
                 foreach ($request->query() as $key => $value) {
-                    $verify[$key] = is_array($value) ? '["'.implode('", "', $value).'"]' : $value;
+                    $verify[$key] = $this->parseDataSourceValue($value);
                 }
 
                 return $verify;
@@ -274,7 +274,7 @@ class AuthShopify
 
                 foreach (compact('code', 'locale', 'state', 'id', 'ids') as $key => $value) {
                     if ($value) {
-                        $verify[$key] = is_array($value) ? '["'.implode('", "', $value).'"]' : $value;
+                        $verify[$key] = $this->parseDataSourceValue($value);
                     }
                 }
 
@@ -288,7 +288,7 @@ class AuthShopify
                 // Verify
                 $verify = [];
                 foreach ($refererQueryParams as $key => $value) {
-                    $verify[$key] = is_array($value) ? '["'.implode('", "', $value).'"]' : $value;
+                    $verify[$key] = $this->parseDataSourceValue($value);
                 }
 
                 return $verify;
@@ -352,5 +352,35 @@ class AuthShopify
             getShopifyConfig('route_names.authenticate.oauth'),
             ['shop' => $domain->toNative()]
         );
+    }
+
+    /**
+     * Parse the data source value.
+     * Handle simple key/values, arrays, and nested arrays.
+     *
+     * @param mixed $value
+     *
+     * @return string
+     */
+    private function parseDataSourceValue($value): string
+    {
+        /**
+         * Format the value.
+         *
+         * @param mixed $val
+         *
+         * @return string
+         */
+        $formatValue = function ($val): string {
+            return is_array($val) ? '["'.implode('", "', $val).'"]' : $val;
+        };
+
+        // Nested array
+        if (is_array($value) && is_array(current($value))) {
+            return implode(', ', array_map($formatValue, $value));
+        }
+
+        // Array or basic value
+        return $formatValue($value);
     }
 }
