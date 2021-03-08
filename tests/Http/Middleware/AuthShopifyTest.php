@@ -87,8 +87,8 @@ class AuthShopifyTest extends TestCase
                         1,
                         2,
                         3,
-                    ]
-                ]
+                    ],
+                ],
             ],
             // Request Params
             null,
