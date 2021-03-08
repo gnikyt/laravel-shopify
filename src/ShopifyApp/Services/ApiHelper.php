@@ -45,10 +45,10 @@ class ApiHelper implements IApiHelper
 
         $requestShop = Arr::get(Request::all(), 'shop');
         parse_str(Request::server('HTTP_REFERER'), $refererQueryParams);
-        $refererShop = Arr::get($refererQueryParams,'shop');
+        $refererShop = Arr::get($refererQueryParams, 'shop');
         $headerShop = Request::header('X-Shop-Domain');
 
-        $shop = $session ? $session->getShop() : $requestShop  ?? $refererShop ?? $headerShop;
+        $shop = $session ? $session->getShop() : $requestShop ?? $refererShop ?? $headerShop;
         $opts->setApiKey(getShopifyConfig('api_key', $shop));
         $opts->setApiSecret(getShopifyConfig('api_secret', $shop));
         $opts->setVersion(getShopifyConfig('api_version', $shop));
