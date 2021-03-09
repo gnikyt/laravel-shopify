@@ -477,19 +477,19 @@ class ApiHelper implements IApiHelper
      */
     private function getShop(Session $session)
     {
-        if($session){
+        if ($session) {
             return $session->getShop();
         }
 
         $requestShop = Arr::get(Request::all(), 'shop');
-        if($requestShop){
+        if ($requestShop) {
             return $requestShop;
         }
 
         $refererQueryParams = [];
         parse_str(Request::server('HTTP_REFERER'), $refererQueryParams);
         $refererShop = Arr::get($refererQueryParams, 'shop');
-        if($refererShop){
+        if ($refererShop) {
             return $refererShop;
         }
 
