@@ -62,52 +62,6 @@ class AuthShopifyTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function testQueryInputArrayAndNestedArray(): void
-    {
-        // Create the shop
-        $shop = factory($this->model)->create(['name' => 'mystore123.myshopify.com']);
-
-        // Set a session token and login shop
-        $this->shopSession->setSessionToken('123abc');
-        $this->shopSession->make($shop->getDomain());
-
-        // Run the middleware
-        $currentRequest = Request::instance();
-        $newRequest = $currentRequest->duplicate(
-            // Query Params
-            [
-                'shop'      => 'mystore123.myshopify.com',
-                'ids'       => [
-                    1,
-                    2,
-                    3,
-                ],
-                'nested_ids' => [
-                    'something' => [
-                        1,
-                        2,
-                        3,
-                    ],
-                ],
-            ],
-            // Request Params
-            null,
-            // Attributes
-            null,
-            // Cookies
-            null,
-            // Files
-            null,
-            // Server vars
-            []
-        );
-
-        Request::swap($newRequest);
-
-        $result = $this->runAuth();
-        $this->assertTrue($result);
-    }
-
     public function testHmacFail(): void
     {
         $this->expectException(SignatureVerificationException::class);
