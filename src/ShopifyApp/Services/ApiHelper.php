@@ -41,14 +41,8 @@ class ApiHelper implements IApiHelper
     {
         // Create the options
         $opts = new Options();
-        $refererQueryParams = [];
 
-        $requestShop = Arr::get(Request::all(), 'shop');
-        parse_str(Request::server('HTTP_REFERER'), $refererQueryParams);
-        $refererShop = Arr::get($refererQueryParams, 'shop');
-        $headerShop = Request::header('X-Shop-Domain');
-
-        $shop = $session ? $session->getShop() : $requestShop ?? $refererShop ?? $headerShop;
+        $shop = $this->getShop($session);
         $opts->setApiKey(getShopifyConfig('api_key', $shop));
         $opts->setApiSecret(getShopifyConfig('api_secret', $shop));
         $opts->setVersion(getShopifyConfig('api_version', $shop));
@@ -475,5 +469,30 @@ class ApiHelper implements IApiHelper
         }
 
         return $response;
+    }
+
+    /**
+     * @param  Session  $session
+     * @return mixed
+     */
+    private function getShop(Session $session)
+    {
+        if($session){
+            return $session->getShop();
+        }
+
+        $requestShop = Arr::get(Request::all(), 'shop');
+        if($requestShop){
+            return $requestShop;
+        }
+
+        $refererQueryParams = [];
+        parse_str(Request::server('HTTP_REFERER'), $refererQueryParams);
+        $refererShop = Arr::get($refererQueryParams, 'shop');
+        if($refererShop){
+            return $refererShop;
+        }
+
+        return  Request::header('X-Shop-Domain');
     }
 }
