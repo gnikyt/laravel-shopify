@@ -494,7 +494,7 @@ class ApiHelper implements IApiHelper
             $shop = Arr::get($refererQueryParams, 'shop');
         }
 
-        if(!$shop){
+        if (!$shop) {
             $shop = Request::header('X-Shop-Domain');
         }
 
