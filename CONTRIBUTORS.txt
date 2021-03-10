@@ -1,4 +1,7 @@
 # [...document.getElementsByClassName('contrib-person')].map(n => n.getElementsByClassName('avatar')[0].alt).sort().join('\n');
+Enmaboya
+ImgBotApp
+Jamesking56
 aaronlp
 aepnat
 amosmos
@@ -13,17 +16,14 @@ clydesantiago
 darrynten
 dellow
 dhritimannath
-Enmaboya
 ericnkatz
 florinsith
 honzah1
 ilamp
-ImgBotApp
-Jamesking56
 jedimdan
 joelvh
 lucasmichot
-mat-dropshipsp
+mat-dropshipspy
 msonowal
 mtownsend5512
 ncpope
