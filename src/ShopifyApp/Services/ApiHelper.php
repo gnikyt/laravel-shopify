@@ -498,6 +498,6 @@ class ApiHelper implements IApiHelper
             $shop = Request::header('X-Shop-Domain');
         }
 
-        return ShopDomain::fromNative($shop);
+        return ShopDomain::fromNative((string)$shop);
     }
 }
