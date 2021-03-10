@@ -6,12 +6,12 @@ use Closure;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response as HttpResponse;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
+use function Osiset\ShopifyApp\getShopifyConfig;
 
 /**
  * Ensuring ITP process.
@@ -56,11 +56,19 @@ class ITP
      */
     protected function redirect(Request $request): HttpResponse
     {
+        $authUrl = URL::secure(
+            URL::route(
+                getShopifyConfig('route_names.itp'),
+                ['shop' => $request->get('shop')],
+                false
+            )
+        );
+
         return Response::make(
             View::make(
                 'shopify-app::auth.fullpage_redirect',
                 [
-                    'authUrl'    => URL::secure('itp').'?'.Arr::query(['shop' => $request->get('shop')]),
+                    'authUrl'    => $authUrl,
                     'shopDomain' => $request->get('shop'),
                 ]
             )
@@ -74,6 +82,6 @@ class ITP
      */
     protected function ask(): RedirectResponse
     {
-        return Redirect::route('itp.ask');
+        return Redirect::route(getShopifyConfig('route_names.itp.ask'));
     }
 }
