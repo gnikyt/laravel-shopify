@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
-
 use function Osiset\ShopifyApp\getShopifyConfig;
 
 /**
