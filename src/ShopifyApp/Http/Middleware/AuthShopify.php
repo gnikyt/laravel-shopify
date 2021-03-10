@@ -5,8 +5,6 @@ namespace Osiset\ShopifyApp\Http\Middleware;
 use Closure;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
@@ -68,7 +66,7 @@ class AuthShopify
     public function handle(Request $request, Closure $next)
     {
         // Grab the domain and check the HMAC (if present)
-        $domain = $this->getShopDomainFromData($request);
+        $domain = $this->getShopDomainFromRequest($request);
         $hmac = $this->verifyHmac($request);
 
         $checks = [];
@@ -231,6 +229,51 @@ class AuthShopify
     }
 
     /**
+     * Grab the shop, if present, and how it was found.
+     * Order of precedence is:.
+     *
+     *  - GET/POST Variable
+     *  - Headers
+     *  - Referer
+     *
+     * @param Request $request The request object.
+     *
+     * @return ShopDomainValue
+     */
+    private function getShopDomainFromRequest(Request $request): ShopDomainValue
+    {
+        // All possible methods
+        $options = [
+            // GET/POST
+            DataSource::INPUT()->toNative() => $request->input('shop'),
+            // Headers
+            DataSource::HEADER()->toNative() => $request->header('X-Shop-Domain'),
+            // Headers: Referer
+            DataSource::REFERER()->toNative() => function () use ($request): ?string {
+                $url = parse_url($request->header('referer'), PHP_URL_QUERY);
+                parse_str($url, $refererQueryParams);
+                if (! $refererQueryParams || ! isset($refererQueryParams['shop'])) {
+                    return null;
+                }
+
+                return $refererQueryParams['shop'];
+            },
+        ];
+
+        // Loop through each until we find the HMAC
+        foreach ($options as $method => $value) {
+            $result = is_callable($value) ? $value() : $value;
+            if ($result !== null) {
+                // Found a shop
+                return ShopDomain::fromNative($result);
+            }
+        }
+
+        // No shop domain found in any source
+        return NullShopDomain::fromNative(null);
+    }
+
+    /**
      * Grab the data.
      *
      * @param Request $request The request object.
@@ -247,7 +290,7 @@ class AuthShopify
                 // Verify
                 $verify = [];
                 foreach ($request->query() as $key => $value) {
-                    $verify[$key] = is_array($value) ? '["'.implode('", "', $value).'"]' : $value;
+                    $verify[$key] = $this->parseDataSourceValue($value);
                 }
 
                 return $verify;
@@ -274,7 +317,7 @@ class AuthShopify
 
                 foreach (compact('code', 'locale', 'state', 'id', 'ids') as $key => $value) {
                     if ($value) {
-                        $verify[$key] = is_array($value) ? '["'.implode('", "', $value).'"]' : $value;
+                        $verify[$key] = $this->parseDataSourceValue($value);
                     }
                 }
 
@@ -288,7 +331,7 @@ class AuthShopify
                 // Verify
                 $verify = [];
                 foreach ($refererQueryParams as $key => $value) {
-                    $verify[$key] = is_array($value) ? '["'.implode('", "', $value).'"]' : $value;
+                    $verify[$key] = $this->parseDataSourceValue($value);
                 }
 
                 return $verify;
@@ -296,32 +339,6 @@ class AuthShopify
         ];
 
         return $options[$source]();
-    }
-
-    /**
-     * Gets the shop domain from the data.
-     *
-     * @param Request $request The request object.
-     *
-     * @return ShopDomainValue
-     */
-    private function getShopDomainFromData(Request $request): ShopDomainValue
-    {
-        $options = [
-            DataSource::INPUT()->toNative(),
-            DataSource::HEADER()->toNative(),
-            DataSource::REFERER()->toNative(),
-        ];
-        foreach ($options as $option) {
-            $result = $this->getData($request, $option);
-            if (isset($result['shop'])) {
-                // Found a shop
-                return ShopDomain::fromNative($result['shop']);
-            }
-        }
-
-        // No shop domain found in any source
-        return NullShopDomain::fromNative(null);
     }
 
     /**
@@ -352,5 +369,35 @@ class AuthShopify
             getShopifyConfig('route_names.authenticate.oauth'),
             ['shop' => $domain->toNative()]
         );
+    }
+
+    /**
+     * Parse the data source value.
+     * Handle simple key/values, arrays, and nested arrays.
+     *
+     * @param mixed $value
+     *
+     * @return string
+     */
+    private function parseDataSourceValue($value): string
+    {
+        /**
+         * Format the value.
+         *
+         * @param mixed $val
+         *
+         * @return string
+         */
+        $formatValue = function ($val): string {
+            return is_array($val) ? '["'.implode('", "', $val).'"]' : $val;
+        };
+
+        // Nested array
+        if (is_array($value) && is_array(current($value))) {
+            return implode(', ', array_map($formatValue, $value));
+        }
+
+        // Array or basic value
+        return $formatValue($value);
     }
 }
