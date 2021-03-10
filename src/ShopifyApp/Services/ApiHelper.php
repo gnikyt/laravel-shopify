@@ -42,7 +42,7 @@ class ApiHelper implements IApiHelper
         // Create the options
         $opts = new Options();
 
-        $shop = $this->getShop($session);
+        $shop = $this->getShop($session)->toNative();
         $opts->setApiKey(getShopifyConfig('api_key', $shop));
         $opts->setApiSecret(getShopifyConfig('api_secret', $shop));
         $opts->setVersion(getShopifyConfig('api_version', $shop));
@@ -473,26 +473,29 @@ class ApiHelper implements IApiHelper
 
     /**
      * @param  Session  $session
-     * @return mixed
+     * @throws \InvalidArgumentException
+     * @return ShopDomain
      */
     private function getShop(Session $session = null)
     {
-        if ($session) {
-            return $session->getShop();
+        if ($session && $session->getShop()) {
+            $shop = $session->getShop();
         }
 
-        $requestShop = Arr::get(Request::all(), 'shop');
-        if ($requestShop) {
-            return $requestShop;
+        if (!$shop) {
+            $shop = Arr::get(Request::all(), 'shop');
         }
 
-        $refererQueryParams = [];
-        parse_str(Request::server('HTTP_REFERER'), $refererQueryParams);
-        $refererShop = Arr::get($refererQueryParams, 'shop');
-        if ($refererShop) {
-            return $refererShop;
+        if (!$shop) {
+            $refererQueryParams = [];
+            parse_str(Request::server('HTTP_REFERER'), $refererQueryParams);
+            $shop = Arr::get($refererQueryParams, 'shop');
         }
 
-        return  Request::header('X-Shop-Domain');
+        if(!$shop){
+            $shop = Request::header('X-Shop-Domain');
+        }
+
+        return ShopDomain::fromNative($shop);
     }
 }
