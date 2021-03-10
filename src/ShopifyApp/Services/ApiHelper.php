@@ -478,6 +478,7 @@ class ApiHelper implements IApiHelper
      */
     private function getShop(Session $session = null)
     {
+        $shop = '';
         if ($session && $session->getShop()) {
             $shop = $session->getShop();
         }
