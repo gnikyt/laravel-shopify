@@ -5,6 +5,7 @@ namespace Osiset\ShopifyApp\Http\Middleware;
 use Closure;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
@@ -252,11 +253,7 @@ class AuthShopify
             DataSource::REFERER()->toNative() => function () use ($request): ?string {
                 $url = parse_url($request->header('referer'), PHP_URL_QUERY);
                 parse_str($url, $refererQueryParams);
-                if (! $refererQueryParams || ! isset($refererQueryParams['shop'])) {
-                    return null;
-                }
-
-                return $refererQueryParams['shop'];
+                return Arr::get($refererQueryParams, 'shop');
             },
         ];
 

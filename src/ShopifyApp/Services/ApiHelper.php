@@ -18,10 +18,11 @@ use function Osiset\ShopifyApp\getShopifyConfig;
 use Osiset\ShopifyApp\Objects\Enums\ApiMethod;
 use Osiset\ShopifyApp\Objects\Enums\AuthMode;
 use Osiset\ShopifyApp\Objects\Enums\ChargeType;
+use Osiset\ShopifyApp\Objects\Enums\DataSource;
 use Osiset\ShopifyApp\Objects\Transfers\PlanDetails as PlanDetailsTransfer;
 use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
 use Osiset\ShopifyApp\Objects\Values\ChargeReference;
-use Osiset\ShopifyApp\Objects\Values\ShopDomain;
+use Osiset\ShopifyApp\Objects\Values\NullableShopDomain;
 
 /**
  * Basic helper class for API calls to Shopify.
@@ -43,7 +44,7 @@ class ApiHelper implements IApiHelper
         // Create the options
         $opts = new Options();
 
-        $shop = $this->getShop($session)->toNative();
+        $shop = $this->getShopDomain($session)->toNative();
         $opts->setApiKey(getShopifyConfig('api_key', $shop));
         $opts->setApiSecret(getShopifyConfig('api_secret', $shop));
         $opts->setVersion(getShopifyConfig('api_version', $shop));
@@ -473,31 +474,42 @@ class ApiHelper implements IApiHelper
     }
 
     /**
-     * @param  Session  $session
-     * @throws \InvalidArgumentException
-     * @return ShopDomain
+     * Find shop from session or request.
+     *
+     * @param Session $session
+     *
+     * @return NullableShopDomain
      */
-    private function getShop(Session $session = null)
+    private function getShopDomain(Session $session = null): NullableShopDomain
     {
-        $shop = '';
+        // Check for existing session passed in
         if ($session && $session->getShop()) {
-            $shop = $session->getShop();
+            return NullableShopDomain::fromNative($session->getShop());
         }
 
-        if (! $shop) {
-            $shop = Arr::get(Request::all(), 'shop');
+        $options = [
+            // Input
+            DataSource::INPUT()->toNative() => function (): ?string {
+                return Arr::get(Request::all(), 'shop');
+            },
+            // Headers
+            DataSource::HEADER()->toNative() => function (): ?string {
+                return Request::header('X-Shop-Domain');
+            },
+            // Headers: Referer
+            DataSource::REFERER()->toNative() => function (): ?string {
+                $url = parse_url(Request::server('HTTP_REFERER'), PHP_URL_QUERY);
+                parse_str($url, $refererQueryParams);
+                return Arr::get($refererQueryParams, 'shop');
+            }
+        ];
+        foreach ($options as $method => $fn) {
+            $result = $fn();
+            if (!is_null($result)) {
+                return NullableShopDomain::fromNative($result);
+            }
         }
 
-        if (! $shop) {
-            $refererQueryParams = [];
-            parse_str(Request::server('HTTP_REFERER'), $refererQueryParams);
-            $shop = Arr::get($refererQueryParams, 'shop');
-        }
-
-        if (! $shop) {
-            $shop = Request::header('X-Shop-Domain');
-        }
-
-        return is_a($shop, 'Osiset\ShopifyApp\Objects\Values\ShopDomain') ? $shop : ShopDomain::fromNative((string) $shop);
+        return NullableShopDomain::fromNative(null);
     }
 }
