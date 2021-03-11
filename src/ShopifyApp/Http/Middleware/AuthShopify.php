@@ -253,6 +253,7 @@ class AuthShopify
             DataSource::REFERER()->toNative() => function () use ($request): ?string {
                 $url = parse_url($request->header('referer'), PHP_URL_QUERY);
                 parse_str($url, $refererQueryParams);
+
                 return Arr::get($refererQueryParams, 'shop');
             },
         ];

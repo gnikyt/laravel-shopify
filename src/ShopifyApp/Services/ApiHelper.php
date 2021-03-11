@@ -500,12 +500,13 @@ class ApiHelper implements IApiHelper
             DataSource::REFERER()->toNative() => function (): ?string {
                 $url = parse_url(Request::server('HTTP_REFERER'), PHP_URL_QUERY);
                 parse_str($url, $refererQueryParams);
+
                 return Arr::get($refererQueryParams, 'shop');
-            }
+            },
         ];
         foreach ($options as $method => $fn) {
             $result = $fn();
-            if (!is_null($result)) {
+            if (! is_null($result)) {
                 return NullableShopDomain::fromNative($result);
             }
         }
