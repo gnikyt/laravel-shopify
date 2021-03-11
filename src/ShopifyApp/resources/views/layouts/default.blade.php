@@ -23,7 +23,7 @@
                 var AppBridge = window['app-bridge'];
                 var createApp = AppBridge.default;
                 var app = createApp({
-                    apiKey: '{{ \Osiset\ShopifyApp\getShopifyConfig('api_key') }}',
+                    apiKey: '{{ \Osiset\ShopifyApp\getShopifyConfig('api_key', Auth::user()->name ) }}',
                     shopOrigin: '{{ Auth::user()->name }}',
                     forceRedirect: true,
                 });

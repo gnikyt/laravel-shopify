@@ -21,6 +21,7 @@ use Osiset\ShopifyApp\Objects\Enums\ChargeType;
 use Osiset\ShopifyApp\Objects\Transfers\PlanDetails as PlanDetailsTransfer;
 use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
 use Osiset\ShopifyApp\Objects\Values\ChargeReference;
+use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 
 /**
  * Basic helper class for API calls to Shopify.
@@ -42,7 +43,7 @@ class ApiHelper implements IApiHelper
         // Create the options
         $opts = new Options();
 
-        $shop = $session ? $session->getShop() : Arr::get(Request::all(), 'shop');
+        $shop = $this->getShop($session)->toNative();
         $opts->setApiKey(getShopifyConfig('api_key', $shop));
         $opts->setApiSecret(getShopifyConfig('api_secret', $shop));
         $opts->setVersion(getShopifyConfig('api_version', $shop));
@@ -469,5 +470,34 @@ class ApiHelper implements IApiHelper
         }
 
         return $response;
+    }
+
+    /**
+     * @param  Session  $session
+     * @throws \InvalidArgumentException
+     * @return ShopDomain
+     */
+    private function getShop(Session $session = null)
+    {
+        $shop = '';
+        if ($session && $session->getShop()) {
+            $shop = $session->getShop();
+        }
+
+        if (! $shop) {
+            $shop = Arr::get(Request::all(), 'shop');
+        }
+
+        if (! $shop) {
+            $refererQueryParams = [];
+            parse_str(Request::server('HTTP_REFERER'), $refererQueryParams);
+            $shop = Arr::get($refererQueryParams, 'shop');
+        }
+
+        if (! $shop) {
+            $shop = Request::header('X-Shop-Domain');
+        }
+
+        return is_a($shop, 'Osiset\ShopifyApp\Objects\Values\ShopDomain') ? $shop : ShopDomain::fromNative((string) $shop);
     }
 }
