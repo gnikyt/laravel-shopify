@@ -498,6 +498,6 @@ class ApiHelper implements IApiHelper
             $shop = Request::header('X-Shop-Domain');
         }
 
-        return ShopDomain::fromNative((string) $shop);
+        return is_a($shop, 'Osiset\ShopifyApp\Objects\Values\ShopDomain') ? $shop : ShopDomain::fromNative((string) $shop);
     }
 }
