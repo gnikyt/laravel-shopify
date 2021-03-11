@@ -484,20 +484,20 @@ class ApiHelper implements IApiHelper
             $shop = $session->getShop();
         }
 
-        if (!$shop) {
+        if (! $shop) {
             $shop = Arr::get(Request::all(), 'shop');
         }
 
-        if (!$shop) {
+        if (! $shop) {
             $refererQueryParams = [];
             parse_str(Request::server('HTTP_REFERER'), $refererQueryParams);
             $shop = Arr::get($refererQueryParams, 'shop');
         }
 
-        if (!$shop) {
+        if (! $shop) {
             $shop = Request::header('X-Shop-Domain');
         }
 
-        return ShopDomain::fromNative((string)$shop);
+        return ShopDomain::fromNative((string) $shop);
     }
 }
