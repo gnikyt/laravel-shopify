@@ -4,13 +4,18 @@ namespace Osiset\ShopifyApp\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
+use Osiset\ShopifyApp\Services\ShopSession;
+use Osiset\ShopifyApp\Exceptions\HttpException;
 use function Osiset\ShopifyApp\base64url_decode;
 use function Osiset\ShopifyApp\base64url_encode;
-use Osiset\ShopifyApp\Exceptions\HttpException;
 use function Osiset\ShopifyApp\getShopifyConfig;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
-use Osiset\ShopifyApp\Services\ShopSession;
 
+/**
+ * TODO: Migrate and clean up into VerifyShopify.
+ * Move token functions to a POPO.
+ */
 class AuthToken
 {
     /**
@@ -48,11 +53,18 @@ class AuthToken
     public function handle(Request $request, Closure $next)
     {
         $now = time();
-
-        $token = $request->bearerToken();
+        $token = $request->ajax() ? $request->bearerToken() : $request->query('token');
 
         if (! $token) {
-            throw new HttpException('Missing authentication token', 401);
+            if ($request->ajax()) {
+                throw new HttpException('Missing authentication token', 401);
+            } else {
+                $shopDomain = ShopDomain::fromNative($request->get('shop'));
+                return Redirect::route(
+                    getShopifyConfig('route_names.unauthenticated'),
+                    ['shop' => $shopDomain->toNative()]
+                );
+            }
         }
 
         // The header is fixed so include it here

@@ -52,6 +52,7 @@ return [
     */
     'route_names' => [
         'home'                 => env('SHOPIFY_ROUTE_NAME_HOME', 'home'),
+        'unauthenticated'      => env('SHOPIFY_ROUTE_NAME_UNAUTHENTICATED', 'unauthenticated'),
         'authenticate'         => env('SHOPIFY_ROUTE_NAME_AUTHENTICATE', 'authenticate'),
         'authenticate.oauth'   => env('SHOPIFY_ROUTE_NAME_AUTHENTICATE_OAUTH', 'authenticate.oauth'),
         'billing'              => env('SHOPIFY_ROUTE_NAME_BILLING', 'billing'),
@@ -113,7 +114,7 @@ return [
 
     // Use semver range to link to a major or minor version number.
     // Leaving empty will use the latest verison - not recommended in production.
-    'appbridge_version' => env('SHOPIFY_APPBRIDGE_VERSION', '1'),
+    'appbridge_version' => env('SHOPIFY_APPBRIDGE_VERSION', 'latest'),
 
     /*
     |--------------------------------------------------------------------------

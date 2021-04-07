@@ -19,12 +19,14 @@
 
         @if(\Osiset\ShopifyApp\getShopifyConfig('appbridge_enabled'))
             <script src="https://unpkg.com/@shopify/app-bridge{{ \Osiset\ShopifyApp\getShopifyConfig('appbridge_version') ? '@'.config('shopify-app.appbridge_version') : '' }}"></script>
+            <script src="https://unpkg.com/@shopify/app-bridge-utils{{ \Osiset\ShopifyApp\getShopifyConfig('appbridge_version') ? '@'.config('shopify-app.appbridge_version') : '' }}"></script>
             <script>
-                var AppBridge = window['app-bridge'];
-                var createApp = AppBridge.default;
-                var app = createApp({
-                    apiKey: '{{ \Osiset\ShopifyApp\getShopifyConfig('api_key', Auth::user()->name ) }}',
-                    shopOrigin: '{{ Auth::user()->name }}',
+                const AppBridge = window['app-bridge'];
+                const utils = window['app-bridge-utils'];
+                const createApp = AppBridge.default;
+                const app = createApp({
+                    apiKey: "{{ \Osiset\ShopifyApp\getShopifyConfig('api_key', $shopDomain ?? Auth::user()->name ) }}",
+                    shopOrigin: "{{ $shopDomain ?? Auth::user()->name }}",
                     forceRedirect: true,
                 });
             </script>

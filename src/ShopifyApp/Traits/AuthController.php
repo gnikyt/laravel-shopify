@@ -5,6 +5,7 @@ namespace Osiset\ShopifyApp\Traits;
 use Illuminate\Contracts\View\View as ViewView;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
@@ -19,6 +20,22 @@ use Osiset\ShopifyApp\Objects\Values\ShopDomain;
  */
 trait AuthController
 {
+    /**
+     * Unauthenticated shop.
+     *
+     * @return ViewView
+     */
+    public function unauthenticated(Request $request)
+    {
+        $shopDomain = ShopDomain::fromNative($request->get('shop'));
+        return View::make(
+            'shopify-app::auth.unauthenticated',
+            [
+                'shopDomain' => $shopDomain->toNative(),
+            ]
+        );
+    }
+
     /**
      * Authenticating a shop.
      *

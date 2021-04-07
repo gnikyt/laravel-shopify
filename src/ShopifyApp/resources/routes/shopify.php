@@ -22,7 +22,7 @@ if ($manualRoutes) {
 }
 
 // Route which require ITP checks
-Route::group(['prefix' => getShopifyConfig('prefix'), 'middleware' => ['itp', 'web']], function () use ($manualRoutes) {
+Route::group(['prefix' => getShopifyConfig('prefix'), 'middleware' => ['web']], function () use ($manualRoutes) {
     /*
     |--------------------------------------------------------------------------
     | Home Route
@@ -38,7 +38,7 @@ Route::group(['prefix' => getShopifyConfig('prefix'), 'middleware' => ['itp', 'w
             '/',
             'Osiset\ShopifyApp\Http\Controllers\HomeController@index'
         )
-        ->middleware(['auth.shopify', 'billable'])
+        ->middleware(['verify.shopify', 'billable'])
         ->name(getShopifyConfig('route_names.home'));
     }
 
@@ -97,6 +97,26 @@ Route::group(['prefix' => getShopifyConfig('prefix'), 'middleware' => ['web']], 
             'Osiset\ShopifyApp\Http\Controllers\AuthController@oauth'
         )
         ->name(getShopifyConfig('route_names.authenticate.oauth'));
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Unauthenticated
+    |--------------------------------------------------------------------------
+    |
+    | This route is hit when a shop comes to the app without a session token
+    | yet. A token will be grabbed from Shopify's AppBridge Javascript
+    | and then forwarded back to the home route.
+    |
+    */
+
+    if (registerPackageRoute('unauthenticated', $manualRoutes)) {
+        Route::get(
+            '/authenticate/unauthenticated',
+            'Osiset\ShopifyApp\Http\Controllers\AuthController@unauthenticated'
+        )
+        ->middleware(['verify.shopify'])
+        ->name(getShopifyConfig('route_names.unauthenticated'));
     }
 
     /*
