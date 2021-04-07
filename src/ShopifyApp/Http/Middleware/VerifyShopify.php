@@ -97,7 +97,9 @@ class VerifyShopify
                 ! $token->getShopDomain()->isNull()
                     ? $token->getShopDomain()->toNative()
                     : $this->getShopDomainFromRequest($request)->toNative(),
-                false
+                $e->getMessage() === SessionToken::EXCEPTION_EXPIRED
+                    ? false
+                    : true
             );
         }
 
