@@ -7,14 +7,16 @@ use Illuminate\Support\Carbon;
 use Assert\AssertionFailedException;
 use Funeralzone\ValueObjects\ValueObject;
 use function Osiset\ShopifyApp\createHmac;
+use Osiset\ShopifyApp\Objects\Values\SessionId;
 use function Osiset\ShopifyApp\base64url_decode;
 use function Osiset\ShopifyApp\base64url_encode;
 use function Osiset\ShopifyApp\getShopifyConfig;
 use Funeralzone\ValueObjects\Scalars\StringTrait;
+use Osiset\ShopifyApp\Objects\Values\NullableShopDomain;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
 
 /**
- * Value object for JWT.
+ * Value object for a session token (JWT).
  */
 final class SessionToken implements ValueObject
 {
@@ -114,7 +116,7 @@ final class SessionToken implements ValueObject
     /**
      * Session identity.
      *
-     * @var string
+     * @var SessionId
      */
     protected $sid;
 
@@ -123,7 +125,7 @@ final class SessionToken implements ValueObject
      *
      * @var ShopDomainValue
      */
-    protected ShopDomainValue $shopDomain = NullableShopDomain::fromNative(null);
+    protected ShopDomainValue $shopDomain;
 
     /**
      * Signature.
@@ -186,7 +188,7 @@ final class SessionToken implements ValueObject
         $this->aud = $body['aud'];
         $this->sub = $body['dest'];
         $this->jti = $body['dest'];
-        $this->sid = $body['dest'];
+        $this->sid = SessionId::fromNative($body['sid']);
         $this->exp = new Carbon($body['exp']);
         $this->nbf = new Carbon($body['nbf']);
         $this->iat = new Carbon($body['iat']);
@@ -194,7 +196,7 @@ final class SessionToken implements ValueObject
 
         // Parse the shop domain from the destination
         $url = parse_url($body['dest']);
-        $this->shop = isset($url['host']) ? ShopDomain::fromNative($url['host']) : null;
+        $this->shopDomain = NullableShopDomain::fromNative($url['host']);
     }
 
     /**
@@ -204,7 +206,17 @@ final class SessionToken implements ValueObject
      */
     public function getShopDomain(): ShopDomainValue
     {
-        return $this->shop;
+        return $this->shopDomain;
+    }
+
+    /**
+     * Get the session ID.
+     *
+     * @return SessionId
+     */
+    public function getSessionId(): SessionId
+    {
+        return $this->sid;
     }
 
     /**
@@ -217,7 +229,7 @@ final class SessionToken implements ValueObject
     protected function verifySignature(): void
     {
         // Create a local HMAC
-        $secret = getShopifyConfig('api_secret', $this->shop);
+        $secret = getShopifyConfig('api_secret', $this->shopDomain);
         $hmac = createHmac(['data' => $this->signature, 'raw' => true], $secret);
         $encodedHmac = base64url_encode($hmac);
 

@@ -19,6 +19,7 @@ use Osiset\ShopifyApp\Objects\Values\NullShopDomain;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
+use Osiset\ShopifyApp\Objects\Values\NullableSessionId;
 
 class VerifyShopify
 {
@@ -104,7 +105,7 @@ class VerifyShopify
         }
 
         // Login the shop and verify incoming session token
-        $loginResult = $this->loginShop($token->getShopDomain());
+        $loginResult = $this->loginShopFromToken($token);
         $tokenResult = $this->verifyShopifySessionToken($request, $token->getShopDomain());
         if (! $loginResult || ! $tokenResult) {
             return $this->unauthenticatedRedirect(
@@ -293,14 +294,15 @@ class VerifyShopify
     /**
      * Login and verify the shop and it's data.
      *
-     * @param ShopDomainValue $domain  The shop domain.
+     * @param SessionToken $token The session token.
      *
      * @return bool
      */
-    protected function loginShop(ShopDomainValue $domain): bool
+    protected function loginShopFromToken(SessionToken $token): bool
     {
         // Log the shop in
-        $status = $this->shopSession->make($domain);
+        $status = $this->shopSession->make($token->getShopDomain());
+        $this->shopSession->setSessionToken($token->getSessionId());
         return $status && $this->shopSession->isValid();
     }
 
@@ -315,18 +317,19 @@ class VerifyShopify
     protected function verifyShopifySessionToken(Request $request, ShopDomainValue $domain): bool
     {
         // Ensure Shopify session token is OK
-        $incomingToken = $request->query('session');
-        if ($incomingToken) {
-            if (! $this->shopSession->isSessionTokenValid($incomingToken)) {
-                // Tokens do not match
-                return false;
-            }
-
-            // Save the session token
-            $this->shopSession->setSessionToken($incomingToken);
+        $incomingToken = NullableSessionId::fromNative($request->query('session'));
+        if ($incomingToken->isNull()) {
+            // No session token
+            return true;
         }
 
-        return true;
+        if ($this->shopSession->isSessionTokenValid($incomingToken)) {
+            // Save the session token
+            $this->shopSession->setSessionToken($incomingToken);
+            return true;
+        }
+
+        return false;
     }
 
     /**

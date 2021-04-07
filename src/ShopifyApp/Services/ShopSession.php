@@ -11,12 +11,14 @@ use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
 use Osiset\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
+use Osiset\ShopifyApp\Contracts\Objects\Values\SessionId as SessionIdValue;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
 use function Osiset\ShopifyApp\getShopifyConfig;
 use Osiset\ShopifyApp\Objects\Enums\AuthMode;
 use Osiset\ShopifyApp\Objects\Values\AccessToken;
 use Osiset\ShopifyApp\Objects\Values\NullableAccessToken;
+use Osiset\ShopifyApp\Objects\Values\NullableSessionId;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 
 /**
@@ -206,15 +208,15 @@ class ShopSession
     }
 
     /**
-     * Sets the session token from Shopify.
+     * Sets the session ID from token.
      *
-     * @param string $token The session token from Shopify.
+     * @param SessionIdValue $sid The session ID.
      *
      * @return self
      */
-    public function setSessionToken(string $token): self
+    public function setSessionToken(SessionIdValue $sid): self
     {
-        $this->sessionSet(self::SESSION_TOKEN, $token);
+        $this->sessionSet(self::SESSION_TOKEN, $sid->toNative());
 
         return $this;
     }
@@ -222,28 +224,28 @@ class ShopSession
     /**
      * Get the Shopify session token.
      *
-     * @return string|null
+     * @return SessionIdValue
      */
-    public function getSessionToken(): ?string
+    public function getSessionToken(): SessionIdValue
     {
-        return Session::get(self::SESSION_TOKEN);
+        return NullableSessionId::fromNative(Session::get(self::SESSION_TOKEN));
     }
 
     /**
      * Compare session tokens from Shopify.
      *
-     * @param string|null $incomingToken The session token from Shopify, from the request.
+     * @param SessionIdValue $incomingToken The session token from Shopify, from the request.
      *
      * @return bool
      */
-    public function isSessionTokenValid(?string $incomingToken): bool
+    public function isSessionTokenValid(SessionIdValue $incomingToken): bool
     {
         $currentToken = $this->getSessionToken();
-        if ($incomingToken === null || $currentToken === null) {
+        if ($currentToken->isNull() || $incomingToken->isNull()) {
             return true;
         }
 
-        return $incomingToken === $currentToken;
+        return $currentToken->isSame($incomingToken);
     }
 
     /**
