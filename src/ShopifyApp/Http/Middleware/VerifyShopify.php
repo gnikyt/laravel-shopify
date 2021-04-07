@@ -106,7 +106,7 @@ class VerifyShopify
 
         // Login the shop and verify incoming session token
         $loginResult = $this->loginShopFromToken($token);
-        $tokenResult = $this->verifyShopifySessionToken($request, $token->getShopDomain());
+        $tokenResult = $this->verifyShopifySessionToken($request);
         if (! $loginResult || ! $tokenResult) {
             return $this->unauthenticatedRedirect(
                 $this->getShopDomainFromRequest($request)->toNative(),
@@ -309,12 +309,11 @@ class VerifyShopify
     /**
      * Check the Shopify session token.
      *
-     * @param Request         $request The request object.
-     * @param ShopDomainValue $domain  The shop domain.
+     * @param Request $request The request object.
      *
      * @return bool
      */
-    protected function verifyShopifySessionToken(Request $request, ShopDomainValue $domain): bool
+    protected function verifyShopifySessionToken(Request $request): bool
     {
         // Ensure Shopify session token is OK
         $incomingToken = NullableSessionId::fromNative($request->query('session'));
