@@ -90,6 +90,10 @@ class VerifyShopify
                 false
             );
         }
+
+        /// LOGIN SHOP HERE
+
+        return $next($request);
     }
 
     /**
