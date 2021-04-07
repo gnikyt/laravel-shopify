@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 use Assert\AssertionFailedException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
+use Osiset\ShopifyApp\Services\ShopSession;
 use Osiset\ShopifyApp\Exceptions\HttpException;
 use Osiset\ShopifyApp\Objects\Enums\DataSource;
 use function Osiset\ShopifyApp\getShopifyConfig;
@@ -29,14 +30,23 @@ class VerifyShopify
     protected $apiHelper;
 
     /**
+     * The shop session helper.
+     *
+     * @var ShopSession
+     */
+    protected $shopSession;
+
+    /**
      * Constructor.
      *
-     * @param IApiHelper $apiHelper The API helper.
+     * @param IApiHelper  $apiHelper   The API helper.
+     * @param ShopSession $shopSession The shop session helper.
      *
      * @return void
      */
-    public function __construct(IApiHelper $apiHelper)
+    public function __construct(IApiHelper $apiHelper, ShopSession $shopSession)
     {
+        $this->shopSession = $shopSession;
         $this->apiHelper = $apiHelper;
         $this->apiHelper->make();
     }
@@ -61,7 +71,7 @@ class VerifyShopify
                 );
             }
 
-            // Redirect to get a token or authenticate
+            // Redirect to get a token or authenticate (if no HMAC and no token)
             return $this->unauthenticatedRedirect(
                 $this->getShopDomainFromRequest($request)->toNative(),
                 $hmacResult === null ? true : false
@@ -91,7 +101,15 @@ class VerifyShopify
             );
         }
 
-        /// LOGIN SHOP HERE
+        // Login the shop and verify incoming session token
+        $loginResult = $this->loginShop($token->getShopDomain());
+        $tokenResult = $this->verifyShopifySessionToken($request, $token->getShopDomain());
+        if (! $loginResult || ! $tokenResult) {
+            return $this->unauthenticatedRedirect(
+                $this->getShopDomainFromRequest($request)->toNative(),
+                true
+            );
+        }
 
         return $next($request);
     }
@@ -268,6 +286,45 @@ class VerifyShopify
         ];
 
         return $options[$source]();
+    }
+
+    /**
+     * Login and verify the shop and it's data.
+     *
+     * @param ShopDomainValue $domain  The shop domain.
+     *
+     * @return bool
+     */
+    protected function loginShop(ShopDomainValue $domain): bool
+    {
+        // Log the shop in
+        $status = $this->shopSession->make($domain);
+        return $status && $this->shopSession->isValid();
+    }
+
+    /**
+     * Check the Shopify session token.
+     *
+     * @param Request         $request The request object.
+     * @param ShopDomainValue $domain  The shop domain.
+     *
+     * @return bool
+     */
+    protected function verifyShopifySessionToken(Request $request, ShopDomainValue $domain): bool
+    {
+        // Ensure Shopify session token is OK
+        $incomingToken = $request->query('session');
+        if ($incomingToken) {
+            if (! $this->shopSession->isSessionTokenValid($incomingToken)) {
+                // Tokens do not match
+                return false;
+            }
+
+            // Save the session token
+            $this->shopSession->setSessionToken($incomingToken);
+        }
+
+        return true;
     }
 
     /**
