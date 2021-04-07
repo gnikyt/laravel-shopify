@@ -47,7 +47,7 @@ class VerifyShopify
         $this->verifyHmac($request);
 
         // Get the token (if available)
-        $tokenSource = $request->ajax() ? $request->bearerToken() : $request->query('token');
+        $tokenSource = $request->ajax() ? $request->bearerToken() : $request->all('token');
         if (empty($tokenSource)) {
             if ($request->ajax()) {
                 // AJAX, return HTTP exception
