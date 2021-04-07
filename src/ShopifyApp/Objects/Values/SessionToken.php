@@ -123,7 +123,7 @@ final class SessionToken implements ValueObject
      *
      * @var ShopDomainValue
      */
-    protected ShopDomainValue $shopDomain;
+    protected ShopDomainValue $shopDomain = NullableShopDomain::fromNative(null);
 
     /**
      * Signature.
@@ -195,6 +195,16 @@ final class SessionToken implements ValueObject
         // Parse the shop domain from the destination
         $url = parse_url($body['dest']);
         $this->shop = isset($url['host']) ? ShopDomain::fromNative($url['host']) : null;
+    }
+
+    /**
+     * Get the shop domain.
+     *
+     * @return ShopDomainValue
+     */
+    public function getShopDomain(): ShopDomainValue
+    {
+        return $this->shop;
     }
 
     /**
