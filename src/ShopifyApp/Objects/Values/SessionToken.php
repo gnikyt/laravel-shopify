@@ -12,6 +12,7 @@ use function Osiset\ShopifyApp\base64url_decode;
 use function Osiset\ShopifyApp\base64url_encode;
 use function Osiset\ShopifyApp\getShopifyConfig;
 use Funeralzone\ValueObjects\Scalars\StringTrait;
+use Illuminate\Support\Arr;
 use Osiset\ShopifyApp\Objects\Values\NullableShopDomain;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
 
@@ -196,7 +197,7 @@ final class SessionToken implements ValueObject
 
         // Parse the shop domain from the destination
         $url = parse_url($body['dest']);
-        $this->shopDomain = NullableShopDomain::fromNative($url['host']);
+        $this->shopDomain = NullableShopDomain::fromNative(Arr::get($url, 'host'));
     }
 
     /**
