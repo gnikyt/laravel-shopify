@@ -83,28 +83,25 @@ class VerifyShopify
             // Try and process the token
             $token = SessionToken::fromNative($tokenSource);
         } catch (AssertionFailedException $e) {
+            $isExpired = $e->getMessage() === SessionToken::EXCEPTION_EXPIRED;
             if ($request->ajax()) {
                 // AJAX, return HTTP exception
                 throw new HttpException(
                     $e->getMessage(),
-                    $e->getMessage() === SessionToken::EXCEPTION_EXPIRED
-                        ? Response::HTTP_FORBIDDEN
-                        : Response::HTTP_BAD_REQUEST
+                    $isExpired ? Response::HTTP_FORBIDDEN : Response::HTTP_BAD_REQUEST
                 );
             }
 
             // Redirect to get a new token
             return $this->unauthenticatedRedirect(
-                ! $token->getShopDomain()->isNull()
-                    ? $token->getShopDomain()->toNative()
-                    : $this->getShopDomainFromRequest($request)->toNative(),
-                $e->getMessage() === SessionToken::EXCEPTION_EXPIRED
-                    ? false
-                    : true
+                $token->getShopDomain()->toNative() ?? $this->getShopDomainFromRequest($request)->toNative(),
+                $isExpired ? false : true
             );
         }
 
         // Login the shop and verify incoming session token
+
+        /// EDIT: CHANGE HERE TO CHECK IF SHOP IS INSTALLED
         $loginResult = $this->loginShopFromToken($token);
         $tokenResult = $this->verifyShopifySessionToken($request);
         if (! $loginResult || ! $tokenResult) {
@@ -113,6 +110,7 @@ class VerifyShopify
                 true
             );
         }
+        /// ENDEDIT
 
         return $next($request);
     }
