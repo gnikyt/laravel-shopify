@@ -44,7 +44,11 @@ class VerifyShopify
     public function handle(Request $request, Closure $next)
     {
         // Verify the HMAC (if available)
-        $this->verifyHmac($request);
+        $hmacResult = $this->verifyHmac($request);
+        if ($hmacResult === false) {
+            // Invalid HMAC
+            throw new SignatureVerificationException('Unable to verify signature.');
+        }
 
         // Get the token (if available)
         $tokenSource = $request->ajax() ? $request->bearerToken() : $request->all('token');
@@ -57,9 +61,10 @@ class VerifyShopify
                 );
             }
 
-            // Redirect to get a token
+            // Redirect to get a token or authenticate
             return $this->unauthenticatedRedirect(
-                $this->getShopDomainFromRequest($request)->toNative()
+                $this->getShopDomainFromRequest($request)->toNative(),
+                $hmacResult === null ? true : false
             );
         }
 
@@ -81,7 +86,8 @@ class VerifyShopify
             return $this->unauthenticatedRedirect(
                 ! $token->getShopDomain()->isNull()
                     ? $token->getShopDomain()->toNative()
-                    : $this->getShopDomainFromRequest($request)->toNative()
+                    : $this->getShopDomainFromRequest($request)->toNative(),
+                false
             );
         }
     }
@@ -93,19 +99,18 @@ class VerifyShopify
      *
      * @throws SignatureVerificationException
      *
-     * @return void
+     * @return bool|null
      */
-    protected function verifyHmac(Request $request): void
+    protected function verifyHmac(Request $request): ?bool
     {
         $hmac = $this->getHmacFromRequest($request);
-        if ($hmac !== null) {
-            // We have HMAC, validate it
-            $data = $this->getRequestData($request, $hmac[1]);
-            if (! $this->apiHelper->verifyRequest($data)) {
-                // Something didn't match
-                throw new SignatureVerificationException('Unable to verify signature.');
-            }
+        if ($hmac === null) {
+            return null;
         }
+
+        // We have HMAC, validate it
+        $data = $this->getRequestData($request, $hmac[1]);
+        return $this->apiHelper->verifyRequest($data);
     }
 
     /**
@@ -265,13 +270,15 @@ class VerifyShopify
      * Redirect to unauthenticated route.
      *
      * @param ShopDomainValue $shopDomain The shop domain.
+     * @param bool            $sendToAuth Send the shop to the authentication route?
      *
      * @return RedirectResponse
      */
-    protected function unauthenticatedRedirect(ShopDomainValue $shopDomain): RedirectResponse
+    protected function unauthenticatedRedirect(ShopDomainValue $shopDomain, bool $sendToAuth): RedirectResponse
     {
+        $route = $sendToAuth ? 'authenticate' : 'unauthenticated';
         return Redirect::route(
-            getShopifyConfig('route_names.unauthenticated'),
+            getShopifyConfig("route_names.{$route}"),
             ['shop' => $shopDomain]
         );
     }
