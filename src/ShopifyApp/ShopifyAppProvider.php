@@ -226,22 +226,10 @@ class ShopifyAppProvider extends ServiceProvider
             }],
 
             // Services (end)
-            ShopSession::class => [self::CBIND, function ($app) {
-                return new ShopSession(
-                    $app->make(AuthManager::class),
-                    $app->make(IApiHelper::class),
-                    $app->make(CookieHelper::class),
-                    $app->make(IShopCommand::class),
-                    $app->make(IShopQuery::class)
-                );
-            }],
             ChargeHelper::class => [self::CBIND, function ($app) {
                 return new ChargeHelper(
                     $app->make(IChargeQuery::class)
                 );
-            }],
-            CookieHelper::class => [self::CBIND, function () {
-                return new CookieHelper();
             }],
         ];
         foreach ($binds as $key => $fn) {
@@ -354,11 +342,8 @@ class ShopifyAppProvider extends ServiceProvider
     {
         // Middlewares
         $this->app['router']->aliasMiddleware('verify.shopify', VerifyShopify::class);
-        $this->app['router']->aliasMiddleware('auth.shopify', AuthShopify::class);
-        $this->app['router']->aliasMiddleware('auth.token', AuthToken::class);
         $this->app['router']->aliasMiddleware('auth.webhook', AuthWebhook::class);
         $this->app['router']->aliasMiddleware('auth.proxy', AuthProxy::class);
         $this->app['router']->aliasMiddleware('billable', Billable::class);
-        $this->app['router']->aliasMiddleware('itp', ITP::class);
     }
 }

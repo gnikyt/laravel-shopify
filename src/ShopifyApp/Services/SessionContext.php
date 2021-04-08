@@ -8,6 +8,7 @@ use Osiset\ShopifyApp\Objects\Values\NullAccessToken;
 
 /**
  * Used to inject current session data into the user's model.
+ * TODO: Possibily move this to a composite VO.
  */
 class SessionContext
 {
