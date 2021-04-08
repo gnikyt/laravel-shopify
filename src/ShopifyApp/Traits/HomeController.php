@@ -19,7 +19,10 @@ trait HomeController
      * @return ViewView
      */
     public function index(Request $request): ViewView
-    {print_r($request->user());exit;
-        return View::make('shopify-app::home.index');
+    {
+        return View::make(
+            'shopify-app::home.index',
+            ['shop' => $request->user()]
+        );
     }
 }
