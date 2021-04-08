@@ -248,7 +248,7 @@ class ShopSession
         return $currentToken->isSame($incomingToken);
     }
 
-    /** === $currentToken;
+    /**
      * Gets the access token in use.
      *
      * @param bool $strict Return the token matching the grant type (default: use either).

@@ -12,7 +12,6 @@ use function Osiset\ShopifyApp\base64url_decode;
 use function Osiset\ShopifyApp\base64url_encode;
 use function Osiset\ShopifyApp\getShopifyConfig;
 use Funeralzone\ValueObjects\Scalars\StringTrait;
-use Illuminate\Support\Arr;
 use Osiset\ShopifyApp\Objects\Values\NullableShopDomain;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
 
@@ -35,21 +34,21 @@ final class SessionToken implements ValueObject
      *
      * @var string
      */
-    public const EXCEPTION_MALFORMED = 'Malformed token';
+    public const EXCEPTION_MALFORMED = 'Session token is malformed.';
 
     /**
      * Message for invalid token.
      *
      * @var string
      */
-    public const EXCEPTION_INVALID = 'Invalid token';
+    public const EXCEPTION_INVALID = 'Session token is invalid.';
 
     /**
      * Message for expired token.
      *
      * @var string
      */
-    public const EXCEPTION_EXPIRED = 'Expired token';
+    public const EXCEPTION_EXPIRED = 'Session token has expired.';
 
     /**
      * Token parts.
@@ -126,14 +125,7 @@ final class SessionToken implements ValueObject
      *
      * @var ShopDomainValue
      */
-    protected ShopDomainValue $shopDomain;
-
-    /**
-     * Signature.
-     *
-     * @var string
-     */
-    protected $signature;
+    protected $shopDomain;
 
     /**
      * Contructor.
@@ -168,7 +160,7 @@ final class SessionToken implements ValueObject
 
         // Decode the token
         $this->parts = explode('.', $this->string);
-        $body = json_decode(base64url_decode($this->parts[1]));
+        $body = json_decode(base64url_decode($this->parts[1]), true);
 
         // Confirm token is not malformed
         Assert::thatAll([
@@ -181,7 +173,7 @@ final class SessionToken implements ValueObject
             $body['iat'],
             $body['jti'],
             $body['sid']
-        ])->notNull('Malformed token');
+        ])->notNull(self::EXCEPTION_MALFORMED);
 
         // Format the values
         $this->iss = $body['iss'];
@@ -193,11 +185,10 @@ final class SessionToken implements ValueObject
         $this->exp = new Carbon($body['exp']);
         $this->nbf = new Carbon($body['nbf']);
         $this->iat = new Carbon($body['iat']);
-        $this->signature = end($this->parts);
 
         // Parse the shop domain from the destination
-        $url = parse_url($body['dest']);
-        $this->shopDomain = NullableShopDomain::fromNative(Arr::get($url, 'host'));
+        $host = parse_url($body['dest'], PHP_URL_HOST);
+        $this->shopDomain = NullableShopDomain::fromNative($host);
     }
 
     /**
@@ -221,6 +212,16 @@ final class SessionToken implements ValueObject
     }
 
     /**
+     * Get the expiration time of the token.
+     *
+     * @return Carbon
+     */
+    public function getExpiration(): Carbon
+    {
+        return $this->exp;
+    }
+
+    /**
      * Checks the validity of the signature sent with the token.
      *
      * @throws AssertionFailedException If signature does not match.
@@ -229,12 +230,17 @@ final class SessionToken implements ValueObject
      */
     protected function verifySignature(): void
     {
+        // Get the token without the signature present
+        $partsCopy = $this->parts;
+        $signature = array_pop($partsCopy);
+        $tokenWithoutSignature = implode('.', $partsCopy);
+
         // Create a local HMAC
         $secret = getShopifyConfig('api_secret', $this->shopDomain);
-        $hmac = createHmac(['data' => $this->signature, 'raw' => true], $secret);
+        $hmac = createHmac(['data' => $tokenWithoutSignature, 'raw' => true], $secret);
         $encodedHmac = base64url_encode($hmac);
 
-        Assert::that(hash_equals($this->signature, $encodedHmac))->true();
+        Assert::that(hash_equals($signature, $encodedHmac))->true();
     }
 
     /**

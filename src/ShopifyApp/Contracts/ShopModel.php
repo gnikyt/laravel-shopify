@@ -2,14 +2,15 @@
 
 namespace Osiset\ShopifyApp\Contracts;
 
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Osiset\BasicShopifyAPI\BasicShopifyAPI;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Osiset\ShopifyApp\Services\SessionContext;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
-use Osiset\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
-use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopId as ShopIdValue;
+use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
+use Osiset\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
 
 /**
  * Reprecents the shop model.
@@ -86,4 +87,20 @@ interface ShopModel extends Authenticatable
      * @return BasicShopifyAPI
      */
     public function api(): BasicShopifyAPI;
+
+    /**
+     * Set the session context for the user.
+     *
+     * @param SessionContext $session The session context service.
+     *
+     * @return void
+     */
+    public function setSessionContext(SessionContext $session): void;
+
+    /**
+     * Get the session context for the user.
+     *
+     * @return SessionContext|null
+     */
+    public function getSessionContext(): ?SessionContext;
 }

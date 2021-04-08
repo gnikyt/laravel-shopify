@@ -6,7 +6,7 @@
     @if(config('shopify-app.appbridge_enabled'))
         <script>
             utils.getSessionToken(app).then((token) => {
-                window.location.href = `{{ route(\Osiset\ShopifyApp\getShopifyConfig('route_names.authenticate')) }}?token=${token}`;
+                window.location.href = `{{ route(\Osiset\ShopifyApp\getShopifyConfig('route_names.home')) }}?token=${token}`;
             });
         </script>
     @endif

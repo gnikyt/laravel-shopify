@@ -4,6 +4,7 @@ namespace Osiset\ShopifyApp\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Assert\AssertionFailedException;
@@ -16,11 +17,15 @@ use function Osiset\ShopifyApp\getShopifyConfig;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Objects\Values\SessionToken;
 use Osiset\ShopifyApp\Objects\Values\NullShopDomain;
+use Osiset\ShopifyApp\Objects\Values\NullableSessionId;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
-use Osiset\ShopifyApp\Objects\Values\NullableSessionId;
+use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
 
+/**
+ * Responsible for validating the request.
+ */
 class VerifyShopify
 {
     /**
@@ -71,9 +76,14 @@ class VerifyShopify
             throw new SignatureVerificationException('Unable to verify signature.');
         }
 
+        // Continue if current route is the token route
+        if (Str::contains($request->route()->getName(), 'authenticate.token')) {
+            return $next($request);
+        }
+
         // Get the token (if available)
-        $tokenSource = $request->ajax() ? $request->bearerToken() : $request->all('token');
-        if (empty($tokenSource)) {
+        $tokenSource = $request->ajax() ? $request->bearerToken() : $request->get('token');
+        if ($tokenSource === null) {
             // Not available, we need to get one
             return $this->handleMissingToken($request);
         }
@@ -101,7 +111,9 @@ class VerifyShopify
         }
 
         // Everything appears to be good, add the session token to request user
-        // TODO HERE
+        /** @var IShopModel $user */
+        $user = $request->user();
+        $user->addContext('token', $token);
 
         return $next($request);
     }
@@ -119,15 +131,10 @@ class VerifyShopify
     {
         if ($request->ajax() || $request->expectsJson()) {
             // AJAX, return HTTP exception
-            throw new HttpException(
-                SessionToken::EXCEPTION_INVALID,
-                Response::HTTP_BAD_REQUEST
-            );
+            throw new HttpException(SessionToken::EXCEPTION_INVALID, Response::HTTP_BAD_REQUEST);
         }
 
-        return $this->tokenRedirect(
-            $this->getShopDomainFromRequest($request)->toNative()
-        );
+        return $this->tokenRedirect($this->getShopDomainFromRequest($request));
     }
 
     /**
@@ -151,9 +158,7 @@ class VerifyShopify
             );
         }
 
-        return $this->tokenRedirect(
-            $this->getShopDomainFromRequest($request)->toNative()
-        );
+        return $this->tokenRedirect($this->getShopDomainFromRequest($request));
     }
 
     /**
@@ -169,12 +174,10 @@ class VerifyShopify
     {
         if ($request->ajax() || $request->expectsJson()) {
             // AJAX, return HTTP exception
-            throw new HttpException('', Response::HTTP_FORBIDDEN);
+            throw new HttpException('Shop is not installed or missing data.', Response::HTTP_FORBIDDEN);
         }
 
-        return $this->installRedirect(
-            $this->getShopDomainFromRequest($request)->toNative()
-        );
+        return $this->installRedirect($this->getShopDomainFromRequest($request));
     }
 
     /**
@@ -197,6 +200,76 @@ class VerifyShopify
         // We have HMAC, validate it
         $data = $this->getRequestData($request, $hmac['source']);
         return $this->apiHelper->verifyRequest($data);
+    }
+
+    /**
+     * Check the Shopify session token.
+     *
+     * @param Request $request The request object.
+     *
+     * @return bool
+     */
+    protected function verifyShopifySessionToken(Request $request): bool
+    {
+        // Ensure Shopify session token is OK
+        $incomingToken = NullableSessionId::fromNative($request->query('session'));
+        if ($incomingToken->isNull()) {
+            // No session token to check
+            return true;
+        }
+
+        if ($this->shopSession->isSessionTokenValid($incomingToken)) {
+            // Save the session token
+            $this->shopSession->setSessionToken($incomingToken);
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Login and verify the shop and it's data.
+     *
+     * @param SessionToken $token The session token.
+     *
+     * @return bool
+     */
+    protected function loginShopFromToken(SessionToken $token): bool
+    {
+        // Log the shop in and check validity
+        $status = $this->shopSession->make($token->getShopDomain());
+        $this->shopSession->setSessionToken($token->getSessionId());
+        return $status && $this->shopSession->isValid();
+    }
+
+    /**
+     * Redirect to token route.
+     *
+     * @param ShopDomainValue $shopDomain The shop domain.
+     *
+     * @return RedirectResponse
+     */
+    protected function tokenRedirect(ShopDomainValue $shopDomain): RedirectResponse
+    {
+        return Redirect::route(
+            getShopifyConfig('route_names.authenticate.token'),
+            ['shop' => $shopDomain->toNative()]
+        );
+    }
+
+    /**
+     * Redirect to install route.
+     *
+     * @param ShopDomainValue $shopDomain The shop domain.
+     *
+     * @return RedirectResponse
+     */
+    protected function installRedirect(ShopDomainValue $shopDomain): RedirectResponse
+    {
+        return Redirect::route(
+            getShopifyConfig('route_names.authenticate.install'),
+            ['shop' => $shopDomain->toNative()]
+        );
     }
 
     /**
@@ -350,74 +423,6 @@ class VerifyShopify
         ];
 
         return $options[$source]();
-    }
-
-    /**
-     * Login and verify the shop and it's data.
-     *
-     * @param SessionToken $token The session token.
-     *
-     * @return bool
-     */
-    protected function loginShopFromToken(SessionToken $token): bool
-    {
-        // Log the shop in and check validity
-        $status = $this->shopSession->make($token->getShopDomain());
-        $this->shopSession->setSessionToken($token->getSessionId());
-        return $status && $this->shopSession->isValid();
-    }
-
-    /**
-     * Check the Shopify session token.
-     *
-     * @param Request $request The request object.
-     *
-     * @return bool
-     */
-    protected function verifyShopifySessionToken(Request $request): bool
-    {
-        // Ensure Shopify session token is OK
-        $incomingToken = NullableSessionId::fromNative($request->query('session'));
-        if (! $incomingToken->isNull()) {
-            if ($this->shopSession->isSessionTokenValid($incomingToken)) {
-                // Save the session token
-                $this->shopSession->setSessionToken($incomingToken);
-            }
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Redirect to token route.
-     *
-     * @param ShopDomainValue $shopDomain The shop domain.
-     *
-     * @return RedirectResponse
-     */
-    protected function tokenRedirect(ShopDomainValue $shopDomain): RedirectResponse
-    {
-        return Redirect::route(
-            getShopifyConfig('route_names.authenticate.token'),
-            ['shop' => $shopDomain]
-        );
-    }
-
-    /**
-     * Redirect to install route.
-     *
-     * @param ShopDomainValue $shopDomain The shop domain.
-     *
-     * @return RedirectResponse
-     */
-    protected function installRedirect(ShopDomainValue $shopDomain): RedirectResponse
-    {
-        return Redirect::route(
-            getShopifyConfig('route_names.authenticate.install'),
-            ['shop' => $shopDomain]
-        );
     }
 
     /**

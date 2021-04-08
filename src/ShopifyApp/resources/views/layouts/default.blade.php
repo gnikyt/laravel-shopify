@@ -22,6 +22,7 @@
             <script src="https://unpkg.com/@shopify/app-bridge-utils{{ \Osiset\ShopifyApp\getShopifyConfig('appbridge_version') ? '@'.config('shopify-app.appbridge_version') : '' }}"></script>
             <script>
                 const AppBridge = window['app-bridge'];
+                const actions = AppBridge.actions;
                 const utils = window['app-bridge-utils'];
                 const createApp = AppBridge.default;
                 const app = createApp({

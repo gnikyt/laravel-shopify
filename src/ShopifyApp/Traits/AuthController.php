@@ -29,7 +29,7 @@ trait AuthController
     {
         $shopDomain = ShopDomain::fromNative($request->get('shop'));
         return View::make(
-            'shopify-app::auth.unauthenticated',
+            'shopify-app::auth.token',
             ['shopDomain' => $shopDomain->toNative()]
         );
     }
