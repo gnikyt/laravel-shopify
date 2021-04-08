@@ -7,10 +7,11 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Auth\AuthManager;
 use Assert\AssertionFailedException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
-use Osiset\ShopifyApp\Services\ShopSession;
+use Osiset\ShopifyApp\Services\SessionContext;
 use Osiset\ShopifyApp\Exceptions\HttpException;
 use Osiset\ShopifyApp\Objects\Enums\DataSource;
 use function Osiset\ShopifyApp\getShopifyConfig;
@@ -19,15 +20,23 @@ use Osiset\ShopifyApp\Objects\Values\SessionToken;
 use Osiset\ShopifyApp\Objects\Values\NullShopDomain;
 use Osiset\ShopifyApp\Objects\Values\NullableSessionId;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
+use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
+use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
-use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
 
 /**
  * Responsible for validating the request.
  */
 class VerifyShopify
 {
+    /**
+     * The auth manager.
+     *
+     * @var AuthManager
+     */
+    protected $auth;
+
     /**
      * The API helper.
      *
@@ -36,23 +45,34 @@ class VerifyShopify
     protected $apiHelper;
 
     /**
-     * The shop session helper.
+     * The shop querier.
      *
-     * @var ShopSession
+     * @var IShopQuery
      */
-    protected $shopSession;
+    protected $shopQuery;
+
+    /**
+     * The session context service.
+     *
+     * @var SessionContext
+     */
+    protected $sessionContext;
 
     /**
      * Constructor.
      *
-     * @param IApiHelper  $apiHelper   The API helper.
-     * @param ShopSession $shopSession The shop session helper.
+     * @param AuthManager    $auth      The Laravel auth manager.
+     * @param IApiHelper     $apiHelper The API helper.
+     * @param IShopQuery     $shopQuery The shop querier.
+     * @param SessionContext $session   The session context service.
      *
      * @return void
      */
-    public function __construct(IApiHelper $apiHelper, ShopSession $shopSession)
+    public function __construct(AuthManager $auth, IApiHelper $apiHelper, IShopQuery $shopQuery, SessionContext $session)
     {
-        $this->shopSession = $shopSession;
+        $this->auth = $auth;
+        $this->shopQuery = $shopQuery;
+        $this->sessionContext = $session;
         $this->apiHelper = $apiHelper;
         $this->apiHelper->make();
     }
@@ -76,8 +96,8 @@ class VerifyShopify
             throw new SignatureVerificationException('Unable to verify signature.');
         }
 
-        // Continue if current route is the token route
-        if (Str::contains($request->route()->getName(), 'authenticate.token')) {
+        // Continue if current route is an auth route
+        if (Str::contains($request->route()->getName(), 'authenticate')) {
             return $next($request);
         }
 
@@ -109,11 +129,6 @@ class VerifyShopify
             // Invalid session token
             return $this->handleMissingToken($request);
         }
-
-        // Everything appears to be good, add the session token to request user
-        /** @var IShopModel $user */
-        $user = $request->user();
-        $user->addContext('token', $token);
 
         return $next($request);
     }
@@ -236,10 +251,25 @@ class VerifyShopify
      */
     protected function loginShopFromToken(SessionToken $token): bool
     {
-        // Log the shop in and check validity
-        $status = $this->shopSession->make($token->getShopDomain());
-        $this->shopSession->setSessionToken($token->getSessionId());
-        return $status && $this->shopSession->isValid();
+        // Get the shop
+        $shop = $this->shopQuery->getByDomain($token->getShopDomain(), [], true);
+        if (! $shop) {
+            return false;
+        }
+
+        // Add the session context to the shop
+        $this->sessionContext->setSessionToken($token);
+        $this->sessionContext->setAccessToken($shop->getToken());
+        $shop->setSessionContext($this->sessionContext);
+
+        if (! $shop->getSessionContext()->isValid()) {
+            // Something is invalid
+            return false;
+        }
+
+        // All is well, login the shop
+        $this->auth->login($shop);
+        return true;
     }
 
     /**
