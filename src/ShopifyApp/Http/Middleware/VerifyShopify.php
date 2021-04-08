@@ -52,6 +52,16 @@ class VerifyShopify
         $this->apiHelper->make();
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param Request $request The request object.
+     * @param Closure $next    The next action.
+     *
+     * @throws SignatureVerificationException If HMAC verification fails.
+     *
+     * @return mixed
+     */
     public function handle(Request $request, Closure $next)
     {
         // Verify the HMAC (if available)
@@ -64,55 +74,107 @@ class VerifyShopify
         // Get the token (if available)
         $tokenSource = $request->ajax() ? $request->bearerToken() : $request->all('token');
         if (empty($tokenSource)) {
-            if ($request->ajax()) {
-                // AJAX, return HTTP exception
-                throw new HttpException(
-                    SessionToken::EXCEPTION_INVALID,
-                    Response::HTTP_BAD_REQUEST
-                );
-            }
-
-            // Redirect to get a token or authenticate (if no HMAC and no token)
-            return $this->unauthenticatedRedirect(
-                $this->getShopDomainFromRequest($request)->toNative(),
-                $hmacResult === null ? true : false
-            );
+            // Not available, we need to get one
+            return $this->handleMissingToken($request);
         }
 
         try {
             // Try and process the token
             $token = SessionToken::fromNative($tokenSource);
         } catch (AssertionFailedException $e) {
-            $isExpired = $e->getMessage() === SessionToken::EXCEPTION_EXPIRED;
-            if ($request->ajax()) {
-                // AJAX, return HTTP exception
-                throw new HttpException(
-                    $e->getMessage(),
-                    $isExpired ? Response::HTTP_FORBIDDEN : Response::HTTP_BAD_REQUEST
-                );
-            }
-
-            // Redirect to get a new token
-            return $this->unauthenticatedRedirect(
-                $token->getShopDomain()->toNative() ?? $this->getShopDomainFromRequest($request)->toNative(),
-                $isExpired ? false : true
-            );
+            // Invalid or expired token, we need a new one
+            return $this->handleInvalidToken($request, $e);
         }
 
-        // Login the shop and verify incoming session token
-
-        /// EDIT: CHANGE HERE TO CHECK IF SHOP IS INSTALLED
+        // Login the shop
         $loginResult = $this->loginShopFromToken($token);
-        $tokenResult = $this->verifyShopifySessionToken($request);
-        if (! $loginResult || ! $tokenResult) {
-            return $this->unauthenticatedRedirect(
-                $this->getShopDomainFromRequest($request)->toNative(),
-                true
-            );
+        if (! $loginResult) {
+            // Shop is not installed or something is missing from it's data
+            return $this->handleInvalidShop($request);
         }
-        /// ENDEDIT
+
+        // Verify incoming session token (if available)
+        $tokenResult = $this->verifyShopifySessionToken($request);
+        if (! $tokenResult) {
+            // Invalid session token
+            return $this->handleMissingToken($request);
+        }
+
+        // Everything appears to be good, add the session token to request user
+        // TODO HERE
 
         return $next($request);
+    }
+
+    /**
+     * Handle missing token.
+     *
+     * @param Request $request The request object.
+     *
+     * @throws HttpException If an AJAX/JSON request.
+     *
+     * @return mixed
+     */
+    protected function handleMissingToken(Request $request)
+    {
+        if ($request->ajax() || $request->expectsJson()) {
+            // AJAX, return HTTP exception
+            throw new HttpException(
+                SessionToken::EXCEPTION_INVALID,
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        return $this->tokenRedirect(
+            $this->getShopDomainFromRequest($request)->toNative()
+        );
+    }
+
+    /**
+     * Handle an invalid or expired token.
+     *
+     * @param Request                  $request The request object.
+     * @param AssertionFailedException $e       The assertion failure exception.
+     *
+     * @throws HttpException If an AJAX/JSON request.
+     *
+     * @return mixed
+     */
+    protected function handleInvalidToken(Request $request, AssertionFailedException $e)
+    {
+        $isExpired = $e->getMessage() === SessionToken::EXCEPTION_EXPIRED;
+        if ($request->ajax() || $request->expectsJson()) {
+            // AJAX, return HTTP exception
+            throw new HttpException(
+                $e->getMessage(),
+                $isExpired ? Response::HTTP_FORBIDDEN : Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        return $this->tokenRedirect(
+            $this->getShopDomainFromRequest($request)->toNative()
+        );
+    }
+
+    /**
+     * Handle a shop that is not installed or it's data is invalid.
+     *
+     * @param Request $request The request object.
+     *
+     * @throws HttpException If an AJAX/JSON request.
+     *
+     * @return mixed
+     */
+    protected function handleInvalidShop(Request $request)
+    {
+        if ($request->ajax() || $request->expectsJson()) {
+            // AJAX, return HTTP exception
+            throw new HttpException('', Response::HTTP_FORBIDDEN);
+        }
+
+        return $this->installRedirect(
+            $this->getShopDomainFromRequest($request)->toNative()
+        );
     }
 
     /**
@@ -127,12 +189,13 @@ class VerifyShopify
     protected function verifyHmac(Request $request): ?bool
     {
         $hmac = $this->getHmacFromRequest($request);
-        if ($hmac === null) {
+        if ($hmac['source'] === null) {
+            // No HMAC, skip
             return null;
         }
 
         // We have HMAC, validate it
-        $data = $this->getRequestData($request, $hmac[1]);
+        $data = $this->getRequestData($request, $hmac['source']);
         return $this->apiHelper->verifyRequest($data);
     }
 
@@ -188,9 +251,9 @@ class VerifyShopify
      *
      * @param Request $request The request object.
      *
-     * @return null|array
+     * @return array
      */
-    protected function getHmacFromRequest(Request $request): ?array
+    protected function getHmacFromRequest(Request $request): array
     {
         // All possible methods
         $options = [
@@ -214,11 +277,11 @@ class VerifyShopify
         foreach ($options as $method => $value) {
             $result = is_callable($value) ? $value() : $value;
             if ($result !== null) {
-                return [$result, $method];
+                return ['source' => $method, 'value' => $value];
             }
         }
 
-        return null;
+        return ['source' => null, 'value' => null];
     }
 
     /**
@@ -298,7 +361,7 @@ class VerifyShopify
      */
     protected function loginShopFromToken(SessionToken $token): bool
     {
-        // Log the shop in
+        // Log the shop in and check validity
         $status = $this->shopSession->make($token->getShopDomain());
         $this->shopSession->setSessionToken($token->getSessionId());
         return $status && $this->shopSession->isValid();
@@ -315,14 +378,12 @@ class VerifyShopify
     {
         // Ensure Shopify session token is OK
         $incomingToken = NullableSessionId::fromNative($request->query('session'));
-        if ($incomingToken->isNull()) {
-            // No session token
-            return true;
-        }
+        if (! $incomingToken->isNull()) {
+            if ($this->shopSession->isSessionTokenValid($incomingToken)) {
+                // Save the session token
+                $this->shopSession->setSessionToken($incomingToken);
+            }
 
-        if ($this->shopSession->isSessionTokenValid($incomingToken)) {
-            // Save the session token
-            $this->shopSession->setSessionToken($incomingToken);
             return true;
         }
 
@@ -330,18 +391,31 @@ class VerifyShopify
     }
 
     /**
-     * Redirect to unauthenticated route.
+     * Redirect to token route.
      *
      * @param ShopDomainValue $shopDomain The shop domain.
-     * @param bool            $sendToAuth Send the shop to the authentication route?
      *
      * @return RedirectResponse
      */
-    protected function unauthenticatedRedirect(ShopDomainValue $shopDomain, bool $sendToAuth): RedirectResponse
+    protected function tokenRedirect(ShopDomainValue $shopDomain): RedirectResponse
     {
-        $route = $sendToAuth ? 'authenticate' : 'unauthenticated';
         return Redirect::route(
-            getShopifyConfig("route_names.{$route}"),
+            getShopifyConfig('route_names.authenticate.token'),
+            ['shop' => $shopDomain]
+        );
+    }
+
+    /**
+     * Redirect to install route.
+     *
+     * @param ShopDomainValue $shopDomain The shop domain.
+     *
+     * @return RedirectResponse
+     */
+    protected function installRedirect(ShopDomainValue $shopDomain): RedirectResponse
+    {
+        return Redirect::route(
+            getShopifyConfig('route_names.authenticate.install'),
             ['shop' => $shopDomain]
         );
     }

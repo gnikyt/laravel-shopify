@@ -21,31 +21,25 @@ use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 trait AuthController
 {
     /**
-     * Unauthenticated shop.
+     * Get session token.
      *
      * @return ViewView
      */
-    public function unauthenticated(Request $request)
+    public function token(Request $request)
     {
         $shopDomain = ShopDomain::fromNative($request->get('shop'));
         return View::make(
             'shopify-app::auth.unauthenticated',
-            [
-                'shopDomain' => $shopDomain->toNative(),
-            ]
+            ['shopDomain' => $shopDomain->toNative()]
         );
     }
 
     /**
-     * Authenticating a shop.
-     *
-     * @param AuthenticateShop $authenticateShop The action for authorizing and authenticating a shop.
-     *
-     * @throws SignatureVerificationException
+     * Installing a shop.
      *
      * @return ViewView|RedirectResponse
      */
-    public function authenticate(Request $request, AuthenticateShop $authenticateShop)
+    public function install(Request $request)
     {
         // Get the shop domain
         $shopDomain = ShopDomain::fromNative($request->get('shop'));

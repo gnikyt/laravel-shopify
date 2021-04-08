@@ -110,13 +110,13 @@ Route::group(['prefix' => getShopifyConfig('prefix'), 'middleware' => ['web']], 
     |
     */
 
-    if (registerPackageRoute('unauthenticated', $manualRoutes)) {
+    if (registerPackageRoute('authenticate.token', $manualRoutes)) {
         Route::get(
-            '/authenticate/unauthenticated',
-            'Osiset\ShopifyApp\Http\Controllers\AuthController@unauthenticated'
+            '/authenticate/token',
+            'Osiset\ShopifyApp\Http\Controllers\AuthController@token'
         )
         ->middleware(['verify.shopify'])
-        ->name(getShopifyConfig('route_names.unauthenticated'));
+        ->name(getShopifyConfig('route_names.authenticate.token'));
     }
 
     /*

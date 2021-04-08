@@ -52,9 +52,9 @@ return [
     */
     'route_names' => [
         'home'                 => env('SHOPIFY_ROUTE_NAME_HOME', 'home'),
-        'unauthenticated'      => env('SHOPIFY_ROUTE_NAME_UNAUTHENTICATED', 'unauthenticated'),
         'authenticate'         => env('SHOPIFY_ROUTE_NAME_AUTHENTICATE', 'authenticate'),
         'authenticate.oauth'   => env('SHOPIFY_ROUTE_NAME_AUTHENTICATE_OAUTH', 'authenticate.oauth'),
+        'authenticate.token'   => env('SHOPIFY_ROUTE_NAME_AUTHENTICATE_TOKEN', 'authenticate.token'),
         'billing'              => env('SHOPIFY_ROUTE_NAME_BILLING', 'billing'),
         'billing.process'      => env('SHOPIFY_ROUTE_NAME_BILLING_PROCESS', 'billing.process'),
         'billing.usage_charge' => env('SHOPIFY_ROUTE_NAME_BILLING_USAGE_CHARGE', 'billing.usage_charge'),
