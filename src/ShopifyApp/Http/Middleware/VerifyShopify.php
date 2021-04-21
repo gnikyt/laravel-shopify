@@ -247,7 +247,8 @@ class VerifyShopify
         $this->sessionContext->setAccessToken($shop->getToken());
         $shop->setSessionContext($this->sessionContext);
 
-        if (! $shop->getSessionContext()->isValid($this->previousShop->getSessionContext())) {
+        $previousContext = $this->previousShop ? $this->previousShop->getSessionContext() : null;
+        if (! $shop->getSessionContext()->isValid($previousContext)) {
             // Something is invalid
             return false;
         }
