@@ -10,6 +10,7 @@ use Illuminate\Http\Response;
 use Illuminate\Auth\AuthManager;
 use Assert\AssertionFailedException;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Redirect;
 use Osiset\ShopifyApp\Contracts\ShopModel;
 use Osiset\ShopifyApp\Services\SessionContext;
@@ -157,7 +158,7 @@ class VerifyShopify
             throw new HttpException(SessionToken::EXCEPTION_INVALID, Response::HTTP_BAD_REQUEST);
         }
 
-        return $this->tokenRedirect($this->getShopDomainFromRequest($request));
+        return $this->tokenRedirect($request);
     }
 
     /**
@@ -181,7 +182,7 @@ class VerifyShopify
             );
         }
 
-        return $this->tokenRedirect($this->getShopDomainFromRequest($request));
+        return $this->tokenRedirect($request);
     }
 
     /**
@@ -261,15 +262,36 @@ class VerifyShopify
     /**
      * Redirect to token route.
      *
-     * @param ShopDomainValue $shopDomain The shop domain.
+     * @param Request $request The request object.
      *
      * @return RedirectResponse
      */
-    protected function tokenRedirect(ShopDomainValue $shopDomain): RedirectResponse
+    protected function tokenRedirect(Request $request): RedirectResponse
     {
+        // At this point the HMAC and other details are verified already, filter it out
+        $path = $request->path();
+        $target = Str::startsWith($path, '/') ? $path : "/{$path}";
+        if ($request->has('hmac')) {
+            $filteredQuery = Collection::make($request->all())->except([
+                'hmac',
+                'host',
+                'locale',
+                'new_design_language',
+                'timestamp',
+                'session',
+                'shop',
+            ]);
+            if (count($filteredQuery) > 0) {
+                $target .= '?' . http_build_query($filteredQuery->toArray());
+            }
+        }
+
         return Redirect::route(
             getShopifyConfig('route_names.authenticate.token'),
-            ['shop' => $shopDomain->toNative()]
+            [
+                'shop'   => $this->getShopDomainFromRequest($request)->toNative(),
+                'target' => $target,
+            ]
         );
     }
 

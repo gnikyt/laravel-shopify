@@ -27,10 +27,13 @@ trait AuthController
      */
     public function token(Request $request)
     {
-        $shopDomain = ShopDomain::fromNative($request->get('shop'));
+        $shopDomain = ShopDomain::fromNative($request->query('shop'));
         return View::make(
             'shopify-app::auth.token',
-            ['shopDomain' => $shopDomain->toNative()]
+            [
+                'shopDomain' => $shopDomain->toNative(),
+                'target'     => $request->query('target')
+            ]
         );
     }
 
