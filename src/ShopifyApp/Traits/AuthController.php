@@ -18,11 +18,11 @@ use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 trait AuthController
 {
     /**
-     * Installing a shop.
+     * Installing/authenticating a shop.
      *
      * @return ViewView|RedirectResponse
      */
-    public function install(Request $request, AuthenticateShop $authShop)
+    public function authenticate(Request $request, AuthenticateShop $authShop)
     {
         // Run the action
         [$result, $status] = $authShop($request);

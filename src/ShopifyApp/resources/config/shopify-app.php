@@ -52,7 +52,7 @@ return [
     */
     'route_names' => [
         'home'                 => env('SHOPIFY_ROUTE_NAME_HOME', 'home'),
-        'authenticate.install' => env('SHOPIFY_ROUTE_NAME_AUTHENTICATE_INSTALL', 'authenticate.install'),
+        'authenticate'         => env('SHOPIFY_ROUTE_NAME_AUTHENTICATE', 'authenticate'),
         'authenticate.token'   => env('SHOPIFY_ROUTE_NAME_AUTHENTICATE_TOKEN', 'authenticate.token'),
         'billing'              => env('SHOPIFY_ROUTE_NAME_BILLING', 'billing'),
         'billing.process'      => env('SHOPIFY_ROUTE_NAME_BILLING_PROCESS', 'billing.process'),
@@ -192,7 +192,7 @@ return [
     |
     */
 
-    'api_redirect' => env('SHOPIFY_API_REDIRECT', '/install'),
+    'api_redirect' => env('SHOPIFY_API_REDIRECT', '/authenticate'),
 
     /*
     |--------------------------------------------------------------------------

@@ -305,7 +305,7 @@ class VerifyShopify
     protected function installRedirect(ShopDomainValue $shopDomain): RedirectResponse
     {
         return Redirect::route(
-            getShopifyConfig('route_names.authenticate.install'),
+            getShopifyConfig('route_names.authenticate'),
             ['shop' => $shopDomain->toNative()]
         );
     }

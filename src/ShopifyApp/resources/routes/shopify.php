@@ -43,19 +43,19 @@ Route::group(['prefix' => getShopifyConfig('prefix'), 'middleware' => ['web']], 
 
     /*
     |--------------------------------------------------------------------------
-    | Authenticate: Install
+    | Authenticate: Install & Authorize
     |--------------------------------------------------------------------------
     |
     | Install a shop and go through Shopify OAuth.
     |
     */
 
-    if (registerPackageRoute('authenticate.install', $manualRoutes)) {
+    if (registerPackageRoute('authenticate', $manualRoutes)) {
         Route::get(
             '/authenticate/install',
-            'Osiset\ShopifyApp\Http\Controllers\AuthController@install'
+            'Osiset\ShopifyApp\Http\Controllers\AuthController@authenticate'
         )
-        ->name(getShopifyConfig('route_names.authenticate.install'));
+        ->name(getShopifyConfig('route_names.authenticate'));
     }
 
     /*
