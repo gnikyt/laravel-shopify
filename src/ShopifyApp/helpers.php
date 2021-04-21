@@ -190,6 +190,8 @@ function getShopifyConfig(string $key, $shop = null)
  * Appends the token from the shop's session context to the URL.
  * This is used for non-SPAs in Blade.
  *
+ * @example `<a href="{{ \Osiset\ShopifyApp\tokenUrl(route('orders')) }}">Orders</a>`
+ *
  * @param string         $url  The URL to append the token to.
  * @param ShopModel|null $shop The shop.
  *
