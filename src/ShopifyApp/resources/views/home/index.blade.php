@@ -12,7 +12,9 @@
             </div>
 
             <p>Welcome to your Shopify App powered by Laravel.</p>
+            <p>&nbsp;</p>
             <p>{{ $shop->name }}</p>
+            <p>&nbsp;</p>
 
             <div class="links">
                 <a href="https://github.com/osiset/laravel-shopify" target="_blank">Package</a>

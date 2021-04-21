@@ -11,6 +11,7 @@ use Illuminate\Auth\AuthManager;
 use Assert\AssertionFailedException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
+use Osiset\ShopifyApp\Contracts\ShopModel;
 use Osiset\ShopifyApp\Services\SessionContext;
 use Osiset\ShopifyApp\Exceptions\HttpException;
 use Osiset\ShopifyApp\Objects\Enums\DataSource;
@@ -20,7 +21,6 @@ use Osiset\ShopifyApp\Objects\Values\SessionToken;
 use Osiset\ShopifyApp\Objects\Values\NullShopDomain;
 use Osiset\ShopifyApp\Objects\Values\NullableSessionId;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
-use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
@@ -57,6 +57,13 @@ class VerifyShopify
      * @var SessionContext
      */
     protected $sessionContext;
+
+    /**
+     * Previous request shop.
+     *
+     * @var ShopModel|null
+     */
+    protected $previousShop;
 
     /**
      * Constructor.
@@ -116,18 +123,19 @@ class VerifyShopify
             return $this->handleInvalidToken($request, $e);
         }
 
+        // Set the previous shop (if available)
+        if ($request->user()) {
+            $this->previousShop = $request->user();
+        }
+
         // Login the shop
-        $loginResult = $this->loginShopFromToken($token);
+        $loginResult = $this->loginShopFromToken(
+            $token,
+            NullableSessionId::fromNative($request->query('session'))
+        );
         if (! $loginResult) {
             // Shop is not installed or something is missing from it's data
             return $this->handleInvalidShop($request);
-        }
-
-        // Verify incoming session token (if available)
-        $tokenResult = $this->verifyShopifySessionToken($request);
-        if (! $tokenResult) {
-            // Invalid session token
-            return $this->handleMissingToken($request);
         }
 
         return $next($request);
@@ -218,38 +226,14 @@ class VerifyShopify
     }
 
     /**
-     * Check the Shopify session token.
-     *
-     * @param Request $request The request object.
-     *
-     * @return bool
-     */
-    protected function verifyShopifySessionToken(Request $request): bool
-    {
-        // Ensure Shopify session token is OK
-        $incomingToken = NullableSessionId::fromNative($request->query('session'));
-        if ($incomingToken->isNull()) {
-            // No session token to check
-            return true;
-        }
-
-        if ($this->shopSession->isSessionTokenValid($incomingToken)) {
-            // Save the session token
-            $this->shopSession->setSessionToken($incomingToken);
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
      * Login and verify the shop and it's data.
      *
-     * @param SessionToken $token The session token.
+     * @param SessionToken      $token     The session token.
+     * @param NullableSessionId $sessionId Incoming session ID (if available).
      *
      * @return bool
      */
-    protected function loginShopFromToken(SessionToken $token): bool
+    protected function loginShopFromToken(SessionToken $token, NullableSessionId $sessionId): bool
     {
         // Get the shop
         $shop = $this->shopQuery->getByDomain($token->getShopDomain(), [], true);
@@ -257,12 +241,13 @@ class VerifyShopify
             return false;
         }
 
-        // Add the session context to the shop
+        // Set the session details for the token, session ID, and access token
         $this->sessionContext->setSessionToken($token);
+        $this->sessionContext->setSessionId($sessionId);
         $this->sessionContext->setAccessToken($shop->getToken());
         $shop->setSessionContext($this->sessionContext);
 
-        if (! $shop->getSessionContext()->isValid()) {
+        if (! $shop->getSessionContext()->isValid($this->previousShop->getSessionContext())) {
             // Something is invalid
             return false;
         }
