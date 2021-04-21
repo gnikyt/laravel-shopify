@@ -101,10 +101,9 @@ class AuthenticateShop
         }
 
         // Fire the post processing jobs
-        $shopId = $this->shopSession->getShop()->getId();
-        call_user_func($this->dispatchScriptsAction, $shopId, false);
-        call_user_func($this->dispatchWebhooksAction, $shopId, false);
-        call_user_func($this->afterAuthorizeAction, $shopId);
+        call_user_func($this->dispatchScriptsAction, $result['shop_id'], false);
+        call_user_func($this->dispatchWebhooksAction, $result['shop_id'], false);
+        call_user_func($this->afterAuthorizeAction, $result['shop_id']);
 
         return [$result, true];
     }

@@ -24,6 +24,9 @@ trait AuthController
      */
     public function authenticate(Request $request, AuthenticateShop $authShop)
     {
+        // Get the shop domain
+        $shopDomain = ShopDomain::fromNative($request->get('shop'));
+
         // Run the action
         [$result, $status] = $authShop($request);
         if ($status === null) {
@@ -35,12 +38,15 @@ trait AuthController
                 'shopify-app::auth.fullpage_redirect',
                 [
                     'authUrl'    => $result['url'],
-                    'shopDomain' => ShopDomain::fromNative($request->get('shop'))->toNative(),
+                    'shopDomain' => $shopDomain->toNative(),
                 ]
             );
         } else {
             // Go to home route
-            return Redirect::route(getShopifyConfig('route_names.home'));
+            return Redirect::route(
+                getShopifyConfig('route_names.home'),
+                ['shop' => $shopDomain->toNative()]
+            );
         }
     }
 

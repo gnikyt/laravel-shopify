@@ -72,7 +72,8 @@ class InstallShop
         if (empty($code)) {
             return [
                 'completed' => false,
-                'url'       => $apiHelper->buildAuthUrl($grantMode, getShopifyConfig('api_scopes', $shop))
+                'url'       => $apiHelper->buildAuthUrl($grantMode, getShopifyConfig('api_scopes', $shop)),
+                'shop_id'   => $shop->getId()
             ];
         }
 
@@ -86,10 +87,18 @@ class InstallShop
             $data = $apiHelper->getAccessData($code);
             $this->shopCommand->setAccessToken($shop->getId(), AccessToken::fromNative($data['access_token']));
 
-            return ['completed' => true, 'url' => null];
+            return [
+                'completed' => true,
+                'url'       => null,
+                'shop_id'   => $shop->getId()
+            ];
         } catch (\Exception $e) {
             // Just return the default setting
-            return ['completed' => false, 'url' => null];
+            return [
+                'completed' => false,
+                'url'       => null,
+                'shop_id'   => null
+            ];
         }
     }
 }

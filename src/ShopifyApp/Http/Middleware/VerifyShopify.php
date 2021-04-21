@@ -279,7 +279,7 @@ class VerifyShopify
                 'new_design_language',
                 'timestamp',
                 'session',
-                'shop',
+                'shop'
             ]);
             if (count($filteredQuery) > 0) {
                 $target .= '?' . http_build_query($filteredQuery->toArray());
