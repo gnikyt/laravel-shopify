@@ -245,7 +245,7 @@ class VerifyShopify
         // Set the session details for the token, session ID, and access token
         $this->sessionContext->setSessionToken($token);
         $this->sessionContext->setSessionId($sessionId);
-        $this->sessionContext->setAccessToken($shop->getToken());
+        $this->sessionContext->setAccessToken($shop->getAccessToken());
         $shop->setSessionContext($this->sessionContext);
 
         $previousContext = $this->previousShop ? $this->previousShop->getSessionContext() : null;

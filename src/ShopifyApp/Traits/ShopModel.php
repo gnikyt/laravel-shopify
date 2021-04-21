@@ -5,7 +5,6 @@ namespace Osiset\ShopifyApp\Traits;
 use Osiset\BasicShopifyAPI\Session;
 use Osiset\ShopifyApp\Storage\Models\Plan;
 use Osiset\BasicShopifyAPI\BasicShopifyAPI;
-use Osiset\ShopifyApp\Services\ShopSession;
 use Osiset\ShopifyApp\Objects\Values\ShopId;
 use Osiset\ShopifyApp\Storage\Models\Charge;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -14,7 +13,6 @@ use Osiset\ShopifyApp\Objects\Values\AccessToken;
 use Osiset\ShopifyApp\Storage\Scopes\Namespacing;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Arr;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopId as ShopIdValue;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
@@ -73,7 +71,7 @@ trait ShopModel
     /**
      * {@inheritdoc}
      */
-    public function getToken(): AccessTokenValue
+    public function getAccessToken(): AccessTokenValue
     {
         return AccessToken::fromNative($this->password);
     }
@@ -123,7 +121,23 @@ trait ShopModel
      */
     public function hasOfflineAccess(): bool
     {
-        return ! $this->getToken()->isNull() && ! empty($this->password);
+        return ! $this->getAccessToken()->isNull() && ! empty($this->password);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setSessionContext(SessionContext $session): void
+    {
+        $this->sessionContext = $session;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSessionContext(): ?SessionContext
+    {
+        return $this->sessionContext;
     }
 
     /**
@@ -132,16 +146,10 @@ trait ShopModel
     public function apiHelper(): IApiHelper
     {
         if ($this->apiHelper === null) {
-            // Get the token
-            /** @var ShopSession $shopSession */
-            $shopSession = resolve(ShopSession::class);
-            $token = $shopSession->guest() ? $this->getToken() : $shopSession->getToken();
-
             // Set the session
             $session = new Session(
                 $this->getDomain()->toNative(),
-                $token->toNative(),
-                $shopSession->getUser()
+                $this->getAccessToken()->toNative()
             );
             $this->apiHelper = resolve(IApiHelper::class)->make($session);
         }
@@ -159,21 +167,5 @@ trait ShopModel
         }
 
         return $this->apiHelper->getApi();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setSessionContext(SessionContext $session): void
-    {
-        $this->sessionContext = $session;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getSessionContext(): ?SessionContext
-    {
-        return $this->sessionContext;
     }
 }

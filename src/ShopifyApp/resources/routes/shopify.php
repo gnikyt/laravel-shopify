@@ -21,7 +21,6 @@ if ($manualRoutes) {
     $manualRoutes = explode(',', $manualRoutes);
 }
 
-// Route which require ITP checks
 Route::group(['prefix' => getShopifyConfig('prefix'), 'middleware' => ['web']], function () use ($manualRoutes) {
     /*
     |--------------------------------------------------------------------------
@@ -44,64 +43,24 @@ Route::group(['prefix' => getShopifyConfig('prefix'), 'middleware' => ['web']], 
 
     /*
     |--------------------------------------------------------------------------
-    | ITP
+    | Authenticate: Install
     |--------------------------------------------------------------------------
     |
-    | Handles ITP and issues with it.
+    | Install a shop and go through Shopify OAuth.
     |
     */
 
-    if (registerPackageRoute('itp', $manualRoutes)) {
-        Route::get('/itp', 'Osiset\ShopifyApp\Http\Controllers\ItpController@attempt')
-            ->name(getShopifyConfig('route_names.itp'));
-    }
-
-    if (registerPackageRoute('itp.ask', $manualRoutes)) {
-        Route::get('/itp/ask', 'Osiset\ShopifyApp\Http\Controllers\ItpController@ask')
-            ->name(getShopifyConfig('route_names.itp.ask'));
-    }
-});
-
-// Routes without ITP checks
-Route::group(['prefix' => getShopifyConfig('prefix'), 'middleware' => ['web']], function () use ($manualRoutes) {
-    /*
-    |--------------------------------------------------------------------------
-    | Authenticate Method
-    |--------------------------------------------------------------------------
-    |
-    | Authenticates a shop.
-    |
-    */
-
-    if (registerPackageRoute('authenticate', $manualRoutes)) {
-        Route::match(
-            ['get', 'post'],
-            '/authenticate',
-            'Osiset\ShopifyApp\Http\Controllers\AuthController@authenticate'
-        )
-        ->name(getShopifyConfig('route_names.authenticate'));
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Authenticate OAuth
-    |--------------------------------------------------------------------------
-    |
-    | Redirect to Shopify's OAuth screen.
-    |
-    */
-
-    if (registerPackageRoute('authenticate.oauth', $manualRoutes)) {
+    if (registerPackageRoute('authenticate.install', $manualRoutes)) {
         Route::get(
-            '/authenticate/oauth',
-            'Osiset\ShopifyApp\Http\Controllers\AuthController@oauth'
+            '/authenticate/install',
+            'Osiset\ShopifyApp\Http\Controllers\AuthController@install'
         )
-        ->name(getShopifyConfig('route_names.authenticate.oauth'));
+        ->name(getShopifyConfig('route_names.authenticate.install'));
     }
 
     /*
     |--------------------------------------------------------------------------
-    | Unauthenticated
+    | Authenticate: Token
     |--------------------------------------------------------------------------
     |
     | This route is hit when a shop comes to the app without a session token

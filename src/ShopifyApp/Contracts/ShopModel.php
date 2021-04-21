@@ -36,7 +36,7 @@ interface ShopModel extends Authenticatable
      *
      * @return AccessTokenValue
      */
-    public function getToken(): AccessTokenValue;
+    public function getAccessToken(): AccessTokenValue;
 
     /**
      * Gets charges belonging to the shop.

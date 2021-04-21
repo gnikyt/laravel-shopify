@@ -160,7 +160,7 @@ function getShopifyConfig(string $key, $shop = null)
 
     if (Str::is('route_names.*', $key)) {
         // scope the Arr::get() call to the "route_names" array
-        // to allow for dot-notation keys like "authenticate.oauth"
+        // to allow for dot-notation keys like "authenticate.install"
         // this is necessary because Arr::get() only finds dot-notation keys
         // if they are at the top level of the given array
         return Arr::get(
