@@ -192,7 +192,7 @@ return [
     |
     */
 
-    'api_redirect' => env('SHOPIFY_API_REDIRECT', '/authenticate'),
+    'api_redirect' => env('SHOPIFY_API_REDIRECT', '/install'),
 
     /*
     |--------------------------------------------------------------------------
