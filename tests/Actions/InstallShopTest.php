@@ -2,15 +2,15 @@
 
 namespace Osiset\ShopifyApp\Test\Actions;
 
-use Osiset\ShopifyApp\Actions\AuthorizeShop;
+use Osiset\ShopifyApp\Actions\InstallShop;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
 use Osiset\ShopifyApp\Test\TestCase;
 
-class AuthorizeShopTest extends TestCase
+class InstallShopTest extends TestCase
 {
     /**
-     * @var \Osiset\ShopifyApp\Actions\AuthorizeShop
+     * @var \Osiset\ShopifyApp\Actions\InstallShop
      */
     protected $action;
 
@@ -18,7 +18,7 @@ class AuthorizeShopTest extends TestCase
     {
         parent::setUp();
 
-        $this->action = $this->app->make(AuthorizeShop::class);
+        $this->action = $this->app->make(InstallShop::class);
     }
 
     public function testNoShopShouldBeMade(): void
@@ -31,9 +31,10 @@ class AuthorizeShopTest extends TestCase
 
         $this->assertStringContainsString(
             '/admin/oauth/authorize?client_id='.env('SHOPIFY_API_KEY').'&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalhost%2Fauthenticate',
-            $result->url
+            $result['url']
         );
-        $this->assertFalse($result->completed);
+        $this->assertFalse($result['completed']);
+        $this->assertNotNull($result['shop_id']);
     }
 
     public function testWithoutCode(): void
@@ -49,9 +50,10 @@ class AuthorizeShopTest extends TestCase
 
         $this->assertStringContainsString(
             '/admin/oauth/authorize?client_id='.env('SHOPIFY_API_KEY').'&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalhost%2Fauthenticate',
-            $result->url
+            $result['url']
         );
-        $this->assertFalse($result->completed);
+        $this->assertFalse($result['completed']);
+        $this->assertNotNull($result['shop_id']);
     }
 
     public function testWithCode(): void
@@ -75,7 +77,8 @@ class AuthorizeShopTest extends TestCase
         // Refresh to see changes
         $shop->refresh();
 
-        $this->assertTrue($result->completed);
+        $this->assertTrue($result['completed']);
+        $this->assertNotNull($result['shop_id']);
         $this->assertNotSame($currentToken->toNative(), $shop->getAccessToken()->toNative());
     }
 
@@ -102,7 +105,8 @@ class AuthorizeShopTest extends TestCase
         // Refresh to see changes
         $shop->refresh();
 
-        $this->assertTrue($result->completed);
+        $this->assertTrue($result['completed']);
+        $this->assertNotNull($result['shop_id']);
         $this->assertNotSame($currentToken->toNative(), $shop->getAccessToken()->toNative());
     }
 }
