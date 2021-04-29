@@ -105,7 +105,7 @@ class VerifyShopify
         }
 
         // Continue if current route is an auth route
-        if (Str::contains($request->route()->getName(), 'authenticate')) {
+        if (Str::startsWith($request->getRequestUri(), '/authenticate')) {
             return $next($request);
         }
 
