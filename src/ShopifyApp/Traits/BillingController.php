@@ -3,7 +3,6 @@
 namespace Osiset\ShopifyApp\Traits;
 
 use Illuminate\Http\Request;
-use Assert\AssertionFailedException;
 use Illuminate\Support\Facades\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
@@ -13,12 +12,9 @@ use Osiset\ShopifyApp\Objects\Values\PlanId;
 use Illuminate\Contracts\View\View as ViewView;
 use function Osiset\ShopifyApp\getShopifyConfig;
 use Osiset\ShopifyApp\Actions\ActivateUsageCharge;
-use Osiset\ShopifyApp\Objects\Values\SessionToken;
 use Osiset\ShopifyApp\Objects\Values\NullablePlanId;
 use Osiset\ShopifyApp\Http\Requests\StoreUsageCharge;
 use Osiset\ShopifyApp\Objects\Values\ChargeReference;
-use function Osiset\ShopifyApp\getAccessTokenFromRequest;
-use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
 
 /**
