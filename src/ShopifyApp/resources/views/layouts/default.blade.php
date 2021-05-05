@@ -31,6 +31,19 @@
                     forceRedirect: true,
                 });
             </script>
+            @if(\Osiset\ShopifyApp\getShopifyConfig('turbo_enabled'))
+            <script>
+                document.addEventListener("turbolinks:request-start", (event) => {
+                    utils.getSessionToken(app).then((token) => {
+                        let xhr = event.data.xhr;
+                        xhr.open('GET', event.data.url, true);
+                        xhr.setRequestHeader("Authorization", "Bearer " + token);
+                        xhr.send();
+                    });
+                });
+
+            </script>
+            @endif
 
             @include('shopify-app::partials.flash_messages')
         @endif
