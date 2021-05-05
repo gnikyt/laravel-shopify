@@ -109,8 +109,8 @@ class VerifyShopify
             return $next($request);
         }
 
-        // Get the token (if available)
-        $tokenSource = $request->ajax() ? $request->bearerToken() : $request->get('token');
+        $tokenSource = $this->getAccessToken($request);
+
         if ($tokenSource === null) {
             // Not available, we need to get one
             return $this->handleMissingToken($request);
@@ -491,5 +491,21 @@ class VerifyShopify
 
         // Array or basic value
         return $formatValue($value);
+    }
+
+    /**
+     *  Get the token (if available)
+     *
+     * @param Request $request The request object.
+     *
+     * @return string
+     */
+    protected function getAccessToken($request): ?string
+    {
+        if (getShopifyConfig('turbo_enabled')) {
+            return $request->bearerToken() ?? $request->get('token');
+        }
+
+        return $request->ajax() ? $request->bearerToken() : $request->get('token');
     }
 }

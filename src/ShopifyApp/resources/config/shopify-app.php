@@ -383,4 +383,14 @@ return [
     */
 
     'config_api_callback' => null,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Enable Turbolinks or Hotwire Turbo
+    |--------------------------------------------------------------------------
+    |
+    | If you use Turbolinks / Turbo And Livewire turn on this setting to get the token
+    |
+    */
+    'turbo_enabled' => true,
 ];
