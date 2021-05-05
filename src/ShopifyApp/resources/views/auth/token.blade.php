@@ -38,7 +38,7 @@
     @if(config('shopify-app.appbridge_enabled'))
         <script>
             utils.getSessionToken(app).then((token) => {
-                window.location.href = `{!! $target !!}{!! Str::contains($target, '&') ? '&' : '?' !!}token=${token}`;
+                window.location.href = `{!! $target !!}{!! Str::contains($target, '?') ? '&' : '?' !!}token=${token}`;
             });
         </script>
     @endif
