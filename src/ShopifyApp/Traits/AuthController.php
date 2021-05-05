@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\View;
 use Osiset\ShopifyApp\Actions\AuthenticateShop;
+use Osiset\ShopifyApp\Exceptions\MissingAuthUrlException;
 use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
 use function Osiset\ShopifyApp\getShopifyConfig;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
@@ -29,11 +30,14 @@ trait AuthController
 
         // Run the action
         [$result, $status] = $authShop($request);
+
         if ($status === null) {
             // Show exception, something is wrong
             throw new SignatureVerificationException('Invalid HMAC verification');
         } elseif ($status === false) {
-            // No code, redirect to auth URL
+            if (!$result['url']) {
+                throw new MissingAuthUrlException('Missing auth url');
+            }
             return View::make(
                 'shopify-app::auth.fullpage_redirect',
                 [

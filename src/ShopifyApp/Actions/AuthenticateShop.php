@@ -88,6 +88,7 @@ class AuthenticateShop
             ShopDomain::fromNative($request->get('shop')),
             $request->query('code')
         );
+
         if (! $result['completed']) {
             // No code, redirect to auth URL
             return [$result, false];

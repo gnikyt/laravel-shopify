@@ -22,6 +22,7 @@ use Osiset\ShopifyApp\Objects\Values\SessionToken;
 use Osiset\ShopifyApp\Objects\Values\NullShopDomain;
 use Osiset\ShopifyApp\Objects\Values\NullableSessionId;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
+use function Osiset\ShopifyApp\getAccessTokenFromRequest;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
@@ -104,13 +105,13 @@ class VerifyShopify
             throw new SignatureVerificationException('Unable to verify signature.');
         }
 
-        // Continue if current route is an auth route
-        if (Str::startsWith($request->getRequestUri(), '/authenticate')) {
+        // Continue if current route is an auth or billing route
+        if (Str::startsWith($request->getRequestUri(), ['/authenticate', '/billing'])) {
             return $next($request);
         }
 
-        // Get the token (if available)
-        $tokenSource = $request->ajax() ? $request->bearerToken() : $request->get('token');
+        $tokenSource = getAccessTokenFromRequest($request);
+
         if ($tokenSource === null) {
             // Not available, we need to get one
             return $this->handleMissingToken($request);
