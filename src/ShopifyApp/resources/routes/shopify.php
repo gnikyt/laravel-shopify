@@ -131,7 +131,7 @@ Route::group(['prefix' => getShopifyConfig('prefix'), 'middleware' => ['web']], 
             '/billing/usage-charge',
             'Osiset\ShopifyApp\Http\Controllers\BillingController@usageCharge'
         )
-        ->middleware(['auth.shopify'])
+        ->middleware(['verify.shopify'])
         ->name(getShopifyConfig('route_names.billing.usage_charge'));
     }
 });
