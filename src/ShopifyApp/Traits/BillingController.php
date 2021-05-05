@@ -112,14 +112,12 @@ trait BillingController
      *
      * @param StoreUsageCharge    $request             The verified request.
      * @param ActivateUsageCharge $activateUsageCharge The action for activating a usage charge.
-     * @param ShopSession         $shopSession         The shop session helper.
      *
      * @return RedirectResponse
      */
     public function usageCharge(
         StoreUsageCharge $request,
-        ActivateUsageCharge $activateUsageCharge,
-        ShopSession $shopSession
+        ActivateUsageCharge $activateUsageCharge
     ): RedirectResponse {
         $validated = $request->validated();
 
@@ -130,7 +128,7 @@ trait BillingController
 
         // Activate and save the usage charge
         $activateUsageCharge(
-            $shopSession->getShop()->getId(),
+            $request->user()->getId(),
             $ucd
         );
 
