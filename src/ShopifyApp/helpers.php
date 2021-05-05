@@ -2,12 +2,13 @@
 
 namespace Osiset\ShopifyApp;
 
+use LogicException;
+use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Request;
-use Illuminate\Support\Str;
-use LogicException;
 use Osiset\ShopifyApp\Contracts\ShopModel;
+use Illuminate\Http\Request as HttpRequest;
 
 /**
  * HMAC creation helper.
@@ -209,4 +210,21 @@ function tokenUrl(string $url, ?ShopModel $shop = null): string
     $token = $shop->getSessionContext()->getSessionToken()->toNative();
 
     return "{$url}{$sep}token={$token}";
+}
+
+
+/**
+ *  Get the token (if available)
+ *
+ * @param Request $request The request object.
+ *
+ * @return string
+ */
+function getAccessTokenFromRequest(HttpRequest $request): ?string
+{
+    if (getShopifyConfig('turbo_enabled')) {
+        return $request->bearerToken() ?? $request->get('token');
+    }
+
+    return $request->ajax() ? $request->bearerToken() : $request->get('token');
 }
