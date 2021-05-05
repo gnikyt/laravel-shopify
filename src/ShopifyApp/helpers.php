@@ -211,20 +211,3 @@ function tokenUrl(string $url, ?ShopModel $shop = null): string
 
     return "{$url}{$sep}token={$token}";
 }
-
-
-/**
- *  Get the token (if available)
- *
- * @param Request $request The request object.
- *
- * @return string
- */
-function getAccessTokenFromRequest(HttpRequest $request): ?string
-{
-    if (getShopifyConfig('turbo_enabled')) {
-        return $request->bearerToken() ?? $request->get('token');
-    }
-
-    return $request->ajax() ? $request->bearerToken() : $request->get('token');
-}

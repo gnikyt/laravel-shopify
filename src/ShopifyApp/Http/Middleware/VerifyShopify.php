@@ -22,7 +22,6 @@ use Osiset\ShopifyApp\Objects\Values\SessionToken;
 use Osiset\ShopifyApp\Objects\Values\NullShopDomain;
 use Osiset\ShopifyApp\Objects\Values\NullableSessionId;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
-use function Osiset\ShopifyApp\getAccessTokenFromRequest;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
@@ -110,8 +109,7 @@ class VerifyShopify
             return $next($request);
         }
 
-        $tokenSource = getAccessTokenFromRequest($request);
-
+        $tokenSource = $this->getAccessTokenFromRequest($request);
         if ($tokenSource === null) {
             // Not available, we need to get one
             return $this->handleMissingToken($request);
@@ -394,6 +392,22 @@ class VerifyShopify
         }
 
         return ['source' => null, 'value' => null];
+    }
+
+    /**
+     * Get the token from request (if available).
+     *
+     * @param Request $request The request object.
+     *
+     * @return string
+     */
+    protected function getAccessTokenFromRequest(Request $request): ?string
+    {
+        if (getShopifyConfig('turbo_enabled')) {
+            return $request->bearerToken() ?? $request->get('token');
+        }
+
+        return $request->ajax() ? $request->bearerToken() : $request->get('token');
     }
 
     /**

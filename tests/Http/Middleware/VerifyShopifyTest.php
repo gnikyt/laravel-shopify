@@ -42,7 +42,7 @@ class VerifyShopifyTest extends TestCase
         $this->runAuth();
     }
 
-    public function testSkipAuthenticateRoutes(): void
+    public function testSkipAuthenticateAndBillingRoutes(): void
     {
         // Setup the request
         $currentRequest = Request::instance();
@@ -99,6 +99,27 @@ class VerifyShopifyTest extends TestCase
         // Run the middleware
         $result = $this->runAuth();
         $this->assertFalse($result);
+    }
+
+    public function testTokenProcessing(): void
+    {
+        // Setup the request
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            [],
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            ['HTTP_X-Requested-With' => 'XMLHttpRequest']
+        );
+        Request::swap($newRequest);
     }
 
     private function runAuth(Closure $cb = null, $requestInstance = null): bool
