@@ -27,41 +27,16 @@ use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetails
 trait BillingController
 {
     /**
-     * The shop querier.
-     *
-     * @var IShopQuery
-     */
-    protected $shopQuery;
-
-    /**
-     * Constructor.
-     *
-     * @param IShopQuery     $shopQuery The shop querier.
-     *
-     * @return void
-     */
-    public function __construct(IShopQuery $shopQuery)
-    {
-        $this->shopQuery = $shopQuery;
-    }
-
-    /**
      * Redirects to billing screen for Shopify.
      *
-     * @param Request      $request      The HTTP request object.
      * @param int|null    $plan        The plan's ID, if provided in route.
      * @param GetPlanUrl  $getPlanUrl  The action for getting the plan URL.
-     * @param IShopQuery     $shopQuery The shop querier.
      *
      * @return ViewView
      */
-    public function index(Request $request, ?int $plan = null, GetPlanUrl $getPlanUrl): ViewView
+    public function index(?int $plan = null, GetPlanUrl $getPlanUrl): ViewView
     {
-        $tokenSource = getAccessTokenFromRequest($request);
-
-        $token = SessionToken::fromNative($tokenSource);
-
-        $shop = $this->shopQuery->getByDomain($token->getShopDomain(), [], true);
+        $shop = auth()->user();
 
         // Get the plan URL for redirect
         $url = $getPlanUrl(
@@ -112,6 +87,7 @@ trait BillingController
      *
      * @param StoreUsageCharge    $request             The verified request.
      * @param ActivateUsageCharge $activateUsageCharge The action for activating a usage charge.
+     * @param ShopSession         $shopSession         The shop session helper.
      *
      * @return RedirectResponse
      */
