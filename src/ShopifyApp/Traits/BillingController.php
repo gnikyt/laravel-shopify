@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Osiset\ShopifyApp\Actions\GetPlanUrl;
+use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
 use Osiset\ShopifyApp\Actions\ActivatePlan;
 use Osiset\ShopifyApp\Objects\Values\PlanId;
 use Illuminate\Contracts\View\View as ViewView;
@@ -32,6 +33,7 @@ trait BillingController
      */
     public function index(?int $plan = null, GetPlanUrl $getPlanUrl): ViewView
     {
+        /** @var $shop IShopModel */
         $shop = auth()->user();
 
         // Get the plan URL for redirect
@@ -61,7 +63,6 @@ trait BillingController
         Request $request,
         ActivatePlan $activatePlan
     ): RedirectResponse {
-
         // Activate the plan and save
         $result = $activatePlan(
             $request->user()->getId(),
@@ -83,14 +84,11 @@ trait BillingController
      *
      * @param StoreUsageCharge    $request             The verified request.
      * @param ActivateUsageCharge $activateUsageCharge The action for activating a usage charge.
-     * @param ShopSession         $shopSession         The shop session helper.
      *
      * @return RedirectResponse
      */
-    public function usageCharge(
-        StoreUsageCharge $request,
-        ActivateUsageCharge $activateUsageCharge
-    ): RedirectResponse {
+    public function usageCharge(StoreUsageCharge $request, ActivateUsageCharge $activateUsageCharge): RedirectResponse
+    {
         $validated = $request->validated();
 
         // Create the transfer object
@@ -99,14 +97,11 @@ trait BillingController
         $ucd->description = $validated['description'];
 
         // Activate and save the usage charge
-        $activateUsageCharge(
-            $request->user()->getId(),
-            $ucd
-        );
+        $activateUsageCharge($request->user()->getId(), $ucd);
 
         // All done, return with success
-        return isset($validated['redirect']) ?
-            Redirect::to($validated['redirect'])->with('success', 'usage_charge') :
-            Redirect::back()->with('success', 'usage_charge');
+        return isset($validated['redirect'])
+            ? Redirect::to($validated['redirect'])->with('success', 'usage_charge')
+            : Redirect::back()->with('success', 'usage_charge');
     }
 }
