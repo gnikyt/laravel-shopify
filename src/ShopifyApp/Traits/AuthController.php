@@ -72,11 +72,7 @@ trait AuthController
             $params = parseQueryString($query);
             unset($params['token']);
 
-            $cleanTarget = trim(str_replace(
-                '?' . $query,
-                '?' . http_build_query($params),
-                $target
-            ), '?');
+            $cleanTarget = trim(explode('?', $target)[0] . '?' . http_build_query($params), '?');
         } else {
             $cleanTarget = $target;
         }
