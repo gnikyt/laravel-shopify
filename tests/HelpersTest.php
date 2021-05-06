@@ -58,8 +58,8 @@ class HelpersTest extends TestCase
 
         // dot-notation route name
         $this->assertSame(
-            getShopifyConfig('route_names.authenticate.oauth'),
-            'authenticate.oauth'
+            getShopifyConfig('route_names.authenticate.token'),
+            'authenticate.token'
         );
     }
 
