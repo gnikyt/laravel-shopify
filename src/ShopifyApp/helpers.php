@@ -206,7 +206,7 @@ function tokenUrl(string $url, ?ShopModel $shop = null): string
     }
 
     // Determine the seperator and get the token from the shop
-    $sep = Str::contains($url, '&') ? '&' : '?';
+    $sep = Str::contains($url, '?') ? '&' : '?';
     $token = $shop->getSessionContext()->getSessionToken()->toNative();
 
     return "{$url}{$sep}token={$token}";
