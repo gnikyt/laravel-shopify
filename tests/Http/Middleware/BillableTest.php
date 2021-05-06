@@ -2,32 +2,32 @@
 
 namespace Osiset\ShopifyApp\Test\Http\Middleware;
 
-use Illuminate\Support\Facades\Request;
-use Osiset\ShopifyApp\Http\Middleware\Billable as BillableMiddleware;
-use Osiset\ShopifyApp\Services\ShopSession;
-use Osiset\ShopifyApp\Storage\Models\Charge;
-use Osiset\ShopifyApp\Storage\Models\Plan;
+use Illuminate\Auth\AuthManager;
 use Osiset\ShopifyApp\Test\TestCase;
+use Illuminate\Support\Facades\Request;
+use Osiset\ShopifyApp\Storage\Models\Plan;
+use Osiset\ShopifyApp\Storage\Models\Charge;
+use Osiset\ShopifyApp\Http\Middleware\Billable as BillableMiddleware;
 
 class BillableTest extends TestCase
 {
     /**
-     * @var \Osiset\ShopifyApp\Services\ShopSession
+     * @var AuthManager
      */
-    protected $shopSession;
+    protected $auth;
 
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->shopSession = $this->app->make(ShopSession::class);
+        $this->auth = $this->app->make(AuthManager::class);
     }
 
     public function testEnabledBillingWithUnpaidShop(): void
     {
         // Enable billing and set a shop
         $shop = factory($this->model)->create();
-        $this->shopSession->make($shop->getDomain());
+        $this->auth->login($shop);
         $this->app['config']->set('shopify-app.billing_enabled', true);
 
         // Run the middleware
@@ -50,7 +50,7 @@ class BillableTest extends TestCase
             'user_id' => $shop->getId()->toNative(),
         ]);
 
-        $this->shopSession->make($shop->getDomain());
+        $this->auth->login($shop);
         $this->app['config']->set('shopify-app.billing_enabled', true);
 
         // Run the middleware
@@ -64,7 +64,7 @@ class BillableTest extends TestCase
     {
         // Enable billing and set a shop
         $shop = factory($this->model)->states('grandfathered')->create();
-        $this->shopSession->make($shop->getDomain());
+        $this->auth->login($shop);
         $this->app['config']->set('shopify-app.billing_enabled', true);
 
         // Run the middleware
@@ -78,7 +78,7 @@ class BillableTest extends TestCase
     {
         // Enable billing and set a shop
         $shop = factory($this->model)->states('freemium')->create();
-        $this->shopSession->make($shop->getDomain());
+        $this->auth->login($shop);
         $this->app['config']->set('shopify-app.billing_enabled', true);
 
         // Run the middleware
@@ -92,7 +92,7 @@ class BillableTest extends TestCase
     {
         // Ensure billing is disabled and set a shop
         $shop = factory($this->model)->create();
-        $this->shopSession->make($shop->getDomain());
+        $this->auth->login($shop);
         $this->app['config']->set('shopify-app.billing_enabled', false);
 
         // Run the middleware
