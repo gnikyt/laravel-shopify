@@ -19,26 +19,13 @@ class HomeControllerTest extends TestCase
         $this->auth = $this->app->make(AuthManager::class);
     }
 
-    public function testHomeRouteWithAppBridge(): void
+    public function testHomeRoute(): void
     {
-        $shop = factory($this->model)->create();
-        $this->auth->login($shop);
+        $shop = factory($this->model)->create(['name' => 'shop-name.myshopify.com']);
 
-        $this->call('get', '/', [], ['itp' => true])
+        $this->call('get', '/', ['token' => $this->buildToken()])
             ->assertOk()
-            ->assertSee("apiKey: '".env('SHOPIFY_API_KEY')."'", false)
-            ->assertSee("shopOrigin: '{$shop->name}'", false);
-    }
-
-    public function testHomeRouteWithNoAppBridge(): void
-    {
-        $shop = factory($this->model)->create();
-        $this->auth->login($shop);
-
-        $this->app['config']->set('shopify-app.appbridge_enabled', false);
-
-        $this->call('get', '/', [], ['itp' => true])
-            ->assertOk()
-            ->assertDontSee('@shopify');
+            ->assertSee('apiKey: "'.env('SHOPIFY_API_KEY').'"', false)
+            ->assertSee("shopOrigin: \"{$shop->name}\"", false);
     }
 }

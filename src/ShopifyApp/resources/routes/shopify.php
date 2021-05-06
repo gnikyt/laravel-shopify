@@ -51,7 +51,8 @@ Route::group(['prefix' => getShopifyConfig('prefix'), 'middleware' => ['web']], 
     */
 
     if (registerPackageRoute('authenticate', $manualRoutes)) {
-        Route::get(
+        Route::match(
+            ['GET', 'POST'],
             '/authenticate',
             'Osiset\ShopifyApp\Http\Controllers\AuthController@authenticate'
         )
