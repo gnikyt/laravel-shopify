@@ -73,7 +73,7 @@ class InstallShop
             return [
                 'completed' => false,
                 'url'       => $apiHelper->buildAuthUrl($grantMode, getShopifyConfig('api_scopes', $shop)),
-                'shop_id'   => $shop->getId()
+                'shop_id'   => $shop->getId(),
             ];
         }
 
@@ -90,14 +90,14 @@ class InstallShop
             return [
                 'completed' => true,
                 'url'       => null,
-                'shop_id'   => $shop->getId()
+                'shop_id'   => $shop->getId(),
             ];
         } catch (\Exception $e) {
             // Just return the default setting
             return [
                 'completed' => false,
                 'url'       => null,
-                'shop_id'   => null
+                'shop_id'   => null,
             ];
         }
     }

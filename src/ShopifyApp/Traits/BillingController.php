@@ -2,21 +2,21 @@
 
 namespace Osiset\ShopifyApp\Traits;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\View;
+use Illuminate\Contracts\View\View as ViewView;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\View;
+use Osiset\ShopifyApp\Actions\ActivatePlan;
+use Osiset\ShopifyApp\Actions\ActivateUsageCharge;
 use Osiset\ShopifyApp\Actions\GetPlanUrl;
 use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
-use Osiset\ShopifyApp\Actions\ActivatePlan;
-use Osiset\ShopifyApp\Objects\Values\PlanId;
-use Illuminate\Contracts\View\View as ViewView;
 use function Osiset\ShopifyApp\getShopifyConfig;
-use Osiset\ShopifyApp\Actions\ActivateUsageCharge;
-use Osiset\ShopifyApp\Objects\Values\NullablePlanId;
 use Osiset\ShopifyApp\Http\Requests\StoreUsageCharge;
-use Osiset\ShopifyApp\Objects\Values\ChargeReference;
 use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
+use Osiset\ShopifyApp\Objects\Values\ChargeReference;
+use Osiset\ShopifyApp\Objects\Values\NullablePlanId;
+use Osiset\ShopifyApp\Objects\Values\PlanId;
 
 /**
  * Responsible for billing a shop for plans and usage charges.
@@ -72,7 +72,7 @@ trait BillingController
 
         // Go to homepage of app
         return Redirect::route(getShopifyConfig('route_names.home'), [
-            'shop' => $request->user()->getDomain()->toNative()
+            'shop' => $request->user()->getDomain()->toNative(),
         ])->with(
             $result ? 'success' : 'failure',
             'billing'

@@ -35,9 +35,10 @@ trait AuthController
             // Show exception, something is wrong
             throw new SignatureVerificationException('Invalid HMAC verification');
         } elseif ($status === false) {
-            if (!$result['url']) {
+            if (! $result['url']) {
                 throw new MissingAuthUrlException('Missing auth url');
             }
+
             return View::make(
                 'shopify-app::auth.fullpage_redirect',
                 [
@@ -65,7 +66,7 @@ trait AuthController
             'shopify-app::auth.token',
             [
                 'shopDomain' => ShopDomain::fromNative($request->query('shop'))->toNative(),
-                'target'     => $request->query('target')
+                'target'     => $request->query('target'),
             ]
         );
     }

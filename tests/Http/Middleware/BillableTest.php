@@ -3,11 +3,11 @@
 namespace Osiset\ShopifyApp\Test\Http\Middleware;
 
 use Illuminate\Auth\AuthManager;
-use Osiset\ShopifyApp\Test\TestCase;
 use Illuminate\Support\Facades\Request;
-use Osiset\ShopifyApp\Storage\Models\Plan;
-use Osiset\ShopifyApp\Storage\Models\Charge;
 use Osiset\ShopifyApp\Http\Middleware\Billable as BillableMiddleware;
+use Osiset\ShopifyApp\Storage\Models\Charge;
+use Osiset\ShopifyApp\Storage\Models\Plan;
+use Osiset\ShopifyApp\Test\TestCase;
 
 class BillableTest extends TestCase
 {

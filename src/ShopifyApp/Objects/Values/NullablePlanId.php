@@ -3,8 +3,6 @@
 namespace Osiset\ShopifyApp\Objects\Values;
 
 use Funeralzone\ValueObjects\Nullable;
-use Osiset\ShopifyApp\Objects\Values\PlanId;
-use Osiset\ShopifyApp\Objects\Values\NullPlanId;
 use Osiset\ShopifyApp\Contracts\Objects\Values\PlanId as PlanIdValue;
 
 /**

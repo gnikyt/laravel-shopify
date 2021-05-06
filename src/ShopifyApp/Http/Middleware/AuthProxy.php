@@ -3,17 +3,16 @@
 namespace Osiset\ShopifyApp\Http\Middleware;
 
 use Closure;
-use Illuminate\Support\Arr;
-use Illuminate\Http\Request;
 use Illuminate\Auth\AuthManager;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response as HttpResponse;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Response;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
-
 use function Osiset\ShopifyApp\createHmac;
 use function Osiset\ShopifyApp\getShopifyConfig;
-use function Osiset\ShopifyApp\parseQueryString;
 use Osiset\ShopifyApp\Objects\Values\NullableShopDomain;
+use function Osiset\ShopifyApp\parseQueryString;
 
 /**
  * Responsible for ensuring a proper app proxy request.
