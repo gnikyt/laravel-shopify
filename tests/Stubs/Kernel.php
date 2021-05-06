@@ -20,10 +20,9 @@ class Kernel extends \Orchestra\Testbench\Http\Kernel
         'throttle'   => \Illuminate\Routing\Middleware\ThrottleRequests::class,
 
         // Added for testing
-        'auth.shopify' => \Osiset\ShopifyApp\Http\Middleware\AuthShopify::class,
-        'auth.token'   => \Osiset\ShopifyApp\Http\Middleware\AuthToken::class,
-        'auth.webhook' => \Osiset\ShopifyApp\Http\Middleware\AuthWebhook::class,
-        'auth.proxy'   => \Osiset\ShopifyApp\Http\Middleware\AuthProxy::class,
-        'billable'     => \Osiset\ShopifyApp\Http\Middleware\Billable::class,
+        'verify.shopify' => \Osiset\ShopifyApp\Http\Middleware\VerifyShopify::class,
+        'auth.webhook'   => \Osiset\ShopifyApp\Http\Middleware\AuthWebhook::class,
+        'auth.proxy'     => \Osiset\ShopifyApp\Http\Middleware\AuthProxy::class,
+        'billable'       => \Osiset\ShopifyApp\Http\Middleware\Billable::class,
     ];
 }

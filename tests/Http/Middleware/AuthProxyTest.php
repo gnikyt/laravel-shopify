@@ -103,17 +103,6 @@ class AuthProxyTest extends TestCase
         $this->assertTrue($result[1]);
     }
 
-    public function testQueryStringArrayFormatParsedIncorrectly(): void
-    {
-        Request::merge($this->queryParamsArrayFormat);
-        Request::instance()->server->set('QUERY_STRING', $this->queryStringArrayFormat);
-
-        // Run the middleware using Laravel-based query string parsing
-        $result = $this->runAuthProxy(LegacyAuthProxyMiddleware::class);
-
-        $this->assertFalse($result[1]);
-    }
-
     private function runAuthProxy($class = AuthProxyMiddleware::class): array
     {
         $called = false;

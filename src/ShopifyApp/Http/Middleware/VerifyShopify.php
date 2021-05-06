@@ -152,7 +152,7 @@ class VerifyShopify
      */
     protected function handleMissingToken(Request $request)
     {
-        if ($request->ajax() || $request->expectsJson()) {
+        if ($this->isApiRequest($request)) {
             // AJAX, return HTTP exception
             throw new HttpException(SessionToken::EXCEPTION_INVALID, Response::HTTP_BAD_REQUEST);
         }
@@ -173,7 +173,7 @@ class VerifyShopify
     protected function handleInvalidToken(Request $request, AssertionFailedException $e)
     {
         $isExpired = $e->getMessage() === SessionToken::EXCEPTION_EXPIRED;
-        if ($request->ajax() || $request->expectsJson()) {
+        if ($this->isApiRequest($request)) {
             // AJAX, return HTTP exception
             throw new HttpException(
                 $e->getMessage(),
@@ -195,7 +195,7 @@ class VerifyShopify
      */
     protected function handleInvalidShop(Request $request)
     {
-        if ($request->ajax() || $request->expectsJson()) {
+        if ($this->isApiRequest($request)) {
             // AJAX, return HTTP exception
             throw new HttpException('Shop is not installed or missing data.', Response::HTTP_FORBIDDEN);
         }
@@ -407,7 +407,7 @@ class VerifyShopify
             return $request->bearerToken() ?? $request->get('token');
         }
 
-        return $request->ajax() ? $request->bearerToken() : $request->get('token');
+        return $this->isApiRequest($request) ? $request->bearerToken() : $request->get('token');
     }
 
     /**
@@ -506,5 +506,17 @@ class VerifyShopify
 
         // Array or basic value
         return $formatValue($value);
+    }
+
+    /**
+     * Determine if the request is AJAX or expects JSON.
+     *
+     * @param Request $request The request object.
+     *
+     * @return bool
+     */
+    protected function isApiRequest(Request $request): bool
+    {
+        return $request->ajax() || $request->expectsJson();
     }
 }
