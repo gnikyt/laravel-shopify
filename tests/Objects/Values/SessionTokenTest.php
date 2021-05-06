@@ -3,12 +3,12 @@
 namespace Osiset\ShopifyApp\Test\Objects\Values;
 
 use Assert\AssertionFailedException;
-use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
-use Osiset\ShopifyApp\Test\TestCase;
-use Osiset\ShopifyApp\Objects\Values\SessionToken;
+use Illuminate\Support\Str;
 use Osiset\ShopifyApp\Contracts\Objects\Values\SessionId as SessionIdValue;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
+use Osiset\ShopifyApp\Objects\Values\SessionToken;
+use Osiset\ShopifyApp\Test\TestCase;
 
 class SessionTokenTest extends TestCase
 {
@@ -32,7 +32,7 @@ class SessionTokenTest extends TestCase
         $this->expectException(AssertionFailedException::class);
         $this->expectExceptionMessage = SessionToken::EXCEPTION_MALFORMED;
 
-        $token = $this->buildToken() . 'OOPS';
+        $token = $this->buildToken().'OOPS';
         SessionToken::fromNative($token);
     }
 

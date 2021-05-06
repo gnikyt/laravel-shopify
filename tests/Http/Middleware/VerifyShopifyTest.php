@@ -3,11 +3,11 @@
 namespace Osiset\ShopifyApp\Test\Http\Middleware;
 
 use Closure;
-use Osiset\ShopifyApp\Test\TestCase;
 use Illuminate\Support\Facades\Request;
 use Osiset\ShopifyApp\Exceptions\HttpException;
 use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
 use Osiset\ShopifyApp\Http\Middleware\VerifyShopify;
+use Osiset\ShopifyApp\Test\TestCase;
 
 class VerifyShopifyTest extends TestCase
 {
@@ -196,7 +196,7 @@ class VerifyShopifyTest extends TestCase
         $currentRequest = Request::instance();
         $newRequest = $currentRequest->duplicate(
             // Query Params
-            ['token' => $this->buildToken() . 'OOPS'],
+            ['token' => $this->buildToken().'OOPS'],
             // Request Params
             null,
             // Attributes

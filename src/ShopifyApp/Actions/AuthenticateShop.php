@@ -3,9 +3,8 @@
 namespace Osiset\ShopifyApp\Actions;
 
 use Illuminate\Http\Request;
-use Osiset\ShopifyApp\Actions\InstallShop;
-use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
+use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 
 /**
  * Authenticates a shop and fires post authentication actions.

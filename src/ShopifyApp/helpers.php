@@ -2,13 +2,12 @@
 
 namespace Osiset\ShopifyApp;
 
-use LogicException;
-use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Str;
+use LogicException;
 use Osiset\ShopifyApp\Contracts\ShopModel;
-use Illuminate\Http\Request as HttpRequest;
 
 /**
  * HMAC creation helper.

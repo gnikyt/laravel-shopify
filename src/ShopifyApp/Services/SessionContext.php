@@ -2,13 +2,13 @@
 
 namespace Osiset\ShopifyApp\Services;
 
-use Osiset\ShopifyApp\Objects\Values\SessionToken;
-use Osiset\ShopifyApp\Objects\Values\NullSessionId;
-use Osiset\ShopifyApp\Objects\Values\NullAccessToken;
-use Osiset\ShopifyApp\Objects\Values\NullSessionToken;
-use Osiset\ShopifyApp\Contracts\Objects\Values\SessionId as SessionIdValue;
 use Osiset\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
+use Osiset\ShopifyApp\Contracts\Objects\Values\SessionId as SessionIdValue;
 use Osiset\ShopifyApp\Contracts\Objects\Values\SessionToken as SessionTokenValue;
+use Osiset\ShopifyApp\Objects\Values\NullAccessToken;
+use Osiset\ShopifyApp\Objects\Values\NullSessionId;
+use Osiset\ShopifyApp\Objects\Values\NullSessionToken;
+use Osiset\ShopifyApp\Objects\Values\SessionToken;
 
 /**
  * Used to inject current session data into the user's model.

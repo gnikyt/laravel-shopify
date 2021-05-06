@@ -2,9 +2,9 @@
 
 namespace Osiset\ShopifyApp\Traits;
 
+use Illuminate\Contracts\View\View as ViewView;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
-use Illuminate\Contracts\View\View as ViewView;
 
 /**
  * Responsible for showing the main homescreen for the app.

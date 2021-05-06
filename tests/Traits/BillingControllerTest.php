@@ -3,11 +3,11 @@
 namespace Osiset\ShopifyApp\Test\Traits;
 
 use Illuminate\Auth\AuthManager;
-use Osiset\ShopifyApp\Test\TestCase;
 use function Osiset\ShopifyApp\createHmac;
-use Osiset\ShopifyApp\Storage\Models\Plan;
 use Osiset\ShopifyApp\Storage\Models\Charge;
+use Osiset\ShopifyApp\Storage\Models\Plan;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
+use Osiset\ShopifyApp\Test\TestCase;
 
 class BillingControllerTest extends TestCase
 {

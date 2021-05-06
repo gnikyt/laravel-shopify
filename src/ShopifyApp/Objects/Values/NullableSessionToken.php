@@ -3,8 +3,6 @@
 namespace Osiset\ShopifyApp\Objects\Values;
 
 use Funeralzone\ValueObjects\Nullable;
-use Osiset\ShopifyApp\Objects\Values\SessionToken;
-use Osiset\ShopifyApp\Objects\Values\NullSessionToken;
 use Osiset\ShopifyApp\Contracts\Objects\Values\SessionToken as SessionTokenValue;
 
 /**

@@ -3,17 +3,15 @@
 namespace Osiset\ShopifyApp\Objects\Values;
 
 use Assert\Assert;
-use Illuminate\Support\Carbon;
 use Assert\AssertionFailedException;
-use function Osiset\ShopifyApp\createHmac;
-use Osiset\ShopifyApp\Objects\Values\SessionId;
+use Funeralzone\ValueObjects\Scalars\StringTrait;
+use Illuminate\Support\Carbon;
 use function Osiset\ShopifyApp\base64url_decode;
 use function Osiset\ShopifyApp\base64url_encode;
-use function Osiset\ShopifyApp\getShopifyConfig;
-use Funeralzone\ValueObjects\Scalars\StringTrait;
 use Osiset\ShopifyApp\Contracts\Objects\Values\SessionToken as SessionTokenValue;
-use Osiset\ShopifyApp\Objects\Values\NullableShopDomain;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
+use function Osiset\ShopifyApp\createHmac;
+use function Osiset\ShopifyApp\getShopifyConfig;
 
 /**
  * Value object for a session token (JWT).
@@ -172,7 +170,7 @@ final class SessionToken implements SessionTokenValue
             $body['nbf'],
             $body['iat'],
             $body['jti'],
-            $body['sid']
+            $body['sid'],
         ])->notNull(self::EXCEPTION_MALFORMED);
 
         // Format the values

@@ -2,29 +2,29 @@
 
 namespace Osiset\ShopifyApp\Http\Middleware;
 
+use Assert\AssertionFailedException;
 use Closure;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
+use Illuminate\Auth\AuthManager;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Auth\AuthManager;
-use Assert\AssertionFailedException;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Redirect;
-use Osiset\ShopifyApp\Contracts\ShopModel;
-use Osiset\ShopifyApp\Services\SessionContext;
-use Osiset\ShopifyApp\Exceptions\HttpException;
-use Osiset\ShopifyApp\Objects\Enums\DataSource;
-use function Osiset\ShopifyApp\getShopifyConfig;
-use Osiset\ShopifyApp\Objects\Values\ShopDomain;
-use Osiset\ShopifyApp\Objects\Values\SessionToken;
-use Osiset\ShopifyApp\Objects\Values\NullShopDomain;
-use Osiset\ShopifyApp\Objects\Values\NullableSessionId;
+use Illuminate\Support\Str;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
-use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
-use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
+use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use Osiset\ShopifyApp\Contracts\ShopModel;
+use Osiset\ShopifyApp\Exceptions\HttpException;
+use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
+use function Osiset\ShopifyApp\getShopifyConfig;
+use Osiset\ShopifyApp\Objects\Enums\DataSource;
+use Osiset\ShopifyApp\Objects\Values\NullableSessionId;
+use Osiset\ShopifyApp\Objects\Values\NullShopDomain;
+use Osiset\ShopifyApp\Objects\Values\SessionToken;
+use Osiset\ShopifyApp\Objects\Values\ShopDomain;
+use Osiset\ShopifyApp\Services\SessionContext;
 
 /**
  * Responsible for validating the request.
@@ -86,7 +86,7 @@ class VerifyShopify
     }
 
     /**
-     * Undocumented function
+     * Undocumented function.
      *
      * @param Request $request The request object.
      * @param Closure $next    The next action.
@@ -222,6 +222,7 @@ class VerifyShopify
 
         // We have HMAC, validate it
         $data = $this->getRequestData($request, $hmac['source']);
+
         return $this->apiHelper->verifyRequest($data);
     }
 
@@ -255,6 +256,7 @@ class VerifyShopify
 
         // All is well, login the shop
         $this->auth->login($shop);
+
         return true;
     }
 
@@ -278,10 +280,10 @@ class VerifyShopify
                 'new_design_language',
                 'timestamp',
                 'session',
-                'shop'
+                'shop',
             ]);
             if (count($filteredQuery) > 0) {
-                $target .= '?' . http_build_query($filteredQuery->toArray());
+                $target .= '?'.http_build_query($filteredQuery->toArray());
             }
         }
 

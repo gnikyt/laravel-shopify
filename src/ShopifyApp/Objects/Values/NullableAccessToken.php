@@ -3,8 +3,6 @@
 namespace Osiset\ShopifyApp\Objects\Values;
 
 use Funeralzone\ValueObjects\Nullable;
-use Osiset\ShopifyApp\Objects\Values\AccessToken;
-use Osiset\ShopifyApp\Objects\Values\NullAccessToken;
 use Osiset\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
 
 /**

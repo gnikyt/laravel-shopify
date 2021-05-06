@@ -4,7 +4,6 @@ namespace Osiset\ShopifyApp\Test\Http\Middleware;
 
 use Illuminate\Support\Facades\Request;
 use Osiset\ShopifyApp\Http\Middleware\AuthProxy as AuthProxyMiddleware;
-use Osiset\ShopifyApp\Test\Http\Middleware\LegacyAuthProxy as LegacyAuthProxyMiddleware;
 use Osiset\ShopifyApp\Test\TestCase;
 
 class AuthProxyTest extends TestCase
