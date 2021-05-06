@@ -392,5 +392,5 @@ return [
     | If you use Turbolinks / Turbo And Livewire turn on this setting to get the token
     |
     */
-    'turbo_enabled' => false,
+    'turbo_enabled' => (bool) env('SHOPIFY_TURBO_ENABLED', false),
 ];
