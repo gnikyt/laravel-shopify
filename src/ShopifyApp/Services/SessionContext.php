@@ -2,12 +2,13 @@
 
 namespace Osiset\ShopifyApp\Services;
 
+use Osiset\ShopifyApp\Objects\Values\SessionToken;
+use Osiset\ShopifyApp\Objects\Values\NullSessionId;
 use Osiset\ShopifyApp\Objects\Values\NullAccessToken;
-use Osiset\ShopifyApp\Contracts\Objects\Values\SessionToken as SessionTokenValue;
+use Osiset\ShopifyApp\Objects\Values\NullSessionToken;
 use Osiset\ShopifyApp\Contracts\Objects\Values\SessionId as SessionIdValue;
 use Osiset\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
-use Osiset\ShopifyApp\Objects\Values\NullSessionId;
-use Osiset\ShopifyApp\Objects\Values\NullSessionToken;
+use Osiset\ShopifyApp\Contracts\Objects\Values\SessionToken as SessionTokenValue;
 
 /**
  * Used to inject current session data into the user's model.
@@ -127,12 +128,24 @@ class SessionContext
         // Confirm access token and session token are good
         $tokenCheck = ! $this->getAccessToken()->isEmpty() && ! $this->getSessionToken()->isNull();
 
-        // Check the incoming session ID with the last session ID (if available)
+        // Compare data
         $sidCheck = true;
-        if ($previousContext !== null && (! $previousContext->getSessionId()()->isNull() && ! $this->getSessionId()->isNull())) {
-            $sidCheck = $previousContext->getSessionId()->isSame($this->getSessionId());
+        $domainCheck = true;
+        if ($previousContext !== null) {
+            /** @var $previousToken SessionToken */
+            $previousToken = $previousContext->getSessionToken();
+            /** @var $currentToken SessionToken */
+            $currentToken = $this->getSessionToken();
+
+            // Compare the domains
+            $domainCheck = $previousToken->getShopDomain()->isSame($currentToken);
+
+            // Compare the session IDs
+            if (! $previousContext->getSessionId()->isNull() && ! $this->getSessionId()->isNull()) {
+                $sidCheck = $previousContext->getSessionId()->isSame($this->getSessionId());
+            }
         }
 
-        return $tokenCheck && $sidCheck;
+        return $tokenCheck && $sidCheck && $domainCheck;
     }
 }

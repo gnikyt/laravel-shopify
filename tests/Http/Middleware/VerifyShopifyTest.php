@@ -42,7 +42,7 @@ class VerifyShopifyTest extends TestCase
         $this->runAuth();
     }
 
-    public function testSkipAuthenticateRoutes(): void
+    public function testSkipAuthenticateAndBillingRoutes(): void
     {
         // Setup the request
         $currentRequest = Request::instance();
@@ -99,6 +99,208 @@ class VerifyShopifyTest extends TestCase
         // Run the middleware
         $result = $this->runAuth();
         $this->assertFalse($result);
+    }
+
+    public function testTokenProcessingAndLoginShop(): void
+    {
+        // Create a shop that matches the token from buildToken
+        factory($this->model)->create(['name' => 'shop-name.myshopify.com']);
+
+        // Setup the request
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            [],
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            [
+                'HTTP_Authorization'    => "Bearer {$this->buildToken()}",
+                'HTTP_X-Requested-With' => 'XMLHttpRequest',
+            ]
+        );
+        Request::swap($newRequest);
+
+        // Run the middleware
+        $result = $this->runAuth();
+        $this->assertTrue($result);
+    }
+
+    public function testTokenProcessingAndNotInstalledShop(): void
+    {
+        // Setup the request
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            [
+                'token' => $this->buildToken(),
+                'shop'  => 'non-existent.myshopify.com',
+            ],
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            []
+        );
+        Request::swap($newRequest);
+
+        // Run the middleware
+        $result = $this->runAuth();
+        $this->assertFalse($result);
+    }
+
+    public function testTokenProcessingAndNotInstalledShopAjax(): void
+    {
+        $this->expectException(HttpException::class);
+
+        // Setup the request
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            [],
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            [
+                'HTTP_Authorization'    => "Bearer {$this->buildToken()}",
+                'HTTP_X-Requested-With' => 'XMLHttpRequest',
+            ]
+        );
+        Request::swap($newRequest);
+
+        // Run the middleware
+        $result = $this->runAuth();
+        $this->assertFalse($result);
+    }
+
+    public function testInvalidToken(): void
+    {
+        // Setup the request
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            ['token' => $this->buildToken() . 'OOPS'],
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            []
+        );
+        Request::swap($newRequest);
+
+        // Run the middleware
+        $result = $this->runAuth();
+        $this->assertFalse($result);
+    }
+
+    public function testInvalidTokenAjax(): void
+    {
+        $this->expectException(HttpException::class);
+
+        // Setup the request
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            [],
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            [
+                'HTTP_Authorization'    => "Bearer {$this->buildToken()}OOPS",
+                'HTTP_X-Requested-With' => 'XMLHttpRequest',
+            ]
+        );
+        Request::swap($newRequest);
+
+        // Run the middleware
+        $result = $this->runAuth();
+        $this->assertFalse($result);
+    }
+
+    public function testTokenProcessingAndMissMatchingShops(): void
+    {
+        // Create a shop that matches the token from buildToken
+        factory($this->model)->create(['name' => 'shop-name.myshopify.com']);
+        factory($this->model)->create(['name' => 'some-other-shop.myshopify.com']);
+
+        // Setup the request
+        $token = $this->buildToken();
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            [],
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            [
+                'HTTP_Authorization'    => "Bearer {$token}",
+                'HTTP_X-Requested-With' => 'XMLHttpRequest',
+            ]
+        );
+        Request::swap($newRequest);
+
+        // Run the middleware
+        $result = $this->runAuth();
+        $this->assertTrue($result);
+
+        // Run the middleware and change the shop
+        $token = $this->buildToken(['dest' => 'https://some-other-shop.myshopify.com', 'iss' => 'https://some-other-shop.myshopify.com/admin']);
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            [],
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            [
+                'HTTP_Authorization'    => "Bearer {$token}",
+                'HTTP_X-Requested-With' => 'XMLHttpRequest',
+            ]
+        );
+        Request::swap($newRequest);
+
+        $this->expectException(HttpException::class);
+        $this->runAuth();
     }
 
     private function runAuth(Closure $cb = null, $requestInstance = null): bool
