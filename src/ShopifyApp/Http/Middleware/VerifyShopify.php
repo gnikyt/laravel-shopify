@@ -76,8 +76,12 @@ class VerifyShopify
      *
      * @return void
      */
-    public function __construct(AuthManager $auth, IApiHelper $apiHelper, IShopQuery $shopQuery, SessionContext $session)
-    {
+    public function __construct(
+        AuthManager $auth,
+        IApiHelper $apiHelper,
+        IShopQuery $shopQuery,
+        SessionContext $session
+    ) {
         $this->auth = $auth;
         $this->shopQuery = $shopQuery;
         $this->sessionContext = $session;
