@@ -115,8 +115,14 @@ class VerifyShopify
 
         $tokenSource = $this->getAccessTokenFromRequest($request);
         if ($tokenSource === null) {
-            // Not available, we need to get one
-            return $this->handleMissingToken($request);
+            //Check if there is a store record in the database
+            $installedBefore = $this->checkPreviousInstallation($request);
+
+            return $installedBefore
+                // Not available, we need to get one
+                ?  $this->handleMissingToken($request)
+                // No token and no entry in the database
+                : $this->handleInvalidShop($request);
         }
 
         try {
@@ -410,7 +416,15 @@ class VerifyShopify
     protected function getAccessTokenFromRequest(Request $request): ?string
     {
         if (getShopifyConfig('turbo_enabled')) {
-            return $request->bearerToken() ?? $request->get('token');
+            if ($request->bearerToken()) {
+                // Bearer tokens collect. 
+                // Since Turbo does not refresh the page, the method is called several times in a row, values are attached to the same header.
+                $bearerTokens = Collection::make(explode(',', $request->header('Authorization', '')));
+                $newestToken = Str::substr(trim($bearerTokens->last()), 7);
+
+                return $newestToken;
+            }
+            return $request->get('token');
         }
 
         return $this->isApiRequest($request) ? $request->bearerToken() : $request->get('token');
@@ -524,5 +538,16 @@ class VerifyShopify
     protected function isApiRequest(Request $request): bool
     {
         return $request->ajax() || $request->expectsJson();
+    }
+
+
+    /**
+     * Check if there is a store record in the database.
+     * @param Request $request The request object.
+     * @return bool
+     */
+    protected function checkPreviousInstallation(Request $request): bool
+    {
+        return (bool) $this->shopQuery->getByDomain($this->getShopDomainFromRequest($request), [], true);
     }
 }
