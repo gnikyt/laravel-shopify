@@ -417,7 +417,7 @@ class VerifyShopify
     {
         if (getShopifyConfig('turbo_enabled')) {
             if ($request->bearerToken()) {
-                // Bearer tokens collect. 
+                // Bearer tokens collect.
                 // Since Turbo does not refresh the page, the method is called several times in a row, values are attached to the same header.
                 $bearerTokens = Collection::make(explode(',', $request->header('Authorization', '')));
                 $newestToken = Str::substr(trim($bearerTokens->last()), 7);
@@ -548,6 +548,8 @@ class VerifyShopify
      */
     protected function checkPreviousInstallation(Request $request): bool
     {
-        return (bool) $this->shopQuery->getByDomain($this->getShopDomainFromRequest($request), [], true);
+        $shop = $this->shopQuery->getByDomain($this->getShopDomainFromRequest($request), [], true);
+
+        return ($shop && !$shop->trashed());
     }
 }
