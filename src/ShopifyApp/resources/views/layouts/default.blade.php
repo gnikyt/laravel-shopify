@@ -20,20 +20,24 @@
         @if(\Osiset\ShopifyApp\getShopifyConfig('appbridge_enabled'))
             <script src="https://unpkg.com/@shopify/app-bridge{{ \Osiset\ShopifyApp\getShopifyConfig('appbridge_version') ? '@'.config('shopify-app.appbridge_version') : '' }}"></script>
             <script src="https://unpkg.com/@shopify/app-bridge-utils{{ \Osiset\ShopifyApp\getShopifyConfig('appbridge_version') ? '@'.config('shopify-app.appbridge_version') : '' }}"></script>
-            <script>
-                AppBridge = window['app-bridge'];
-                actions = AppBridge.actions;
-                utils = window['app-bridge-utils'];
-                createApp = AppBridge.default;
-                app = createApp({
+            <script
+                @if(\Osiset\ShopifyApp\getShopifyConfig('turbo_enabled'))
+                    data-turbolinks-eval="false"
+                @endif
+            >
+                const AppBridge = window['app-bridge'];
+                const actions = AppBridge.actions;
+                const utils = window['app-bridge-utils'];
+                const createApp = AppBridge.default;
+                const app = createApp({
                     apiKey: "{{ \Osiset\ShopifyApp\getShopifyConfig('api_key', $shopDomain ?? Auth::user()->name ) }}",
                     shopOrigin: "{{ $shopDomain ?? Auth::user()->name }}",
                     forceRedirect: true,
                 });
             </script>
             @if(\Osiset\ShopifyApp\getShopifyConfig('turbo_enabled'))
-                <script>
-                    SESSION_TOKEN_REFRESH_INTERVAL = 2000;
+                <script data-turbolinks-eval="false">
+                    const SESSION_TOKEN_REFRESH_INTERVAL = 2000;
 
                     // Token updates
                     document.addEventListener("turbolinks:load", (event) => {
