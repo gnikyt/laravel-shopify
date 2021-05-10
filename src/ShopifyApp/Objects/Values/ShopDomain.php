@@ -5,8 +5,9 @@ namespace Osiset\ShopifyApp\Objects\Values;
 use Assert\AssertionFailedException;
 use Funeralzone\ValueObjects\Scalars\StringTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
-use Osiset\ShopifyApp\Exceptions\MissingShopDomainException;
+use Osiset\ShopifyApp\Objects\Enums\DataSource;
 use function Osiset\ShopifyApp\getShopifyConfig;
 use function Osiset\ShopifyApp\parseQueryString;
 
@@ -30,69 +31,67 @@ final class ShopDomain implements ShopDomainValue
     }
 
     /**
-     * Find the shop domain in the given request.
-     * If the request inputs contain "shop" or "shopDomain", it is returned.
-     * If the request inputs contain "token", it is decoded and checked for a shop domain.
-     * If the request has a referrer URL, the same checks are performed against the referrer URL.
+     * Grab the shop, if present, and how it was found.
+     * Order of precedence is:.
      *
-     * @param Request $request
+     *  - GET/POST Variable ("shop" or "shopDomain")
+     *  - Headers ("X-Shop-Domain")
+     *  - Referer ("shop" or "shopDomain" query param or decoded "token" query param)
      *
-     * @return string
-     * @throws MissingShopDomainException
+     * @param Request $request The request object.
+     *
+     * @return ShopDomainValue
      */
-    public static function getFromRequest(Request $request): string
+    public static function getFromRequest(Request $request): ShopDomainValue
     {
-        // check the request input for the shop
-        if ($request->has('shop')) {
-            return self::fromNative($request->input('shop'))->toNative();
-        }
+        // All possible methods
+        $options = [
+            // GET/POST
+            DataSource::INPUT()->toNative() => $request->input('shop') ?? $request->input('shopDomain'),
 
-        if ($request->has('shopDomain')) {
-            return self::fromNative($request->input('shopDomain'))->toNative();
-        }
+            // Headers
+            DataSource::HEADER()->toNative() => $request->header('X-Shop-Domain'),
 
-        if ($request->has('token')) {
-            try {
-                $token = new SessionToken($request->input('token'), $verifyToken = false);
+            // Headers: Referer
+            DataSource::REFERER()->toNative() => function () use ($request): ?string {
+                $url = parse_url($request->header('referer'), PHP_URL_QUERY);
+                $params = parseQueryString($url);
+                $shop = Arr::get($params, 'shop') ?? Arr::get($params, 'shopDomain');
 
-                if ($shopDomain = $token->getShopDomain()) {
-                    return $shopDomain->toNative();
+                if ($shop) {
+                    return $shop;
                 }
-            } catch (AssertionFailedException $e) {
-                // unable to decode the token
-            }
-        }
 
-        // check the referrer for the shop
-        $referrer = $request->header('referer');
+                $token = Arr::get($params, 'token');
 
-        if (filled($referrer)) {
-            $query = parse_url($referrer, PHP_URL_QUERY);
-            $params = parseQueryString($query);
+                if ($token) {
+                    try {
+                        $token = new SessionToken($token, $verifyToken = false);
 
-            if (isset($params['shop'])) {
-                return self::fromNative($params['shop'])->toNative();
-            }
-
-            if (isset($params['shopDomain'])) {
-                return self::fromNative($params['shopDomain'])->toNative();
-            }
-
-            if (isset($params['token'])) {
-                try {
-                    $token = new SessionToken($params['token'], $verifyToken = false);
-
-                    if ($shopDomain = $token->getShopDomain()) {
-                        return $shopDomain->toNative();
+                        if ($shopDomain = $token->getShopDomain()) {
+                            return $shopDomain->toNative();
+                        }
+                    } catch (AssertionFailedException $e) {
+                        // unable to decode the token
                     }
-                } catch (AssertionFailedException $e) {
-                    // unable to decode the token
                 }
+
+                return null;
+            },
+        ];
+
+        // Loop through each until we find the shop
+        foreach ($options as $value) {
+            $result = is_callable($value) ? $value() : $value;
+
+            if ($result !== null) {
+                // Found a shop
+                return self::fromNative($result);
             }
         }
 
-        // unable to determine the shop
-        throw new MissingShopDomainException('Unable to get shop domain from request');
+        // No shop domain found in any source
+        return NullShopDomain::fromNative(null);
     }
 
     /**
