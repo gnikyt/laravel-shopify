@@ -87,7 +87,7 @@ trait AuthController
         return View::make(
             'shopify-app::auth.token',
             [
-                'shopDomain' => $shopDomain,
+                'shopDomain' => $shopDomain->toNative(),
                 'target'     => $cleanTarget,
             ]
         );
