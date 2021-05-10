@@ -69,8 +69,9 @@ trait AuthController
      */
     public function token(Request $request)
     {
-        $target = $request->query('target');
+        $shop = ShopDomain::getFromRequest($request);
 
+        $target = $request->query('target');
         $query = parse_url($target, PHP_URL_QUERY);
 
         if ($query) {
@@ -86,7 +87,7 @@ trait AuthController
         return View::make(
             'shopify-app::auth.token',
             [
-                'shopDomain' => ShopDomain::fromNative($request->query('shop'))->toNative(),
+                'shopDomain' => ShopDomain::fromNative($shop)->toNative(),
                 'target'     => $cleanTarget,
             ]
         );
