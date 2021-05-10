@@ -20,7 +20,11 @@
         @if(\Osiset\ShopifyApp\getShopifyConfig('appbridge_enabled'))
             <script src="https://unpkg.com/@shopify/app-bridge{{ \Osiset\ShopifyApp\getShopifyConfig('appbridge_version') ? '@'.config('shopify-app.appbridge_version') : '' }}"></script>
             <script src="https://unpkg.com/@shopify/app-bridge-utils{{ \Osiset\ShopifyApp\getShopifyConfig('appbridge_version') ? '@'.config('shopify-app.appbridge_version') : '' }}"></script>
-            <script>
+            <script
+                @if(\Osiset\ShopifyApp\getShopifyConfig('turbo_enabled'))
+                    data-turbolinks-eval="false"
+                @endif
+            >
                 const AppBridge = window['app-bridge'];
                 const actions = AppBridge.actions;
                 const utils = window['app-bridge-utils'];
@@ -32,17 +36,32 @@
                 });
             </script>
             @if(\Osiset\ShopifyApp\getShopifyConfig('turbo_enabled'))
-            <script>
-                document.addEventListener("turbolinks:request-start", (event) => {
-                    utils.getSessionToken(app).then((token) => {
-                        let xhr = event.data.xhr;
-                        xhr.open('GET', event.data.url, true);
-                        xhr.setRequestHeader("Authorization", "Bearer " + token);
-                        xhr.send();
-                    });
-                });
+                <script data-turbolinks-eval="false">
+                    const SESSION_TOKEN_REFRESH_INTERVAL = 2000;
 
-            </script>
+                    // Token updates
+                    document.addEventListener("turbolinks:load", (event) => {
+                        retrieveToken(app);
+                        keepRetrievingToken(app);
+                    });
+
+                    // Retrieve session token
+                    async function retrieveToken(app) {
+                        window.sessionToken = await utils.getSessionToken(app);
+                    }
+
+                    // Keep retrieving a session token periodically
+                    function keepRetrievingToken(app) {
+                        setInterval(() => {
+                            retrieveToken(app);
+                        }, SESSION_TOKEN_REFRESH_INTERVAL);
+                    }
+
+                    document.addEventListener("turbolinks:request-start", (event) => {
+                        let xhr = event.data.xhr;
+                        xhr.setRequestHeader("Authorization", "Bearer " + window.sessionToken);
+                    });
+                </script>
             @endif
 
             @include('shopify-app::partials.flash_messages')
