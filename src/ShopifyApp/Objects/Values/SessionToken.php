@@ -129,19 +129,22 @@ final class SessionToken implements SessionTokenValue
      * Contructor.
      *
      * @param string $token The JWT.
+     * @param bool $verifyToken Should the token be verified? Use false to only decode the token.
      *
-     * @return void
+     * @throws AssertionFailedException
      */
-    public function __construct(string $token)
+    public function __construct(string $token, bool $verifyToken = true)
     {
         // Confirm token formatting and decode the token
         $this->string = $token;
         $this->decodeToken();
 
-        // Confirm token signature, validity, and expiration
-        $this->verifySignature();
-        $this->verifyValidity();
-        $this->verifyExpiration();
+        if ($verifyToken) {
+            // Confirm token signature, validity, and expiration
+            $this->verifySignature();
+            $this->verifyValidity();
+            $this->verifyExpiration();
+        }
     }
 
     /**

@@ -10,8 +10,9 @@ use Illuminate\Support\Facades\View;
 use Osiset\ShopifyApp\Actions\AuthenticateShop;
 use Osiset\ShopifyApp\Exceptions\MissingAuthUrlException;
 use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
-use function Osiset\ShopifyApp\getShopifyConfig;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
+use function Osiset\ShopifyApp\getShopifyConfig;
+use function Osiset\ShopifyApp\parseQueryString;
 
 /**
  * Responsible for authenticating the shop.
@@ -68,11 +69,26 @@ trait AuthController
      */
     public function token(Request $request)
     {
+        session()->reflash();
+        $shopDomain = ShopDomain::getFromRequest($request);
+        $target = $request->query('target');
+        $query = parse_url($target, PHP_URL_QUERY);
+
+        if ($query) {
+            // remove "token" from the target's query string
+            $params = parseQueryString($query);
+            unset($params['token']);
+
+            $cleanTarget = trim(explode('?', $target)[0] . '?' . http_build_query($params), '?');
+        } else {
+            $cleanTarget = $target;
+        }
+
         return View::make(
             'shopify-app::auth.token',
             [
-                'shopDomain' => ShopDomain::fromNative($request->query('shop'))->toNative(),
-                'target'     => $request->query('target'),
+                'shopDomain' => $shopDomain->toNative(),
+                'target'     => $cleanTarget,
             ]
         );
     }

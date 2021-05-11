@@ -8,7 +8,6 @@ use Illuminate\Auth\AuthManager;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
@@ -21,7 +20,6 @@ use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
 use function Osiset\ShopifyApp\getShopifyConfig;
 use Osiset\ShopifyApp\Objects\Enums\DataSource;
 use Osiset\ShopifyApp\Objects\Values\NullableSessionId;
-use Osiset\ShopifyApp\Objects\Values\NullShopDomain;
 use Osiset\ShopifyApp\Objects\Values\SessionToken;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Services\SessionContext;
@@ -210,7 +208,7 @@ class VerifyShopify
             throw new HttpException('Shop is not installed or missing data.', Response::HTTP_FORBIDDEN);
         }
 
-        return $this->installRedirect($this->getShopDomainFromRequest($request));
+        return $this->installRedirect(ShopDomain::getFromRequest($request));
     }
 
     /**
@@ -300,7 +298,7 @@ class VerifyShopify
         return Redirect::route(
             getShopifyConfig('route_names.authenticate.token'),
             [
-                'shop'   => $this->getShopDomainFromRequest($request)->toNative(),
+                'shop'   => ShopDomain::getFromRequest($request)->toNative(),
                 'target' => $target,
             ]
         );
@@ -319,48 +317,6 @@ class VerifyShopify
             getShopifyConfig('route_names.authenticate'),
             ['shop' => $shopDomain->toNative()]
         );
-    }
-
-    /**
-     * Grab the shop, if present, and how it was found.
-     * Order of precedence is:.
-     *
-     *  - GET/POST Variable
-     *  - Headers
-     *  - Referer
-     *
-     * @param Request $request The request object.
-     *
-     * @return ShopDomainValue
-     */
-    protected function getShopDomainFromRequest(Request $request): ShopDomainValue
-    {
-        // All possible methods
-        $options = [
-            // GET/POST
-            DataSource::INPUT()->toNative() => $request->input('shop'),
-            // Headers
-            DataSource::HEADER()->toNative() => $request->header('X-Shop-Domain'),
-            // Headers: Referer
-            DataSource::REFERER()->toNative() => function () use ($request): ?string {
-                $url = parse_url($request->header('referer'), PHP_URL_QUERY);
-                parse_str($url, $refererQueryParams);
-
-                return Arr::get($refererQueryParams, 'shop');
-            },
-        ];
-
-        // Loop through each until we find the HMAC
-        foreach ($options as $method => $value) {
-            $result = is_callable($value) ? $value() : $value;
-            if ($result !== null) {
-                // Found a shop
-                return ShopDomain::fromNative($result);
-            }
-        }
-
-        // No shop domain found in any source
-        return NullShopDomain::fromNative(null);
     }
 
     /**
@@ -548,7 +504,7 @@ class VerifyShopify
      */
     protected function checkPreviousInstallation(Request $request): bool
     {
-        $shop = $this->shopQuery->getByDomain($this->getShopDomainFromRequest($request), [], true);
+        $shop = $this->shopQuery->getByDomain(ShopDomain::getFromRequest($request), [], true);
 
         return ($shop && !$shop->trashed());
     }
