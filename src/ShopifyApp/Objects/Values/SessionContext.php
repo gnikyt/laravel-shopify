@@ -98,7 +98,7 @@ final class SessionContext implements ValueObject
         return new static(
             NullableSessionToken::fromNative(Arr::get($native, 'session_token')),
             NullableSessionId::fromNative(Arr::get($native, 'session_id')),
-            NullableAccessToken::fromNative(Arr::get($native, 'access_token')),
+            NullableAccessToken::fromNative(Arr::get($native, 'access_token'))
         );
     }
 
