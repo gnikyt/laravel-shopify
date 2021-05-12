@@ -2,6 +2,7 @@
 
 namespace Osiset\ShopifyApp\Test\Traits;
 
+use Illuminate\Http\Response;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
 use Osiset\ShopifyApp\Test\TestCase;
 
@@ -59,6 +60,6 @@ class AuthControllerTest extends TestCase
         ];
 
         $response = $this->call('get', '/authenticate', $hmacParams);
-        $response->assertStatus(500);
+        $response->assertStatus(Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 }
