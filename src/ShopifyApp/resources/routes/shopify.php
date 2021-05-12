@@ -135,4 +135,13 @@ Route::group(['prefix' => getShopifyConfig('prefix'), 'middleware' => ['web']], 
         ->middleware(['verify.shopify'])
         ->name(getShopifyConfig('route_names.billing.usage_charge'));
     }
+
+    if (registerPackageRoute('billing.domain', $manualRoutes)) {
+        Route::get(
+            '/billing/domain',
+            'Osiset\ShopifyApp\Http\Controllers\BillingController@processDomain'
+        )
+        ->middleware(['verify.shopify'])
+        ->name(getShopifyConfig('route_names.billing.domain'));
+    }
 });
