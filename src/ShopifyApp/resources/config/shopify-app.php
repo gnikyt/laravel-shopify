@@ -57,6 +57,7 @@ return [
         'billing'              => env('SHOPIFY_ROUTE_NAME_BILLING', 'billing'),
         'billing.process'      => env('SHOPIFY_ROUTE_NAME_BILLING_PROCESS', 'billing.process'),
         'billing.usage_charge' => env('SHOPIFY_ROUTE_NAME_BILLING_USAGE_CHARGE', 'billing.usage_charge'),
+        'billing.domain'        => env('SHOPIFY_ROUTE_NAME_BILLING_DOMAIN', 'billing.domain'),
         'webhook'              => env('SHOPIFY_ROUTE_NAME_WEBHOOK', 'webhook'),
     ],
 
