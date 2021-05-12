@@ -35,6 +35,18 @@
                     forceRedirect: true,
                 });
             </script>
+            <script
+                @if(\Osiset\ShopifyApp\getShopifyConfig('turbo_enabled'))
+                    data-turbolinks-eval="false"
+                @endif
+            >
+                const userAgent = navigator.userAgent.toLowerCase();
+                const isSafari = /safari/.test(userAgent);
+
+                if (isSafari) {
+                    sessionStorage.shopify_domain = "{{ $shopDomain ?? Auth::user()->name }}";
+                }
+            </script>
             @if(\Osiset\ShopifyApp\getShopifyConfig('turbo_enabled'))
                 <script data-turbolinks-eval="false">
                     const SESSION_TOKEN_REFRESH_INTERVAL = 2000;
