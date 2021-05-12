@@ -279,9 +279,10 @@ class VerifyShopify
     {
         // At this point the HMAC and other details are verified already, filter it out
         $path = $request->path();
-        $target = Str::startsWith($path, '/') ? $path : "/{$path}";
-        if ($request->has('hmac')) {
-            $filteredQuery = Collection::make($request->all())->except([
+        $target = Str::start($path, '/');
+
+        if ($request->query()) {
+            $filteredQuery = Collection::make($request->query())->except([
                 'hmac',
                 'host',
                 'locale',
@@ -290,8 +291,9 @@ class VerifyShopify
                 'session',
                 'shop',
             ]);
-            if (count($filteredQuery) > 0) {
-                $target .= '?'.http_build_query($filteredQuery->toArray());
+
+            if ($filteredQuery->isNotEmpty()) {
+                $target .= '?' . http_build_query($filteredQuery->toArray());
             }
         }
 
