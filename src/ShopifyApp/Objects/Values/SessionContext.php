@@ -1,64 +1,63 @@
 <?php
 
-namespace Osiset\ShopifyApp\Services;
+namespace Osiset\ShopifyApp\Objects\Values;
 
-use Osiset\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
+use Illuminate\Support\Arr;
+use Funeralzone\ValueObjects\ValueObject;
+use Funeralzone\ValueObjects\CompositeTrait;
+use Osiset\ShopifyApp\Objects\Values\NullableSessionId;
+use Osiset\ShopifyApp\Objects\Values\NullableAccessToken;
+use Osiset\ShopifyApp\Objects\Values\NullableSessionToken;
 use Osiset\ShopifyApp\Contracts\Objects\Values\SessionId as SessionIdValue;
+use Osiset\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
 use Osiset\ShopifyApp\Contracts\Objects\Values\SessionToken as SessionTokenValue;
-use Osiset\ShopifyApp\Objects\Values\NullAccessToken;
-use Osiset\ShopifyApp\Objects\Values\NullSessionId;
-use Osiset\ShopifyApp\Objects\Values\NullSessionToken;
-use Osiset\ShopifyApp\Objects\Values\SessionToken;
 
 /**
  * Used to inject current session data into the user's model.
  * TODO: Possibily move this to a composite VO?
  */
-class SessionContext
+final class SessionContext implements ValueObject
 {
+    use CompositeTrait;
+
     /**
      * The session token.
      *
      * @var SessionTokenValue
      */
-    protected $sessionToken;
+    private $sessionToken;
 
     /**
      * The session ID.
      *
      * @var SessionIdValue
      */
-    protected $sessionId;
+    private $sessionId;
 
     /**
      * The offline access token.
      *
      * @var AccessTokenValue
      */
-    protected $accessToken;
+    private $accessToken;
 
     /**
      * Constructor.
      *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->sessionToken = NullSessionToken::fromNative(null);
-        $this->sessionId = NullSessionId::fromNative(null);
-        $this->accessToken = NullAccessToken::fromNative(null);
-    }
-
-    /**
-     * Set the session token.
-     *
-     * @param SessionTokenValue $token
+     * @param SessionTokenValue $sessionToken
+     * @param SessionIdValue    $sessionId
+     * @param AccessTokenValue  $accessToken
      *
      * @return void
      */
-    public function setSessionToken(SessionTokenValue $token): void
-    {
-        $this->sessionToken = $token;
+    public function __construct(
+        SessionTokenValue $sessionToken,
+        SessionIdValue $sessionId,
+        AccessTokenValue $accessToken
+    ) {
+        $this->sessionToken = $sessionToken;
+        $this->sessionId = $sessionId;
+        $this->accessToken = $accessToken;
     }
 
     /**
@@ -72,18 +71,6 @@ class SessionContext
     }
 
     /**
-     * Set the offline access token.
-     *
-     * @param AccessTokenValue $token
-     *
-     * @return void
-     */
-    public function setAccessToken(AccessTokenValue $token): void
-    {
-        $this->accessToken = $token;
-    }
-
-    /**
      * Get the access token.
      *
      * @return AccessTokenValue
@@ -94,18 +81,6 @@ class SessionContext
     }
 
     /**
-     * Set the session ID.
-     *
-     * @param SessionIdValue $id
-     *
-     * @return void
-     */
-    public function setSessionId(SessionIdValue $id): void
-    {
-        $this->sessionId = $id;
-    }
-
-    /**
      * Get the session ID.
      *
      * @return SessionIdValue
@@ -113,6 +88,18 @@ class SessionContext
     public function getSessionId(): SessionIdValue
     {
         return $this->sessionId;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function fromNative($native)
+    {
+        return new static(
+            NullableSessionToken::fromNative(Arr::get($native, 'session_token')),
+            NullableSessionId::fromNative(Arr::get($native, 'session_id')),
+            NullableAccessToken::fromNative(Arr::get($native, 'access_token')),
+        );
     }
 
     /**

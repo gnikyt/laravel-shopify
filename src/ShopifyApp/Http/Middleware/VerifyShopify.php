@@ -22,7 +22,7 @@ use Osiset\ShopifyApp\Objects\Enums\DataSource;
 use Osiset\ShopifyApp\Objects\Values\NullableSessionId;
 use Osiset\ShopifyApp\Objects\Values\SessionToken;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
-use Osiset\ShopifyApp\Services\SessionContext;
+use Osiset\ShopifyApp\Objects\Values\SessionContext;
 
 /**
  * Responsible for validating the request.
@@ -51,13 +51,6 @@ class VerifyShopify
     protected $shopQuery;
 
     /**
-     * The session context service.
-     *
-     * @var SessionContext
-     */
-    protected $sessionContext;
-
-    /**
      * Previous request shop.
      *
      * @var ShopModel|null
@@ -67,22 +60,19 @@ class VerifyShopify
     /**
      * Constructor.
      *
-     * @param AuthManager    $auth      The Laravel auth manager.
-     * @param IApiHelper     $apiHelper The API helper.
-     * @param IShopQuery     $shopQuery The shop querier.
-     * @param SessionContext $session   The session context service.
+     * @param AuthManager $auth      The Laravel auth manager.
+     * @param IApiHelper  $apiHelper The API helper.
+     * @param IShopQuery  $shopQuery The shop querier.
      *
      * @return void
      */
     public function __construct(
         AuthManager $auth,
         IApiHelper $apiHelper,
-        IShopQuery $shopQuery,
-        SessionContext $session
+        IShopQuery $shopQuery
     ) {
         $this->auth = $auth;
         $this->shopQuery = $shopQuery;
-        $this->sessionContext = $session;
         $this->apiHelper = $apiHelper;
         $this->apiHelper->make();
     }
@@ -228,7 +218,6 @@ class VerifyShopify
 
         // We have HMAC, validate it
         $data = $this->getRequestData($request, $hmac['source']);
-
         return $this->apiHelper->verifyRequest($data);
     }
 
@@ -249,10 +238,8 @@ class VerifyShopify
         }
 
         // Set the session details for the token, session ID, and access token
-        $this->sessionContext->setSessionToken($token);
-        $this->sessionContext->setSessionId($sessionId);
-        $this->sessionContext->setAccessToken($shop->getAccessToken());
-        $shop->setSessionContext($this->sessionContext);
+        $context = new SessionContext($token, $sessionId, $shop->getAccessToken());
+        $shop->setSessionContext($context);
 
         $previousContext = $this->previousShop ? $this->previousShop->getSessionContext() : null;
         if (! $shop->getSessionContext()->isValid($previousContext)) {
@@ -262,7 +249,6 @@ class VerifyShopify
 
         // All is well, login the shop
         $this->auth->login($shop);
-
         return true;
     }
 
@@ -377,7 +363,6 @@ class VerifyShopify
                 // Turbo does not refresh the page, values are attached to the same header.
                 $bearerTokens = Collection::make(explode(',', $request->header('Authorization', '')));
                 $newestToken = Str::substr(trim($bearerTokens->last()), 7);
-
                 return $newestToken;
             }
 
@@ -507,7 +492,6 @@ class VerifyShopify
     protected function checkPreviousInstallation(Request $request): bool
     {
         $shop = $this->shopQuery->getByDomain(ShopDomain::fromRequest($request), [], true);
-
         return $shop && ! $shop->trashed();
     }
 }
