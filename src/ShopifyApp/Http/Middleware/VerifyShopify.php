@@ -208,7 +208,7 @@ class VerifyShopify
             throw new HttpException('Shop is not installed or missing data.', Response::HTTP_FORBIDDEN);
         }
 
-        return $this->installRedirect(ShopDomain::getFromRequest($request));
+        return $this->installRedirect(ShopDomain::fromRequest($request));
     }
 
     /**
@@ -300,7 +300,7 @@ class VerifyShopify
         return Redirect::route(
             getShopifyConfig('route_names.authenticate.token'),
             [
-                'shop'   => ShopDomain::getFromRequest($request)->toNative(),
+                'shop'   => ShopDomain::fromRequest($request)->toNative(),
                 'target' => $target,
             ]
         );
@@ -501,13 +501,14 @@ class VerifyShopify
 
     /**
      * Check if there is a store record in the database.
+     *
      * @param Request $request The request object.
+     *
      * @return bool
      */
     protected function checkPreviousInstallation(Request $request): bool
     {
-        $shop = $this->shopQuery->getByDomain(ShopDomain::getFromRequest($request), [], true);
-
-        return ($shop && !$shop->trashed());
+        $shop = $this->shopQuery->getByDomain(ShopDomain::fromRequest($request), [], true);
+        return $shop && ! $shop->trashed();
     }
 }

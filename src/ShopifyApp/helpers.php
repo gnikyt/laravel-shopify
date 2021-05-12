@@ -4,10 +4,8 @@ namespace Osiset\ShopifyApp;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Str;
 use LogicException;
-use Osiset\ShopifyApp\Contracts\ShopModel;
 
 /**
  * HMAC creation helper.
@@ -184,29 +182,4 @@ function getShopifyConfig(string $key, $shop = null)
     }
 
     return Arr::get($config, $key);
-}
-
-/**
- * Appends the token from the shop's session context to the URL.
- * This is used for non-SPAs in Blade.
- *
- * @example `<a href="{{ \Osiset\ShopifyApp\tokenUrl(route('orders')) }}">Orders</a>`
- *
- * @param string         $url  The URL to append the token to.
- * @param ShopModel|null $shop The shop.
- *
- * @return string
- */
-function tokenUrl(string $url, ?ShopModel $shop = null): string
-{
-    if ($shop === null) {
-        // Get shop from request
-        $shop = Request::user();
-    }
-
-    // Determine the seperator and get the token from the shop
-    $sep = Str::contains($url, '?') ? '&' : '?';
-    $token = $shop->getSessionContext()->getSessionToken()->toNative();
-
-    return "{$url}{$sep}token={$token}";
 }
