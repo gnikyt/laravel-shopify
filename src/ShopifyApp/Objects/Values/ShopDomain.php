@@ -42,7 +42,7 @@ final class ShopDomain implements ShopDomainValue
      *
      * @return ShopDomainValue
      */
-    public static function getFromRequest(Request $request): ShopDomainValue
+    public static function fromRequest(Request $request): ShopDomainValue
     {
         // All possible methods
         $options = [
@@ -66,13 +66,12 @@ final class ShopDomain implements ShopDomainValue
 
                 if ($token) {
                     try {
-                        $token = new SessionToken($token, $verifyToken = false);
-
+                        $token = new SessionToken($token, false);
                         if ($shopDomain = $token->getShopDomain()) {
                             return $shopDomain->toNative();
                         }
                     } catch (AssertionFailedException $e) {
-                        // unable to decode the token
+                        // Unable to decode the token
                     }
                 }
 
@@ -83,7 +82,6 @@ final class ShopDomain implements ShopDomainValue
         // Loop through each until we find the shop
         foreach ($options as $value) {
             $result = is_callable($value) ? $value() : $value;
-
             if ($result !== null) {
                 // Found a shop
                 return self::fromNative($result);
