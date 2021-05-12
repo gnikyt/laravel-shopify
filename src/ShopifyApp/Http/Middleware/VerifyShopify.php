@@ -114,12 +114,10 @@ class VerifyShopify
         $tokenSource = $this->getAccessTokenFromRequest($request);
         if ($tokenSource === null) {
             //Check if there is a store record in the database
-            $installedBefore = $this->checkPreviousInstallation($request);
-
-            return $installedBefore
-                // Not available, we need to get one
+            return $this->checkPreviousInstallation($request)
+                // Shop exists, token not available, we need to get one
                 ?  $this->handleMissingToken($request)
-                // No token and no entry in the database
+                // Shop does not exist
                 : $this->handleInvalidShop($request);
         }
 

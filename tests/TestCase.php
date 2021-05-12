@@ -5,6 +5,8 @@ namespace Osiset\ShopifyApp\Test;
 use Closure;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\App;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Request as FacadesRequest;
 use Orchestra\Database\ConsoleServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use Osiset\BasicShopifyAPI\Options;
@@ -140,5 +142,19 @@ abstract class TestCase extends OrchestraTestCase
         $encodedHmac = base64url_encode($hmac);
 
         return sprintf('%s.%s', $payload, $encodedHmac);
+    }
+
+    protected function runMiddleware(string $middleware, Request $requestInstance = null, Closure $cb = null): array
+    {
+        $called = false;
+        $requestInstance = $requestInstance ?? FacadesRequest::instance();
+        $response = ($this->app->make($middleware))->handle($requestInstance, function (Request $request) use (&$called, $cb) {
+            $called = true;
+            if ($cb) {
+                $cb($request);
+            }
+        });
+
+        return [$called, $response];
     }
 }

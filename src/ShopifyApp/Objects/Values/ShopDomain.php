@@ -55,15 +55,17 @@ final class ShopDomain implements ShopDomainValue
             // Headers: Referer
             DataSource::REFERER()->toNative() => function () use ($request): ?string {
                 $url = parse_url($request->header('referer'), PHP_URL_QUERY);
+                if (!$url) {
+                    return null;
+                }
+
                 $params = parseQueryString($url);
                 $shop = Arr::get($params, 'shop', Arr::get($params, 'shopDomain'));
-
                 if ($shop) {
                     return $shop;
                 }
 
                 $token = Arr::get($params, 'token');
-
                 if ($token) {
                     try {
                         $token = new SessionToken($token, false);
@@ -72,6 +74,7 @@ final class ShopDomain implements ShopDomainValue
                         }
                     } catch (AssertionFailedException $e) {
                         // Unable to decode the token
+                        return null;
                     }
                 }
 
