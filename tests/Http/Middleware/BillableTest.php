@@ -31,11 +31,11 @@ class BillableTest extends TestCase
         $this->app['config']->set('shopify-app.billing_enabled', true);
 
         // Run the middleware
-        $result = $this->runBillable();
+        $result = $this->runMiddleware(BillableMiddleware::class);
 
         // Assert it was not called and redirect happened
-        $this->assertFalse($result[1]);
-        $this->assertNotFalse(strpos($result[0], 'Redirecting to http://localhost/billing'));
+        $this->assertFalse($result[0]);
+        $this->assertNotFalse(strpos($result[1], 'Redirecting to http://localhost/billing'));
     }
 
     public function testEnabledBillingWithPaidShop(): void
@@ -54,10 +54,10 @@ class BillableTest extends TestCase
         $this->app['config']->set('shopify-app.billing_enabled', true);
 
         // Run the middleware
-        $result = $this->runBillable();
+        $result = $this->runMiddleware(BillableMiddleware::class);
 
         // Assert it was called
-        $this->assertTrue($result[1]);
+        $this->assertTrue($result[0]);
     }
 
     public function testEnabledBillingWithGrandfatheredShop(): void
@@ -68,10 +68,10 @@ class BillableTest extends TestCase
         $this->app['config']->set('shopify-app.billing_enabled', true);
 
         // Run the middleware
-        $result = $this->runBillable();
+        $result = $this->runMiddleware(BillableMiddleware::class);
 
         // Assert it was called
-        $this->assertTrue($result[1]);
+        $this->assertTrue($result[0]);
     }
 
     public function testEnabledBillingWithFreemiumShop(): void
@@ -82,10 +82,10 @@ class BillableTest extends TestCase
         $this->app['config']->set('shopify-app.billing_enabled', true);
 
         // Run the middleware
-        $result = $this->runBillable();
+        $result = $this->runMiddleware(BillableMiddleware::class);
 
         // Assert it was called
-        $this->assertTrue($result[1]);
+        $this->assertTrue($result[0]);
     }
 
     public function testDisabledBillingShouldPassOn(): void
@@ -96,26 +96,8 @@ class BillableTest extends TestCase
         $this->app['config']->set('shopify-app.billing_enabled', false);
 
         // Run the middleware
-        $result = $this->runBillable();
+        $result = $this->runMiddleware(BillableMiddleware::class);
 
-        $this->assertTrue($result[1]);
-    }
-
-    /**
-     * @param callable|null $cb
-     * @return array
-     */
-    private function runBillable($cb = null): array
-    {
-        $called = false;
-        $response = ($this->app->make(BillableMiddleware::class))->handle(Request::instance(), function ($request) use (&$called, $cb) {
-            $called = true;
-
-            if ($cb) {
-                $cb($request);
-            }
-        });
-
-        return [$response, $called];
+        $this->assertTrue($result[0]);
     }
 }

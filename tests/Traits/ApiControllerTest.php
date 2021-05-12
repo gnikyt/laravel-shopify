@@ -2,6 +2,7 @@
 
 namespace Osiset\ShopifyApp\Test\Traits;
 
+use Illuminate\Http\Response;
 use Osiset\ShopifyApp\Test\TestCase;
 
 class ApiControllerTest extends TestCase
@@ -22,7 +23,7 @@ class ApiControllerTest extends TestCase
 
         $response = $this->getJson('/api', ['HTTP_X-Shop-Domain' => $shop->name]);
 
-        $response->assertStatus(400);
+        $response->assertStatus(Response::HTTP_BAD_REQUEST);
         $response->assertExactJson(['error' => 'Session token is invalid.'], $response->getContent());
     }
 

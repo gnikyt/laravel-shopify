@@ -2,6 +2,7 @@
 
 namespace Osiset\ShopifyApp\Test\Http\Middleware;
 
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Request;
 use Osiset\ShopifyApp\Http\Middleware\AuthProxy as AuthProxyMiddleware;
 use Osiset\ShopifyApp\Test\TestCase;
@@ -53,10 +54,10 @@ class AuthProxyTest extends TestCase
         Request::instance()->server->set('QUERY_STRING', $this->queryString);
 
         // Run the middleware
-        $result = $this->runAuthProxy();
+        $result = $this->runMiddleware(AuthProxyMiddleware::class);
 
         // Confirm full run
-        $this->assertTrue($result[1]);
+        $this->assertTrue($result[0]);
     }
 
     public function testDeniesForMissingShop(): void
@@ -68,11 +69,11 @@ class AuthProxyTest extends TestCase
         Request::instance()->server->set('QUERY_STRING', 'extra=1&extra=2&path_prefix=%2Fapps%2Fawesome_reviews&timestamp=1317327555&signature=a9718877bea71c2484f91608a7eaea1532bdf71f5c56825065fa4ccabe549ef3');
 
         // Run the middleware
-        $result = $this->runAuthProxy();
+        $result = $this->runMiddleware(AuthProxyMiddleware::class);
 
         // Assert it was not processed and our status
-        $this->assertFalse($result[1]);
-        $this->assertSame(401, $result[0]->status());
+        $this->assertFalse($result[0]);
+        $this->assertSame(Response::HTTP_UNAUTHORIZED, $result[1]->status());
     }
 
     public function testDoesNotRunForInvalidSignature(): void
@@ -84,11 +85,11 @@ class AuthProxyTest extends TestCase
         Request::instance()->server->set('QUERY_STRING', $this->queryString.'&oops=i-did-it-again');
 
         // Run the middleware
-        $result = $this->runAuthProxy();
+        $result = $this->runMiddleware(AuthProxyMiddleware::class);
 
         // Assert it was not processed and our status
-        $this->assertFalse($result[1]);
-        $this->assertSame(401, $result[0]->status());
+        $this->assertFalse($result[0]);
+        $this->assertSame(Response::HTTP_UNAUTHORIZED, $result[1]->status());
     }
 
     public function testQueryStringArrayFormatParsedProperly(): void
@@ -97,18 +98,8 @@ class AuthProxyTest extends TestCase
         Request::instance()->server->set('QUERY_STRING', $this->queryStringArrayFormat);
 
         // Run the middleware using Rack-based query string parsing
-        $result = $this->runAuthProxy();
+        $result = $this->runMiddleware(AuthProxyMiddleware::class);
 
-        $this->assertTrue($result[1]);
-    }
-
-    private function runAuthProxy($class = AuthProxyMiddleware::class): array
-    {
-        $called = false;
-        $response = ($this->app->make($class))->handle(Request::instance(), function ($request) use (&$called) {
-            $called = true;
-        });
-
-        return [$response, $called];
+        $this->assertTrue($result[0]);
     }
 }

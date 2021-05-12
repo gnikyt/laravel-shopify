@@ -61,10 +61,10 @@ class AuthProxy
     {
         // Grab the query parameters we need
         $query = parseQueryString($request->server->get('QUERY_STRING'));
-        $signature = Hmac::fromNative(Arr::get($query, 'signature'));
+        $signature = Arr::get($query, 'signature', '');
         $shop = NullableShopDomain::fromNative(Arr::get($query, 'shop'));
 
-        if ($signature) {
+        if (! empty($signature)) {
             // Remove signature since its not part of the signature calculation
             Arr::forget($query, 'signature');
         }
@@ -77,7 +77,7 @@ class AuthProxy
             ],
             getShopifyConfig('api_secret', $shop)
         );
-        if (! $signature->isSame($signatureLocal) || $shop->isNull()) {
+        if (! Hmac::fromNative($signature)->isSame($signatureLocal) || $shop->isNull()) {
             // Issue with HMAC or missing shop header
             return Response::make('Invalid proxy signature.', HttpResponse::HTTP_UNAUTHORIZED);
         }
