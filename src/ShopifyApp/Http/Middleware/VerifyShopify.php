@@ -374,7 +374,7 @@ class VerifyShopify
         if (getShopifyConfig('turbo_enabled')) {
             if ($request->bearerToken()) {
                 // Bearer tokens collect.
-                // Since Turbo does not refresh the page, the method is called several times in a row, values are attached to the same header.
+                // Turbo does not refresh the page, values are attached to the same header.
                 $bearerTokens = Collection::make(explode(',', $request->header('Authorization', '')));
                 $newestToken = Str::substr(trim($bearerTokens->last()), 7);
 
