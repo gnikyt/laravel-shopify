@@ -6,11 +6,10 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\Response;
-use Osiset\ShopifyApp\Objects\Values\Hmac;
-use Osiset\ShopifyApp\Objects\Values\NullableShopDomain;
-
 use function Osiset\ShopifyApp\createHmac;
 use function Osiset\ShopifyApp\getShopifyConfig;
+use Osiset\ShopifyApp\Objects\Values\Hmac;
+use Osiset\ShopifyApp\Objects\Values\NullableShopDomain;
 
 /**
  * Response for ensuring a proper webhook request.

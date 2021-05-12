@@ -4,10 +4,9 @@ namespace Osiset\ShopifyApp\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
-use Osiset\ShopifyApp\Objects\Values\Hmac;
-
 use function Osiset\ShopifyApp\createHmac;
 use function Osiset\ShopifyApp\getShopifyConfig;
+use Osiset\ShopifyApp\Objects\Values\Hmac;
 
 /**
  * Handles validating a usage charge.

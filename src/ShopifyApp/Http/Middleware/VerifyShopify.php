@@ -20,9 +20,9 @@ use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
 use function Osiset\ShopifyApp\getShopifyConfig;
 use Osiset\ShopifyApp\Objects\Enums\DataSource;
 use Osiset\ShopifyApp\Objects\Values\NullableSessionId;
+use Osiset\ShopifyApp\Objects\Values\SessionContext;
 use Osiset\ShopifyApp\Objects\Values\SessionToken;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
-use Osiset\ShopifyApp\Objects\Values\SessionContext;
 
 /**
  * Responsible for validating the request.
@@ -218,6 +218,7 @@ class VerifyShopify
 
         // We have HMAC, validate it
         $data = $this->getRequestData($request, $hmac['source']);
+
         return $this->apiHelper->verifyRequest($data);
     }
 
@@ -249,6 +250,7 @@ class VerifyShopify
 
         // All is well, login the shop
         $this->auth->login($shop);
+
         return true;
     }
 
@@ -363,6 +365,7 @@ class VerifyShopify
                 // Turbo does not refresh the page, values are attached to the same header.
                 $bearerTokens = Collection::make(explode(',', $request->header('Authorization', '')));
                 $newestToken = Str::substr(trim($bearerTokens->last()), 7);
+
                 return $newestToken;
             }
 
@@ -492,6 +495,7 @@ class VerifyShopify
     protected function checkPreviousInstallation(Request $request): bool
     {
         $shop = $this->shopQuery->getByDomain(ShopDomain::fromRequest($request), [], true);
+
         return $shop && ! $shop->trashed();
     }
 }

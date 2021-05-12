@@ -9,10 +9,9 @@ use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Response;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
-use Osiset\ShopifyApp\Objects\Values\Hmac;
-
 use function Osiset\ShopifyApp\createHmac;
 use function Osiset\ShopifyApp\getShopifyConfig;
+use Osiset\ShopifyApp\Objects\Values\Hmac;
 use Osiset\ShopifyApp\Objects\Values\NullableShopDomain;
 use function Osiset\ShopifyApp\parseQueryString;
 

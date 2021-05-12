@@ -3,13 +3,13 @@
 namespace Osiset\ShopifyApp\Actions;
 
 use Exception;
-use Osiset\ShopifyApp\Objects\Enums\AuthMode;
+use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
+use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use function Osiset\ShopifyApp\getShopifyConfig;
-use Osiset\ShopifyApp\Objects\Values\ShopDomain;
+use Osiset\ShopifyApp\Objects\Enums\AuthMode;
 use Osiset\ShopifyApp\Objects\Values\AccessToken;
 use Osiset\ShopifyApp\Objects\Values\NullAccessToken;
-use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
-use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
+use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 
 /**
  * Install steps for a shop.

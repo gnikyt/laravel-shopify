@@ -43,6 +43,7 @@ function createHmac(array $opts, string $secret): Hmac
 
     // Return based on options
     $result = $encode ? base64_encode($hmac) : $hmac;
+
     return Hmac::fromNative($result);
 }
 

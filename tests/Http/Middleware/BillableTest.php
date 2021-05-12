@@ -3,7 +3,6 @@
 namespace Osiset\ShopifyApp\Test\Http\Middleware;
 
 use Illuminate\Auth\AuthManager;
-use Illuminate\Support\Facades\Request;
 use Osiset\ShopifyApp\Http\Middleware\Billable as BillableMiddleware;
 use Osiset\ShopifyApp\Storage\Models\Charge;
 use Osiset\ShopifyApp\Storage\Models\Plan;

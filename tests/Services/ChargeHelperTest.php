@@ -11,7 +11,6 @@ use Osiset\ShopifyApp\Storage\Models\Charge;
 use Osiset\ShopifyApp\Storage\Models\Plan;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
 use Osiset\ShopifyApp\Test\TestCase;
-use stdClass;
 
 class ChargeHelperTest extends TestCase
 {

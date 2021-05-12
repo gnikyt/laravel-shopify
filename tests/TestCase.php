@@ -12,10 +12,9 @@ use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use Osiset\BasicShopifyAPI\Options;
 use function Osiset\ShopifyApp\base64url_encode;
 use Osiset\ShopifyApp\Contracts\ShopModel;
-use Osiset\ShopifyApp\Objects\Values\Hmac;
-
 use function Osiset\ShopifyApp\createHmac;
 use function Osiset\ShopifyApp\getShopifyConfig;
+use Osiset\ShopifyApp\Objects\Values\Hmac;
 use Osiset\ShopifyApp\ShopifyAppProvider;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
 use Osiset\ShopifyApp\Test\Stubs\User as UserStub;

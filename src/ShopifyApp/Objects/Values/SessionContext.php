@@ -2,14 +2,11 @@
 
 namespace Osiset\ShopifyApp\Objects\Values;
 
-use Illuminate\Support\Arr;
-use Funeralzone\ValueObjects\ValueObject;
 use Funeralzone\ValueObjects\CompositeTrait;
-use Osiset\ShopifyApp\Objects\Values\NullableSessionId;
-use Osiset\ShopifyApp\Objects\Values\NullableAccessToken;
-use Osiset\ShopifyApp\Objects\Values\NullableSessionToken;
-use Osiset\ShopifyApp\Contracts\Objects\Values\SessionId as SessionIdValue;
+use Funeralzone\ValueObjects\ValueObject;
+use Illuminate\Support\Arr;
 use Osiset\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
+use Osiset\ShopifyApp\Contracts\Objects\Values\SessionId as SessionIdValue;
 use Osiset\ShopifyApp\Contracts\Objects\Values\SessionToken as SessionTokenValue;
 
 /**
