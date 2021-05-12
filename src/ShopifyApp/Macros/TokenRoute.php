@@ -4,9 +4,8 @@ namespace Osiset\ShopifyApp\Macros;
 
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\URL;
-use Osiset\ShopifyApp\Objects\Values\ShopDomain;
-
 use function Osiset\ShopifyApp\getShopifyConfig;
+use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 
 /**
  * Method for generating a URL to the token route.

@@ -6,9 +6,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\URL;
-use Osiset\ShopifyApp\Objects\Values\ShopDomain;
-
 use function Osiset\ShopifyApp\getShopifyConfig;
+use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 
 /**
  * Method for passing a request through the token route.

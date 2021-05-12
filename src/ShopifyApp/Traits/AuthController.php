@@ -11,8 +11,8 @@ use Illuminate\Support\Facades\View;
 use Osiset\ShopifyApp\Actions\AuthenticateShop;
 use Osiset\ShopifyApp\Exceptions\MissingAuthUrlException;
 use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
-use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use function Osiset\ShopifyApp\getShopifyConfig;
+use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use function Osiset\ShopifyApp\parseQueryString;
 
 /**
@@ -81,7 +81,7 @@ trait AuthController
             $params = parseQueryString($query);
             unset($params['token']);
 
-            $cleanTarget = trim(explode('?', $target)[0] . '?' . http_build_query($params), '?');
+            $cleanTarget = trim(explode('?', $target)[0].'?'.http_build_query($params), '?');
         }
 
         return View::make(

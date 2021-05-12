@@ -116,7 +116,7 @@ class VerifyShopify
             //Check if there is a store record in the database
             return $this->checkPreviousInstallation($request)
                 // Shop exists, token not available, we need to get one
-                ?  $this->handleMissingToken($request)
+                ? $this->handleMissingToken($request)
                 // Shop does not exist
                 : $this->handleInvalidShop($request);
         }
@@ -291,7 +291,7 @@ class VerifyShopify
             ]);
 
             if ($filteredQuery->isNotEmpty()) {
-                $target .= '?' . http_build_query($filteredQuery->toArray());
+                $target .= '?'.http_build_query($filteredQuery->toArray());
             }
         }
 
@@ -380,6 +380,7 @@ class VerifyShopify
 
                 return $newestToken;
             }
+
             return $request->get('token');
         }
 
@@ -496,7 +497,6 @@ class VerifyShopify
         return $request->ajax() || $request->expectsJson();
     }
 
-
     /**
      * Check if there is a store record in the database.
      *
@@ -507,6 +507,7 @@ class VerifyShopify
     protected function checkPreviousInstallation(Request $request): bool
     {
         $shop = $this->shopQuery->getByDomain(ShopDomain::fromRequest($request), [], true);
+
         return $shop && ! $shop->trashed();
     }
 }

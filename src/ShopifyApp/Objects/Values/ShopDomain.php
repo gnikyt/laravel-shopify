@@ -7,8 +7,8 @@ use Funeralzone\ValueObjects\Scalars\StringTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
-use Osiset\ShopifyApp\Objects\Enums\DataSource;
 use function Osiset\ShopifyApp\getShopifyConfig;
+use Osiset\ShopifyApp\Objects\Enums\DataSource;
 use function Osiset\ShopifyApp\parseQueryString;
 
 /**
@@ -55,7 +55,7 @@ final class ShopDomain implements ShopDomainValue
             // Headers: Referer
             DataSource::REFERER()->toNative() => function () use ($request): ?string {
                 $url = parse_url($request->header('referer'), PHP_URL_QUERY);
-                if (!$url) {
+                if (! $url) {
                     return null;
                 }
 

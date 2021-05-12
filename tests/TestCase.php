@@ -3,9 +3,9 @@
 namespace Osiset\ShopifyApp\Test;
 
 use Closure;
+use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\App;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Request as FacadesRequest;
 use Orchestra\Database\ConsoleServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
