@@ -16,21 +16,21 @@ class HelpersTest extends TestCase
         $data = 'one-two-three';
         $this->assertSame(
             hash_hmac('sha256', $data, $secret, true),
-            createHmac(['data' => $data, 'raw' => true], $secret)
+            createHmac(['data' => $data, 'raw' => true], $secret)->toNative()
         );
 
         // Raw data encoded
         $data = 'one-two-three';
         $this->assertSame(
             base64_encode(hash_hmac('sha256', $data, $secret, true)),
-            createHmac(['data' => $data, 'raw' => true, 'encode' => true], $secret)
+            createHmac(['data' => $data, 'raw' => true, 'encode' => true], $secret)->toNative()
         );
 
         // Query build (sorts array and builds query string)
         $data = ['one' => 1, 'two' => 2, 'three' => 3];
         $this->assertSame(
             hash_hmac('sha256', 'one=1three=3two=2', $secret, false),
-            createHmac(['data' => $data, 'buildQuery' => true], $secret)
+            createHmac(['data' => $data, 'buildQuery' => true], $secret)->toNative()
         );
     }
 

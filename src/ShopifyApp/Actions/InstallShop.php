@@ -2,13 +2,14 @@
 
 namespace Osiset\ShopifyApp\Actions;
 
-use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
-use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
-use function Osiset\ShopifyApp\getShopifyConfig;
+use Exception;
 use Osiset\ShopifyApp\Objects\Enums\AuthMode;
+use function Osiset\ShopifyApp\getShopifyConfig;
+use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Objects\Values\AccessToken;
 use Osiset\ShopifyApp\Objects\Values\NullAccessToken;
-use Osiset\ShopifyApp\Objects\Values\ShopDomain;
+use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
 
 /**
  * Install steps for a shop.
@@ -92,7 +93,7 @@ class InstallShop
                 'url'       => null,
                 'shop_id'   => $shop->getId(),
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Just return the default setting
             return [
                 'completed' => false,

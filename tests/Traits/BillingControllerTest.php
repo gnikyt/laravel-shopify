@@ -102,7 +102,11 @@ class BillingControllerTest extends TestCase
         $signature = createHmac(['data' => $data, 'buildQuery' => true], $secret);
 
         // Run the call
-        $response = $this->call('post', '/billing/usage-charge', array_merge($data, ['signature' => $signature]));
+        $response = $this->call(
+            'post',
+            '/billing/usage-charge',
+            array_merge($data, ['signature' => $signature->toNative()])
+        );
         $response->assertRedirect($data['redirect']);
         $response->assertSessionHas('success');
 
@@ -111,7 +115,11 @@ class BillingControllerTest extends TestCase
         $signature = createHmac(['data' => $data, 'buildQuery' => true], $secret);
 
         // Run the call
-        $response = $this->call('post', '/billing/usage-charge', array_merge($data, ['signature' => $signature]));
+        $response = $this->call(
+            'post',
+            '/billing/usage-charge',
+            array_merge($data, ['signature' => $signature->toNative()])
+        );
         $response->assertRedirect('http://localhost');
         $response->assertSessionHas('success');
     }

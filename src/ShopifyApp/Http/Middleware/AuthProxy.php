@@ -9,6 +9,8 @@ use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Response;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
+use Osiset\ShopifyApp\Objects\Values\Hmac;
+
 use function Osiset\ShopifyApp\createHmac;
 use function Osiset\ShopifyApp\getShopifyConfig;
 use Osiset\ShopifyApp\Objects\Values\NullableShopDomain;
@@ -50,8 +52,8 @@ class AuthProxy
     /**
      * Handle an incoming request to ensure it is valid.
      *
-     * @param Request  $request The request object.
-     * @param \Closure $next    The next action.
+     * @param Request $request The request object.
+     * @param Closure $next    The next action.
      *
      * @return mixed
      */
@@ -59,7 +61,7 @@ class AuthProxy
     {
         // Grab the query parameters we need
         $query = parseQueryString($request->server->get('QUERY_STRING'));
-        $signature = Arr::get($query, 'signature');
+        $signature = Hmac::fromNative(Arr::get($query, 'signature'));
         $shop = NullableShopDomain::fromNative(Arr::get($query, 'shop'));
 
         if ($signature) {
@@ -75,7 +77,7 @@ class AuthProxy
             ],
             getShopifyConfig('api_secret', $shop)
         );
-        if ($signature !== $signatureLocal || $shop->isNull()) {
+        if (! $signature->isSame($signatureLocal) || $shop->isNull()) {
             // Issue with HMAC or missing shop header
             return Response::make('Invalid proxy signature.', HttpResponse::HTTP_UNAUTHORIZED);
         }
