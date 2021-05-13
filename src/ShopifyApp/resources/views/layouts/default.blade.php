@@ -25,45 +25,18 @@
                     data-turbolinks-eval="false"
                 @endif
             >
-                const AppBridge = window['app-bridge'];
-                const actions = AppBridge.actions;
-                const utils = window['app-bridge-utils'];
-                const createApp = AppBridge.default;
-                const app = createApp({
+                var AppBridge = window['app-bridge'];
+                var actions = AppBridge.actions;
+                var utils = window['app-bridge-utils'];
+                var createApp = AppBridge.default;
+                var app = createApp({
                     apiKey: "{{ \Osiset\ShopifyApp\getShopifyConfig('api_key', $shopDomain ?? Auth::user()->name ) }}",
                     shopOrigin: "{{ $shopDomain ?? Auth::user()->name }}",
                     forceRedirect: true,
                 });
             </script>
-            @if(\Osiset\ShopifyApp\getShopifyConfig('turbo_enabled'))
-                <script data-turbolinks-eval="false">
-                    const SESSION_TOKEN_REFRESH_INTERVAL = 2000;
 
-                    // Token updates
-                    document.addEventListener("turbolinks:load", (event) => {
-                        retrieveToken(app);
-                        keepRetrievingToken(app);
-                    });
-
-                    // Retrieve session token
-                    async function retrieveToken(app) {
-                        window.sessionToken = await utils.getSessionToken(app);
-                    }
-
-                    // Keep retrieving a session token periodically
-                    function keepRetrievingToken(app) {
-                        setInterval(() => {
-                            retrieveToken(app);
-                        }, SESSION_TOKEN_REFRESH_INTERVAL);
-                    }
-
-                    document.addEventListener("turbolinks:request-start", (event) => {
-                        let xhr = event.data.xhr;
-                        xhr.setRequestHeader("Authorization", "Bearer " + window.sessionToken);
-                    });
-                </script>
-            @endif
-
+            @include('shopify-app::partials.token_handler')
             @include('shopify-app::partials.flash_messages')
         @endif
 
