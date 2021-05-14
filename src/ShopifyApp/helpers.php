@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use LogicException;
 use Osiset\ShopifyApp\Objects\Values\Hmac;
+use Osiset\ShopifyApp\Storage\Queries\Shop;
+use Illuminate\Http\Request as HttpRequest;
+use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 
 /**
  * HMAC creation helper.
@@ -185,4 +188,87 @@ function getShopifyConfig(string $key, $shop = null)
     }
 
     return Arr::get($config, $key);
+}
+
+/**
+ * Getting information about the user's browser
+ *
+ * @return array
+ */
+function getBrowserInfo(): array
+{
+    $userAgent = request()->server('HTTP_USER_AGENT');
+
+    // Platforms list
+    $availablePlatforms = [
+        'Linux' => '/linux/i',
+        'Mac' => '/macintosh|mac os x/i',
+        'Windows' => '/windows|win32/i'
+    ];
+
+    // Browsers list
+    $availableBrowsers = [
+        'Mozilla Firefox' => [
+            'shortName' => 'Firefox',
+            'pattern' => '/Firefox/i'
+        ],
+        'Opera' => [
+            'shortName' => 'Opera',
+            'pattern' => '/OPR/i'
+        ],
+        'Google Chrome' => [
+            'shortName' => 'Chrome',
+            'pattern' => '/Chrome/i'
+        ],
+        'Apple Safari' => [
+            'shortName' => 'Safari',
+            'pattern' => '/Safari/i'
+        ],
+        'Microsoft Edge' => [
+            'shortName' => 'Edge',
+            'pattern' => '/Edge/i'
+        ],
+    ];
+
+    // Get current platform
+    foreach ($availablePlatforms as $platform => $pattern) {
+        if (preg_match($pattern, $userAgent)) {
+            $platform = $platform;
+            break;
+        }
+    }
+
+    // Get current browser
+    foreach ($availableBrowsers as $browser => $data) {
+        if (preg_match($data['pattern'], $userAgent)) {
+            $browserName = $browser;
+            break;
+        }
+    }
+
+    return [
+        'userAgent'     => $userAgent,
+        'fullName'      => $browserName ?? 'Unknown',
+        'shortName'     => $availableBrowsers[$browserName]['shortName'] ?? 'Unknown',
+        'platform'      => $platform ?? 'Unknown',
+    ];
+
+}
+
+/**
+ * Getting shop instance for billing.
+ *
+ * @return array
+ */
+function getShopForBilling(HttpRequest $request)
+{
+    if ($request->user()) {
+        return $request->user();
+    }
+
+    if ($request->get('shop')) {
+        return (new Shop())->getByDomain(ShopDomain::fromRequest($request), [], true);
+    }
+
+    return null;
 }

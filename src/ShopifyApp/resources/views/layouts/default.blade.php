@@ -37,6 +37,7 @@
             </script>
 
             @include('shopify-app::partials.token_handler')
+            @include('shopify-app::partials.safari_domain')
             @include('shopify-app::partials.flash_messages')
         @endif
 

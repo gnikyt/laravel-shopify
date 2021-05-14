@@ -17,6 +17,7 @@ use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use Osiset\ShopifyApp\Contracts\ShopModel;
 use Osiset\ShopifyApp\Exceptions\HttpException;
 use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
+use function Osiset\ShopifyApp\getBrowserInfo;
 use function Osiset\ShopifyApp\getShopifyConfig;
 use Osiset\ShopifyApp\Objects\Enums\DataSource;
 use Osiset\ShopifyApp\Objects\Values\NullableSessionId;
@@ -96,8 +97,8 @@ class VerifyShopify
             throw new SignatureVerificationException('Unable to verify signature.');
         }
 
-        // Continue if current route is an auth or billing route
-        if (Str::contains($request->getRequestUri(), ['/authenticate', '/billing'])) {
+        // Continue if the current route is a route from the list
+        if (Str::contains($request->getRequestUri(), $this->getRoutesWhiteList())) {
             return $next($request);
         }
 
@@ -497,5 +498,24 @@ class VerifyShopify
         $shop = $this->shopQuery->getByDomain(ShopDomain::fromRequest($request), [], true);
 
         return $shop && ! $shop->trashed();
+    }
+
+    /**
+     * Get a list of routes depending on the browser.
+     * Safari does not save the current session, so before choosing a plan you first need to get the session token.
+     *
+     * @return array
+     */
+    protected function getRoutesWhiteList(): array
+    {
+        $whiteList = ['/authenticate'];
+
+        $browserInfo = getBrowserInfo();
+
+        if ($browserInfo['shortName'] !== "Safari" || request()->get('charge_id')) {
+            array_push($whiteList, '/billing');
+        }
+
+        return $whiteList;
     }
 }

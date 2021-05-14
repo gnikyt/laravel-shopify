@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\View;
 use Osiset\ShopifyApp\Actions\ActivatePlan;
 use Osiset\ShopifyApp\Actions\ActivateUsageCharge;
 use Osiset\ShopifyApp\Actions\GetPlanUrl;
-use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
+use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use function Osiset\ShopifyApp\getShopForBilling;
 use function Osiset\ShopifyApp\getShopifyConfig;
 use Osiset\ShopifyApp\Http\Requests\StoreUsageCharge;
 use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
@@ -18,11 +19,30 @@ use Osiset\ShopifyApp\Objects\Values\ChargeReference;
 use Osiset\ShopifyApp\Objects\Values\NullablePlanId;
 use Osiset\ShopifyApp\Objects\Values\PlanId;
 
+
 /**
  * Responsible for billing a shop for plans and usage charges.
  */
 trait BillingController
 {
+    /**
+     * The shop querier.
+     *
+     * @var IShopQuery
+     */
+    protected $shopQuery;
+
+    /**
+     * Constructor.
+     *
+     * @param IShopQuery     $shopQuery The shop querier.
+     *
+     * @return void
+     */
+    public function __construct(IShopQuery $shopQuery) {
+        $this->shopQuery = $shopQuery;
+    }
+
     /**
      * Redirects to billing screen for Shopify.
      *
@@ -63,16 +83,26 @@ trait BillingController
         Request $request,
         ActivatePlan $activatePlan
     ): RedirectResponse {
+
+        // Get the store and if it does not exist (in the case of safari) redirect to get the domain)
+        $shop = getShopForBilling($request);
+        if (! $shop) {
+            return Redirect::route(getShopifyConfig('route_names.billing.domain'), [
+                'target' => url()->current(),
+                'charge_id' => $request->query('charge_id')
+            ]);
+        }
+
         // Activate the plan and save
         $result = $activatePlan(
-            $request->user()->getId(),
+            $shop->getId(),
             PlanId::fromNative($plan),
             ChargeReference::fromNative((int) $request->query('charge_id'))
         );
 
         // Go to homepage of app
         return Redirect::route(getShopifyConfig('route_names.home'), [
-            'shop' => $request->user()->getDomain()->toNative(),
+            'shop' => $shop->getDomain()->toNative(),
         ])->with(
             $result ? 'success' : 'failure',
             'billing'
@@ -103,5 +133,20 @@ trait BillingController
         return isset($validated['redirect'])
             ? Redirect::to($validated['redirect'])->with('success', 'usage_charge')
             : Redirect::back()->with('success', 'usage_charge');
+    }
+
+    /**
+     * Redirect to the "billing domain" page in order to pick up the current domain name of the store.
+     * Only used in Safari 13 / 14 browsers.
+     *
+     * @param Request $request The HTTP request object.
+     *
+     * @return ViewView
+     */
+    public function processDomain(Request $request): ViewView {
+        return View::make('shopify-app::billing.domain', [
+            'target' => $request->query('target'),
+            'charge_id' => $request->query('charge_id')
+        ]);
     }
 }
