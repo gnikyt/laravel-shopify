@@ -17,12 +17,13 @@ use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use Osiset\ShopifyApp\Contracts\ShopModel;
 use Osiset\ShopifyApp\Exceptions\HttpException;
 use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
+use function Osiset\ShopifyApp\getBrowserInfo;
 use function Osiset\ShopifyApp\getShopifyConfig;
 use Osiset\ShopifyApp\Objects\Enums\DataSource;
 use Osiset\ShopifyApp\Objects\Values\NullableSessionId;
+use Osiset\ShopifyApp\Objects\Values\SessionContext;
 use Osiset\ShopifyApp\Objects\Values\SessionToken;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
-use Osiset\ShopifyApp\Services\SessionContext;
 
 /**
  * Responsible for validating the request.
@@ -51,13 +52,6 @@ class VerifyShopify
     protected $shopQuery;
 
     /**
-     * The session context service.
-     *
-     * @var SessionContext
-     */
-    protected $sessionContext;
-
-    /**
      * Previous request shop.
      *
      * @var ShopModel|null
@@ -67,22 +61,19 @@ class VerifyShopify
     /**
      * Constructor.
      *
-     * @param AuthManager    $auth      The Laravel auth manager.
-     * @param IApiHelper     $apiHelper The API helper.
-     * @param IShopQuery     $shopQuery The shop querier.
-     * @param SessionContext $session   The session context service.
+     * @param AuthManager $auth      The Laravel auth manager.
+     * @param IApiHelper  $apiHelper The API helper.
+     * @param IShopQuery  $shopQuery The shop querier.
      *
      * @return void
      */
     public function __construct(
         AuthManager $auth,
         IApiHelper $apiHelper,
-        IShopQuery $shopQuery,
-        SessionContext $session
+        IShopQuery $shopQuery
     ) {
         $this->auth = $auth;
         $this->shopQuery = $shopQuery;
-        $this->sessionContext = $session;
         $this->apiHelper = $apiHelper;
         $this->apiHelper->make();
     }
@@ -106,20 +97,18 @@ class VerifyShopify
             throw new SignatureVerificationException('Unable to verify signature.');
         }
 
-        // Continue if current route is an auth or billing route
-        if (Str::contains($request->getRequestUri(), ['/authenticate', '/billing'])) {
+        // Continue if the current route is a route from the list
+        if (Str::contains($request->getRequestUri(), $this->getRoutesWhiteList())) {
             return $next($request);
         }
 
         $tokenSource = $this->getAccessTokenFromRequest($request);
         if ($tokenSource === null) {
             //Check if there is a store record in the database
-            $installedBefore = $this->checkPreviousInstallation($request);
-
-            return $installedBefore
-                // Not available, we need to get one
-                ?  $this->handleMissingToken($request)
-                // No token and no entry in the database
+            return $this->checkPreviousInstallation($request)
+                // Shop exists, token not available, we need to get one
+                ? $this->handleMissingToken($request)
+                // Shop does not exist
                 : $this->handleInvalidShop($request);
         }
 
@@ -208,7 +197,7 @@ class VerifyShopify
             throw new HttpException('Shop is not installed or missing data.', Response::HTTP_FORBIDDEN);
         }
 
-        return $this->installRedirect(ShopDomain::getFromRequest($request));
+        return $this->installRedirect(ShopDomain::fromRequest($request));
     }
 
     /**
@@ -251,10 +240,8 @@ class VerifyShopify
         }
 
         // Set the session details for the token, session ID, and access token
-        $this->sessionContext->setSessionToken($token);
-        $this->sessionContext->setSessionId($sessionId);
-        $this->sessionContext->setAccessToken($shop->getAccessToken());
-        $shop->setSessionContext($this->sessionContext);
+        $context = new SessionContext($token, $sessionId, $shop->getAccessToken());
+        $shop->setSessionContext($context);
 
         $previousContext = $this->previousShop ? $this->previousShop->getSessionContext() : null;
         if (! $shop->getSessionContext()->isValid($previousContext)) {
@@ -279,9 +266,10 @@ class VerifyShopify
     {
         // At this point the HMAC and other details are verified already, filter it out
         $path = $request->path();
-        $target = Str::startsWith($path, '/') ? $path : "/{$path}";
-        if ($request->has('hmac')) {
-            $filteredQuery = Collection::make($request->all())->except([
+        $target = Str::start($path, '/');
+
+        if ($request->query()) {
+            $filteredQuery = Collection::make($request->query())->except([
                 'hmac',
                 'host',
                 'locale',
@@ -290,7 +278,8 @@ class VerifyShopify
                 'session',
                 'shop',
             ]);
-            if (count($filteredQuery) > 0) {
+
+            if ($filteredQuery->isNotEmpty()) {
                 $target .= '?'.http_build_query($filteredQuery->toArray());
             }
         }
@@ -298,7 +287,7 @@ class VerifyShopify
         return Redirect::route(
             getShopifyConfig('route_names.authenticate.token'),
             [
-                'shop'   => ShopDomain::getFromRequest($request)->toNative(),
+                'shop'   => ShopDomain::fromRequest($request)->toNative(),
                 'target' => $target,
             ]
         );
@@ -374,12 +363,13 @@ class VerifyShopify
         if (getShopifyConfig('turbo_enabled')) {
             if ($request->bearerToken()) {
                 // Bearer tokens collect.
-                // Since Turbo does not refresh the page, the method is called several times in a row, values are attached to the same header.
+                // Turbo does not refresh the page, values are attached to the same header.
                 $bearerTokens = Collection::make(explode(',', $request->header('Authorization', '')));
                 $newestToken = Str::substr(trim($bearerTokens->last()), 7);
 
                 return $newestToken;
             }
+
             return $request->get('token');
         }
 
@@ -496,16 +486,36 @@ class VerifyShopify
         return $request->ajax() || $request->expectsJson();
     }
 
-
     /**
      * Check if there is a store record in the database.
+     *
      * @param Request $request The request object.
+     *
      * @return bool
      */
     protected function checkPreviousInstallation(Request $request): bool
     {
-        $shop = $this->shopQuery->getByDomain(ShopDomain::getFromRequest($request), [], true);
+        $shop = $this->shopQuery->getByDomain(ShopDomain::fromRequest($request), [], true);
 
-        return ($shop && !$shop->trashed());
+        return $shop && ! $shop->trashed();
+    }
+
+    /**
+     * Get a list of routes depending on the browser.
+     * Safari does not save the current session, so before choosing a plan you first need to get the session token.
+     *
+     * @return array
+     */
+    protected function getRoutesWhiteList(): array
+    {
+        $whiteList = ['/authenticate'];
+
+        $browserInfo = getBrowserInfo();
+
+        if ($browserInfo['shortName'] !== "Safari" || request()->get('charge_id')) {
+            array_push($whiteList, '/billing');
+        }
+
+        return $whiteList;
     }
 }

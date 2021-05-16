@@ -2,6 +2,9 @@
 
 namespace Osiset\ShopifyApp;
 
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Osiset\ShopifyApp\Actions\ActivatePlan as ActivatePlanAction;
 use Osiset\ShopifyApp\Actions\ActivateUsageCharge as ActivateUsageChargeAction;
@@ -23,10 +26,13 @@ use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
 use Osiset\ShopifyApp\Contracts\Queries\Charge as IChargeQuery;
 use Osiset\ShopifyApp\Contracts\Queries\Plan as IPlanQuery;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use Osiset\ShopifyApp\Directives\SessionToken;
 use Osiset\ShopifyApp\Http\Middleware\AuthProxy;
 use Osiset\ShopifyApp\Http\Middleware\AuthWebhook;
 use Osiset\ShopifyApp\Http\Middleware\Billable;
 use Osiset\ShopifyApp\Http\Middleware\VerifyShopify;
+use Osiset\ShopifyApp\Macros\TokenRedirect;
+use Osiset\ShopifyApp\Macros\TokenRoute;
 use Osiset\ShopifyApp\Messaging\Jobs\ScripttagInstaller;
 use Osiset\ShopifyApp\Messaging\Jobs\WebhookInstaller;
 use Osiset\ShopifyApp\Services\ApiHelper;
@@ -69,6 +75,8 @@ class ShopifyAppProvider extends ServiceProvider
         $this->bootJobs();
         $this->bootObservers();
         $this->bootMiddlewares();
+        $this->bootMacros();
+        $this->bootDirectives();
     }
 
     /**
@@ -337,5 +345,26 @@ class ShopifyAppProvider extends ServiceProvider
         $this->app['router']->aliasMiddleware('auth.webhook', AuthWebhook::class);
         $this->app['router']->aliasMiddleware('auth.proxy', AuthProxy::class);
         $this->app['router']->aliasMiddleware('billable', Billable::class);
+    }
+
+    /**
+     * Apply macros to Laravel framework.
+     *
+     * @return void
+     */
+    private function bootMacros(): void
+    {
+        Redirect::macro('tokenRedirect', new TokenRedirect());
+        URL::macro('tokenRoute', new TokenRoute());
+    }
+
+    /**
+     * Init Blade directives.
+     *
+     * @return void
+     */
+    private function bootDirectives(): void
+    {
+        Blade::directive('sessionToken', new SessionToken());
     }
 }

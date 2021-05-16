@@ -233,15 +233,15 @@ final class SessionToken implements SessionTokenValue
     {
         // Get the token without the signature present
         $partsCopy = $this->parts;
-        $signature = array_pop($partsCopy);
+        $signature = Hmac::fromNative(array_pop($partsCopy));
         $tokenWithoutSignature = implode('.', $partsCopy);
 
         // Create a local HMAC
         $secret = getShopifyConfig('api_secret', $this->shopDomain);
         $hmac = createHmac(['data' => $tokenWithoutSignature, 'raw' => true], $secret);
-        $encodedHmac = base64url_encode($hmac);
+        $encodedHmac = Hmac::fromNative(base64url_encode($hmac->toNative()));
 
-        Assert::that(hash_equals($signature, $encodedHmac))->true();
+        Assert::that($signature->isSame($encodedHmac))->true();
     }
 
     /**

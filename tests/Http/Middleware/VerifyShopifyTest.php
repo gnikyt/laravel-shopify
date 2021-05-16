@@ -2,7 +2,6 @@
 
 namespace Osiset\ShopifyApp\Test\Http\Middleware;
 
-use Closure;
 use Illuminate\Support\Facades\Request;
 use Osiset\ShopifyApp\Exceptions\HttpException;
 use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
@@ -36,10 +35,9 @@ class VerifyShopifyTest extends TestCase
             // Server vars
             []
         );
-        Request::swap($newRequest);
 
         // Run the middleware
-        $this->runAuth();
+        $this->runMiddleware(VerifyShopify::class, $newRequest);
     }
 
     public function testSkipAuthenticateAndBillingRoutes(): void
@@ -60,23 +58,45 @@ class VerifyShopifyTest extends TestCase
             // Server vars
             ['REQUEST_URI' => '/authenticate']
         );
-        Request::swap($newRequest);
 
         // Run the middleware
-        $result = $this->runAuth();
-        $this->assertTrue($result);
+        $result = $this->runMiddleware(VerifyShopify::class, $newRequest);
+        $this->assertTrue($result[0]);
     }
 
     public function testMissingToken(): void
     {
+        // Create a shop
+        $shop = factory($this->model)->create(['name' => 'shop-name.myshopify.com']);
+
+        // Setup the request
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(
+            // Query Params
+            ['shop' => $shop->name],
+            // Request Params
+            null,
+            // Attributes
+            null,
+            // Cookies
+            null,
+            // Files
+            null,
+            // Server vars
+            null
+        );
+
         // Run the middleware
-        $result = $this->runAuth();
-        $this->assertFalse($result);
+        $result = $this->runMiddleware(VerifyShopify::class, $newRequest);
+        $this->assertFalse($result[0]);
     }
 
     public function testMissingTokenAjax(): void
     {
         $this->expectException(HttpException::class);
+
+        // Create a shop
+        $shop = factory($this->model)->create(['name' => 'shop-name.myshopify.com']);
 
         // Setup the request
         $currentRequest = Request::instance();
@@ -92,13 +112,15 @@ class VerifyShopifyTest extends TestCase
             // Files
             null,
             // Server vars
-            ['HTTP_X-Requested-With' => 'XMLHttpRequest']
+            [
+                'HTTP_X-Requested-With' => 'XMLHttpRequest',
+                'HTTP_X-Shop-Domain'    => $shop->name,
+            ]
         );
-        Request::swap($newRequest);
 
         // Run the middleware
-        $result = $this->runAuth();
-        $this->assertFalse($result);
+        $result = $this->runMiddleware(VerifyShopify::class, $newRequest);
+        $this->assertFalse($result[0]);
     }
 
     public function testTokenProcessingAndLoginShop(): void
@@ -125,11 +147,10 @@ class VerifyShopifyTest extends TestCase
                 'HTTP_X-Requested-With' => 'XMLHttpRequest',
             ]
         );
-        Request::swap($newRequest);
 
         // Run the middleware
-        $result = $this->runAuth();
-        $this->assertTrue($result);
+        $result = $this->runMiddleware(VerifyShopify::class, $newRequest);
+        $this->assertTrue($result[0]);
     }
 
     public function testTokenProcessingAndNotInstalledShop(): void
@@ -153,11 +174,10 @@ class VerifyShopifyTest extends TestCase
             // Server vars
             []
         );
-        Request::swap($newRequest);
 
         // Run the middleware
-        $result = $this->runAuth();
-        $this->assertFalse($result);
+        $result = $this->runMiddleware(VerifyShopify::class, $newRequest);
+        $this->assertFalse($result[0]);
     }
 
     public function testTokenProcessingAndNotInstalledShopAjax(): void
@@ -183,10 +203,9 @@ class VerifyShopifyTest extends TestCase
                 'HTTP_X-Requested-With' => 'XMLHttpRequest',
             ]
         );
-        Request::swap($newRequest);
 
         // Run the middleware
-        $result = $this->runAuth();
+        $result = $this->runMiddleware(VerifyShopify::class, $newRequest);
         $this->assertFalse($result);
     }
 
@@ -208,11 +227,10 @@ class VerifyShopifyTest extends TestCase
             // Server vars
             []
         );
-        Request::swap($newRequest);
 
         // Run the middleware
-        $result = $this->runAuth();
-        $this->assertFalse($result);
+        $result = $this->runMiddleware(VerifyShopify::class, $newRequest);
+        $this->assertFalse($result[0]);
     }
 
     public function testInvalidTokenAjax(): void
@@ -238,11 +256,10 @@ class VerifyShopifyTest extends TestCase
                 'HTTP_X-Requested-With' => 'XMLHttpRequest',
             ]
         );
-        Request::swap($newRequest);
 
         // Run the middleware
-        $result = $this->runAuth();
-        $this->assertFalse($result);
+        $result = $this->runMiddleware(VerifyShopify::class, $newRequest);
+        $this->assertFalse($result[0]);
     }
 
     public function testTokenProcessingAndMissMatchingShops(): void
@@ -274,13 +291,12 @@ class VerifyShopifyTest extends TestCase
         Request::swap($newRequest);
 
         // Run the middleware
-        $result = $this->runAuth();
-        $this->assertTrue($result);
+        $result = $this->runMiddleware(VerifyShopify::class, $newRequest);
+        $this->assertTrue($result[0]);
 
         // Run the middleware and change the shop
         $token = $this->buildToken(['dest' => 'https://some-other-shop.myshopify.com', 'iss' => 'https://some-other-shop.myshopify.com/admin']);
-        $currentRequest = Request::instance();
-        $newRequest = $currentRequest->duplicate(
+        $newRequest = $newRequest->duplicate(
             // Query Params
             [],
             // Request Params
@@ -297,23 +313,8 @@ class VerifyShopifyTest extends TestCase
                 'HTTP_X-Requested-With' => 'XMLHttpRequest',
             ]
         );
-        Request::swap($newRequest);
 
         $this->expectException(HttpException::class);
-        $this->runAuth();
-    }
-
-    private function runAuth(Closure $cb = null, $requestInstance = null): bool
-    {
-        $called = false;
-        $requestInstance = $requestInstance ?? Request::instance();
-        ($this->app->make(VerifyShopify::class))->handle($requestInstance, function ($request) use (&$called, $cb) {
-            $called = true;
-            if ($cb) {
-                $cb($request);
-            }
-        });
-
-        return $called;
+        $this->runMiddleware(VerifyShopify::class, $newRequest);
     }
 }

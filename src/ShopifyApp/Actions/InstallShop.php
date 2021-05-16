@@ -2,6 +2,7 @@
 
 namespace Osiset\ShopifyApp\Actions;
 
+use Exception;
 use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use function Osiset\ShopifyApp\getShopifyConfig;
@@ -92,7 +93,7 @@ class InstallShop
                 'url'       => null,
                 'shop_id'   => $shop->getId(),
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Just return the default setting
             return [
                 'completed' => false,

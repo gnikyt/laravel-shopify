@@ -3,8 +3,10 @@
 namespace Osiset\ShopifyApp\Test;
 
 use Closure;
+use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Request as FacadesRequest;
 use Orchestra\Database\ConsoleServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use Osiset\BasicShopifyAPI\Options;
@@ -12,6 +14,7 @@ use function Osiset\ShopifyApp\base64url_encode;
 use Osiset\ShopifyApp\Contracts\ShopModel;
 use function Osiset\ShopifyApp\createHmac;
 use function Osiset\ShopifyApp\getShopifyConfig;
+use Osiset\ShopifyApp\Objects\Values\Hmac;
 use Osiset\ShopifyApp\ShopifyAppProvider;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
 use Osiset\ShopifyApp\Test\Stubs\User as UserStub;
@@ -137,8 +140,22 @@ abstract class TestCase extends OrchestraTestCase
         $body = base64url_encode(json_encode(array_merge($this->tokenDefaults, $values)));
         $payload = sprintf('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.%s', $body);
         $hmac = createHmac(['data' => $payload, 'raw' => true], getShopifyConfig('api_secret'));
-        $encodedHmac = base64url_encode($hmac);
+        $encodedHmac = Hmac::fromNative(base64url_encode($hmac->toNative()));
 
-        return sprintf('%s.%s', $payload, $encodedHmac);
+        return sprintf('%s.%s', $payload, $encodedHmac->toNative());
+    }
+
+    protected function runMiddleware(string $middleware, Request $requestInstance = null, Closure $cb = null): array
+    {
+        $called = false;
+        $requestInstance = $requestInstance ?? FacadesRequest::instance();
+        $response = ($this->app->make($middleware))->handle($requestInstance, function (Request $request) use (&$called, $cb) {
+            $called = true;
+            if ($cb) {
+                $cb($request);
+            }
+        });
+
+        return [$called, $response];
     }
 }

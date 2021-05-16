@@ -7,8 +7,8 @@ use Funeralzone\ValueObjects\Scalars\StringTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
-use Osiset\ShopifyApp\Objects\Enums\DataSource;
 use function Osiset\ShopifyApp\getShopifyConfig;
+use Osiset\ShopifyApp\Objects\Enums\DataSource;
 use function Osiset\ShopifyApp\parseQueryString;
 
 /**
@@ -42,12 +42,12 @@ final class ShopDomain implements ShopDomainValue
      *
      * @return ShopDomainValue
      */
-    public static function getFromRequest(Request $request): ShopDomainValue
+    public static function fromRequest(Request $request): ShopDomainValue
     {
         // All possible methods
         $options = [
             // GET/POST
-            DataSource::INPUT()->toNative() => $request->input('shop') ?? $request->input('shopDomain'),
+            DataSource::INPUT()->toNative() => $request->input('shop', $request->input('shopDomain')),
 
             // Headers
             DataSource::HEADER()->toNative() => $request->header('X-Shop-Domain'),
@@ -55,24 +55,26 @@ final class ShopDomain implements ShopDomainValue
             // Headers: Referer
             DataSource::REFERER()->toNative() => function () use ($request): ?string {
                 $url = parse_url($request->header('referer'), PHP_URL_QUERY);
-                $params = parseQueryString($url);
-                $shop = Arr::get($params, 'shop') ?? Arr::get($params, 'shopDomain');
+                if (! $url) {
+                    return null;
+                }
 
+                $params = parseQueryString($url);
+                $shop = Arr::get($params, 'shop', Arr::get($params, 'shopDomain'));
                 if ($shop) {
                     return $shop;
                 }
 
                 $token = Arr::get($params, 'token');
-
                 if ($token) {
                     try {
-                        $token = new SessionToken($token, $verifyToken = false);
-
+                        $token = new SessionToken($token, false);
                         if ($shopDomain = $token->getShopDomain()) {
                             return $shopDomain->toNative();
                         }
                     } catch (AssertionFailedException $e) {
-                        // unable to decode the token
+                        // Unable to decode the token
+                        return null;
                     }
                 }
 
@@ -83,7 +85,6 @@ final class ShopDomain implements ShopDomainValue
         // Loop through each until we find the shop
         foreach ($options as $value) {
             $result = is_callable($value) ? $value() : $value;
-
             if ($result !== null) {
                 // Found a shop
                 return self::fromNative($result);

@@ -4,10 +4,12 @@ namespace Osiset\ShopifyApp;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Str;
 use LogicException;
-use Osiset\ShopifyApp\Contracts\ShopModel;
+use Osiset\ShopifyApp\Objects\Values\Hmac;
+use Osiset\ShopifyApp\Storage\Queries\Shop;
+use Illuminate\Http\Request as HttpRequest;
+use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 
 /**
  * HMAC creation helper.
@@ -15,9 +17,9 @@ use Osiset\ShopifyApp\Contracts\ShopModel;
  * @param array  $opts   The options for building the HMAC.
  * @param string $secret The app secret key.
  *
- * @return string
+ * @return Hmac
  */
-function createHmac(array $opts, string $secret): string
+function createHmac(array $opts, string $secret): Hmac
 {
     // Setup defaults
     $data = $opts['data'];
@@ -43,7 +45,9 @@ function createHmac(array $opts, string $secret): string
     $hmac = hash_hmac('sha256', $data, $secret, $raw);
 
     // Return based on options
-    return $encode ? base64_encode($hmac) : $hmac;
+    $result = $encode ? base64_encode($hmac) : $hmac;
+
+    return Hmac::fromNative($result);
 }
 
 /**
@@ -187,26 +191,84 @@ function getShopifyConfig(string $key, $shop = null)
 }
 
 /**
- * Appends the token from the shop's session context to the URL.
- * This is used for non-SPAs in Blade.
+ * Getting information about the user's browser
  *
- * @example `<a href="{{ \Osiset\ShopifyApp\tokenUrl(route('orders')) }}">Orders</a>`
- *
- * @param string         $url  The URL to append the token to.
- * @param ShopModel|null $shop The shop.
- *
- * @return string
+ * @return array
  */
-function tokenUrl(string $url, ?ShopModel $shop = null): string
+function getBrowserInfo(): array
 {
-    if ($shop === null) {
-        // Get shop from request
-        $shop = Request::user();
+    $userAgent = request()->server('HTTP_USER_AGENT');
+
+    // Platforms list
+    $availablePlatforms = [
+        'Linux' => '/linux/i',
+        'Mac' => '/macintosh|mac os x/i',
+        'Windows' => '/windows|win32/i'
+    ];
+
+    // Browsers list
+    $availableBrowsers = [
+        'Mozilla Firefox' => [
+            'shortName' => 'Firefox',
+            'pattern' => '/Firefox/i'
+        ],
+        'Opera' => [
+            'shortName' => 'Opera',
+            'pattern' => '/OPR/i'
+        ],
+        'Google Chrome' => [
+            'shortName' => 'Chrome',
+            'pattern' => '/Chrome/i'
+        ],
+        'Apple Safari' => [
+            'shortName' => 'Safari',
+            'pattern' => '/Safari/i'
+        ],
+        'Microsoft Edge' => [
+            'shortName' => 'Edge',
+            'pattern' => '/Edge/i'
+        ],
+    ];
+
+    // Get current platform
+    foreach ($availablePlatforms as $platform => $pattern) {
+        if (preg_match($pattern, $userAgent)) {
+            $platform = $platform;
+            break;
+        }
     }
 
-    // Determine the seperator and get the token from the shop
-    $sep = Str::contains($url, '?') ? '&' : '?';
-    $token = $shop->getSessionContext()->getSessionToken()->toNative();
+    // Get current browser
+    foreach ($availableBrowsers as $browser => $data) {
+        if (preg_match($data['pattern'], $userAgent)) {
+            $browserName = $browser;
+            break;
+        }
+    }
 
-    return "{$url}{$sep}token={$token}";
+    return [
+        'userAgent'     => $userAgent,
+        'fullName'      => $browserName ?? 'Unknown',
+        'shortName'     => $availableBrowsers[$browserName]['shortName'] ?? 'Unknown',
+        'platform'      => $platform ?? 'Unknown',
+    ];
+
+}
+
+/**
+ * Getting shop instance for billing.
+ *
+ * @return array
+ */
+function getShopForBilling(HttpRequest $request)
+{
+    if ($request->user()) {
+        return $request->user();
+    }
+
+    if ($request->get('shop')) {
+        return (new Shop())->getByDomain(ShopDomain::fromRequest($request), [], true);
+    }
+
+    return null;
 }

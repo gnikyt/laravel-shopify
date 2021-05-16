@@ -2,6 +2,7 @@
 
 namespace Osiset\ShopifyApp\Test\Traits;
 
+use Illuminate\Http\Response;
 use Osiset\ShopifyApp\Test\TestCase;
 
 class ApiControllerTest extends TestCase
@@ -18,37 +19,47 @@ class ApiControllerTest extends TestCase
 
     public function testApiWithoutToken(): void
     {
-        factory($this->model)->create();
+        $shop = factory($this->model)->create();
 
-        $response = $this->getJson('/api');
+        $response = $this->getJson('/api', ['HTTP_X-Shop-Domain' => $shop->name]);
 
-        $response->assertStatus(400);
+        $response->assertStatus(Response::HTTP_BAD_REQUEST);
         $response->assertExactJson(['error' => 'Session token is invalid.'], $response->getContent());
     }
 
     public function testApiWithToken(): void
     {
-        factory($this->model)->create(['name' => 'shop-name.myshopify.com']);
+        $shop = factory($this->model)->create(['name' => 'shop-name.myshopify.com']);
 
-        $response = $this->getJson('/api', ['HTTP_Authorization' => "Bearer {$this->buildToken()}"]);
+        $response = $this->getJson('/api', [
+            'HTTP_X-Shop-Domain' => $shop->name,
+            'HTTP_Authorization' => "Bearer {$this->buildToken()}",
+        ]);
+
         $response->assertExactJson([], $response->getContent());
         $response->assertOk();
     }
 
     public function testApiGetSelf(): void
     {
-        factory($this->model)->create(['name' => 'shop-name.myshopify.com']);
+        $shop = factory($this->model)->create(['name' => 'shop-name.myshopify.com']);
 
-        $response = $this->getJson('/api/me', ['HTTP_Authorization' => "Bearer {$this->buildToken()}"]);
+        $response = $this->getJson('/api/me', [
+            'HTTP_X-Shop-Domain' => $shop->name,
+            'HTTP_Authorization' => "Bearer {$this->buildToken()}",
+        ]);
         $response->assertOk();
         $response->assertJsonFragment(['name' => 'shop-name.myshopify.com']);
     }
 
     public function testApiGetPlans(): void
     {
-        factory($this->model)->create(['name' => 'shop-name.myshopify.com']);
+        $shop = factory($this->model)->create(['name' => 'shop-name.myshopify.com']);
 
-        $response = $this->getJson('/api/me', ['HTTP_Authorization' => "Bearer {$this->buildToken()}"]);
+        $response = $this->getJson('/api/me', [
+            'HTTP_X-Shop-Domain' => $shop->name,
+            'HTTP_Authorization' => "Bearer {$this->buildToken()}",
+        ]);
 
         $response->assertOk();
         $result = json_decode($response->getContent());
