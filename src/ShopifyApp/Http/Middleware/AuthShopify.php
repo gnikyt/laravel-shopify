@@ -352,8 +352,8 @@ class AuthShopify
     private function handleBadVerification(Request $request, ShopDomainValue $domain)
     {
         if ($domain->isNull()) {
-            // We have no idea of knowing who this is, this should not happen
-            throw new MissingShopDomainException();
+            //Rediect to login page if auth domain empty
+            return redirect()->route('login'); // 
         }
 
         // Set the return-to path so we can redirect after successful authentication
