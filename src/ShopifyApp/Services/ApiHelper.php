@@ -326,7 +326,7 @@ class ApiHelper implements IApiHelper
 
     /**
      * {@inheritdoc}
-     * TODO: Convert to GraphQL.
+     * @throws Exception
      */
     public function getWebhooks(array $params = []): ResponseAccess
     {
@@ -398,6 +398,7 @@ class ApiHelper implements IApiHelper
 
     /**
      * {@inheritdoc}
+     * @throws Exception
      */
     public function deleteWebhook(string $webhookId): ResponseAccess
     {
