@@ -330,54 +330,96 @@ class ApiHelper implements IApiHelper
      */
     public function getWebhooks(array $params = []): ResponseAccess
     {
-        // Setup the params
-        $reqParams = array_merge(
-            [
-                'limit'  => 250,
-                'fields' => 'id,address',
-            ],
-            $params
-        );
+        $query = '
+        query webhookSubscriptions($first: Int!) {
+            webhookSubscriptions(first: $first) {
+                edges {
+                    node {
+                        id
+                        topic
+                        endpoint {
+                            ...on WebhookHttpEndpoint {
+                                callbackUrl
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        ';
 
-        // Fire the request
-        $response = $this->doRequest(
-            ApiMethod::GET(),
-            '/admin/webhooks.json',
-            $reqParams
-        );
+        $variables = [
+            'first' => 250,
+        ];
 
-        return $response['body']['webhooks'];
+        $response = $this->doRequestGraphQL($query, $variables);
+
+        return $response['body']['data']['webhookSubscriptions'];
     }
 
     /**
      * {@inheritdoc}
-     * TODO: Convert to GraphQL.
+     * @throws Exception
      */
     public function createWebhook(array $payload): ResponseAccess
     {
-        // Fire the request
-        $response = $this->doRequest(
-            ApiMethod::POST(),
-            '/admin/webhooks.json',
-            ['webhook' => $payload]
-        );
+        $query = '
+        mutation webhookSubscriptionCreate(
+            $topic: WebhookSubscriptionTopic!,
+            $webhookSubscription: WebhookSubscriptionInput!
+        ) {
+            webhookSubscriptionCreate(
+                topic: $topic
+                webhookSubscription: $webhookSubscription
+            ) {
+                userErrors {
+                    field
+                    message
+                }
+                webhookSubscription {
+                    id
+                }
+            }
+        }
+        ';
 
-        return $response['body']['webhook'];
+        $variables = [
+            'topic' => $payload['topic'],
+            'webhookSubscription' => [
+                'callbackUrl' => $payload['address'],
+                'format' => 'JSON',
+            ],
+        ];
+
+        $response = $this->doRequestGraphQL($query, $variables);
+
+        return $response['body']['data']['webhookSubscriptionCreate'];
     }
 
     /**
      * {@inheritdoc}
-     * TODO: Convert to GraphQL.
      */
-    public function deleteWebhook(int $webhookId): ResponseAccess
+    public function deleteWebhook(string $webhookId): ResponseAccess
     {
-        // Fire the request
-        $response = $this->doRequest(
-            ApiMethod::DELETE(),
-            "/admin/webhooks/{$webhookId}.json"
-        );
+        $query = '
+        mutation webhookSubscriptionDelete($id: ID!) {
+            webhookSubscriptionDelete(id: $id) {
+                userErrors {
+                    field
+                    message
+                }
+                deletedWebhookSubscriptionId
+            }
+        }
+        ';
 
-        return $response['body'];
+        $variables = [
+            'id' => $webhookId,
+        ];
+
+        $response = $this->doRequestGraphQL($query, $variables);
+
+        return $response['body']['data']['webhookSubscriptionDelete'];
     }
 
     /**
@@ -428,7 +470,7 @@ class ApiHelper implements IApiHelper
      *
      * @param ApiMethod $method  The HTTP method.
      * @param string    $path    The endpoint path.
-     * @param array     $payload The optional payload to send to the endpoint.
+     * @param ?array    $payload The optional payload to send to the endpoint.
      *
      * @throws RequestException
      *
@@ -459,7 +501,7 @@ class ApiHelper implements IApiHelper
      *
      * @return array
      */
-    protected function doRequestGraphQL(string $query, array $payload = null)
+    protected function doRequestGraphQL(string $query, array $payload = []): array
     {
         $response = $this->api->graph($query, $payload);
         if ($response['errors'] !== false) {
