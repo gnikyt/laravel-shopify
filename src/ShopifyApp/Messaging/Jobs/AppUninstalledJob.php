@@ -79,7 +79,7 @@ class AppUninstalledJob implements ShouldQueue
         // Purge shop of token, plan, etc.
         $shopCommand->clean($shopId);
 
-        // Check freemium mode 
+        // Check freemium mode
         $freemium = getShopifyConfig('billing_freemium_enabled');
         if ($freemium === true) {
             // Add the freemium flag to the shop
