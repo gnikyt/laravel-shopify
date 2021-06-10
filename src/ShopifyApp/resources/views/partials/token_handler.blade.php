@@ -27,7 +27,7 @@
                 window.jQuery.ajaxSettings.headers['Authorization'] = `Bearer ${window.sessionToken}`;
             } else {
                 window.jQuery.ajaxSetup({
-                    headers: { 'Authorization': 'Bearer ' + window.sessionToken}
+                    headers: { 'Authorization': `Bearer ${window.sessionToken}`}
                 });
             }
         }
