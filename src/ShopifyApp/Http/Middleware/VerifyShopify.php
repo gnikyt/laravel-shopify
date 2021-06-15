@@ -270,7 +270,6 @@ class VerifyShopify
         if ($request->query()) {
             $filteredQuery = Collection::make($request->query())->except([
                 'hmac',
-                'host',
                 'locale',
                 'new_design_language',
                 'timestamp',
