@@ -75,8 +75,7 @@ class CookieHelper
             $compatible = true;
         }
 
-        if ($this->agent->is('OS X') &&
-            ($this->agent->is('Safari') && ! $this->agent->is('iOS')) &&
+        if ($this->agent->is('OS X') && $this->agent->is('Safari') && ! $this->agent->is('iOS') &&
             $platform['float'] > 10.14
         ) {
             $compatible = true;
