@@ -16,6 +16,7 @@
     ],
     "require": {
         "php": ">=7.2",
+        "ext-json": "*",
         "doctrine/dbal": "~2.5",
         "funeralzone/valueobjects": "^0.5",
         "jenssegers/agent": "^2.6",
