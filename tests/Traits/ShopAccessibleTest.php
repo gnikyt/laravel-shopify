@@ -3,7 +3,7 @@
 namespace Osiset\ShopifyApp\Test\Traits;
 
 use Osiset\ShopifyApp\Test\TestCase;
-use Osiset\ShopifyApp\Traits\ShopAccessible;
+use Osiset\ShopifyApp\Test\Traits\Stubs\TestShopAccessible;
 
 class ShopAccessibleTest extends TestCase
 {
@@ -15,18 +15,5 @@ class ShopAccessibleTest extends TestCase
         );
 
         $this->assertTrue($class->hasShop());
-    }
-}
-
-/**
- * Stub.
- */
-class TestShopAccessible
-{
-    use ShopAccessible;
-
-    public function hasShop(): bool
-    {
-        return $this->shop !== null;
     }
 }
