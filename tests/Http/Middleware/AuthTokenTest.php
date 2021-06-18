@@ -29,9 +29,7 @@ class AuthTokenTest extends TestCase
         );
         Request::swap($newRequest);
 
-        $this->expectException(HttpException::class);
-        $this->expectExceptionMessage('Missing authentication token');
-        $this->expectExceptionCode(401);
+        $this->expectExceptionObject(new HttpException('Missing authentication token', 401));
 
         // Run the middleware
         $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function ($r) {
@@ -61,9 +59,7 @@ class AuthTokenTest extends TestCase
         );
         Request::swap($newRequest);
 
-        $this->expectException(HttpException::class);
-        $this->expectExceptionMessage('Missing authentication token');
-        $this->expectExceptionCode(401);
+        $this->expectExceptionObject(new HttpException('Missing authentication token', 401));
 
         // Run the middleware
         $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
@@ -93,9 +89,7 @@ class AuthTokenTest extends TestCase
         );
         Request::swap($newRequest);
 
-        $this->expectException(HttpException::class);
-        $this->expectExceptionMessage('Malformed token');
-        $this->expectExceptionCode(400);
+        $this->expectExceptionObject(new HttpException('Malformed token', 400));
 
         // Run the middleware
         $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
@@ -125,9 +119,7 @@ class AuthTokenTest extends TestCase
         );
         Request::swap($newRequest);
 
-        $this->expectException(HttpException::class);
-        $this->expectExceptionMessage('Unable to verify signature');
-        $this->expectExceptionCode(400);
+        $this->expectExceptionObject(new HttpException('Unable to verify signature', 400));
 
         // Run the middleware
         $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
@@ -157,9 +149,7 @@ class AuthTokenTest extends TestCase
         );
         Request::swap($newRequest);
 
-        $this->expectException(HttpException::class);
-        $this->expectExceptionMessage('Malformed token');
-        $this->expectExceptionCode(400);
+        $this->expectExceptionObject(new HttpException('Malformed token', 400));
 
         // Run the middleware
         $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
@@ -208,9 +198,7 @@ class AuthTokenTest extends TestCase
         );
         Request::swap($newRequest);
 
-        $this->expectException(HttpException::class);
-        $this->expectExceptionMessage('Malformed token');
-        $this->expectExceptionCode(400);
+        $this->expectExceptionObject(new HttpException('Malformed token', 400));
 
         // Run the middleware
         $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
@@ -262,9 +250,7 @@ class AuthTokenTest extends TestCase
         );
         Request::swap($newRequest);
 
-        $this->expectException(HttpException::class);
-        $this->expectExceptionMessage('Expired token');
-        $this->expectExceptionCode(403);
+        $this->expectExceptionObject(new HttpException('Expired token', 403));
 
         // Run the middleware
         $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
@@ -316,9 +302,7 @@ class AuthTokenTest extends TestCase
         );
         Request::swap($newRequest);
 
-        $this->expectException(HttpException::class);
-        $this->expectExceptionMessage('Expired token');
-        $this->expectExceptionCode(403);
+        $this->expectExceptionObject(new HttpException('Expired token', 403));
 
         // Run the middleware
         $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
@@ -370,9 +354,7 @@ class AuthTokenTest extends TestCase
         );
         Request::swap($newRequest);
 
-        $this->expectException(HttpException::class);
-        $this->expectExceptionMessage('Invalid token');
-        $this->expectExceptionCode(400);
+        $this->expectExceptionObject(new HttpException('Invalid token', 400));
 
         // Run the middleware
         $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
@@ -424,9 +406,7 @@ class AuthTokenTest extends TestCase
         );
         Request::swap($newRequest);
 
-        $this->expectException(HttpException::class);
-        $this->expectExceptionMessage('Invalid token');
-        $this->expectExceptionCode(400);
+        $this->expectExceptionObject(new HttpException('Invalid token', 400));
 
         // Run the middleware
         $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
