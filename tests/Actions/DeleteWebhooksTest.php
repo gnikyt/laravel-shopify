@@ -6,7 +6,7 @@ use Osiset\ShopifyApp\Actions\DeleteWebhooks;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
 use Osiset\ShopifyApp\Test\TestCase;
 
-class DeleteWebhooksTestTest extends TestCase
+class DeleteWebhooksTest extends TestCase
 {
     /**
      * @var \Osiset\ShopifyApp\Actions\DeleteWebhooks
@@ -26,8 +26,8 @@ class DeleteWebhooksTestTest extends TestCase
         $this->setApiStub();
         ApiStub::stubResponses([
             'get_webhooks',
-            'empty',
-            'empty',
+            'delete_webhook',
+            'delete_webhook',
         ]);
 
         // Create the shop
