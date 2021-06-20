@@ -393,7 +393,7 @@ class ApiHelper implements IApiHelper
 
         $response = $this->doRequestGraphQL($query, $variables);
 
-        return $response['body']['data']['webhookSubscriptionCreate'];
+        return $response['body'];
     }
 
     /**
@@ -420,7 +420,7 @@ class ApiHelper implements IApiHelper
 
         $response = $this->doRequestGraphQL($query, $variables);
 
-        return $response['body']['data']['webhookSubscriptionDelete'];
+        return $response['body'];
     }
 
     /**
