@@ -2,6 +2,7 @@
 
 namespace Osiset\ShopifyApp\Actions;
 
+use Osiset\BasicShopifyAPI\ResponseAccess;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopId as ShopIdValue;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 
@@ -44,13 +45,13 @@ class CreateWebhooks
          * Checks if a webhooks exists already in the shop.
          *
          * @param array $webhook  The webhook config.
-         * @param array $webhooks The current webhooks to search.
+         * @param ResponseAccess $webhooks The current webhooks to search.
          *
          * @return bool
          */
-        $exists = static function (array $webhook, array $webhooks): bool {
-            foreach ($webhooks as $shopWebhook) {
-                if ($shopWebhook['node']['endpoint']['callbackUrl'] === $webhook['address']) {
+        $exists = static function (array $webhook, ResponseAccess $webhooks): bool {
+            foreach (data_get($webhooks, 'data.webhookSubscriptions.container.edges', []) as $shopWebhook) {
+                if (data_get($shopWebhook, 'node.endpoint.callbackUrl') === $webhook['address']) {
                     // Found the webhook in our list
                     return true;
                 }
@@ -71,7 +72,7 @@ class CreateWebhooks
         $used = [];
         foreach ($configWebhooks as $webhook) {
             // Check if the required webhook exists on the shop
-            if (! $exists($webhook, $webhooks['container']['edges'])) {
+            if (! $exists($webhook, $webhooks)) {
                 // It does not... create the webhook
                 $apiHelper->createWebhook($webhook);
                 $created[] = $webhook;
@@ -81,10 +82,10 @@ class CreateWebhooks
         }
 
         // Delete unused webhooks
-        foreach ($webhooks['container']['edges'] as $webhook) {
-            if (! in_array($webhook['node']['endpoint']['callbackUrl'], $used)) {
+        foreach (data_get($webhooks, 'data.webhookSubscriptions.container.edges', []) as $webhook) {
+            if (! in_array(data_get($webhook, 'node.endpoint.callbackUrl'), $used)) {
                 // Webhook should be deleted
-                $apiHelper->deleteWebhook($webhook['node']['id']);
+                $apiHelper->deleteWebhook(data_get($webhook, 'node.id'));
                 $deleted[] = $webhook;
             }
         }
