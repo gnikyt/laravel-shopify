@@ -23,7 +23,6 @@
             <directory>src/ShopifyApp/Contracts/</directory>
             <directory>src/ShopifyApp/Exceptions/</directory>
             <directory>src/ShopifyApp/Objects/Enums/</directory>
-            <directory>src/ShopifyApp/Objects/Values/</directory>
             <directory>src/ShopifyApp/resources/</directory>
             <file>src/ShopifyApp/Messaging/Events/AppLoggedIn.php</file>
             <file>src/ShopifyApp/ShopifyAppProvider.php</file>

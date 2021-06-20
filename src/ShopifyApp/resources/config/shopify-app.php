@@ -53,13 +53,11 @@ return [
     'route_names' => [
         'home'                 => env('SHOPIFY_ROUTE_NAME_HOME', 'home'),
         'authenticate'         => env('SHOPIFY_ROUTE_NAME_AUTHENTICATE', 'authenticate'),
-        'authenticate.oauth'   => env('SHOPIFY_ROUTE_NAME_AUTHENTICATE_OAUTH', 'authenticate.oauth'),
+        'authenticate.token'   => env('SHOPIFY_ROUTE_NAME_AUTHENTICATE_TOKEN', 'authenticate.token'),
         'billing'              => env('SHOPIFY_ROUTE_NAME_BILLING', 'billing'),
         'billing.process'      => env('SHOPIFY_ROUTE_NAME_BILLING_PROCESS', 'billing.process'),
         'billing.usage_charge' => env('SHOPIFY_ROUTE_NAME_BILLING_USAGE_CHARGE', 'billing.usage_charge'),
         'webhook'              => env('SHOPIFY_ROUTE_NAME_WEBHOOK', 'webhook'),
-        'itp'                  => env('SHOPIFY_ROUTE_NAME_ITP', 'itp'),
-        'itp.ask'              => env('SHOPIFY_ROUTE_NAME_ITP_ASK', 'itp.ask'),
     ],
 
     /*
@@ -113,7 +111,7 @@ return [
 
     // Use semver range to link to a major or minor version number.
     // Leaving empty will use the latest verison - not recommended in production.
-    'appbridge_version' => env('SHOPIFY_APPBRIDGE_VERSION', '1'),
+    'appbridge_version' => env('SHOPIFY_APPBRIDGE_VERSION', 'latest'),
 
     /*
     |--------------------------------------------------------------------------
@@ -385,4 +383,14 @@ return [
     */
 
     'config_api_callback' => null,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Enable Turbolinks or Hotwire Turbo
+    |--------------------------------------------------------------------------
+    |
+    | If you use Turbolinks / Turbo And Livewire turn on this setting to get the token
+    |
+    */
+    'turbo_enabled' => (bool) env('SHOPIFY_TURBO_ENABLED', false),
 ];

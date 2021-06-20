@@ -11,7 +11,6 @@ use Osiset\ShopifyApp\Storage\Models\Charge;
 use Osiset\ShopifyApp\Storage\Models\Plan;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
 use Osiset\ShopifyApp\Test\TestCase;
-use stdClass;
 
 class ChargeHelperTest extends TestCase
 {
@@ -31,10 +30,10 @@ class ChargeHelperTest extends TestCase
     {
         // Seed
         $seed = $this->seedData();
-        $this->chargeHelper->useCharge($seed->charge->getReference());
+        $this->chargeHelper->useCharge($seed['charge']->getReference());
 
         $this->assertSame(
-            $seed->charge->id,
+            $seed['charge']->id,
             $this->chargeHelper->getCharge()->id
         );
     }
@@ -43,15 +42,15 @@ class ChargeHelperTest extends TestCase
     {
         // Seed
         $seed = $this->seedData();
-        $this->chargeHelper->useCharge($seed->charge->getReference());
+        $this->chargeHelper->useCharge($seed['charge']->getReference());
 
         // Response stubbing
         $this->setApiStub();
         ApiStub::stubResponses(['get_application_charge']);
 
-        $data = $this->chargeHelper->retrieve($seed->shop);
+        $data = $this->chargeHelper->retrieve($seed['shop']);
         $this->assertInstanceOf(ResponseAccess::class, $data);
-        $this->assertSame('accepted', $data->status);
+        $this->assertSame('accepted', $data['status']);
     }
 
     public function testTrial(): void
@@ -61,7 +60,7 @@ class ChargeHelperTest extends TestCase
             'trial_days'    => 7,
             'trial_ends_on' => Carbon::today()->addDays(7)->format('Y-m-d'),
         ]);
-        $this->chargeHelper->useCharge($seed->charge->getReference());
+        $this->chargeHelper->useCharge($seed['charge']->getReference());
 
         $this->assertTrue($this->chargeHelper->isActiveTrial());
         $this->assertSame(7, $this->chargeHelper->remainingTrialDays());
@@ -76,7 +75,7 @@ class ChargeHelperTest extends TestCase
         $seed = $this->seedData([
             'trial_days'    => 0,
         ]);
-        $this->chargeHelper->useCharge($seed->charge->getReference());
+        $this->chargeHelper->useCharge($seed['charge']->getReference());
 
         $this->assertFalse($this->chargeHelper->isActiveTrial());
         $this->assertNull($this->chargeHelper->remainingTrialDays());
@@ -95,7 +94,7 @@ class ChargeHelperTest extends TestCase
             'cancelled_on'  => '2020-01-05',
             'expires_on'    => '2020-01-11',
         ]);
-        $this->chargeHelper->useCharge($seed->charge->getReference());
+        $this->chargeHelper->useCharge($seed['charge']->getReference());
 
         $this->assertFalse($this->chargeHelper->isActiveTrial());
         $this->assertSame(5, $this->chargeHelper->remainingTrialDaysFromCancel());
@@ -108,7 +107,7 @@ class ChargeHelperTest extends TestCase
     {
         // Seed
         $seed = $this->seedData();
-        $this->chargeHelper->useCharge($seed->charge->getReference());
+        $this->chargeHelper->useCharge($seed['charge']->getReference());
 
         $this->assertSame(
             Carbon::today()->format('Y-m-d'),
@@ -129,7 +128,7 @@ class ChargeHelperTest extends TestCase
 
         $this->assertInstanceOf(
             Charge::class,
-            $this->chargeHelper->chargeForPlan($seed->plan->getId(), $seed->shop)
+            $this->chargeHelper->chargeForPlan($seed['plan']->getId(), $seed['shop'])
         );
     }
 
@@ -137,12 +136,12 @@ class ChargeHelperTest extends TestCase
     {
         // Seed (trial)
         $seed = $this->seedData();
-        $result = $this->chargeHelper->details($seed->plan, $seed->shop);
+        $result = $this->chargeHelper->details($seed['plan'], $seed['shop']);
         $this->assertInstanceOf(PlanDetails::class, $result);
 
         // Seed (no trial)
         $seed = $this->seedData([], ['trial_days' => 0]);
-        $result = $this->chargeHelper->details($seed->plan, $seed->shop);
+        $result = $this->chargeHelper->details($seed['plan'], $seed['shop']);
         $this->assertInstanceOf(PlanDetails::class, $result);
     }
 
@@ -162,7 +161,7 @@ class ChargeHelperTest extends TestCase
         $this->assertInstanceOf(PlanDetails::class, $result);
     }
 
-    protected function seedData($extraCharge = [], $extraPlan = [], $type = 'onetime'): stdClass
+    protected function seedData($extraCharge = [], $extraPlan = [], $type = 'onetime'): array
     {
         // Create a plan
         $plan = factory(Plan::class)->states("type_${type}")->create(
@@ -189,7 +188,7 @@ class ChargeHelperTest extends TestCase
             )
         );
 
-        return (object) [
+        return [
             'plan'   => $plan,
             'shop'   => $shop,
             'charge' => $charge,

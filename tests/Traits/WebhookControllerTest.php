@@ -2,6 +2,7 @@
 
 namespace Osiset\ShopifyApp\Test\Controllers;
 
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Queue;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Test\TestCase;
@@ -35,7 +36,7 @@ class WebhookControllerTest extends TestCase
         );
 
         // Check it was created and job was pushed
-        $response->assertStatus(201);
+        $response->assertStatus(Response::HTTP_CREATED);
         Queue::assertPushed(\App\Jobs\OrdersCreateJob::class, function ($job) use ($shop) {
             return ShopDomain::fromNative($job->shopDomain)->isSame($shop->getDomain())
                 && $job->data instanceof \stdClass
@@ -55,6 +56,6 @@ class WebhookControllerTest extends TestCase
             [],
             file_get_contents(__DIR__.'/../fixtures/webhook.json')
         );
-        $response->assertStatus(401);
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 }
