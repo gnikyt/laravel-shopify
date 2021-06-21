@@ -34,8 +34,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           coverage: xdebug
-          extensions: mbstring, dom, fileinfo, pdo_sqlite
-          tools: composer
+          extensions: dom, fileinfo, json, mbstring, pdo_sqlite
 
       - name: Validate composer setup
         if: matrix.php == '8.0' && matrix.laravel == '8.22'
