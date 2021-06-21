@@ -3,6 +3,7 @@
 namespace Osiset\ShopifyApp;
 
 use Illuminate\Support\Facades\Config;
+use LogicException;
 use Osiset\ShopifyApp\Test\TestCase;
 
 class HelpersTest extends TestCase
@@ -44,7 +45,7 @@ class HelpersTest extends TestCase
         $this->assertTrue(registerPackageRoute('authenticate', $routes));
         $this->assertFalse(registerPackageRoute('home', $routes));
 
-        $this->expectErrorMessage('Excluded routes must be an array');
+        $this->expectExceptionObject(new LogicException('Excluded routes must be an array', 0));
         registerPackageRoute('home', \stdClass::class);
     }
 
