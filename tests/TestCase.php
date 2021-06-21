@@ -54,7 +54,7 @@ abstract class TestCase extends OrchestraTestCase
         $app['config']->set('auth.providers.users.model', UserStub::class);
     }
 
-    protected function setupDatabase($app)
+    protected function setupDatabase($app): void
     {
         // Run Laravel migrations
         $this->loadLaravelMigrations();
@@ -63,7 +63,7 @@ abstract class TestCase extends OrchestraTestCase
         $this->artisan('migrate')->run();
     }
 
-    protected function swapEnvironment(string $env, Closure $fn)
+    protected function swapEnvironment(string $env, Closure $fn): void
     {
         // Get the current environemnt
         $currentEnv = App::environment();
