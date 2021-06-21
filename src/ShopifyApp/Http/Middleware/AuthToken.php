@@ -120,7 +120,7 @@ class AuthToken
         $body = json_decode(base64url_decode($parts[1]));
         if (isset($body->dest)) {
             $url = parse_url($body->dest);
-            $shop = isset($url['host']) ? $url['host'] : null;
+            $shop = $url['host'] ?? null;
         }
 
         $secret = getShopifyConfig('api_secret', $shop);
