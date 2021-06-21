@@ -6,7 +6,7 @@ use Osiset\ShopifyApp\Actions\DeleteWebhooks;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
 use Osiset\ShopifyApp\Test\TestCase;
 
-class DeleteWebhooksTestTest extends TestCase
+class DeleteWebhooksTest extends TestCase
 {
     /**
      * @var \Osiset\ShopifyApp\Actions\DeleteWebhooks
