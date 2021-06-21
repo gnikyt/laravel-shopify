@@ -34,7 +34,7 @@ jobs:
       with:
         php-version: ${{ matrix.php }}
         coverage: xdebug
-        extensions: mbstring, dom, fileinfo, pdo_sqlite
+        extensions: dom, fileinfo, json, mbstring, pdo_sqlite
         tools: composer
 
     - name: Validate composer setup
