@@ -80,7 +80,7 @@ class AuthToken
             throw new HttpException('Malformed token', 400);
         }
 
-        if (($now > $body->exp) || ($now < $body->nbf) || ($now < $body->iat)) {
+        if ($now > $body->exp || $now < $body->nbf || $now < $body->iat) {
             throw new HttpException('Expired token', 403);
         }
 
