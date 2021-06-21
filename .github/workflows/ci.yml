@@ -1,9 +1,9 @@
 name: Package Test
 
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 jobs:
-  build:
+  ci:
     runs-on: ubuntu-latest
 
     strategy:
@@ -15,56 +15,57 @@ jobs:
           - '7.4'
           - '8.0'
         laravel:
-            - '7.0'
-            - '8.22'
+          - '7.0'
+          - '8.22'
         exclude:
-            - php: '7.2'
-              laravel: '8.22'
-            - php: '8.0'
-              laravel: '7.0'
+          - php: '7.2'
+            laravel: '8.22'
+          - php: '8.0'
+            laravel: '7.0'
 
     name: PHP ${{ matrix.php }} / Laravel ${{ matrix.laravel }}
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: ${{ matrix.php }}
-        coverage: xdebug
-        extensions: dom, fileinfo, json, mbstring, pdo_sqlite
-        tools: composer
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: xdebug
+          extensions: dom, fileinfo, json, mbstring, pdo_sqlite
 
-    - name: Validate composer setup
-      run: composer validate --strict
+      - name: Validate composer setup
+        if: matrix.php == '8.0' && matrix.laravel == '8.22'
+        run: composer validate --strict
 
-    - name: Install Laravel legacy factories support
-      if: matrix.laravel == '8.22'
-      run: composer require "laravel/legacy-factories:^1.0" --no-interaction --no-update
+      - name: Install Laravel legacy factories support
+        if: matrix.laravel == '8.22'
+        run: composer require "laravel/legacy-factories:^1.0" --no-interaction --no-update
 
-    - name: Install Laravel and Orchestra Testbench
-      run: composer require "illuminate/contracts:${{ matrix.laravel }}" --no-interaction --no-update
+      - name: Install Laravel and Orchestra Testbench
+        run: composer require "illuminate/contracts:${{ matrix.laravel }}" --no-interaction --no-update
 
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress --no-suggest
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest
 
-    - name: Normalize composer file
-      run: composer normalize --dry-run
+      - name: Normalize composer file
+        if: matrix.php == '8.0' && matrix.laravel == '8.22'
+        run: composer normalize --dry-run
 
-    - name: Validate code style
-      run: |
-        composer require "squizlabs/php_codesniffer=*"
-        vendor/bin/phpcs --standard="phpcs.xml" .
+      - name: Validate code style
+        run: |
+          composer require "squizlabs/php_codesniffer=*"
+          vendor/bin/phpcs --standard="phpcs.xml" .
 
-    - name: Run test suite
-      run: vendor/bin/phpunit
+      - name: Run test suite
+        run: vendor/bin/phpunit
 
-    - name: Upload coverage results
-      if: matrix.php == '8.22' && matrix.laravel == '8.22'
-      env:
-        COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        composer require cedx/coveralls
-        vendor/bin/coveralls build/logs/clover.xml
+      - name: Upload coverage results
+        if: matrix.php == '8.0' && matrix.laravel == '8.22'
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          composer require cedx/coveralls
+          vendor/bin/coveralls build/logs/clover.xml
