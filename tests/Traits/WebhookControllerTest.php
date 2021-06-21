@@ -2,9 +2,11 @@
 
 namespace Osiset\ShopifyApp\Test\Controllers;
 
+use App\Jobs\OrdersCreateJob;
 use Illuminate\Support\Facades\Queue;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Test\TestCase;
+use stdClass;
 
 require_once __DIR__.'/../Stubs/OrdersCreateJob.php';
 
@@ -36,9 +38,9 @@ class WebhookControllerTest extends TestCase
 
         // Check it was created and job was pushed
         $response->assertStatus(201);
-        Queue::assertPushed(\App\Jobs\OrdersCreateJob::class, function ($job) use ($shop) {
+        Queue::assertPushed(OrdersCreateJob::class, function ($job) use ($shop) {
             return ShopDomain::fromNative($job->shopDomain)->isSame($shop->getDomain())
-                && $job->data instanceof \stdClass
+                && $job->data instanceof stdClass
                 && $job->data->email === 'jon@doe.ca';
         });
     }

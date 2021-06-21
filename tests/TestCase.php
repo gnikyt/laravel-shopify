@@ -3,12 +3,14 @@
 namespace Osiset\ShopifyApp\Test;
 
 use Closure;
+use Illuminate\Contracts\Http\Kernel as HttpKernelContract;
 use Illuminate\Support\Facades\App;
 use Orchestra\Database\ConsoleServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use Osiset\BasicShopifyAPI\Options;
 use Osiset\ShopifyApp\ShopifyAppProvider;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
+use Osiset\ShopifyApp\Test\Stubs\Kernel as StubKernel;
 use Osiset\ShopifyApp\Test\Stubs\User as UserStub;
 
 abstract class TestCase extends OrchestraTestCase
@@ -39,7 +41,7 @@ abstract class TestCase extends OrchestraTestCase
     protected function resolveApplicationHttpKernel($app): void
     {
         // For adding custom the shop middleware
-        $app->singleton(\Illuminate\Contracts\Http\Kernel::class, \Osiset\ShopifyApp\Test\Stubs\Kernel::class);
+        $app->singleton(HttpKernelContract::class, StubKernel::class);
     }
 
     protected function getEnvironmentSetUp($app): void
