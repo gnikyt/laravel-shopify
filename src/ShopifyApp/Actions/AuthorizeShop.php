@@ -2,6 +2,7 @@
 
 namespace Osiset\ShopifyApp\Actions;
 
+use Exception;
 use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use function Osiset\ShopifyApp\getShopifyConfig;
@@ -106,7 +107,7 @@ class AuthorizeShop
             $this->shopSession->setAccess($apiHelper->getAccessData($code));
             $return['url'] = null;
             $return['completed'] = true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Just return the default setting
         }
 

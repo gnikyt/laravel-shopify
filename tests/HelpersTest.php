@@ -5,6 +5,7 @@ namespace Osiset\ShopifyApp;
 use Illuminate\Support\Facades\Config;
 use LogicException;
 use Osiset\ShopifyApp\Test\TestCase;
+use stdClass;
 
 class HelpersTest extends TestCase
 {
@@ -46,7 +47,7 @@ class HelpersTest extends TestCase
         $this->assertFalse(registerPackageRoute('home', $routes));
 
         $this->expectExceptionObject(new LogicException('Excluded routes must be an array', 0));
-        registerPackageRoute('home', \stdClass::class);
+        registerPackageRoute('home', stdClass::class);
     }
 
     public function testRouteNames(): void
