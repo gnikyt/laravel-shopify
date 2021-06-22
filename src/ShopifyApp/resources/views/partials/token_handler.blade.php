@@ -23,7 +23,11 @@
 
         if (window.jQuery) {
             // jQuery
-            window.jQuery.ajaxSettings.headers['Authorization'] = `Bearer ${window.sessionToken}`;
+            if (window.jQuery.ajaxSettings.headers) {
+                window.jQuery.ajaxSettings.headers['Authorization'] = `Bearer ${window.sessionToken}`;
+            } else {
+                window.jQuery.ajaxSettings.headers = { 'Authorization': `Bearer ${window.sessionToken}`};
+            }
         }
 
         if (window.axios) {
