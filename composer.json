@@ -21,7 +21,6 @@
         "funeralzone/valueobjects": "^0.5",
         "jenssegers/agent": "^2.6",
         "laravel/framework": "^7.0 || ^8.0",
-        "laravel/legacy-factories": "^1.1",
         "osiset/basic-shopify-api": "^9.0 || ^10.0"
     },
     "require-dev": {
