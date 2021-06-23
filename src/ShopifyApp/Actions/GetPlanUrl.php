@@ -77,7 +77,10 @@ class GetPlanUrl
             $confirmationUrl = $api['confirmationUrl'];
         } else {
             $api = $shop->apiHelper()
-                ->createCharge(ChargeType::fromNative($plan->getType()->toNative()), $this->chargeHelper->details($plan, $shop));
+                ->createCharge(
+                    ChargeType::fromNative($plan->getType()->toNative()),
+                    $this->chargeHelper->details($plan, $shop)
+                );
 
             $confirmationUrl = $api['confirmation_url'];
         }
