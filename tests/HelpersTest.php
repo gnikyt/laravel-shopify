@@ -1,9 +1,13 @@
 <?php
 
-namespace Osiset\ShopifyApp;
+namespace Osiset\ShopifyApp\Test;
 
 use Illuminate\Support\Facades\Config;
-use Osiset\ShopifyApp\Test\TestCase;
+use LogicException;
+use function Osiset\ShopifyApp\createHmac;
+use function Osiset\ShopifyApp\getShopifyConfig;
+use function Osiset\ShopifyApp\registerPackageRoute;
+use stdClass;
 
 class HelpersTest extends TestCase
 {
@@ -44,8 +48,8 @@ class HelpersTest extends TestCase
         $this->assertTrue(registerPackageRoute('authenticate', $routes));
         $this->assertFalse(registerPackageRoute('home', $routes));
 
-        $this->expectErrorMessage('Excluded routes must be an array');
-        registerPackageRoute('home', \stdClass::class);
+        $this->expectExceptionObject(new LogicException('Excluded routes must be an array', 0));
+        registerPackageRoute('home', stdClass::class);
     }
 
     public function testRouteNames(): void

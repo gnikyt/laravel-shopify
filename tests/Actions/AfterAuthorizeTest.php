@@ -4,6 +4,7 @@ namespace Osiset\ShopifyApp\Test\Actions;
 
 use Illuminate\Support\Facades\Queue;
 use Osiset\ShopifyApp\Actions\AfterAuthorize;
+use Osiset\ShopifyApp\Test\Stubs\AfterAuthorizeJob;
 use Osiset\ShopifyApp\Test\TestCase;
 
 require_once __DIR__.'/../Stubs/AfterAuthorizeJob.php';
@@ -28,7 +29,7 @@ class AfterAuthorizeTest extends TestCase
         Queue::fake();
 
         // Create the config
-        $jobClass = \App\Jobs\AfterAuthorizeJob::class;
+        $jobClass = AfterAuthorizeJob::class;
         $this->app['config']->set('shopify-app.after_authenticate_job', [
             [
                 'job'    => $jobClass,
@@ -55,7 +56,7 @@ class AfterAuthorizeTest extends TestCase
     public function testRunInline(): void
     {
         // Create the config
-        $jobClass = \App\Jobs\AfterAuthorizeJob::class;
+        $jobClass = AfterAuthorizeJob::class;
         $this->app['config']->set('shopify-app.after_authenticate_job', [
             'job'    => $jobClass,
             'inline' => true,

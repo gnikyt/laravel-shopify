@@ -49,15 +49,15 @@ class DispatchWebhooks
      */
     public function __invoke(ShopIdValue $shopId, bool $inline = false): bool
     {
-        // Get the shop
-        $shop = $this->shopQuery->getById($shopId);
-
         // Get the webhooks
         $webhooks = getShopifyConfig('webhooks');
         if (count($webhooks) === 0) {
             // Nothing to do
             return false;
         }
+
+        // Get the shop
+        $shop = $this->shopQuery->getById($shopId);
 
         // Run the installer job
         if ($inline) {

@@ -1,10 +1,10 @@
 {
-  "script_tag": {
-    "id": 870402687,
-    "src": "https://djavaskripped.org/fancy.js",
-    "event": "onload",
-    "created_at": "2020-02-06T12:41:32-05:00",
-    "updated_at": "2020-02-06T12:41:32-05:00",
-    "display_scope": "all"
-  }
+    "script_tag": {
+        "id": 870402687,
+        "src": "https://djavaskripped.org/fancy.js",
+        "event": "onload",
+        "created_at": "2020-02-06T12:41:32-05:00",
+        "updated_at": "2020-02-06T12:41:32-05:00",
+        "display_scope": "all"
+    }
 }

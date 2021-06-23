@@ -80,9 +80,9 @@ class AfterAuthorize
         } elseif (Arr::has($jobsConfig, 'job')) {
             // We have a single job
             return $fireJob($jobsConfig, $shop);
-        } else {
-            // We have no jobs
-            return false;
         }
+
+        // We have no jobs
+        return false;
     }
 }

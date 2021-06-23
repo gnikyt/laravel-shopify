@@ -3,6 +3,7 @@
 namespace Osiset\ShopifyApp\Test\Traits;
 
 use Illuminate\Auth\AuthManager;
+use function Osiset\ShopifyApp\getShopifyConfig;
 use Osiset\ShopifyApp\Test\TestCase;
 
 class HomeControllerTest extends TestCase
@@ -25,7 +26,7 @@ class HomeControllerTest extends TestCase
 
         $this->call('get', '/', ['token' => $this->buildToken()])
             ->assertOk()
-            ->assertSee('apiKey: "'.env('SHOPIFY_API_KEY').'"', false)
+            ->assertSee('apiKey: "'.getShopifyConfig('api_key').'"', false)
             ->assertSee("shopOrigin: \"{$shop->name}\"", false);
     }
 }

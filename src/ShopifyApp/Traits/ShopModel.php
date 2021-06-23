@@ -105,7 +105,7 @@ trait ShopModel
      */
     public function isGrandfathered(): bool
     {
-        return ((bool) $this->shopify_grandfathered) === true;
+        return (bool) $this->shopify_grandfathered === true;
     }
 
     /**
@@ -113,7 +113,7 @@ trait ShopModel
      */
     public function isFreemium(): bool
     {
-        return ((bool) $this->shopify_freemium) === true;
+        return (bool) $this->shopify_freemium === true;
     }
 
     /**

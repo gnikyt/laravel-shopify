@@ -33,7 +33,7 @@ function createHmac(array $opts, string $secret): Hmac
             $queryCompiled[] = "{$key}=".(is_array($value) ? implode(',', $value) : $value);
         }
         $data = implode(
-            ($buildQueryWithJoin ? '&' : ''),
+            $buildQueryWithJoin ? '&' : '',
             $queryCompiled
         );
     }
@@ -65,7 +65,10 @@ function parseQueryString(string $qs, string $d = null): array
     $DEFAULT_SEP = '/[&;]\s*/';
 
     $params = [];
-    $split = preg_split($d ? ($COMMON_SEP[$d] || '/['.$d.']\s*/') : $DEFAULT_SEP, $qs ?? '');
+    $split = preg_split(
+        $d ? $COMMON_SEP[$d] || '/['.$d.']\s*/' : $DEFAULT_SEP,
+        $qs ?? ''
+    );
 
     foreach ($split as $p) {
         if (! $p) {

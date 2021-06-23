@@ -237,7 +237,7 @@ class ApiHelperTest extends TestCase
 
     public function testErrors(): void
     {
-        $this->expectException(ApiException::class);
+        $this->expectExceptionObject(new ApiException('Unknown error', 0));
 
         // Create a shop
         $shop = factory($this->model)->create();
@@ -251,7 +251,7 @@ class ApiHelperTest extends TestCase
 
     public function testErrorsGraphQL(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectExceptionObject(new Exception('Error!', 0));
 
         // Create a shop
         $shop = factory($this->model)->create();

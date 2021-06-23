@@ -48,15 +48,11 @@ class WebhookJobMakeCommand extends JobMakeCommand
     }
 
     /**
-     * Execute the console command (>=5.5).
-     *
-     * @return void
+     * {@inheritDoc}
      */
-    public function handle(): void
+    public function handle()
     {
-        // Fire parent... handle for >=5.5, fire for <5.5
-        $method = method_exists($this, 'handle') ? 'handle' : 'fire';
-        parent::$method();
+        $result = parent::handle();
 
         // Remind user to enter job into config
         $this->info("For non-GDPR webhooks, don't forget to register the webhook in config/shopify-app.php. Example:");
@@ -68,6 +64,8 @@ class WebhookJobMakeCommand extends JobMakeCommand
         ]
     ]
         ");
+
+        return $result;
     }
 
     /**

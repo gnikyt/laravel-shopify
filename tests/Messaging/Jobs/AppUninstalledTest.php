@@ -15,7 +15,7 @@ class AppUninstalledTest extends TestCase
         parent::setUp();
     }
 
-    public function testJobSoftDeletesShopAndCharges()
+    public function testJobSoftDeletesShopAndCharges(): void
     {
         // Create a plan
         $plan = factory(Plan::class)->states('type_recurring')->create();

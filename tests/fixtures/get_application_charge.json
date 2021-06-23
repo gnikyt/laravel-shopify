@@ -1,15 +1,15 @@
 {
     "application_charge": {
-      "id": 675931192,
-      "name": "iPod Cleaning",
-      "api_client_id": 755357713,
-      "price": "5.00",
-      "status": "accepted",
-      "return_url": "http://google.com",
-      "test": null,
-      "created_at": "2018-07-05T12:41:00-04:00",
-      "updated_at": "2018-07-05T12:41:00-04:00",
-      "charge_type": null,
-      "decorated_return_url": "http://google.com?charge_id=675931192"
+        "id": 675931192,
+        "name": "iPod Cleaning",
+        "api_client_id": 755357713,
+        "price": "5.00",
+        "status": "accepted",
+        "return_url": "http://google.com",
+        "test": null,
+        "created_at": "2018-07-05T12:41:00-04:00",
+        "updated_at": "2018-07-05T12:41:00-04:00",
+        "charge_type": null,
+        "decorated_return_url": "http://google.com?charge_id=675931192"
     }
 }

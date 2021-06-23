@@ -5,6 +5,7 @@ namespace Osiset\ShopifyApp\Test;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Contracts\Http\Kernel as HttpKernelContract;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Request as FacadesRequest;
 use Orchestra\Database\ConsoleServiceProvider;
@@ -17,6 +18,7 @@ use function Osiset\ShopifyApp\getShopifyConfig;
 use Osiset\ShopifyApp\Objects\Values\Hmac;
 use Osiset\ShopifyApp\ShopifyAppProvider;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
+use Osiset\ShopifyApp\Test\Stubs\Kernel as StubKernel;
 use Osiset\ShopifyApp\Test\Stubs\User as UserStub;
 
 abstract class TestCase extends OrchestraTestCase
@@ -73,7 +75,7 @@ abstract class TestCase extends OrchestraTestCase
     protected function resolveApplicationHttpKernel($app): void
     {
         // For adding custom the shop middleware
-        $app->singleton(\Illuminate\Contracts\Http\Kernel::class, \Osiset\ShopifyApp\Test\Stubs\Kernel::class);
+        $app->singleton(HttpKernelContract::class, StubKernel::class);
     }
 
     protected function getEnvironmentSetUp($app): void
@@ -88,7 +90,7 @@ abstract class TestCase extends OrchestraTestCase
         $app['config']->set('auth.providers.users.model', UserStub::class);
     }
 
-    protected function setupDatabase($app)
+    protected function setupDatabase($app): void
     {
         // Run Laravel migrations
         $this->loadLaravelMigrations();
@@ -97,7 +99,7 @@ abstract class TestCase extends OrchestraTestCase
         $this->artisan('migrate')->run();
     }
 
-    protected function swapEnvironment(string $env, Closure $fn)
+    protected function swapEnvironment(string $env, Closure $fn): void
     {
         // Get the current environemnt
         $currentEnv = App::environment();

@@ -50,7 +50,7 @@ class ShopModelTest extends TestCase
         $this->assertTrue($shop->hasOfflineAccess());
     }
 
-    public function testNamespacingAndFreemium()
+    public function testNamespacingAndFreemium(): void
     {
         $this->app['config']->set('shopify-app.billing_freemium_enabled', true);
         $this->app['config']->set('shopify-app.namespace', 'app');
