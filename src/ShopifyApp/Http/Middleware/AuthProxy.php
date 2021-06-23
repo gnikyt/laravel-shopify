@@ -63,7 +63,7 @@ class AuthProxy
             ],
             getShopifyConfig('api_secret', $shop)
         );
-        if ($signature !== $signatureLocal || $shop->isNull()) {
+        if (hash_equals($signature, $signatureLocal) === false || $shop->isNull()) {
             // Issue with HMAC or missing shop header
             return Response::make('Invalid proxy signature.', 401);
         }

@@ -35,7 +35,7 @@ class AuthWebhook
             getShopifyConfig('api_secret', $shop)
         );
 
-        if (! hash_equals($hmac, $hmacLocal) || empty($shop)) {
+        if (hash_equals($hmac, $hmacLocal) === false || empty($shop)) {
             // Issue with HMAC or missing shop header
             return Response::make('Invalid webhook signature.', 401);
         }

@@ -127,6 +127,6 @@ class AuthToken
         $hmac = hash_hmac('sha256', $check, $secret, true);
         $encoded = base64url_encode($hmac);
 
-        return $encoded === $signature;
+        return hash_equals($encoded, $signature);
     }
 }
