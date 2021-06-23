@@ -63,7 +63,7 @@ class AuthToken
         }
 
         $parts = explode('.', $token);
-        $body = json_decode(Util::base64url_decode($parts[1]));
+        $body = json_decode(Util::base64UrlDecode($parts[1]));
 
         if (! $body ||
             ! isset($body->iss) ||
@@ -115,7 +115,7 @@ class AuthToken
 
         // Get the shop
         $shop = null;
-        $body = json_decode(Util::base64url_decode($parts[1]));
+        $body = json_decode(Util::base64UrlDecode($parts[1]));
         if (isset($body->dest)) {
             $url = parse_url($body->dest);
             $shop = $url['host'] ?? null;
@@ -123,7 +123,7 @@ class AuthToken
 
         $secret = Util::getShopifyConfig('api_secret', $shop);
         $hmac = hash_hmac('sha256', $check, $secret, true);
-        $encoded = Util::base64url_encode($hmac);
+        $encoded = Util::base64UrlEncode($hmac);
 
         return hash_equals($encoded, $signature);
     }
