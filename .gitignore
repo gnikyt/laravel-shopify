@@ -1,32 +1,3 @@
-# User specific & automatically generated files #
-#################################################
+/vendor
 composer.lock
-vendor/
-build/
-tests/tmp/
-bin/
-.phpunit.result*
-phpunit.xml
-
-# IDE and editor specific files #
-#################################
-/nbproject
-/.idea
-
-# OS generated files #
-######################
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-Icon?
-ehthumbs.db
-Thumbs.db
-*.mo
-
-# Custom bin files #
-####################
-!bin/tnc
-!bin/twc
-!bin/twcs
+.phpunit.result.cache
