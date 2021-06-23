@@ -18,8 +18,9 @@ class Api extends BasicShopifyAPI
 
     public function rest(string $method, string $path, array $params = null, array $headers = [], bool $sync = true): array
     {
+        $filename = array_shift(self::$stubFiles);
+
         try {
-            $filename = array_shift(self::$stubFiles);
             $response = json_decode(file_get_contents(__DIR__."/../fixtures/{$filename}.json"), true);
         } catch (ErrorException $error) {
             throw new Exception("Missing fixture for {$method} @ {$path}, tried: '{$filename}.json'");

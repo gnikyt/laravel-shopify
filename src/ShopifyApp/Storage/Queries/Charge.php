@@ -41,8 +41,8 @@ class Charge implements IChargeQuery
      */
     public function getByReferenceAndShopId(ChargeReference $chargeRef, ShopId $shopId): ?ChargeModel
     {
-        return ChargeModel
-            ::where('charge_id', $chargeRef->toNative())
+        return ChargeModel::query()
+            ->where('charge_id', $chargeRef->toNative())
             ->where('user_id', $shopId->toNative())
             ->get()
             ->first();
