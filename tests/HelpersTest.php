@@ -4,10 +4,10 @@ namespace Osiset\ShopifyApp\Test;
 
 use Illuminate\Support\Facades\Config;
 use LogicException;
-use stdClass;
 use function Osiset\ShopifyApp\createHmac;
 use function Osiset\ShopifyApp\getShopifyConfig;
 use function Osiset\ShopifyApp\registerPackageRoute;
+use stdClass;
 
 class HelpersTest extends TestCase
 {
