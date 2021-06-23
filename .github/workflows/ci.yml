@@ -14,6 +14,9 @@ jobs:
           - '7.3'
           - '7.4'
           - '8.0'
+        coverage: [ 'none' ]
+        normalize: [ false ]
+        validate: [ false ]
         laravel:
           - '7.0'
           - '8.22'
@@ -22,6 +25,14 @@ jobs:
             laravel: '8.22'
           - php: '8.0'
             laravel: '7.0'
+          - php: '8.0'
+            laravel: '8.22'
+        include:
+          - php: '8.0'
+            laravel: '8.22'
+            coverage: 'xdebug'
+            normalize: true
+            validate: true
 
     name: PHP ${{ matrix.php }} / Laravel ${{ matrix.laravel }}
 
@@ -33,11 +44,11 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          coverage: xdebug
+          coverage: ${{ matrix.coverage }}
           extensions: dom, fileinfo, json, mbstring, pdo_sqlite
 
       - name: Validate composer setup
-        if: matrix.php == '8.0' && matrix.laravel == '8.22'
+        if: matrix.validate == true
         run: composer validate --strict
 
       - name: Get composer cache directory
@@ -62,14 +73,14 @@ jobs:
         run: composer install --prefer-dist --no-progress
 
       - name: Normalize composer file
-        if: matrix.php == '8.0' && matrix.laravel == '8.22'
+        if: matrix.normalize == true
         run: composer normalize --dry-run
 
       - name: Run test suite
         run: vendor/bin/phpunit -v
 
       - name: Upload coverage results
-        if: matrix.php == '8.0' && matrix.laravel == '8.22'
+        if: matrix.coverage != 'none'
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
