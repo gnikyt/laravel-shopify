@@ -2,9 +2,9 @@
 
 namespace Osiset\ShopifyApp\Test\Actions;
 
-use App\Jobs\AfterAuthorizeJob;
 use Illuminate\Support\Facades\Queue;
 use Osiset\ShopifyApp\Actions\AfterAuthorize;
+use Osiset\ShopifyApp\Test\Stubs\AfterAuthorizeJob;
 use Osiset\ShopifyApp\Test\TestCase;
 
 require_once __DIR__.'/../Stubs/AfterAuthorizeJob.php';
