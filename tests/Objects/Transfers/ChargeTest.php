@@ -40,7 +40,6 @@ class ChargeTest extends TestCase
 
     public function testToArray(): void
     {
-
         $this->assertEquals([
             'shopId' => null,
             'planId' => null,
