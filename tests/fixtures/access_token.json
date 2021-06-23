@@ -1,4 +1,4 @@
 {
-  "access_token": "12345678",
-  "scope": "read_products,write_products"
+    "access_token": "12345678",
+    "scope": "read_products,write_products"
 }

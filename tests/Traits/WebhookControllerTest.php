@@ -22,7 +22,7 @@ class WebhookControllerTest extends TestCase
         $headers = [
             'HTTP_CONTENT_TYPE'          => 'application/json',
             'HTTP_X_SHOPIFY_SHOP_DOMAIN' => $shop->name,
-            'HTTP_X_SHOPIFY_HMAC_SHA256' => 'fo0+SKvmAFe9qNlV7oHL6acWZsCT36Mmahx0efMOgac=', // Matches fixture data and API secret
+            'HTTP_X_SHOPIFY_HMAC_SHA256' => 'hvTE9wpDzMcDnPEuHWvYZ58ElKn5vHs0LomurfNIuUc=', // Matches fixture data and API secret
         ];
 
         // Create a webhook call and pass in our own headers and data

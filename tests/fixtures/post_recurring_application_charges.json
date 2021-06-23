@@ -1,24 +1,24 @@
 {
-  "recurring_application_charge": {
-    "id": 1029266947,
-    "name": "Basic Plan",
-    "api_client_id": 755357713,
-    "price": "10.00",
-    "status": "pending",
-    "return_url": "http:\/\/super-duper.shopifyapps.com\/",
-    "billing_on": null,
-    "created_at": "2017-08-17T15:29:47-04:00",
-    "updated_at": "2017-08-17T15:29:47-04:00",
-    "test": null,
-    "activated_on": null,
-    "trial_ends_on": null,
-    "cancelled_on": null,
-    "trial_days": 0,
-    "capped_amount": "100.00",
-    "balance_used": 0.0,
-    "balance_remaining": 100.0,
-    "risk_level": 0.0,
-    "decorated_return_url": "http:\/\/super-duper.shopifyapps.com\/?charge_id=1029266947",
-    "confirmation_url": "https:\/\/example.myshopify.com\/admin\/charges\/1029266947\/confirm_recurring_application_charge?signature=BAhpBANeWT0%3D--64de8739eb1e63a8f848382bb757b20343eb414f"
-  }
+    "recurring_application_charge": {
+        "id": 1029266947,
+        "name": "Basic Plan",
+        "api_client_id": 755357713,
+        "price": "10.00",
+        "status": "pending",
+        "return_url": "http:\/\/super-duper.shopifyapps.com\/",
+        "billing_on": null,
+        "created_at": "2017-08-17T15:29:47-04:00",
+        "updated_at": "2017-08-17T15:29:47-04:00",
+        "test": null,
+        "activated_on": null,
+        "trial_ends_on": null,
+        "cancelled_on": null,
+        "trial_days": 0,
+        "capped_amount": "100.00",
+        "balance_used": 0.0,
+        "balance_remaining": 100.0,
+        "risk_level": 0.0,
+        "decorated_return_url": "http:\/\/super-duper.shopifyapps.com\/?charge_id=1029266947",
+        "confirmation_url": "https:\/\/example.myshopify.com\/admin\/charges\/1029266947\/confirm_recurring_application_charge?signature=BAhpBANeWT0%3D--64de8739eb1e63a8f848382bb757b20343eb414f"
+    }
 }
