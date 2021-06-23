@@ -61,7 +61,7 @@ class ChargeTest extends TestCase
         $uc = new UsageChargeTransfer();
         $uc->shopId = ShopId::fromNative(1);
         $uc->chargeReference = ChargeReference::fromNative(12345678);
-        $uc->billingOn = Carbon::today();
+        $uc->billingOn = $this->now->today();
         $uc->details = $ud;
 
         $this->assertInstanceOf(
