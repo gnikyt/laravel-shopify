@@ -77,12 +77,14 @@ class AfterAuthorize
             }
 
             return true;
-        } elseif (isset($jobsConfig['job'])) {
+        }
+
+        if (isset($jobsConfig['job'])) {
             // We have a single job
             return $fireJob($jobsConfig, $shop);
-        } else {
-            // We have no jobs
-            return false;
         }
+
+        // We have no jobs
+        return false;
     }
 }
