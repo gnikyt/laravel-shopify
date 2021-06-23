@@ -17,6 +17,7 @@ use Osiset\ShopifyApp\Http\Requests\StoreUsageCharge;
 use Osiset\ShopifyApp\Objects\Values\ChargeReference;
 use Osiset\ShopifyApp\Storage\Queries\Shop as ShopQuery;
 use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
+use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 
 /**
  * Responsible for billing a shop for plans and usage charges.
@@ -28,14 +29,19 @@ trait BillingController
      *
      * @param int|null    $plan        The plan's ID, if provided in route.
      * @param Request     $request     The request object.
+     * @param ShopQuery    $shopQuery    The shop querier.
      * @param GetPlanUrl  $getPlanUrl  The action for getting the plan URL.
      *
      * @return ViewView
      */
-    public function index(?int $plan = null, Request $request, GetPlanUrl $getPlanUrl): ViewView
-    {
-        /** @var $shop IShopModel */
-        $shop = $request->user();
+    public function index(
+        ?int $plan = null,
+        Request $request,
+        ShopQuery $shopQuery,
+        GetPlanUrl $getPlanUrl
+    ): ViewView {
+        // Get the shop
+        $shop = $shopQuery->getByDomain(ShopDomain::fromNative($request->get('shop')));
 
         // Get the plan URL for redirect
         $url = $getPlanUrl(
@@ -66,16 +72,19 @@ trait BillingController
         ShopQuery $shopQuery,
         ActivatePlan $activatePlan
     ): RedirectResponse {
+        // Get the shop
+        $shop = $shopQuery->getByDomain(ShopDomain::fromNative($request->query('shop')));
+
         // Activate the plan and save
         $result = $activatePlan(
-            $request->user()->getId(),
+            $shop->getId(),
             PlanId::fromNative($plan),
             ChargeReference::fromNative((int) $request->query('charge_id'))
         );
 
         // Go to homepage of app
         return Redirect::route(getShopifyConfig('route_names.home'), [
-            'shop' => $request->user()->getDomain()->toNative(),
+            'shop' => $shop->getDomain()->toNative(),
         ])->with(
             $result ? 'success' : 'failure',
             'billing'

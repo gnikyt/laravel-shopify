@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
+
 use function Osiset\ShopifyApp\getShopifyConfig;
 
 /**
@@ -28,7 +29,10 @@ class Billable
             $shop = auth()->user();
             if (! $shop->isFreemium() && ! $shop->isGrandfathered() && ! $shop->plan) {
                 // They're not grandfathered in, and there is no charge or charge was declined... redirect to billing
-                return Redirect::route(getShopifyConfig('route_names.billing'), $request->input());
+                return Redirect::route(
+                    getShopifyConfig('route_names.billing'),
+                    array_merge($request->input(), ['shop' => $shop->getDomain()->toNative()])
+                );
             }
         }
 

@@ -97,7 +97,7 @@ class VerifyShopify
         }
 
         // Continue if current route is an auth or billing route
-        if (Str::contains($request->getRequestUri(), ['/authenticate'])) {
+        if (Str::contains($request->getRequestUri(), ['/authenticate', '/billing'])) {
             return $next($request);
         }
 
