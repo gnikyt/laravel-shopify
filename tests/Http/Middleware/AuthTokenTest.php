@@ -3,10 +3,10 @@
 namespace Osiset\ShopifyApp\Test\Http\Middleware;
 
 use Illuminate\Support\Facades\Request;
-use Osiset\ShopifyApp\Util;
 use Osiset\ShopifyApp\Exceptions\HttpException;
 use Osiset\ShopifyApp\Http\Middleware\AuthToken as AuthTokenMiddleware;
 use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Util;
 
 class AuthTokenTest extends TestCase
 {

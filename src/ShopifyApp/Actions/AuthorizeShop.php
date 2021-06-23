@@ -5,11 +5,11 @@ namespace Osiset\ShopifyApp\Actions;
 use Exception;
 use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
-use Osiset\ShopifyApp\Util;
 use Osiset\ShopifyApp\Objects\Enums\AuthMode;
 use Osiset\ShopifyApp\Objects\Values\NullAccessToken;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Services\ShopSession;
+use Osiset\ShopifyApp\Util;
 use stdClass;
 
 /**

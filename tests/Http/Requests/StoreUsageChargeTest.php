@@ -3,9 +3,9 @@
 namespace Osiset\ShopifyApp\Test\Http\Requests;
 
 use Illuminate\Support\Facades\Validator;
-use Osiset\ShopifyApp\Util;
 use Osiset\ShopifyApp\Http\Requests\StoreUsageCharge;
 use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Util;
 
 class StoreUsageChargeTest extends TestCase
 {

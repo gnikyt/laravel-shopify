@@ -4,10 +4,10 @@ namespace Osiset\ShopifyApp\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Osiset\ShopifyApp\Util;
 use Osiset\ShopifyApp\Exceptions\HttpException;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Services\ShopSession;
+use Osiset\ShopifyApp\Util;
 
 class AuthToken
 {

@@ -10,8 +10,8 @@ use Illuminate\Queue\SerializesModels;
 use Osiset\ShopifyApp\Actions\CancelCurrentPlan;
 use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
-use Osiset\ShopifyApp\Util;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
+use Osiset\ShopifyApp\Util;
 use stdClass;
 
 /**

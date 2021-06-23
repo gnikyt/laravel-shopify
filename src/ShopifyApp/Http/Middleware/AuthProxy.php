@@ -5,9 +5,9 @@ namespace Osiset\ShopifyApp\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
-use Osiset\ShopifyApp\Util;
 use Osiset\ShopifyApp\Objects\Values\NullableShopDomain;
 use Osiset\ShopifyApp\Services\ShopSession;
+use Osiset\ShopifyApp\Util;
 
 /**
  * Responsible for ensuring a proper app proxy request.

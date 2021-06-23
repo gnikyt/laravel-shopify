@@ -109,7 +109,6 @@ class Util
         return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
     }
 
-
     /**
      * URL-safe Base64 decoding.
      *
@@ -146,7 +145,6 @@ class Util
 
         return in_array($routeToCheck, $routesToExclude, true) === false;
     }
-
 
     /**
      * Get the config value for a key.

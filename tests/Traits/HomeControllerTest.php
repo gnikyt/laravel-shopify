@@ -2,9 +2,9 @@
 
 namespace Osiset\ShopifyApp\Test\Traits;
 
-use Osiset\ShopifyApp\Util;
 use Osiset\ShopifyApp\Services\ShopSession;
 use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Util;
 
 class HomeControllerTest extends TestCase
 {
