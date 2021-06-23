@@ -26,7 +26,7 @@ jobs:
     name: PHP ${{ matrix.php }} / Laravel ${{ matrix.laravel }}
 
     steps:
-      - name: Checkout
+      - name: Checkout the code
         uses: actions/checkout@v2
 
       - name: Setup PHP
@@ -39,6 +39,17 @@ jobs:
       - name: Validate composer setup
         if: matrix.php == '8.0' && matrix.laravel == '8.22'
         run: composer validate --strict
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Cache composer dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: "php-${{ matrix.php }}-laravel-${{ matrix.laravel }}-${{ hashFiles('**/composer.json') }}"
+          restore-keys: "php-${{ matrix.php }}-laravel-${{ matrix.laravel }}-${{ hashFiles('**/composer.json') }}"
 
       - name: Install Laravel legacy factories support
         if: matrix.laravel == '8.22'
