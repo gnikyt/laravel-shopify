@@ -13,9 +13,10 @@
         window.sessionToken = await utils.getSessionToken(app);
 
         // Update everything with the session-token class
-        [...document.getElementsByClassName('session-token')].forEach((el) => {
+        Array.from(document.getElementsByClassName('session-token')).forEach((el) => {
             if (el.hasAttribute('value')) {
                 el.value = window.sessionToken;
+                el.setAttribute('value', el.value);
             } else {
                 el.dataset.value = window.sessionToken;
             }
