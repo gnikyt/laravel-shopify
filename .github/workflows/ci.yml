@@ -48,7 +48,7 @@ jobs:
         run: composer require "illuminate/contracts:${{ matrix.laravel }}" --no-interaction --no-update
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
+        run: composer install --prefer-dist --no-progress
 
       - name: Normalize composer file
         if: matrix.php == '8.0' && matrix.laravel == '8.22'
@@ -60,7 +60,7 @@ jobs:
           vendor/bin/phpcs --standard="phpcs.xml" .
 
       - name: Run test suite
-        run: vendor/bin/phpunit
+        run: vendor/bin/phpunit -v
 
       - name: Upload coverage results
         if: matrix.php == '8.0' && matrix.laravel == '8.22'
