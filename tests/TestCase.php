@@ -2,7 +2,6 @@
 
 namespace Osiset\ShopifyApp\Test;
 
-use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Closure;
 use Illuminate\Contracts\Http\Kernel as HttpKernelContract;
@@ -28,7 +27,7 @@ abstract class TestCase extends OrchestraTestCase
     {
         parent::setUp();
 
-        Carbon::setTestNow($this->now = CarbonImmutable::now());
+        CarbonImmutable::setTestNow($this->now = CarbonImmutable::now());
 
         // Setup database
         $this->setupDatabase($this->app);
