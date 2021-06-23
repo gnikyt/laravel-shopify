@@ -72,6 +72,7 @@
     "support": {
         "issues": "https://github.com/osiset/laravel-shopify/issues",
         "forum": "https://github.com/osiset/laravel-shopify/discussions",
+        "wiki": "https://github.com/osiset/laravel-shopify/wiki",
         "source": "https://github.com/osiset/laravel-shopify"
     }
 }
