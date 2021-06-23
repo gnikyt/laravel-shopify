@@ -208,7 +208,7 @@ class AuthTokenTest extends TestCase
 
     public function testDenysForExpiredToken(): void
     {
-        $now = time();
+        $now = $this->now->getTimestamp();
 
         $expiredBody = base64url_encode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
@@ -260,7 +260,7 @@ class AuthTokenTest extends TestCase
 
     public function testDenysForFutureToken(): void
     {
-        $now = time();
+        $now = $this->now->getTimestamp();
 
         $expiredBody = base64url_encode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
@@ -312,7 +312,7 @@ class AuthTokenTest extends TestCase
 
     public function testDenysForInvalidUrl(): void
     {
-        $now = time();
+        $now = $this->now->getTimestamp();
 
         $expiredBody = base64url_encode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
@@ -364,7 +364,7 @@ class AuthTokenTest extends TestCase
 
     public function testDenysForInvalidApiKey(): void
     {
-        $now = time();
+        $now = $this->now->getTimestamp();
 
         $expiredBody = base64url_encode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
@@ -416,7 +416,7 @@ class AuthTokenTest extends TestCase
 
     public function testRuns(): void
     {
-        $now = time();
+        $now = $this->now->getTimestamp();
 
         $body = base64url_encode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',

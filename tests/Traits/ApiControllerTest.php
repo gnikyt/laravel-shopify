@@ -44,7 +44,7 @@ class ApiControllerTest extends TestCase
 
     public function testApiWithToken(): void
     {
-        $now = time();
+        $now = $this->now->getTimestamp();
 
         $body = base64url_encode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
@@ -82,7 +82,7 @@ class ApiControllerTest extends TestCase
 
     public function testApiWithTokenJson(): void
     {
-        $now = time();
+        $now = $this->now->getTimestamp();
 
         $body = base64url_encode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
@@ -121,7 +121,7 @@ class ApiControllerTest extends TestCase
 
     public function testApiWithExpiredToken(): void
     {
-        $now = time();
+        $now = $this->now->getTimestamp();
 
         $body = base64url_encode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
@@ -159,7 +159,7 @@ class ApiControllerTest extends TestCase
 
     public function testApiWithExpiredTokenJson(): void
     {
-        $now = time();
+        $now = $this->now->getTimestamp();
 
         $body = base64url_encode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
@@ -198,7 +198,7 @@ class ApiControllerTest extends TestCase
 
     public function testApiWithMalformedToken(): void
     {
-        $now = time();
+        $now = $this->now->getTimestamp();
 
         $body = base64url_encode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
@@ -235,7 +235,7 @@ class ApiControllerTest extends TestCase
 
     public function testApiWithMalformedTokenJson(): void
     {
-        $now = time();
+        $now = $this->now->getTimestamp();
 
         $body = base64url_encode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
@@ -273,7 +273,7 @@ class ApiControllerTest extends TestCase
 
     public function testApiWithDomainMismatch(): void
     {
-        $now = time();
+        $now = $this->now->getTimestamp();
 
         $body = base64url_encode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
@@ -311,7 +311,7 @@ class ApiControllerTest extends TestCase
 
     public function testApiWithDomainMismatchJson(): void
     {
-        $now = time();
+        $now = $this->now->getTimestamp();
 
         $body = base64url_encode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
@@ -350,7 +350,7 @@ class ApiControllerTest extends TestCase
 
     public function testApiWithInvalidTokenHeader(): void
     {
-        $now = time();
+        $now = $this->now->getTimestamp();
 
         $body = base64url_encode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
@@ -388,7 +388,7 @@ class ApiControllerTest extends TestCase
 
     public function testApiWithInvalidTokenHeaderJson(): void
     {
-        $now = time();
+        $now = $this->now->getTimestamp();
 
         $body = base64url_encode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
@@ -427,7 +427,7 @@ class ApiControllerTest extends TestCase
 
     public function testApiGetSelf(): void
     {
-        $now = time();
+        $now = $this->now->getTimestamp();
 
         $body = base64url_encode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
@@ -465,7 +465,7 @@ class ApiControllerTest extends TestCase
 
     public function testApiGetPlans(): void
     {
-        $now = time();
+        $now = $this->now->getTimestamp();
 
         $body = base64url_encode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
@@ -505,7 +505,7 @@ class ApiControllerTest extends TestCase
 
         $this->assertNotEmpty($result);
         $this->assertNotEmpty($result);
-        $this->assertEquals(sizeof($result), 1);
+        $this->assertCount(1, $result);
         $this->assertStringContainsString('RECURRING', $response->getContent());
     }
 }

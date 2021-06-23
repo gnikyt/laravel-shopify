@@ -83,7 +83,7 @@ class AuthorizeShopTest extends TestCase
     {
         // Create the shop
         $shop = factory($this->model)->create([
-            'deleted_at' => time(),
+            'deleted_at' => $this->now->getTimestamp(),
         ]);
 
         // Get the current access token

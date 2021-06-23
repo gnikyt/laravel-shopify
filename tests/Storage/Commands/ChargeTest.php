@@ -2,7 +2,6 @@
 
 namespace Osiset\ShopifyApp\Test\Storage\Commands;
 
-use Illuminate\Support\Carbon;
 use Osiset\ShopifyApp\Contracts\Commands\Charge as IChargeCommand;
 use Osiset\ShopifyApp\Objects\Enums\ChargeStatus;
 use Osiset\ShopifyApp\Objects\Enums\ChargeType;
@@ -61,7 +60,7 @@ class ChargeTest extends TestCase
         $uc = new UsageChargeTransfer();
         $uc->shopId = ShopId::fromNative(1);
         $uc->chargeReference = ChargeReference::fromNative(12345678);
-        $uc->billingOn = Carbon::today();
+        $uc->billingOn = $this->now->today();
         $uc->details = $ud;
 
         $this->assertInstanceOf(
