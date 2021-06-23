@@ -10,7 +10,7 @@ use Illuminate\Queue\SerializesModels;
 use Osiset\ShopifyApp\Actions\CancelCurrentPlan;
 use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
-use function Osiset\ShopifyApp\getShopifyConfig;
+use Osiset\ShopifyApp\Helpers;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use stdClass;
 
@@ -80,7 +80,7 @@ class AppUninstalledJob implements ShouldQueue
         $shopCommand->clean($shopId);
 
         // Check freemium mode
-        $freemium = getShopifyConfig('billing_freemium_enabled');
+        $freemium = Helpers::getShopifyConfig('billing_freemium_enabled');
         if ($freemium === true) {
             // Add the freemium flag to the shop
             $shopCommand->setAsFreemium($shopId);

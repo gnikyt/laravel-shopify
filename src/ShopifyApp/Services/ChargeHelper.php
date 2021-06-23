@@ -6,7 +6,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\URL;
 use Osiset\ShopifyApp\Contracts\Queries\Charge as IChargeQuery;
 use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
-use function Osiset\ShopifyApp\getShopifyConfig;
+use Osiset\ShopifyApp\Helpers;
 use Osiset\ShopifyApp\Objects\Enums\ChargeType;
 use Osiset\ShopifyApp\Objects\Transfers\PlanDetails as PlanDetailsTransfer;
 use Osiset\ShopifyApp\Objects\Values\ChargeReference;
@@ -265,7 +265,7 @@ class ChargeHelper
         $transfer->cappedAmount = $isCapped ? $plan->capped_amount : null;
         $transfer->terms = $isCapped ? $plan->terms : null;
         $transfer->returnUrl = URL::secure(
-            getShopifyConfig('billing_redirect'),
+            Helpers::getShopifyConfig('billing_redirect'),
             ['plan' => $plan->getId()->toNative()]
         );
 

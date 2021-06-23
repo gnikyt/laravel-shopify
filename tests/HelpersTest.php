@@ -4,9 +4,7 @@ namespace Osiset\ShopifyApp\Test;
 
 use Illuminate\Support\Facades\Config;
 use LogicException;
-use function Osiset\ShopifyApp\createHmac;
-use function Osiset\ShopifyApp\getShopifyConfig;
-use function Osiset\ShopifyApp\registerPackageRoute;
+use Osiset\ShopifyApp\Helpers;
 use stdClass;
 
 class HelpersTest extends TestCase
@@ -20,21 +18,21 @@ class HelpersTest extends TestCase
         $data = 'one-two-three';
         $this->assertSame(
             hash_hmac('sha256', $data, $secret, true),
-            createHmac(['data' => $data, 'raw' => true], $secret)
+            Helpers::createHmac(['data' => $data, 'raw' => true], $secret)
         );
 
         // Raw data encoded
         $data = 'one-two-three';
         $this->assertSame(
             base64_encode(hash_hmac('sha256', $data, $secret, true)),
-            createHmac(['data' => $data, 'raw' => true, 'encode' => true], $secret)
+            Helpers::createHmac(['data' => $data, 'raw' => true, 'encode' => true], $secret)
         );
 
         // Query build (sorts array and builds query string)
         $data = ['one' => 1, 'two' => 2, 'three' => 3];
         $this->assertSame(
             hash_hmac('sha256', 'one=1three=3two=2', $secret, false),
-            createHmac(['data' => $data, 'buildQuery' => true], $secret)
+            Helpers::createHmac(['data' => $data, 'buildQuery' => true], $secret)
         );
     }
 
@@ -43,26 +41,26 @@ class HelpersTest extends TestCase
         // Routes to exclude
         $routes = explode(',', 'home,billing');
 
-        $this->assertTrue(registerPackageRoute('authenticate', false));
-        $this->assertTrue(registerPackageRoute('authenticate', []));
-        $this->assertTrue(registerPackageRoute('authenticate', $routes));
-        $this->assertFalse(registerPackageRoute('home', $routes));
+        $this->assertTrue(Helpers::registerPackageRoute('authenticate', false));
+        $this->assertTrue(Helpers::registerPackageRoute('authenticate', []));
+        $this->assertTrue(Helpers::registerPackageRoute('authenticate', $routes));
+        $this->assertFalse(Helpers::registerPackageRoute('home', $routes));
 
         $this->expectExceptionObject(new LogicException('Excluded routes must be an array', 0));
-        registerPackageRoute('home', stdClass::class);
+        Helpers::registerPackageRoute('home', stdClass::class);
     }
 
     public function testRouteNames(): void
     {
         // non-dot-notation route name
         $this->assertSame(
-            getShopifyConfig('route_names.home'),
+            Helpers::getShopifyConfig('route_names.home'),
             'home'
         );
 
         // dot-notation route name
         $this->assertSame(
-            getShopifyConfig('route_names.authenticate.oauth'),
+            Helpers::getShopifyConfig('route_names.authenticate.oauth'),
             'authenticate.oauth'
         );
     }
@@ -77,8 +75,8 @@ class HelpersTest extends TestCase
             return Config::get("shopify-app.{$key}");
         });
 
-        $secret = getShopifyConfig('api_secret');
-        $grantMode = getShopifyConfig('api_grant_mode');
+        $secret = Helpers::getShopifyConfig('api_secret');
+        $grantMode = Helpers::getShopifyConfig('api_grant_mode');
 
         $this->assertEquals('hello world', $secret);
         $this->assertEquals('OFFLINE', $grantMode);

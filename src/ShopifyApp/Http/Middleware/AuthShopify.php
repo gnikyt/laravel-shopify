@@ -12,7 +12,7 @@ use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
 use Osiset\ShopifyApp\Exceptions\MissingShopDomainException;
 use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
-use function Osiset\ShopifyApp\getShopifyConfig;
+use Osiset\ShopifyApp\Helpers;
 use Osiset\ShopifyApp\Objects\Enums\DataSource;
 use Osiset\ShopifyApp\Objects\Values\NullShopDomain;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
@@ -364,7 +364,7 @@ class AuthShopify
 
         // Mis-match of shops
         return Redirect::route(
-            getShopifyConfig('route_names.authenticate.oauth'),
+            Helpers::getShopifyConfig('route_names.authenticate.oauth'),
             ['shop' => $domain->toNative()]
         );
     }

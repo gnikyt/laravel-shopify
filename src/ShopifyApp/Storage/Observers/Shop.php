@@ -4,7 +4,7 @@ namespace Osiset\ShopifyApp\Storage\Observers;
 
 use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
 use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
-use function Osiset\ShopifyApp\getShopifyConfig;
+use Osiset\ShopifyApp\Helpers;
 
 /**
  * Responsible for observing changes to the shop (user) model.
@@ -40,8 +40,8 @@ class Shop
      */
     public function creating(IShopModel $shop): void
     {
-        $namespace = getShopifyConfig('namespace');
-        $freemium = getShopifyConfig('billing_freemium_enabled');
+        $namespace = Helpers::getShopifyConfig('namespace');
+        $freemium = Helpers::getShopifyConfig('billing_freemium_enabled');
 
         if (! empty($namespace) && ! isset($shop->shopify_namespace)) {
             // Automatically add the current namespace to new records

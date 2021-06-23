@@ -14,7 +14,7 @@ use Osiset\BasicShopifyAPI\ResponseAccess;
 use Osiset\BasicShopifyAPI\Session;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use Osiset\ShopifyApp\Exceptions\ApiException;
-use function Osiset\ShopifyApp\getShopifyConfig;
+use Osiset\ShopifyApp\Helpers;
 use Osiset\ShopifyApp\Objects\Enums\ApiMethod;
 use Osiset\ShopifyApp\Objects\Enums\AuthMode;
 use Osiset\ShopifyApp\Objects\Enums\ChargeType;
@@ -45,24 +45,24 @@ class ApiHelper implements IApiHelper
         $opts = new Options();
 
         $shop = $this->getShopDomain($session)->toNative();
-        $opts->setApiKey(getShopifyConfig('api_key', $shop));
-        $opts->setApiSecret(getShopifyConfig('api_secret', $shop));
-        $opts->setVersion(getShopifyConfig('api_version', $shop));
+        $opts->setApiKey(Helpers::getShopifyConfig('api_key', $shop));
+        $opts->setApiSecret(Helpers::getShopifyConfig('api_secret', $shop));
+        $opts->setVersion(Helpers::getShopifyConfig('api_version', $shop));
 
         // Create the instance
-        if (getShopifyConfig('api_init')) {
+        if (Helpers::getShopifyConfig('api_init')) {
             // User-defined init function
             $this->api = call_user_func(
-                getShopifyConfig('api_init'),
+                Helpers::getShopifyConfig('api_init'),
                 $opts,
                 $session,
                 Request::all()
             );
         } else {
             // Default init
-            $ts = getShopifyConfig('api_time_store', $shop);
-            $ls = getShopifyConfig('api_limit_store', $shop);
-            $sd = getShopifyConfig('api_deferrer', $shop);
+            $ts = Helpers::getShopifyConfig('api_time_store', $shop);
+            $ls = Helpers::getShopifyConfig('api_limit_store', $shop);
+            $sd = Helpers::getShopifyConfig('api_deferrer', $shop);
 
             $this->api = new BasicShopifyAPI(
                 $opts,
@@ -131,7 +131,7 @@ class ApiHelper implements IApiHelper
 
         return $this->api->getAuthUrl(
             $scopes,
-            URL::secure(getShopifyConfig('api_redirect')),
+            URL::secure(Helpers::getShopifyConfig('api_redirect')),
             strtolower($mode)
         );
     }

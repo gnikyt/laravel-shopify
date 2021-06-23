@@ -6,6 +6,7 @@ use Illuminate\Support\Carbon;
 use Osiset\ShopifyApp\Contracts\Objects\Values\PlanId;
 use Osiset\ShopifyApp\Objects\Enums\ChargeStatus;
 use Osiset\ShopifyApp\Objects\Enums\ChargeType;
+use Osiset\ShopifyApp\Objects\Values\ChargeReference;
 use Osiset\ShopifyApp\Objects\Values\ShopId;
 
 /**

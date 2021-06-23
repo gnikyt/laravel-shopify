@@ -5,10 +5,8 @@ namespace Osiset\ShopifyApp\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
-use function Osiset\ShopifyApp\createHmac;
-use function Osiset\ShopifyApp\getShopifyConfig;
+use Osiset\ShopifyApp\Helpers;
 use Osiset\ShopifyApp\Objects\Values\NullableShopDomain;
-use function Osiset\ShopifyApp\parseQueryString;
 use Osiset\ShopifyApp\Services\ShopSession;
 
 /**
@@ -56,12 +54,12 @@ class AuthProxy
         }
 
         // Build a local signature
-        $signatureLocal = createHmac(
+        $signatureLocal = Helpers::createHmac(
             [
                 'data'       => $query,
                 'buildQuery' => true,
             ],
-            getShopifyConfig('api_secret', $shop)
+            Helpers::getShopifyConfig('api_secret', $shop)
         );
         if (hash_equals($signature, $signatureLocal) === false || $shop->isNull()) {
             // Issue with HMAC or missing shop header
@@ -84,6 +82,6 @@ class AuthProxy
      */
     protected function getQueryStringParameters(Request $request): array
     {
-        return parseQueryString($request->server->get('QUERY_STRING'));
+        return Helpers::parseQueryString($request->server->get('QUERY_STRING'));
     }
 }
