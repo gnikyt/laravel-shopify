@@ -1,11 +1,13 @@
 <?php
 
-namespace Osiset\ShopifyApp;
+namespace Osiset\ShopifyApp\Test;
 
 use Illuminate\Support\Facades\Config;
 use LogicException;
-use Osiset\ShopifyApp\Test\TestCase;
 use stdClass;
+use function Osiset\ShopifyApp\createHmac;
+use function Osiset\ShopifyApp\getShopifyConfig;
+use function Osiset\ShopifyApp\registerPackageRoute;
 
 class HelpersTest extends TestCase
 {

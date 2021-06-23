@@ -1,6 +1,6 @@
 <?php
 
-namespace Osiset\ShopifyApp\Test\Requests;
+namespace Osiset\ShopifyApp\Test\Http\Requests;
 
 use Illuminate\Support\Facades\Validator;
 use function Osiset\ShopifyApp\createHmac;

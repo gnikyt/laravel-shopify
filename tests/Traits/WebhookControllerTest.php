@@ -1,6 +1,6 @@
 <?php
 
-namespace Osiset\ShopifyApp\Test\Controllers;
+namespace Osiset\ShopifyApp\Test\Traits;
 
 use App\Jobs\OrdersCreateJob;
 use Illuminate\Support\Facades\Queue;

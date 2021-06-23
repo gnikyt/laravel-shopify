@@ -2,7 +2,7 @@
 
 namespace Osiset\ShopifyApp\Test\Actions;
 
-use App\Jobs\AfterAuthorizeJob;
+use Osiset\ShopifyApp\Test\Stubs\AfterAuthorizeJob;
 use Illuminate\Support\Facades\Queue;
 use Osiset\ShopifyApp\Actions\AfterAuthorize;
 use Osiset\ShopifyApp\Test\TestCase;
