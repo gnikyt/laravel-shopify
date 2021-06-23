@@ -21,18 +21,19 @@
             }
         });
 
+        const bearer = `Bearer ${window.sessionToken}`;
         if (window.jQuery) {
             // jQuery
             if (window.jQuery.ajaxSettings.headers) {
-                window.jQuery.ajaxSettings.headers['Authorization'] = `Bearer ${window.sessionToken}`;
+                window.jQuery.ajaxSettings.headers['Authorization'] = bearer;
             } else {
-                window.jQuery.ajaxSettings.headers = { 'Authorization': `Bearer ${window.sessionToken}`};
+                window.jQuery.ajaxSettings.headers = { 'Authorization': bearer };
             }
         }
 
         if (window.axios) {
             // Axios
-            window.axios.defaults.headers.common['Authorization'] = `Bearer ${window.sessionToken}`;
+            window.axios.defaults.headers.common['Authorization'] = bearer;
         }
     }
 
