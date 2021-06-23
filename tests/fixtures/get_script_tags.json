@@ -1,20 +1,20 @@
 {
-  "script_tags": [
-    {
-      "id": 421379493,
-      "src": "https:\/\/js-aplenty.com\/bar.js",
-      "event": "onload",
-      "created_at": "2017-03-15T13:27:53-04:00",
-      "updated_at": "2017-03-15T13:27:53-04:00",
-      "display_scope": "all"
-    },
-    {
-      "id": 596726825,
-      "src": "https:\/\/js-aplenty.com\/foo.js",
-      "event": "onload",
-      "created_at": "2017-03-15T13:27:53-04:00",
-      "updated_at": "2017-03-15T13:27:53-04:00",
-      "display_scope": "all"
-    }
-  ]
+    "script_tags": [
+        {
+            "id": 421379493,
+            "src": "https:\/\/js-aplenty.com\/bar.js",
+            "event": "onload",
+            "created_at": "2017-03-15T13:27:53-04:00",
+            "updated_at": "2017-03-15T13:27:53-04:00",
+            "display_scope": "all"
+        },
+        {
+            "id": 596726825,
+            "src": "https:\/\/js-aplenty.com\/foo.js",
+            "event": "onload",
+            "created_at": "2017-03-15T13:27:53-04:00",
+            "updated_at": "2017-03-15T13:27:53-04:00",
+            "display_scope": "all"
+        }
+    ]
 }
