@@ -89,7 +89,7 @@ class ChargeTest extends TestCase
         $planDetails->test = true;
         $planDetails->trialDays = 7;
         $planDetails->cappedAmount = null;
-        $planDetails->cappedTerms = null;
+        $planDetails->terms = null;
 
         // Make the transfer object
         $charge = new ChargeTransfer();

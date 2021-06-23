@@ -6,6 +6,7 @@ use Closure;
 use Exception;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\URL;
 use Osiset\BasicShopifyAPI\BasicShopifyAPI;

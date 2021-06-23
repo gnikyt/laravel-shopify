@@ -104,6 +104,7 @@ Route::group(['prefix' => getShopifyConfig('prefix'), 'middleware' => ['web']], 
     |--------------------------------------------------------------------------
     |
     | Processes the customer's response to the billing screen.
+    | The shop domain is encrypted.
     |
     */
 

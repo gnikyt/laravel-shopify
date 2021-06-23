@@ -2,21 +2,21 @@
 
 namespace Osiset\ShopifyApp\Traits;
 
-use Illuminate\Contracts\View\View as ViewView;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\View;
-use Osiset\ShopifyApp\Actions\ActivatePlan;
-use Osiset\ShopifyApp\Actions\ActivateUsageCharge;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Redirect;
 use Osiset\ShopifyApp\Actions\GetPlanUrl;
-use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
-use function Osiset\ShopifyApp\getShopifyConfig;
-use Osiset\ShopifyApp\Http\Requests\StoreUsageCharge;
-use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
-use Osiset\ShopifyApp\Objects\Values\ChargeReference;
-use Osiset\ShopifyApp\Objects\Values\NullablePlanId;
+use Osiset\ShopifyApp\Actions\ActivatePlan;
 use Osiset\ShopifyApp\Objects\Values\PlanId;
+use Illuminate\Contracts\View\View as ViewView;
+use function Osiset\ShopifyApp\getShopifyConfig;
+use Osiset\ShopifyApp\Actions\ActivateUsageCharge;
+use Osiset\ShopifyApp\Objects\Values\NullablePlanId;
+use Osiset\ShopifyApp\Http\Requests\StoreUsageCharge;
+use Osiset\ShopifyApp\Objects\Values\ChargeReference;
+use Osiset\ShopifyApp\Storage\Queries\Shop as ShopQuery;
+use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
 
 /**
  * Responsible for billing a shop for plans and usage charges.
@@ -27,14 +27,15 @@ trait BillingController
      * Redirects to billing screen for Shopify.
      *
      * @param int|null    $plan        The plan's ID, if provided in route.
+     * @param Request     $request     The request object.
      * @param GetPlanUrl  $getPlanUrl  The action for getting the plan URL.
      *
      * @return ViewView
      */
-    public function index(?int $plan = null, GetPlanUrl $getPlanUrl): ViewView
+    public function index(?int $plan = null, Request $request, GetPlanUrl $getPlanUrl): ViewView
     {
         /** @var $shop IShopModel */
-        $shop = auth()->user();
+        $shop = $request->user();
 
         // Get the plan URL for redirect
         $url = $getPlanUrl(
@@ -54,6 +55,7 @@ trait BillingController
      *
      * @param int          $plan         The plan's ID.
      * @param Request      $request      The HTTP request object.
+     * @param ShopQuery    $shopQuery    The shop querier.
      * @param ActivatePlan $activatePlan The action for activating the plan for a shop.
      *
      * @return RedirectResponse
@@ -61,6 +63,7 @@ trait BillingController
     public function process(
         int $plan,
         Request $request,
+        ShopQuery $shopQuery,
         ActivatePlan $activatePlan
     ): RedirectResponse {
         // Activate the plan and save
