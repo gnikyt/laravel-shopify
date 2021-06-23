@@ -3,9 +3,17 @@
     "description": "Shopify package for Laravel to aide in app development",
     "keywords": [
         "api",
+        "callback-url",
+        "driver",
+        "facade",
         "laravel",
+        "laravel-package",
+        "laravel-shopify",
+        "scripttags",
         "shopify",
-        "shopify-api"
+        "shopify-api",
+        "shopify-app",
+        "webhook"
     ],
     "license": "MIT",
     "authors": [
