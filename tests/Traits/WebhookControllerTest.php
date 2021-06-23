@@ -2,8 +2,8 @@
 
 namespace Osiset\ShopifyApp\Test\Traits;
 
-use Illuminate\Http\Response;
 use App\Jobs\OrdersCreateJob;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Queue;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Test\TestCase;
