@@ -2,7 +2,7 @@
 
 namespace Osiset\ShopifyApp\Test\Traits;
 
-use function Osiset\ShopifyApp\createHmac;
+use Osiset\ShopifyApp\Util;
 use Osiset\ShopifyApp\Services\ShopSession;
 use Osiset\ShopifyApp\Storage\Models\Charge;
 use Osiset\ShopifyApp\Storage\Models\Plan;
@@ -100,7 +100,7 @@ class BillingControllerTest extends TestCase
         // Setup the data for the usage charge and the signature for it
         $secret = $this->app['config']->get('shopify-app.api_secret');
         $data = ['description' => 'One email', 'price' => 1.00, 'redirect' => 'https://localhost/usage-success'];
-        $signature = createHmac(['data' => $data, 'buildQuery' => true], $secret);
+        $signature = Util::createHmac(['data' => $data, 'buildQuery' => true], $secret);
 
         // Run the call
         $response = $this->call('post', '/billing/usage-charge', array_merge($data, ['signature' => $signature]));
@@ -109,7 +109,7 @@ class BillingControllerTest extends TestCase
 
         // Run again with no redirect
         $data = ['description' => 'One email', 'price' => 1.00];
-        $signature = createHmac(['data' => $data, 'buildQuery' => true], $secret);
+        $signature = Util::createHmac(['data' => $data, 'buildQuery' => true], $secret);
 
         // Run the call
         $response = $this->call('post', '/billing/usage-charge', array_merge($data, ['signature' => $signature]));

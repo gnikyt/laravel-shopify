@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\View;
 use Osiset\ShopifyApp\Actions\ActivatePlan;
 use Osiset\ShopifyApp\Actions\ActivateUsageCharge;
 use Osiset\ShopifyApp\Actions\GetPlanUrl;
-use function Osiset\ShopifyApp\getShopifyConfig;
+use Osiset\ShopifyApp\Util;
 use Osiset\ShopifyApp\Http\Requests\StoreUsageCharge;
 use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
 use Osiset\ShopifyApp\Objects\Values\ChargeReference;
@@ -71,7 +71,7 @@ trait BillingController
         );
 
         // Go to homepage of app
-        return Redirect::route(getShopifyConfig('route_names.home'))->with(
+        return Redirect::route(Util::getShopifyConfig('route_names.home'))->with(
             $result ? 'success' : 'failure',
             'billing'
         );

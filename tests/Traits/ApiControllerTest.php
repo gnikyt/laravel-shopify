@@ -3,7 +3,7 @@
 namespace Osiset\ShopifyApp\Test\Traits;
 
 use Illuminate\Support\Facades\Request;
-use function Osiset\ShopifyApp\base64url_encode;
+use Osiset\ShopifyApp\Util;
 use Osiset\ShopifyApp\Objects\Enums\PlanType;
 use Osiset\ShopifyApp\Storage\Models\Plan;
 use Osiset\ShopifyApp\Test\TestCase;
@@ -46,7 +46,7 @@ class ApiControllerTest extends TestCase
     {
         $now = $this->now->getTimestamp();
 
-        $body = base64url_encode(json_encode([
+        $body = Util::base64url_encode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
             'aud' => env('SHOPIFY_API_KEY'),
@@ -62,7 +62,7 @@ class ApiControllerTest extends TestCase
 
         $secret = env('SHOPIFY_API_SECRET');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = Util::base64url_encode(hash_hmac('sha256', $payload, $secret, true));
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
@@ -84,7 +84,7 @@ class ApiControllerTest extends TestCase
     {
         $now = $this->now->getTimestamp();
 
-        $body = base64url_encode(json_encode([
+        $body = Util::base64url_encode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
             'aud' => env('SHOPIFY_API_KEY'),
@@ -100,7 +100,7 @@ class ApiControllerTest extends TestCase
 
         $secret = env('SHOPIFY_API_SECRET');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = Util::base64url_encode(hash_hmac('sha256', $payload, $secret, true));
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
@@ -123,7 +123,7 @@ class ApiControllerTest extends TestCase
     {
         $now = $this->now->getTimestamp();
 
-        $body = base64url_encode(json_encode([
+        $body = Util::base64url_encode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
             'aud' => env('SHOPIFY_API_KEY'),
@@ -139,7 +139,7 @@ class ApiControllerTest extends TestCase
 
         $secret = env('SHOPIFY_API_SECRET');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = Util::base64url_encode(hash_hmac('sha256', $payload, $secret, true));
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
@@ -161,7 +161,7 @@ class ApiControllerTest extends TestCase
     {
         $now = $this->now->getTimestamp();
 
-        $body = base64url_encode(json_encode([
+        $body = Util::base64url_encode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
             'aud' => env('SHOPIFY_API_KEY'),
@@ -177,7 +177,7 @@ class ApiControllerTest extends TestCase
 
         $secret = env('SHOPIFY_API_SECRET');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = Util::base64url_encode(hash_hmac('sha256', $payload, $secret, true));
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
@@ -200,7 +200,7 @@ class ApiControllerTest extends TestCase
     {
         $now = $this->now->getTimestamp();
 
-        $body = base64url_encode(json_encode([
+        $body = Util::base64url_encode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
             'aud' => env('SHOPIFY_API_KEY'),
@@ -215,7 +215,7 @@ class ApiControllerTest extends TestCase
 
         $secret = env('SHOPIFY_API_SECRET');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = Util::base64url_encode(hash_hmac('sha256', $payload, $secret, true));
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
@@ -237,7 +237,7 @@ class ApiControllerTest extends TestCase
     {
         $now = $this->now->getTimestamp();
 
-        $body = base64url_encode(json_encode([
+        $body = Util::base64url_encode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
             'aud' => env('SHOPIFY_API_KEY'),
@@ -252,7 +252,7 @@ class ApiControllerTest extends TestCase
 
         $secret = env('SHOPIFY_API_SECRET');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = Util::base64url_encode(hash_hmac('sha256', $payload, $secret, true));
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
@@ -275,7 +275,7 @@ class ApiControllerTest extends TestCase
     {
         $now = $this->now->getTimestamp();
 
-        $body = base64url_encode(json_encode([
+        $body = Util::base64url_encode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://another-shop-name.myshopify.com',
             'aud' => env('SHOPIFY_API_KEY'),
@@ -291,7 +291,7 @@ class ApiControllerTest extends TestCase
 
         $secret = env('SHOPIFY_API_SECRET');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = Util::base64url_encode(hash_hmac('sha256', $payload, $secret, true));
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
@@ -313,7 +313,7 @@ class ApiControllerTest extends TestCase
     {
         $now = $this->now->getTimestamp();
 
-        $body = base64url_encode(json_encode([
+        $body = Util::base64url_encode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://another-shop-name.myshopify.com',
             'aud' => env('SHOPIFY_API_KEY'),
@@ -329,7 +329,7 @@ class ApiControllerTest extends TestCase
 
         $secret = env('SHOPIFY_API_SECRET');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = Util::base64url_encode(hash_hmac('sha256', $payload, $secret, true));
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
@@ -352,7 +352,7 @@ class ApiControllerTest extends TestCase
     {
         $now = $this->now->getTimestamp();
 
-        $body = base64url_encode(json_encode([
+        $body = Util::base64url_encode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
             'aud' => env('SHOPIFY_API_KEY'),
@@ -368,7 +368,7 @@ class ApiControllerTest extends TestCase
 
         $secret = env('SHOPIFY_API_SECRET');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = Util::base64url_encode(hash_hmac('sha256', $payload, $secret, true));
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
@@ -390,7 +390,7 @@ class ApiControllerTest extends TestCase
     {
         $now = $this->now->getTimestamp();
 
-        $body = base64url_encode(json_encode([
+        $body = Util::base64url_encode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
             'aud' => env('SHOPIFY_API_KEY'),
@@ -406,7 +406,7 @@ class ApiControllerTest extends TestCase
 
         $secret = env('SHOPIFY_API_SECRET');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = Util::base64url_encode(hash_hmac('sha256', $payload, $secret, true));
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
@@ -429,7 +429,7 @@ class ApiControllerTest extends TestCase
     {
         $now = $this->now->getTimestamp();
 
-        $body = base64url_encode(json_encode([
+        $body = Util::base64url_encode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
             'aud' => env('SHOPIFY_API_KEY'),
@@ -445,7 +445,7 @@ class ApiControllerTest extends TestCase
 
         $secret = env('SHOPIFY_API_SECRET');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = Util::base64url_encode(hash_hmac('sha256', $payload, $secret, true));
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
@@ -467,7 +467,7 @@ class ApiControllerTest extends TestCase
     {
         $now = $this->now->getTimestamp();
 
-        $body = base64url_encode(json_encode([
+        $body = Util::base64url_encode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
             'aud' => env('SHOPIFY_API_KEY'),
@@ -483,7 +483,7 @@ class ApiControllerTest extends TestCase
 
         $secret = env('SHOPIFY_API_SECRET');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = Util::base64url_encode(hash_hmac('sha256', $payload, $secret, true));
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
