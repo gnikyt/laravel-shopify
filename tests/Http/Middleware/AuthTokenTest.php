@@ -172,7 +172,7 @@ class AuthTokenTest extends TestCase
 
         $invalidPayload = sprintf('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.%s', $invalidBody);
 
-        $secret = env('SHOPIFY_API_SECRET');
+        $secret = Util::getShopifyConfig('api_secret');
 
         $hmac = Util::base64UrlEncode(hash_hmac('sha256', $invalidPayload, $secret, true));
 
@@ -213,7 +213,7 @@ class AuthTokenTest extends TestCase
         $expiredBody = Util::base64UrlEncode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
-            'aud' => env('SHOPIFY_API_KEY'),
+            'aud' => Util::getShopifyConfig('api_key'),
             'sub' => '123',
             'exp' => $now - 60,
             'nbf' => $now - 120,
@@ -224,7 +224,7 @@ class AuthTokenTest extends TestCase
 
         $payload = sprintf('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.%s', $expiredBody);
 
-        $secret = env('SHOPIFY_API_SECRET');
+        $secret = Util::getShopifyConfig('api_secret');
 
         $hmac = Util::base64UrlEncode(hash_hmac('sha256', $payload, $secret, true));
 
@@ -265,7 +265,7 @@ class AuthTokenTest extends TestCase
         $expiredBody = Util::base64UrlEncode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
-            'aud' => env('SHOPIFY_API_KEY'),
+            'aud' => Util::getShopifyConfig('api_key'),
             'sub' => '123',
             'exp' => $now + 60,
             'nbf' => $now + 120,
@@ -276,7 +276,7 @@ class AuthTokenTest extends TestCase
 
         $payload = sprintf('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.%s', $expiredBody);
 
-        $secret = env('SHOPIFY_API_SECRET');
+        $secret = Util::getShopifyConfig('api_secret');
 
         $hmac = Util::base64UrlEncode(hash_hmac('sha256', $payload, $secret, true));
 
@@ -317,7 +317,7 @@ class AuthTokenTest extends TestCase
         $expiredBody = Util::base64UrlEncode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://another-name.myshopify.com',
-            'aud' => env('SHOPIFY_API_KEY'),
+            'aud' => Util::getShopifyConfig('api_key'),
             'sub' => '123',
             'exp' => $now + 60,
             'nbf' => $now,
@@ -328,7 +328,7 @@ class AuthTokenTest extends TestCase
 
         $payload = sprintf('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.%s', $expiredBody);
 
-        $secret = env('SHOPIFY_API_SECRET');
+        $secret = Util::getShopifyConfig('api_secret');
 
         $hmac = Util::base64UrlEncode(hash_hmac('sha256', $payload, $secret, true));
 
@@ -380,7 +380,7 @@ class AuthTokenTest extends TestCase
 
         $payload = sprintf('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.%s', $expiredBody);
 
-        $secret = env('SHOPIFY_API_SECRET');
+        $secret = Util::getShopifyConfig('api_secret');
 
         $hmac = Util::base64UrlEncode(hash_hmac('sha256', $payload, $secret, true));
 
@@ -421,7 +421,7 @@ class AuthTokenTest extends TestCase
         $body = Util::base64UrlEncode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
-            'aud' => env('SHOPIFY_API_KEY'),
+            'aud' => Util::getShopifyConfig('api_key'),
             'sub' => '123',
             'exp' => $now + 60,
             'nbf' => $now,
@@ -432,7 +432,7 @@ class AuthTokenTest extends TestCase
 
         $payload = sprintf('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.%s', $body);
 
-        $secret = env('SHOPIFY_API_SECRET');
+        $secret = Util::getShopifyConfig('api_secret');
 
         $hmac = Util::base64UrlEncode(hash_hmac('sha256', $payload, $secret, true));
 
