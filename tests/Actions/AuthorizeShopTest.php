@@ -6,6 +6,7 @@ use Osiset\ShopifyApp\Actions\AuthorizeShop;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
 use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Util;
 
 class AuthorizeShopTest extends TestCase
 {
@@ -30,7 +31,7 @@ class AuthorizeShopTest extends TestCase
         );
 
         $this->assertStringContainsString(
-            '/admin/oauth/authorize?client_id='.env('SHOPIFY_API_KEY').'&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalhost%2Fauthenticate',
+            '/admin/oauth/authorize?client_id='.Util::getShopifyConfig('api_key').'&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalhost%2Fauthenticate',
             $result->url
         );
         $this->assertFalse($result->completed);
@@ -48,7 +49,7 @@ class AuthorizeShopTest extends TestCase
         );
 
         $this->assertStringContainsString(
-            '/admin/oauth/authorize?client_id='.env('SHOPIFY_API_KEY').'&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalhost%2Fauthenticate',
+            '/admin/oauth/authorize?client_id='.Util::getShopifyConfig('api_key').'&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalhost%2Fauthenticate',
             $result->url
         );
         $this->assertFalse($result->completed);
