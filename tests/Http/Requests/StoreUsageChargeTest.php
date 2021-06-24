@@ -3,9 +3,9 @@
 namespace Osiset\ShopifyApp\Test\Http\Requests;
 
 use Illuminate\Support\Facades\Validator;
-use function Osiset\ShopifyApp\createHmac;
 use Osiset\ShopifyApp\Http\Requests\StoreUsageCharge;
 use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Util;
 
 class StoreUsageChargeTest extends TestCase
 {
@@ -27,7 +27,7 @@ class StoreUsageChargeTest extends TestCase
             'description' => 'Testing',
         ];
 
-        $signature = createHmac(['data' => $data, 'buildQuery' => true], $this->app['config']->get('shopify-app.api_secret'));
+        $signature = Util::createHmac(['data' => $data, 'buildQuery' => true], $this->app['config']->get('shopify-app.api_secret'));
         $data['signature'] = $signature;
         $data['price'] = '2.00';
 
@@ -45,7 +45,7 @@ class StoreUsageChargeTest extends TestCase
             'description' => 'Testing',
             'redirect'    => '/',
         ];
-        $signature = createHmac(['data' => $data, 'buildQuery' => true], $this->app['config']->get('shopify-app.api_secret'));
+        $signature = Util::createHmac(['data' => $data, 'buildQuery' => true], $this->app['config']->get('shopify-app.api_secret'));
         $data['signature'] = $signature;
 
         $storeUsage = new StoreUsageCharge([], $data);

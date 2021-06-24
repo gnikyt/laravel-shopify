@@ -4,7 +4,7 @@ namespace Osiset\ShopifyApp\Actions;
 
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopId as ShopIdValue;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
-use function Osiset\ShopifyApp\getShopifyConfig;
+use Osiset\ShopifyApp\Util;
 
 /**
  * Attempt to install script tags on a shop.
@@ -53,7 +53,7 @@ class DispatchScripts
         $shop = $this->shopQuery->getById($shopId);
 
         // Get the scripttags
-        $scripttags = getShopifyConfig('scripttags');
+        $scripttags = Util::getShopifyConfig('scripttags');
         if (count($scripttags) === 0) {
             // Nothing to do
             return false;
@@ -69,7 +69,7 @@ class DispatchScripts
             ($this->jobClass)::dispatch(
                 $shop->getId(),
                 $scripttags
-            )->onQueue(getShopifyConfig('job_queues')['scripttags']);
+            )->onQueue(Util::getShopifyConfig('job_queues')['scripttags']);
         }
 
         return true;

@@ -7,7 +7,7 @@ use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopId as ShopIdValue;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use Osiset\ShopifyApp\Contracts\ShopModel;
-use function Osiset\ShopifyApp\getShopifyConfig;
+use Osiset\ShopifyApp\Util;
 
 /**
  * Reprecents shop queries.
@@ -28,7 +28,7 @@ class Shop implements IShopQuery
      */
     public function __construct()
     {
-        $this->model = getShopifyConfig('user_model');
+        $this->model = Util::getShopifyConfig('user_model');
     }
 
     /**

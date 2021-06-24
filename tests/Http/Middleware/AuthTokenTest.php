@@ -3,10 +3,10 @@
 namespace Osiset\ShopifyApp\Test\Http\Middleware;
 
 use Illuminate\Support\Facades\Request;
-use function Osiset\ShopifyApp\base64url_encode;
 use Osiset\ShopifyApp\Exceptions\HttpException;
 use Osiset\ShopifyApp\Http\Middleware\AuthToken as AuthTokenMiddleware;
 use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Util;
 
 class AuthTokenTest extends TestCase
 {
@@ -159,7 +159,7 @@ class AuthTokenTest extends TestCase
 
     public function testDenysForValidRegexValidSignatureBadBody(): void
     {
-        $invalidBody = base64url_encode(json_encode([
+        $invalidBody = Util::base64UrlEncode(json_encode([
             'dest' => '<shop-name.myshopify.com>',
             'aud' => '<api key>',
             'sub' => '<user ID>',
@@ -174,7 +174,7 @@ class AuthTokenTest extends TestCase
 
         $secret = env('SHOPIFY_API_SECRET');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $invalidPayload, $secret, true));
+        $hmac = Util::base64UrlEncode(hash_hmac('sha256', $invalidPayload, $secret, true));
 
         $validTokenInvalidBody = sprintf('%s.%s', $invalidPayload, $hmac);
 
@@ -210,7 +210,7 @@ class AuthTokenTest extends TestCase
     {
         $now = $this->now->getTimestamp();
 
-        $expiredBody = base64url_encode(json_encode([
+        $expiredBody = Util::base64UrlEncode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
             'aud' => env('SHOPIFY_API_KEY'),
@@ -226,7 +226,7 @@ class AuthTokenTest extends TestCase
 
         $secret = env('SHOPIFY_API_SECRET');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = Util::base64UrlEncode(hash_hmac('sha256', $payload, $secret, true));
 
         $expiredTokenBody = sprintf('%s.%s', $payload, $hmac);
 
@@ -262,7 +262,7 @@ class AuthTokenTest extends TestCase
     {
         $now = $this->now->getTimestamp();
 
-        $expiredBody = base64url_encode(json_encode([
+        $expiredBody = Util::base64UrlEncode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
             'aud' => env('SHOPIFY_API_KEY'),
@@ -278,7 +278,7 @@ class AuthTokenTest extends TestCase
 
         $secret = env('SHOPIFY_API_SECRET');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = Util::base64UrlEncode(hash_hmac('sha256', $payload, $secret, true));
 
         $expiredTokenBody = sprintf('%s.%s', $payload, $hmac);
 
@@ -314,7 +314,7 @@ class AuthTokenTest extends TestCase
     {
         $now = $this->now->getTimestamp();
 
-        $expiredBody = base64url_encode(json_encode([
+        $expiredBody = Util::base64UrlEncode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://another-name.myshopify.com',
             'aud' => env('SHOPIFY_API_KEY'),
@@ -330,7 +330,7 @@ class AuthTokenTest extends TestCase
 
         $secret = env('SHOPIFY_API_SECRET');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = Util::base64UrlEncode(hash_hmac('sha256', $payload, $secret, true));
 
         $expiredTokenBody = sprintf('%s.%s', $payload, $hmac);
 
@@ -366,7 +366,7 @@ class AuthTokenTest extends TestCase
     {
         $now = $this->now->getTimestamp();
 
-        $expiredBody = base64url_encode(json_encode([
+        $expiredBody = Util::base64UrlEncode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
             'aud' => 'invalid',
@@ -382,7 +382,7 @@ class AuthTokenTest extends TestCase
 
         $secret = env('SHOPIFY_API_SECRET');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = Util::base64UrlEncode(hash_hmac('sha256', $payload, $secret, true));
 
         $expiredTokenBody = sprintf('%s.%s', $payload, $hmac);
 
@@ -418,7 +418,7 @@ class AuthTokenTest extends TestCase
     {
         $now = $this->now->getTimestamp();
 
-        $body = base64url_encode(json_encode([
+        $body = Util::base64UrlEncode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
             'aud' => env('SHOPIFY_API_KEY'),
@@ -434,7 +434,7 @@ class AuthTokenTest extends TestCase
 
         $secret = env('SHOPIFY_API_SECRET');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = Util::base64UrlEncode(hash_hmac('sha256', $payload, $secret, true));
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
