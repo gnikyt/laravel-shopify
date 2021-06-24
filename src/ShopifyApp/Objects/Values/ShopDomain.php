@@ -7,9 +7,8 @@ use Funeralzone\ValueObjects\Scalars\StringTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
-use function Osiset\ShopifyApp\getShopifyConfig;
 use Osiset\ShopifyApp\Objects\Enums\DataSource;
-use function Osiset\ShopifyApp\parseQueryString;
+use Osiset\ShopifyApp\Util;
 
 /**
  * Value object for shop's domain.
@@ -59,7 +58,7 @@ final class ShopDomain implements ShopDomainValue
                     return null;
                 }
 
-                $params = parseQueryString($url);
+                $params = Util::parseQueryString($url);
                 $shop = Arr::get($params, 'shop', Arr::get($params, 'shopDomain'));
                 if ($shop) {
                     return $shop;
@@ -104,7 +103,7 @@ final class ShopDomain implements ShopDomainValue
      */
     protected function sanitizeShopDomain(string $domain): ?string
     {
-        $configEndDomain = getShopifyConfig('myshopify_domain');
+        $configEndDomain = Util::getShopifyConfig('myshopify_domain');
         $domain = strtolower(preg_replace('/https?:\/\//i', '', trim($domain)));
 
         if (strpos($domain, $configEndDomain) === false && strpos($domain, '.') === false) {

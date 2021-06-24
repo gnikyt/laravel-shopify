@@ -11,9 +11,8 @@ use Illuminate\Support\Facades\View;
 use Osiset\ShopifyApp\Actions\AuthenticateShop;
 use Osiset\ShopifyApp\Exceptions\MissingAuthUrlException;
 use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
-use function Osiset\ShopifyApp\getShopifyConfig;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
-use function Osiset\ShopifyApp\parseQueryString;
+use Osiset\ShopifyApp\Util;
 
 /**
  * Responsible for authenticating the shop.
@@ -28,7 +27,7 @@ trait AuthController
     public function authenticate(Request $request, AuthenticateShop $authShop)
     {
         // Get the shop domain
-        if (getShopifyConfig('turbo_enabled') && $request->user()) {
+        if (Util::getShopifyConfig('turbo_enabled') && $request->user()) {
             // If the user clicked on any link before load Turbo and receiving the token
             $shopDomain = $request->user()->getDomain();
             $request['shop'] = $shopDomain->toNative();
@@ -57,7 +56,7 @@ trait AuthController
         } else {
             // Go to home route
             return Redirect::route(
-                getShopifyConfig('route_names.home'),
+                Util::getShopifyConfig('route_names.home'),
                 ['shop' => $shopDomain->toNative()]
             );
         }
@@ -78,7 +77,7 @@ trait AuthController
         $cleanTarget = $target;
         if ($query) {
             // remove "token" from the target's query string
-            $params = parseQueryString($query);
+            $params = Util::parseQueryString($query);
             unset($params['token']);
 
             $cleanTarget = trim(explode('?', $target)[0].'?'.http_build_query($params), '?');

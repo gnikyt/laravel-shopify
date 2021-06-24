@@ -10,7 +10,6 @@ use Osiset\ShopifyApp\Actions\GetPlanUrl;
 use Osiset\ShopifyApp\Actions\ActivatePlan;
 use Osiset\ShopifyApp\Objects\Values\PlanId;
 use Illuminate\Contracts\View\View as ViewView;
-use function Osiset\ShopifyApp\getShopifyConfig;
 use Osiset\ShopifyApp\Actions\ActivateUsageCharge;
 use Osiset\ShopifyApp\Objects\Values\NullablePlanId;
 use Osiset\ShopifyApp\Http\Requests\StoreUsageCharge;
@@ -18,6 +17,7 @@ use Osiset\ShopifyApp\Objects\Values\ChargeReference;
 use Osiset\ShopifyApp\Storage\Queries\Shop as ShopQuery;
 use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
+use Osiset\ShopifyApp\Util;
 
 /**
  * Responsible for billing a shop for plans and usage charges.
@@ -83,7 +83,7 @@ trait BillingController
         );
 
         // Go to homepage of app
-        return Redirect::route(getShopifyConfig('route_names.home'), [
+        return Redirect::route(Util::getShopifyConfig('route_names.home'), [
             'shop' => $shop->getDomain()->toNative(),
         ])->with(
             $result ? 'success' : 'failure',

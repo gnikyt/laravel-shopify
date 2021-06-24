@@ -3,24 +3,23 @@
 namespace Osiset\ShopifyApp\Test;
 
 use Closure;
-use Illuminate\Contracts\Http\Kernel as HttpKernelContract;
+use Carbon\CarbonImmutable;
+use Osiset\ShopifyApp\Util;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Request as FacadesRequest;
-use Orchestra\Database\ConsoleServiceProvider;
-use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use Osiset\BasicShopifyAPI\Options;
-use function Osiset\ShopifyApp\base64url_encode;
-use Osiset\ShopifyApp\Contracts\ShopModel;
-use function Osiset\ShopifyApp\createHmac;
-use function Osiset\ShopifyApp\getShopifyConfig;
-use Osiset\ShopifyApp\Objects\Values\Hmac;
+use Illuminate\Support\Facades\Crypt;
 use Osiset\ShopifyApp\ShopifyAppProvider;
+use Osiset\ShopifyApp\Contracts\ShopModel;
+use Osiset\ShopifyApp\Objects\Values\Hmac;
+use Orchestra\Database\ConsoleServiceProvider;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
-use Osiset\ShopifyApp\Test\Stubs\Kernel as StubKernel;
 use Osiset\ShopifyApp\Test\Stubs\User as UserStub;
+use Orchestra\Testbench\TestCase as OrchestraTestCase;
+use Osiset\ShopifyApp\Test\Stubs\Kernel as StubKernel;
+use Illuminate\Support\Facades\Request as FacadesRequest;
+use Illuminate\Contracts\Http\Kernel as HttpKernelContract;
 
 abstract class TestCase extends OrchestraTestCase
 {
@@ -38,9 +37,17 @@ abstract class TestCase extends OrchestraTestCase
      */
     protected $tokenDefaults;
 
+    /**
+     * Carbon time.
+     * @var CarbonImmutable
+     */
+    protected $now;
+
     public function setUp(): void
     {
         parent::setUp();
+
+        CarbonImmutable::setTestNow($this->now = CarbonImmutable::now());
 
         // Setup database
         $this->setupDatabase($this->app);
@@ -54,7 +61,7 @@ abstract class TestCase extends OrchestraTestCase
         $this->tokenDefaults = [
             'iss'  => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
-            'aud'  => getShopifyConfig('api_key'),
+            'aud'  => Util::getShopifyConfig('api_key'),
             'sub'  => '123',
             'exp'  => $now + 60,
             'nbf'  => $now,
@@ -140,10 +147,10 @@ abstract class TestCase extends OrchestraTestCase
 
     protected function buildToken(array $values = []): string
     {
-        $body = base64url_encode(json_encode(array_merge($this->tokenDefaults, $values)));
+        $body = Util::base64UrlEncode(json_encode(array_merge($this->tokenDefaults, $values)));
         $payload = sprintf('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.%s', $body);
-        $hmac = createHmac(['data' => $payload, 'raw' => true], getShopifyConfig('api_secret'));
-        $encodedHmac = Hmac::fromNative(base64url_encode($hmac->toNative()));
+        $hmac = Util::createHmac(['data' => $payload, 'raw' => true], Util::getShopifyConfig('api_secret'));
+        $encodedHmac = Hmac::fromNative(Util::base64UrlEncode($hmac->toNative()));
 
         return sprintf('%s.%s', $payload, $encodedHmac->toNative());
     }

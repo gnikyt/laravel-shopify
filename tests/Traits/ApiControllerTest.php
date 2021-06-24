@@ -7,22 +7,11 @@ use Osiset\ShopifyApp\Test\TestCase;
 
 class ApiControllerTest extends TestCase
 {
-    /**
-     * @var \Osiset\ShopifyApp\Services\ShopSession
-     */
-    protected $shopSession;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-    }
-
     public function testApiWithoutToken(): void
     {
         $shop = factory($this->model)->create();
 
         $response = $this->getJson('/api', ['HTTP_X-Shop-Domain' => $shop->name]);
-
         $response->assertStatus(Response::HTTP_BAD_REQUEST);
         $response->assertExactJson(['error' => 'Session token is invalid.'], $response->getContent());
     }
@@ -35,7 +24,6 @@ class ApiControllerTest extends TestCase
             'HTTP_X-Shop-Domain' => $shop->name,
             'HTTP_Authorization' => "Bearer {$this->buildToken()}",
         ]);
-
         $response->assertExactJson([], $response->getContent());
         $response->assertOk();
     }
@@ -60,7 +48,6 @@ class ApiControllerTest extends TestCase
             'HTTP_X-Shop-Domain' => $shop->name,
             'HTTP_Authorization' => "Bearer {$this->buildToken()}",
         ]);
-
         $response->assertOk();
         $result = json_decode($response->getContent());
         $this->assertNotEmpty($result);

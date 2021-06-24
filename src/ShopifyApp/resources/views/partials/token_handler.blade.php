@@ -1,6 +1,6 @@
 <script data-turbolinks-eval="false">
     var SESSION_TOKEN_REFRESH_INTERVAL = 2000;
-    var LOAD_EVENT = '{{ \Osiset\ShopifyApp\getShopifyConfig('turbo_enabled') ? 'turbolinks:load' : 'DOMContentLoaded' }}';
+    var LOAD_EVENT = '{{ \Osiset\ShopifyApp\Util::getShopifyConfig('turbo_enabled') ? 'turbolinks:load' : 'DOMContentLoaded' }}';
 
     // Token updates
     document.addEventListener(LOAD_EVENT, (event) => {

@@ -9,11 +9,9 @@ use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Response;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
-use function Osiset\ShopifyApp\createHmac;
-use function Osiset\ShopifyApp\getShopifyConfig;
 use Osiset\ShopifyApp\Objects\Values\Hmac;
 use Osiset\ShopifyApp\Objects\Values\NullableShopDomain;
-use function Osiset\ShopifyApp\parseQueryString;
+use Osiset\ShopifyApp\Util;
 
 /**
  * Responsible for ensuring a proper app proxy request.
@@ -59,7 +57,7 @@ class AuthProxy
     public function handle(Request $request, Closure $next)
     {
         // Grab the query parameters we need
-        $query = parseQueryString($request->server->get('QUERY_STRING'));
+        $query = Util::parseQueryString($request->server->get('QUERY_STRING'));
         $signature = Arr::get($query, 'signature', '');
         $shop = NullableShopDomain::fromNative(Arr::get($query, 'shop'));
 
@@ -69,12 +67,12 @@ class AuthProxy
         }
 
         // Build a local signature
-        $signatureLocal = createHmac(
+        $signatureLocal = Util::createHmac(
             [
                 'data'       => $query,
                 'buildQuery' => true,
             ],
-            getShopifyConfig('api_secret', $shop)
+            Util::getShopifyConfig('api_secret', $shop)
         );
         if (! Hmac::fromNative($signature)->isSame($signatureLocal) || $shop->isNull()) {
             // Issue with HMAC or missing shop header

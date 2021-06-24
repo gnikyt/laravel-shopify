@@ -5,11 +5,11 @@ namespace Osiset\ShopifyApp\Storage\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use function Osiset\ShopifyApp\getShopifyConfig;
 use Osiset\ShopifyApp\Objects\Enums\ChargeStatus;
 use Osiset\ShopifyApp\Objects\Enums\ChargeType;
 use Osiset\ShopifyApp\Objects\Values\ChargeId;
 use Osiset\ShopifyApp\Objects\Values\ChargeReference;
+use Osiset\ShopifyApp\Util;
 
 /**
  * Responsible for reprecenting a charge record.
@@ -77,7 +77,7 @@ class Charge extends Model
     public function shop(): BelongsTo
     {
         return $this->belongsTo(
-            getShopifyConfig('user_model'),
+            Util::getShopifyConfig('user_model'),
             'user_id',
             'id'
         );

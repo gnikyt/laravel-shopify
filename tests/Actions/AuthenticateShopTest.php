@@ -44,7 +44,7 @@ class AuthenticateShopTest extends TestCase
         Request::swap($newRequest);
 
         // Run the action
-        [$result, $status] = call_user_func($this->action, $newRequest);
+        [, $status] = call_user_func($this->action, $newRequest);
 
         $this->assertFalse($status);
     }
@@ -81,7 +81,7 @@ class AuthenticateShopTest extends TestCase
         ApiStub::stubResponses(['access_token']);
 
         // Run the action
-        [$result, $status] = call_user_func($this->action, $newRequest);
+        [, $status] = call_user_func($this->action, $newRequest);
 
         $this->assertNull($status);
     }
@@ -118,7 +118,7 @@ class AuthenticateShopTest extends TestCase
         ApiStub::stubResponses(['access_token']);
 
         // Run the action
-        [$result, $status] = call_user_func($this->action, $newRequest);
+        [, $status] = call_user_func($this->action, $newRequest);
 
         $this->assertTrue($status);
     }

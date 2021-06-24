@@ -6,7 +6,7 @@ use Illuminate\Support\Arr;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopId as ShopIdValue;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
-use function Osiset\ShopifyApp\getShopifyConfig;
+use Osiset\ShopifyApp\Util;
 
 /**
  * Run after authentication jobs.
@@ -58,7 +58,7 @@ class AfterAuthorize
             } else {
                 // Run later
                 $job::dispatch($shop)
-                    ->onQueue(getShopifyConfig('job_queues')['after_authenticate']);
+                    ->onQueue(Util::getShopifyConfig('job_queues')['after_authenticate']);
             }
 
             return true;
@@ -68,7 +68,7 @@ class AfterAuthorize
         $shop = $this->shopQuery->getById($shopId);
 
         // Grab the jobs config
-        $jobsConfig = getShopifyConfig('after_authenticate_job');
+        $jobsConfig = Util::getShopifyConfig('after_authenticate_job');
         if (Arr::has($jobsConfig, 0)) {
             // We have multi-jobs
             foreach ($jobsConfig as $jobConfig) {

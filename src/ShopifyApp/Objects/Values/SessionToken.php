@@ -6,12 +6,9 @@ use Assert\Assert;
 use Assert\AssertionFailedException;
 use Funeralzone\ValueObjects\Scalars\StringTrait;
 use Illuminate\Support\Carbon;
-use function Osiset\ShopifyApp\base64url_decode;
-use function Osiset\ShopifyApp\base64url_encode;
 use Osiset\ShopifyApp\Contracts\Objects\Values\SessionToken as SessionTokenValue;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
-use function Osiset\ShopifyApp\createHmac;
-use function Osiset\ShopifyApp\getShopifyConfig;
+use Osiset\ShopifyApp\Util;
 
 /**
  * Value object for a session token (JWT).
@@ -161,7 +158,7 @@ final class SessionToken implements SessionTokenValue
 
         // Decode the token
         $this->parts = explode('.', $this->string);
-        $body = json_decode(base64url_decode($this->parts[1]), true);
+        $body = json_decode(Util::base64UrlDecode($this->parts[1]), true);
 
         // Confirm token is not malformed
         Assert::thatAll([
@@ -237,9 +234,9 @@ final class SessionToken implements SessionTokenValue
         $tokenWithoutSignature = implode('.', $partsCopy);
 
         // Create a local HMAC
-        $secret = getShopifyConfig('api_secret', $this->shopDomain);
-        $hmac = createHmac(['data' => $tokenWithoutSignature, 'raw' => true], $secret);
-        $encodedHmac = Hmac::fromNative(base64url_encode($hmac->toNative()));
+        $secret = Util::getShopifyConfig('api_secret', $this->shopDomain);
+        $hmac = Util::createHmac(['data' => $tokenWithoutSignature, 'raw' => true], $secret);
+        $encodedHmac = Hmac::fromNative(Util::base64UrlEncode($hmac->toNative()));
 
         Assert::that($signature->isSame($encodedHmac))->true();
     }
@@ -254,7 +251,7 @@ final class SessionToken implements SessionTokenValue
     protected function verifyValidity(): void
     {
         Assert::that($this->iss)->contains($this->dest, self::EXCEPTION_INVALID);
-        Assert::that($this->aud)->eq(getShopifyConfig('api_key'), self::EXCEPTION_INVALID);
+        Assert::that($this->aud)->eq(Util::getShopifyConfig('api_key'), self::EXCEPTION_INVALID);
     }
 
     /**

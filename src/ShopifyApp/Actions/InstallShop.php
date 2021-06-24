@@ -3,13 +3,13 @@
 namespace Osiset\ShopifyApp\Actions;
 
 use Exception;
-use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
-use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
-use function Osiset\ShopifyApp\getShopifyConfig;
+use Osiset\ShopifyApp\Util;
 use Osiset\ShopifyApp\Objects\Enums\AuthMode;
+use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Objects\Values\AccessToken;
 use Osiset\ShopifyApp\Objects\Values\NullAccessToken;
-use Osiset\ShopifyApp\Objects\Values\ShopDomain;
+use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
 
 /**
  * Install steps for a shop.
@@ -66,14 +66,14 @@ class InstallShop
         // Access/grant mode
         $apiHelper = $shop->apiHelper();
         $grantMode = $shop->hasOfflineAccess() ?
-            AuthMode::fromNative(getShopifyConfig('api_grant_mode', $shop)) :
+            AuthMode::fromNative(Util::getShopifyConfig('api_grant_mode', $shop)) :
             AuthMode::OFFLINE();
 
         // If there's no code
         if (empty($code)) {
             return [
                 'completed' => false,
-                'url'       => $apiHelper->buildAuthUrl($grantMode, getShopifyConfig('api_scopes', $shop)),
+                'url'       => $apiHelper->buildAuthUrl($grantMode, Util::getShopifyConfig('api_scopes', $shop)),
                 'shop_id'   => $shop->getId(),
             ];
         }

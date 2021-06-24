@@ -10,11 +10,6 @@ use Osiset\ShopifyApp\Test\TestCase;
 
 class AppUninstalledTest extends TestCase
 {
-    public function setUp(): void
-    {
-        parent::setUp();
-    }
-
     public function testJobSoftDeletesShopAndCharges(): void
     {
         // Create a plan

@@ -2,9 +2,9 @@
 
 namespace Osiset\ShopifyApp\Macros;
 
-use Illuminate\Support\Facades\Request;
+use Osiset\ShopifyApp\Util;
 use Illuminate\Support\Facades\URL;
-use function Osiset\ShopifyApp\getShopifyConfig;
+use Illuminate\Support\Facades\Request;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 
 /**
@@ -28,7 +28,7 @@ class TokenRoute
     public function __invoke(string $route, $params = [], bool $absolute = true): string
     {
         return URL::route(
-            getShopifyConfig('route_names.authenticate.token'),
+            Util::getShopifyConfig('route_names.authenticate.token'),
             [
                 'shop'   => ShopDomain::fromRequest(Request::instance()),
                 'target' => URL::route($route, $params, $absolute),
