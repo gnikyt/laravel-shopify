@@ -30,7 +30,6 @@ class SessionTokenTest extends TestCase
     public function testShouldThrowExceptionForMalformedToken(): void
     {
         $this->expectException(AssertionFailedException::class);
-        $this->expectExceptionMessage = SessionToken::EXCEPTION_MALFORMED;
 
         $token = $this->buildToken().'OOPS';
         SessionToken::fromNative($token);
@@ -39,7 +38,6 @@ class SessionTokenTest extends TestCase
     public function testShouldThrowExceptionForInvalidToken(): void
     {
         $this->expectException(AssertionFailedException::class);
-        $this->expectExceptionMessage = SessionToken::EXCEPTION_INVALID;
 
         $token = $this->buildToken(['iss' => 'someone-else.myshopify.com/admin']);
         SessionToken::fromNative($token);
@@ -48,7 +46,6 @@ class SessionTokenTest extends TestCase
     public function testShouldThrowExceptionForExpiredToken(): void
     {
         $this->expectException(AssertionFailedException::class);
-        $this->expectExceptionMessage = SessionToken::EXCEPTION_EXPIRED;
 
         $token = $this->buildToken(['exp' => Carbon::now()->subDay(1)]);
         SessionToken::fromNative($token);

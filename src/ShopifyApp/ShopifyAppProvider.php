@@ -2,47 +2,47 @@
 
 namespace Osiset\ShopifyApp;
 
+use Illuminate\Routing\Redirector;
+use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
+use Osiset\ShopifyApp\Macros\TokenRoute;
+use Osiset\ShopifyApp\Services\ApiHelper;
+use Osiset\ShopifyApp\Macros\TokenRedirect;
+use Osiset\ShopifyApp\Services\ChargeHelper;
+use Osiset\ShopifyApp\Directives\SessionToken;
+use Osiset\ShopifyApp\Http\Middleware\Billable;
+use Osiset\ShopifyApp\Http\Middleware\AuthProxy;
+use Osiset\ShopifyApp\Http\Middleware\AuthWebhook;
+use Osiset\ShopifyApp\Console\WebhookJobMakeCommand;
+use Osiset\ShopifyApp\Http\Middleware\VerifyShopify;
+use Osiset\ShopifyApp\Messaging\Jobs\WebhookInstaller;
+use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
+use Osiset\ShopifyApp\Messaging\Jobs\ScripttagInstaller;
+use Osiset\ShopifyApp\Storage\Queries\Plan as PlanQuery;
+use Osiset\ShopifyApp\Storage\Queries\Shop as ShopQuery;
+use Osiset\ShopifyApp\Contracts\Queries\Plan as IPlanQuery;
+use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use Osiset\ShopifyApp\Storage\Commands\Shop as ShopCommand;
+use Osiset\ShopifyApp\Storage\Queries\Charge as ChargeQuery;
+use Osiset\ShopifyApp\Actions\GetPlanUrl as GetPlanUrlAction;
+use Osiset\ShopifyApp\Storage\Observers\Shop as ShopObserver;
+use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
+use Osiset\ShopifyApp\Actions\InstallShop as InstallShopAction;
+use Osiset\ShopifyApp\Contracts\Queries\Charge as IChargeQuery;
+use Osiset\ShopifyApp\Storage\Commands\Charge as ChargeCommand;
 use Osiset\ShopifyApp\Actions\ActivatePlan as ActivatePlanAction;
-use Osiset\ShopifyApp\Actions\ActivateUsageCharge as ActivateUsageChargeAction;
-use Osiset\ShopifyApp\Actions\AfterAuthorize as AfterAuthorizeAction;
-use Osiset\ShopifyApp\Actions\AuthenticateShop as AuthenticateShopAction;
 use Osiset\ShopifyApp\Actions\CancelCharge as CancelChargeAction;
-use Osiset\ShopifyApp\Actions\CancelCurrentPlan as CancelCurrentPlanAction;
+use Osiset\ShopifyApp\Contracts\Commands\Charge as IChargeCommand;
 use Osiset\ShopifyApp\Actions\CreateScripts as CreateScriptsAction;
+use Osiset\ShopifyApp\Actions\AfterAuthorize as AfterAuthorizeAction;
 use Osiset\ShopifyApp\Actions\CreateWebhooks as CreateWebhooksAction;
 use Osiset\ShopifyApp\Actions\DeleteWebhooks as DeleteWebhooksAction;
 use Osiset\ShopifyApp\Actions\DispatchScripts as DispatchScriptsAction;
+use Osiset\ShopifyApp\Actions\AuthenticateShop as AuthenticateShopAction;
 use Osiset\ShopifyApp\Actions\DispatchWebhooks as DispatchWebhooksAction;
-use Osiset\ShopifyApp\Actions\GetPlanUrl as GetPlanUrlAction;
-use Osiset\ShopifyApp\Actions\InstallShop as InstallShopAction;
-use Osiset\ShopifyApp\Console\WebhookJobMakeCommand;
-use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
-use Osiset\ShopifyApp\Contracts\Commands\Charge as IChargeCommand;
-use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
-use Osiset\ShopifyApp\Contracts\Queries\Charge as IChargeQuery;
-use Osiset\ShopifyApp\Contracts\Queries\Plan as IPlanQuery;
-use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
-use Osiset\ShopifyApp\Directives\SessionToken;
-use Osiset\ShopifyApp\Http\Middleware\AuthProxy;
-use Osiset\ShopifyApp\Http\Middleware\AuthWebhook;
-use Osiset\ShopifyApp\Http\Middleware\Billable;
-use Osiset\ShopifyApp\Http\Middleware\VerifyShopify;
-use Osiset\ShopifyApp\Macros\TokenRedirect;
-use Osiset\ShopifyApp\Macros\TokenRoute;
-use Osiset\ShopifyApp\Messaging\Jobs\ScripttagInstaller;
-use Osiset\ShopifyApp\Messaging\Jobs\WebhookInstaller;
-use Osiset\ShopifyApp\Services\ApiHelper;
-use Osiset\ShopifyApp\Services\ChargeHelper;
-use Osiset\ShopifyApp\Storage\Commands\Charge as ChargeCommand;
-use Osiset\ShopifyApp\Storage\Commands\Shop as ShopCommand;
-use Osiset\ShopifyApp\Storage\Observers\Shop as ShopObserver;
-use Osiset\ShopifyApp\Storage\Queries\Charge as ChargeQuery;
-use Osiset\ShopifyApp\Storage\Queries\Plan as PlanQuery;
-use Osiset\ShopifyApp\Storage\Queries\Shop as ShopQuery;
+use Osiset\ShopifyApp\Actions\CancelCurrentPlan as CancelCurrentPlanAction;
+use Osiset\ShopifyApp\Actions\ActivateUsageCharge as ActivateUsageChargeAction;
 
 /**
  * This package's provider for Laravel.
@@ -349,8 +349,8 @@ class ShopifyAppProvider extends ServiceProvider
      */
     private function bootMacros(): void
     {
-        Redirect::macro('tokenRedirect', new TokenRedirect());
-        URL::macro('tokenRoute', new TokenRoute());
+        Redirector::macro('tokenRedirect', new TokenRedirect());
+        UrlGenerator::macro('tokenRoute', new TokenRoute());
     }
 
     /**

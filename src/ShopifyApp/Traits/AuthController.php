@@ -69,7 +69,7 @@ trait AuthController
      */
     public function token(Request $request)
     {
-        Session::reflash();
+        $request->session()->reflash();
         $shopDomain = ShopDomain::fromRequest($request);
         $target = $request->query('target');
         $query = parse_url($target, PHP_URL_QUERY);
