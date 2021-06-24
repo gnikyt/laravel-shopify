@@ -17,7 +17,7 @@ class ApiControllerTest extends TestCase
 
     public function testApiWithoutToken(): void
     {
-        $shop = factory($this->model)->create();
+        factory($this->model)->create();
 
         $response = $this->get('/api');
 
@@ -27,7 +27,7 @@ class ApiControllerTest extends TestCase
 
     public function testApiWithoutTokenJson(): void
     {
-        $shop = factory($this->model)->create();
+        factory($this->model)->create();
 
         $response = $this->get('/api', [
             'accept' => 'application/json',
@@ -61,7 +61,7 @@ class ApiControllerTest extends TestCase
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
-        $shop = factory($this->model)->create([
+        factory($this->model)->create([
             'name' => 'shop-name.myshopify.com',
         ]);
 
@@ -99,7 +99,7 @@ class ApiControllerTest extends TestCase
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
-        $shop = factory($this->model)->create([
+        factory($this->model)->create([
             'name' => 'shop-name.myshopify.com',
         ]);
 
@@ -138,7 +138,7 @@ class ApiControllerTest extends TestCase
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
-        $shop = factory($this->model)->create([
+        factory($this->model)->create([
             'name' => 'shop-name.myshopify.com',
         ]);
 
@@ -176,7 +176,7 @@ class ApiControllerTest extends TestCase
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
-        $shop = factory($this->model)->create([
+        factory($this->model)->create([
             'name' => 'shop-name.myshopify.com',
         ]);
 
@@ -214,7 +214,7 @@ class ApiControllerTest extends TestCase
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
-        $shop = factory($this->model)->create([
+        factory($this->model)->create([
             'name' => 'shop-name.myshopify.com',
         ]);
 
@@ -251,7 +251,7 @@ class ApiControllerTest extends TestCase
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
-        $shop = factory($this->model)->create([
+        factory($this->model)->create([
             'name' => 'shop-name.myshopify.com',
         ]);
 
@@ -290,7 +290,7 @@ class ApiControllerTest extends TestCase
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
-        $shop = factory($this->model)->create([
+        factory($this->model)->create([
             'name' => 'shop-name.myshopify.com',
         ]);
 
@@ -328,7 +328,7 @@ class ApiControllerTest extends TestCase
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
-        $shop = factory($this->model)->create([
+        factory($this->model)->create([
             'name' => 'shop-name.myshopify.com',
         ]);
 
@@ -367,7 +367,7 @@ class ApiControllerTest extends TestCase
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
-        $shop = factory($this->model)->create([
+        factory($this->model)->create([
             'name' => 'shop-name.myshopify.com',
         ]);
 
@@ -405,7 +405,7 @@ class ApiControllerTest extends TestCase
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
-        $shop = factory($this->model)->create([
+        factory($this->model)->create([
             'name' => 'shop-name.myshopify.com',
         ]);
 
@@ -444,7 +444,7 @@ class ApiControllerTest extends TestCase
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
-        $shop = factory($this->model)->create([
+        factory($this->model)->create([
             'name' => 'shop-name.myshopify.com',
         ]);
 
@@ -482,11 +482,11 @@ class ApiControllerTest extends TestCase
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
-        $shop = factory($this->model)->create([
+        factory($this->model)->create([
             'name' => 'shop-name.myshopify.com',
         ]);
 
-        $plan = factory(Plan::class)->create([
+        factory(Plan::class)->create([
             'type' => PlanType::RECURRING()->toNative(),
         ]);
 

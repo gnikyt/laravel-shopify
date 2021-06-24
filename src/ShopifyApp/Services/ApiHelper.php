@@ -504,7 +504,7 @@ class ApiHelper implements IApiHelper
                 return Arr::get($refererQueryParams, 'shop');
             },
         ];
-        foreach ($options as $method => $fn) {
+        foreach ($options as $fn) {
             $result = $fn();
             if (! is_null($result)) {
                 return NullableShopDomain::fromNative($result);

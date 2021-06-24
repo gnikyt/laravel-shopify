@@ -259,7 +259,7 @@ class AuthShopify
         ];
 
         // Loop through each until we find the HMAC
-        foreach ($options as $method => $value) {
+        foreach ($options as $value) {
             $result = is_callable($value) ? $value() : $value;
             if ($result !== null) {
                 // Found a shop
