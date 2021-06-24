@@ -15,11 +15,6 @@ class ApiControllerTest extends TestCase
      */
     protected $shopSession;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-    }
-
     public function testApiWithoutToken(): void
     {
         $shop = factory($this->model)->create();
