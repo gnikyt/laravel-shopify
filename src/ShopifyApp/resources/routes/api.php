@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Osiset\ShopifyApp\Util;
 use Osiset\ShopifyApp\Http\Controllers\ApiController;
 use Osiset\ShopifyApp\Http\Controllers\WebhookController;
+use Osiset\ShopifyApp\Util;
 
 // Check if manual routes override is to be use
 $manualRoutes = Util::getShopifyConfig('manual_routes');
