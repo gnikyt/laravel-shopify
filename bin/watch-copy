@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-while inotifywait -r . -e create,delete,modify; do
-    echo "Copied"
-    cp -R ./src/ShopifyApp/ /home/tyler/Development/Test_Ground/example-app/vendor/osiset/laravel-shopify/src/
-done;
