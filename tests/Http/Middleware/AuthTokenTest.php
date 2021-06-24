@@ -32,7 +32,7 @@ class AuthTokenTest extends TestCase
         $this->expectExceptionObject(new HttpException('Missing authentication token', 401));
 
         // Run the middleware
-        $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function ($r) {
+        ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function ($r) {
             // ...
         });
     }
@@ -62,7 +62,7 @@ class AuthTokenTest extends TestCase
         $this->expectExceptionObject(new HttpException('Missing authentication token', 401));
 
         // Run the middleware
-        $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
+        ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
             // ...
         });
     }
@@ -92,7 +92,7 @@ class AuthTokenTest extends TestCase
         $this->expectExceptionObject(new HttpException('Malformed token', 400));
 
         // Run the middleware
-        $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
+        ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
             // ...
         });
     }
@@ -122,7 +122,7 @@ class AuthTokenTest extends TestCase
         $this->expectExceptionObject(new HttpException('Unable to verify signature', 400));
 
         // Run the middleware
-        $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
+        ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
             // ...
         });
     }
@@ -152,7 +152,7 @@ class AuthTokenTest extends TestCase
         $this->expectExceptionObject(new HttpException('Malformed token', 400));
 
         // Run the middleware
-        $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
+        ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
             // ...
         });
     }
@@ -201,7 +201,7 @@ class AuthTokenTest extends TestCase
         $this->expectExceptionObject(new HttpException('Malformed token', 400));
 
         // Run the middleware
-        $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
+        ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
             // ...
         });
     }
@@ -253,7 +253,7 @@ class AuthTokenTest extends TestCase
         $this->expectExceptionObject(new HttpException('Expired token', 403));
 
         // Run the middleware
-        $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
+        ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
             // ...
         });
     }
@@ -305,7 +305,7 @@ class AuthTokenTest extends TestCase
         $this->expectExceptionObject(new HttpException('Expired token', 403));
 
         // Run the middleware
-        $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
+        ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
             // ...
         });
     }
@@ -357,7 +357,7 @@ class AuthTokenTest extends TestCase
         $this->expectExceptionObject(new HttpException('Invalid token', 400));
 
         // Run the middleware
-        $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
+        ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
             // ...
         });
     }
@@ -409,7 +409,7 @@ class AuthTokenTest extends TestCase
         $this->expectExceptionObject(new HttpException('Invalid token', 400));
 
         // Run the middleware
-        $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
+        ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
             // ...
         });
     }
@@ -460,7 +460,7 @@ class AuthTokenTest extends TestCase
 
         // Run the middleware
         $called = false;
-        $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () use (&$called) {
+        ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () use (&$called) {
             $called = true;
         });
 
