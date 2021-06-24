@@ -10,11 +10,11 @@
 */
 
 use Illuminate\Support\Facades\Route;
+use function Osiset\ShopifyApp\getShopifyConfig;
 use Osiset\ShopifyApp\Http\Controllers\AuthController;
 use Osiset\ShopifyApp\Http\Controllers\BillingController;
 use Osiset\ShopifyApp\Http\Controllers\HomeController;
 use Osiset\ShopifyApp\Http\Controllers\ItpController;
-use function Osiset\ShopifyApp\getShopifyConfig;
 use function Osiset\ShopifyApp\registerPackageRoute;
 
 // Check if manual routes override is to be use

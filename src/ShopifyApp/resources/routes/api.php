@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use function Osiset\ShopifyApp\getShopifyConfig;
 use Osiset\ShopifyApp\Http\Controllers\ApiController;
 use Osiset\ShopifyApp\Http\Controllers\WebhookController;
-use function Osiset\ShopifyApp\getShopifyConfig;
 use function Osiset\ShopifyApp\registerPackageRoute;
 
 // Check if manual routes override is to be use
