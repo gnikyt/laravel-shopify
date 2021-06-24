@@ -2,24 +2,23 @@
 
 namespace Osiset\ShopifyApp\Test;
 
-use Closure;
 use Carbon\CarbonImmutable;
-use Osiset\ShopifyApp\Util;
+use Closure;
+use Illuminate\Contracts\Http\Kernel as HttpKernelContract;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Request as FacadesRequest;
+use Orchestra\Database\ConsoleServiceProvider;
+use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use Osiset\BasicShopifyAPI\Options;
-use Illuminate\Support\Facades\Crypt;
-use Osiset\ShopifyApp\ShopifyAppProvider;
 use Osiset\ShopifyApp\Contracts\ShopModel;
 use Osiset\ShopifyApp\Objects\Values\Hmac;
-use Orchestra\Database\ConsoleServiceProvider;
+use Osiset\ShopifyApp\ShopifyAppProvider;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
-use Osiset\ShopifyApp\Test\Stubs\User as UserStub;
-use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use Osiset\ShopifyApp\Test\Stubs\Kernel as StubKernel;
-use Illuminate\Support\Facades\Request as FacadesRequest;
-use Illuminate\Contracts\Http\Kernel as HttpKernelContract;
+use Osiset\ShopifyApp\Test\Stubs\User as UserStub;
+use Osiset\ShopifyApp\Util;
 
 abstract class TestCase extends OrchestraTestCase
 {

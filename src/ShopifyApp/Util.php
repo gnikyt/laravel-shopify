@@ -2,10 +2,10 @@
 
 namespace Osiset\ShopifyApp;
 
-use LogicException;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Str;
+use LogicException;
 use Osiset\ShopifyApp\Objects\Values\Hmac;
 
 /**
@@ -48,6 +48,7 @@ class Util
 
         // Return based on options
         $result = $encode ? base64_encode($hmac) : $hmac;
+
         return Hmac::fromNative($result);
     }
 

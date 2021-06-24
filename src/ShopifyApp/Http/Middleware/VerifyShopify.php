@@ -2,27 +2,27 @@
 
 namespace Osiset\ShopifyApp\Http\Middleware;
 
+use Assert\AssertionFailedException;
 use Closure;
-use Illuminate\Support\Str;
-use Osiset\ShopifyApp\Util;
+use Illuminate\Auth\AuthManager;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Auth\AuthManager;
 use Illuminate\Support\Collection;
-use Assert\AssertionFailedException;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Str;
+use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
+use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
+use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use Osiset\ShopifyApp\Contracts\ShopModel;
 use Osiset\ShopifyApp\Exceptions\HttpException;
-use Osiset\ShopifyApp\Objects\Enums\DataSource;
-use Osiset\ShopifyApp\Objects\Values\ShopDomain;
-use Osiset\ShopifyApp\Objects\Values\SessionToken;
-use Osiset\ShopifyApp\Objects\Values\SessionContext;
-use Osiset\ShopifyApp\Objects\Values\NullableSessionId;
-use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
-use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
-use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
+use Osiset\ShopifyApp\Objects\Enums\DataSource;
+use Osiset\ShopifyApp\Objects\Values\NullableSessionId;
+use Osiset\ShopifyApp\Objects\Values\SessionContext;
+use Osiset\ShopifyApp\Objects\Values\SessionToken;
+use Osiset\ShopifyApp\Objects\Values\ShopDomain;
+use Osiset\ShopifyApp\Util;
 
 /**
  * Responsible for validating the request.

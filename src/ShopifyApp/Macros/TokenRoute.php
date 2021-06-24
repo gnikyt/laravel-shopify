@@ -2,10 +2,10 @@
 
 namespace Osiset\ShopifyApp\Macros;
 
-use Osiset\ShopifyApp\Util;
-use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\URL;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
+use Osiset\ShopifyApp\Util;
 
 /**
  * Method for generating a URL to the token route.
