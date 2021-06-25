@@ -167,11 +167,11 @@ interface ApiHelper
     /**
      * Delete a webhook.
      *
-     * @param int $webhookId The webhook ID to delete.
+     * @param string $webhookId The webhook ID to delete.
      *
-     * @return void
+     * @return ResponseAccess
      */
-    public function deleteWebhook(int $webhookId);
+    public function deleteWebhook(string $webhookId): ResponseAccess;
 
     /**
      * Creates a usage charge for a recurring charge.
