@@ -16,7 +16,7 @@ class TokenRouteTest extends TestCase
             // Query Params
             [
                 'shop' => 'example.myshopify.com',
-            ],
+            ]
         );
         Request::swap($newRequest);
 
