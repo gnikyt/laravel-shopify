@@ -3,20 +3,19 @@
 namespace Osiset\ShopifyApp\Test\Services;
 
 use Exception;
-use Osiset\ShopifyApp\Util;
-use Osiset\ShopifyApp\Test\TestCase;
-use Osiset\BasicShopifyAPI\ResponseAccess;
-use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
 use Osiset\BasicShopifyAPI\BasicShopifyAPI;
-use Osiset\ShopifyApp\Objects\Enums\AuthMode;
-use Osiset\ShopifyApp\Exceptions\ApiException;
-use Osiset\ShopifyApp\Objects\Enums\ChargeType;
-use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
-use Osiset\ShopifyApp\Objects\Enums\PlanInterval;
-use Osiset\ShopifyApp\Objects\Values\ChargeReference;
+use Osiset\BasicShopifyAPI\ResponseAccess;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
+use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
+use Osiset\ShopifyApp\Objects\Enums\AuthMode;
+use Osiset\ShopifyApp\Objects\Enums\ChargeType;
+use Osiset\ShopifyApp\Objects\Enums\PlanInterval;
 use Osiset\ShopifyApp\Objects\Transfers\PlanDetails as PlanDetailsTransfer;
 use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
+use Osiset\ShopifyApp\Objects\Values\ChargeReference;
+use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
+use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Util;
 
 class ApiHelperTest extends TestCase
 {
@@ -202,7 +201,7 @@ class ApiHelperTest extends TestCase
 
         $data = $shop->apiHelper()->createWebhook([
             'topic'   => 'ORDERS_CREATE',
-            'address' => 'https://localhost/webhook/orders-create'
+            'address' => 'https://localhost/webhook/orders-create',
         ]);
         $this->assertInstanceOf(ResponseAccess::class, $data);
         $this->assertSame('ORDERS_CREATE', $data['data']['webhookSubscriptionCreate']['topic']);
