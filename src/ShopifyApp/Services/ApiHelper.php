@@ -354,7 +354,7 @@ class ApiHelper implements IApiHelper
 
         $response = $this->doRequestGraphQL($query, $variables);
 
-        return $response['body']['data']['webhookSubscriptions'];
+        return $response['body'];
     }
 
     /**
@@ -400,7 +400,7 @@ class ApiHelper implements IApiHelper
      * {@inheritdoc}
      * @throws Exception
      */
-    public function deleteWebhook(string $webhookId): ResponseAccess
+    public function deleteWebhook(string $webhookId): void
     {
         $query = '
         mutation webhookSubscriptionDelete($id: ID!) {
@@ -418,9 +418,7 @@ class ApiHelper implements IApiHelper
             'id' => $webhookId,
         ];
 
-        $response = $this->doRequestGraphQL($query, $variables);
-
-        return $response['body'];
+        $this->doRequestGraphQL($query, $variables);
     }
 
     /**
