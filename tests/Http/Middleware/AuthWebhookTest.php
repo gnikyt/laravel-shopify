@@ -2,6 +2,7 @@
 
 namespace Osiset\ShopifyApp\Test\Http\Middleware;
 
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Request;
 use Osiset\ShopifyApp\Http\Middleware\AuthWebhook as AuthWebhookMiddleware;
 use Osiset\ShopifyApp\Test\TestCase;
@@ -28,15 +29,12 @@ class AuthWebhookTest extends TestCase
                 'HTTP_X_Shopify_Hmac_Sha256' => '1234',
             ])
         );
-        Request::swap($newRequest);
 
         // Run the middleware
-        $response = ($this->app->make(AuthWebhookMiddleware::class))->handle(request(), function () {
-            // ...
-        });
+        $result = $this->runMiddleware(AuthWebhookMiddleware::class, $newRequest);
 
         // Assert we get a proper response
-        $this->assertSame(401, $response->status());
+        $this->assertSame(Response::HTTP_UNAUTHORIZED, $result[1]->status());
     }
 
     public function testDenysForMissingHmacHeader(): void
@@ -59,15 +57,12 @@ class AuthWebhookTest extends TestCase
                 'HTTP_X_Shopify_Shop_Domain' => 'exapmle.myshopify.com',
             ])
         );
-        Request::swap($newRequest);
 
         // Run the middleware
-        $response = ($this->app->make(AuthWebhookMiddleware::class))->handle(request(), function () {
-            // ...
-        });
+        $result = $this->runMiddleware(AuthWebhookMiddleware::class, $newRequest);
 
         // Assert we get a proper response
-        $this->assertSame(401, $response->status());
+        $this->assertSame(Response::HTTP_UNAUTHORIZED, $result[1]->status());
     }
 
     public function testRuns(): void
@@ -91,15 +86,11 @@ class AuthWebhookTest extends TestCase
                 'HTTP_X_Shopify_Shop_Domain' => 'example.myshopify.com',
             ])
         );
-        Request::swap($newRequest);
 
         // Run the middleware
-        $called = false;
-        ($this->app->make(AuthWebhookMiddleware::class))->handle(request(), function () use (&$called) {
-            $called = true;
-        });
+        $result = $this->runMiddleware(AuthWebhookMiddleware::class, $newRequest);
 
         // Assert we get a proper response
-        $this->assertTrue($called);
+        $this->assertTrue($result[0]);
     }
 }

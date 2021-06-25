@@ -4,6 +4,7 @@ namespace Osiset\ShopifyApp\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
+use Osiset\ShopifyApp\Objects\Values\Hmac;
 use Osiset\ShopifyApp\Util;
 
 /**
@@ -42,7 +43,7 @@ class StoreUsageCharge extends FormRequest
                 $data['redirect'] = $this->request->get('redirect');
             }
 
-            $signature = $data['signature'];
+            $signature = Hmac::fromNative($data['signature']);
             unset($data['signature']);
 
             // Confirm the charge hasn't been tampered with
@@ -53,7 +54,7 @@ class StoreUsageCharge extends FormRequest
                 ],
                 Util::getShopifyConfig('api_secret')
             );
-            if (! hash_equals($signature, $signatureLocal)) {
+            if (! $signature->isSame($signatureLocal)) {
                 // Possible tampering
                 $validator->errors()->add('signature', 'Signature does not match.');
             }

@@ -28,7 +28,7 @@ class StoreUsageChargeTest extends TestCase
         ];
 
         $signature = Util::createHmac(['data' => $data, 'buildQuery' => true], $this->app['config']->get('shopify-app.api_secret'));
-        $data['signature'] = $signature;
+        $data['signature'] = $signature->toNative();
         $data['price'] = '2.00';
 
         $storeUsage = new StoreUsageCharge([], $data);
@@ -46,7 +46,7 @@ class StoreUsageChargeTest extends TestCase
             'redirect'    => '/',
         ];
         $signature = Util::createHmac(['data' => $data, 'buildQuery' => true], $this->app['config']->get('shopify-app.api_secret'));
-        $data['signature'] = $signature;
+        $data['signature'] = $signature->toNative();
 
         $storeUsage = new StoreUsageCharge([], $data);
         $validator = Validator::make($data, $storeUsage->rules());

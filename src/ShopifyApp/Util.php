@@ -6,7 +6,11 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use LogicException;
+use Osiset\ShopifyApp\Objects\Values\Hmac;
 
+/**
+ * Utilities and helpers used in various parts of the package.
+ */
 class Util
 {
     /**
@@ -15,9 +19,9 @@ class Util
      * @param array  $opts   The options for building the HMAC.
      * @param string $secret The app secret key.
      *
-     * @return string
+     * @return Hmac
      */
-    public static function createHmac(array $opts, string $secret): string
+    public static function createHmac(array $opts, string $secret): Hmac
     {
         // Setup defaults
         $data = $opts['data'];
@@ -43,7 +47,9 @@ class Util
         $hmac = hash_hmac('sha256', $data, $secret, $raw);
 
         // Return based on options
-        return $encode ? base64_encode($hmac) : $hmac;
+        $result = $encode ? base64_encode($hmac) : $hmac;
+
+        return Hmac::fromNative($result);
     }
 
     /**

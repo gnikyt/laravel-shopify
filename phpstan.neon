@@ -7,5 +7,7 @@ parameters:
 		- '#Access to an undefined property Osiset\\ShopifyApp\\Storage\\Models\\.*::\$.*\.#'
 		- '#Access to an undefined property Osiset\\ShopifyApp\\Test\\Stubs\\.*::\$.*\.#'
 		- '#Variable \$factory might not be defined\.#'
+		- '#Call to an undefined static method Illuminate\\Routing\\Redirector::tokenRedirect\(\).#'
+		- '#Call to an undefined static method Illuminate\\Routing\\UrlGenerator::tokenRoute\(\).#'
 	parallel:
 		maximumNumberOfProcesses: 2

@@ -4,7 +4,10 @@ namespace Osiset\ShopifyApp\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\Response;
+use Osiset\ShopifyApp\Objects\Values\Hmac;
+use Osiset\ShopifyApp\Objects\Values\NullableShopDomain;
 use Osiset\ShopifyApp\Util;
 
 /**
@@ -22,8 +25,8 @@ class AuthWebhook
      */
     public function handle(Request $request, Closure $next)
     {
-        $hmac = $request->header('x-shopify-hmac-sha256') ?: '';
-        $shop = $request->header('x-shopify-shop-domain');
+        $hmac = Hmac::fromNative($request->header('x-shopify-hmac-sha256', ''));
+        $shop = NullableShopDomain::fromNative($request->header('x-shopify-shop-domain'));
         $data = $request->getContent();
         $hmacLocal = Util::createHmac(
             [
@@ -34,9 +37,9 @@ class AuthWebhook
             Util::getShopifyConfig('api_secret', $shop)
         );
 
-        if (hash_equals($hmac, $hmacLocal) === false || empty($shop)) {
+        if (! $hmac->isSame($hmacLocal) || $shop->isNull()) {
             // Issue with HMAC or missing shop header
-            return Response::make('Invalid webhook signature.', 401);
+            return Response::make('Invalid webhook signature.', HttpResponse::HTTP_UNAUTHORIZED);
         }
 
         // All good, process webhook

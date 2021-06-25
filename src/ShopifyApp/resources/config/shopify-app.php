@@ -6,9 +6,10 @@ return [
     | Debug Mode
     |--------------------------------------------------------------------------
     |
-    | (Not yet complete) A verbose logged output of processes
+    | (Not yet complete) A verbose logged output of processes.
     |
     */
+
     'debug' => (bool) env('SHOPIFY_DEBUG', false),
 
     /*
@@ -21,6 +22,7 @@ return [
     | to your app's folder so you're free to modify before migrating.
     |
     */
+
     'manual_migrations' => (bool) env('SHOPIFY_MANUAL_MIGRATIONS', false),
 
     /*
@@ -35,10 +37,12 @@ return [
     | for a list of available route names.
     | Example: `home,billing` would ignore both "home" and "billing" routes.
     |
-    | Please note that if you override the route names (see "route_names" below),
-    | the route names that are used in this option DO NOT change!
+    | Please note that if you override the route names
+    | (see "route_names" below), the route names that are used in this
+    | option DO NOT change!
     |
     */
+
     'manual_routes' => env('SHOPIFY_MANUAL_ROUTES', false),
 
     /*
@@ -50,16 +54,15 @@ return [
     | This can help you avoid collisions with your existing route names.
     |
     */
+
     'route_names' => [
         'home'                 => env('SHOPIFY_ROUTE_NAME_HOME', 'home'),
         'authenticate'         => env('SHOPIFY_ROUTE_NAME_AUTHENTICATE', 'authenticate'),
-        'authenticate.oauth'   => env('SHOPIFY_ROUTE_NAME_AUTHENTICATE_OAUTH', 'authenticate.oauth'),
+        'authenticate.token'   => env('SHOPIFY_ROUTE_NAME_AUTHENTICATE_TOKEN', 'authenticate.token'),
         'billing'              => env('SHOPIFY_ROUTE_NAME_BILLING', 'billing'),
         'billing.process'      => env('SHOPIFY_ROUTE_NAME_BILLING_PROCESS', 'billing.process'),
         'billing.usage_charge' => env('SHOPIFY_ROUTE_NAME_BILLING_USAGE_CHARGE', 'billing.usage_charge'),
         'webhook'              => env('SHOPIFY_ROUTE_NAME_WEBHOOK', 'webhook'),
-        'itp'                  => env('SHOPIFY_ROUTE_NAME_ITP', 'itp'),
-        'itp.ask'              => env('SHOPIFY_ROUTE_NAME_ITP_ASK', 'itp.ask'),
     ],
 
     /*
@@ -81,10 +84,12 @@ return [
     |--------------------------------------------------------------------------
     |
     | This option allows you to change out the default job namespace
-    | which is \App\Jobs. This option is mainly used if any custom configuration
-    | is done in autoload and does not need to be changed unless required.
+    | which is \App\Jobs. This option is mainly used if any custom
+    | configuration is done in autoload and does not need to be changed
+    | unless required.
     |
     */
+
     'job_namespace' => env('SHOPIFY_JOB_NAMESPACE', '\\App\\Jobs\\'),
 
     /*
@@ -113,7 +118,7 @@ return [
 
     // Use semver range to link to a major or minor version number.
     // Leaving empty will use the latest verison - not recommended in production.
-    'appbridge_version' => env('SHOPIFY_APPBRIDGE_VERSION', '1'),
+    'appbridge_version' => env('SHOPIFY_APPBRIDGE_VERSION', 'latest'),
 
     /*
     |--------------------------------------------------------------------------
@@ -201,7 +206,8 @@ return [
     | Shopify API Time Store
     |--------------------------------------------------------------------------
     |
-    | This option is for the class which will hold the timestamps for API calls.
+    | This option is for the class which will hold the timestamps for
+    | API calls.
     |
     */
 
@@ -212,7 +218,8 @@ return [
     | Shopify API Limit Store
     |--------------------------------------------------------------------------
     |
-    | This option is for the class which will hold the call limits for REST and GraphQL.
+    | This option is for the class which will hold the call limits for REST
+    | and GraphQL.
     |
     */
 
@@ -223,7 +230,8 @@ return [
     | Shopify API Deferrer
     |--------------------------------------------------------------------------
     |
-    | This option is for the class which will handle sleep deferrals for API calls.
+    | This option is for the class which will handle sleep deferrals for
+    | API calls.
     |
     */
 
@@ -234,10 +242,13 @@ return [
     | Shopify API Init Function
     |--------------------------------------------------------------------------
     |
-    | This option is for initing the BasicShopifyAPI package optionally yourself.
-    | The first param injected in is the current options (\Osiset\BasicShopifyAPI\Options).
-    | The second param injected in is the session (if available) (\Osiset\BasicShopifyAPI\Session).
-    | The third param injected in is the current request input/query array (\Illuminate\Http\Request::all()).
+    | This option is for initing the BasicShopifyAPI package yourself.
+    | The first param injected in is the current options.
+    |    (\Osiset\BasicShopifyAPI\Options)
+    | The second param injected in is the session (if available) .
+    |    (\Osiset\BasicShopifyAPI\Session)
+    | The third param injected in is the current request input/query array.
+        (\Illuminate\Http\Request::all())
     | With all this, you can customize the options, change params, and more.
     |
     | Value for this option must be a callable (callable, Closure, etc).
@@ -375,8 +386,9 @@ return [
     | Config API Callback
     |--------------------------------------------------------------------------
     |
-    | This option can be used to modify what returns when `getConfig('api_*')` is used.
-    | A use-case for this is modifying the return of `api_secret` or something similar.
+    | This option can be used to modify what returns when `getConfig('api_*')`
+    | is used. A use-case for this is modifying the return of `api_secret`
+    | or something similar.
     |
     | A closure/callable is required.
     | The first argument will be the key string.
@@ -385,4 +397,16 @@ return [
     */
 
     'config_api_callback' => null,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Enable Turbolinks or Hotwire Turbo
+    |--------------------------------------------------------------------------
+    |
+    | If you use Turbolinks/Turbo and Livewire, turn on this setting to get
+    | the token assigned automatically.
+    |
+    */
+
+    'turbo_enabled' => (bool) env('SHOPIFY_TURBO_ENABLED', false),
 ];

@@ -61,7 +61,7 @@ class Charge implements ChargeCommand
         $charge->test = $chargeObj->planDetails->test;
         $charge->trial_days = $chargeObj->planDetails->trialDays;
         $charge->capped_amount = $chargeObj->planDetails->cappedAmount;
-        $charge->terms = $chargeObj->planDetails->cappedTerms;
+        $charge->terms = $chargeObj->planDetails->terms;
         $charge->activated_on = $isCarbon($chargeObj->activatedOn) ? $chargeObj->activatedOn->format('Y-m-d') : null;
         $charge->billing_on = $isCarbon($chargeObj->billingOn) ? $chargeObj->billingOn->format('Y-m-d') : null;
         $charge->trial_ends_on = $isCarbon($chargeObj->trialEndsOn) ? $chargeObj->trialEndsOn->format('Y-m-d') : null;

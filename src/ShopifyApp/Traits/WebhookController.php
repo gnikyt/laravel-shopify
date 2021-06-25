@@ -31,6 +31,6 @@ trait WebhookController
             $jobData
         )->onQueue(Util::getShopifyConfig('job_queues')['webhooks']);
 
-        return Response::make('', 201);
+        return Response::make('', ResponseResponse::HTTP_CREATED);
     }
 }

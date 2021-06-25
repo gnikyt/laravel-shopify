@@ -24,7 +24,7 @@ Route::group(['middleware' => ['api']], function () use ($manualRoutes) {
     */
 
     if (Util::registerPackageRoute('api', $manualRoutes)) {
-        Route::group(['prefix' => 'api', 'middleware' => ['auth.token']], function () {
+        Route::group(['prefix' => 'api', 'middleware' => ['verify.shopify']], function () {
             Route::get(
                 '/',
                 ApiController::class.'@index'

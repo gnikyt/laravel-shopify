@@ -2,13 +2,14 @@
 
 namespace Osiset\ShopifyApp;
 
-use Illuminate\Auth\AuthManager;
+use Illuminate\Routing\Redirector;
+use Illuminate\Routing\UrlGenerator;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Osiset\ShopifyApp\Actions\ActivatePlan as ActivatePlanAction;
 use Osiset\ShopifyApp\Actions\ActivateUsageCharge as ActivateUsageChargeAction;
 use Osiset\ShopifyApp\Actions\AfterAuthorize as AfterAuthorizeAction;
 use Osiset\ShopifyApp\Actions\AuthenticateShop as AuthenticateShopAction;
-use Osiset\ShopifyApp\Actions\AuthorizeShop as AuthorizeShopAction;
 use Osiset\ShopifyApp\Actions\CancelCharge as CancelChargeAction;
 use Osiset\ShopifyApp\Actions\CancelCurrentPlan as CancelCurrentPlanAction;
 use Osiset\ShopifyApp\Actions\CreateScripts as CreateScriptsAction;
@@ -17,6 +18,7 @@ use Osiset\ShopifyApp\Actions\DeleteWebhooks as DeleteWebhooksAction;
 use Osiset\ShopifyApp\Actions\DispatchScripts as DispatchScriptsAction;
 use Osiset\ShopifyApp\Actions\DispatchWebhooks as DispatchWebhooksAction;
 use Osiset\ShopifyApp\Actions\GetPlanUrl as GetPlanUrlAction;
+use Osiset\ShopifyApp\Actions\InstallShop as InstallShopAction;
 use Osiset\ShopifyApp\Console\WebhookJobMakeCommand;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use Osiset\ShopifyApp\Contracts\Commands\Charge as IChargeCommand;
@@ -24,18 +26,17 @@ use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
 use Osiset\ShopifyApp\Contracts\Queries\Charge as IChargeQuery;
 use Osiset\ShopifyApp\Contracts\Queries\Plan as IPlanQuery;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use Osiset\ShopifyApp\Directives\SessionToken;
 use Osiset\ShopifyApp\Http\Middleware\AuthProxy;
-use Osiset\ShopifyApp\Http\Middleware\AuthShopify;
-use Osiset\ShopifyApp\Http\Middleware\AuthToken;
 use Osiset\ShopifyApp\Http\Middleware\AuthWebhook;
 use Osiset\ShopifyApp\Http\Middleware\Billable;
-use Osiset\ShopifyApp\Http\Middleware\ITP;
+use Osiset\ShopifyApp\Http\Middleware\VerifyShopify;
+use Osiset\ShopifyApp\Macros\TokenRedirect;
+use Osiset\ShopifyApp\Macros\TokenRoute;
 use Osiset\ShopifyApp\Messaging\Jobs\ScripttagInstaller;
 use Osiset\ShopifyApp\Messaging\Jobs\WebhookInstaller;
 use Osiset\ShopifyApp\Services\ApiHelper;
 use Osiset\ShopifyApp\Services\ChargeHelper;
-use Osiset\ShopifyApp\Services\CookieHelper;
-use Osiset\ShopifyApp\Services\ShopSession;
 use Osiset\ShopifyApp\Storage\Commands\Charge as ChargeCommand;
 use Osiset\ShopifyApp\Storage\Commands\Shop as ShopCommand;
 use Osiset\ShopifyApp\Storage\Observers\Shop as ShopObserver;
@@ -74,6 +75,8 @@ class ShopifyAppProvider extends ServiceProvider
         $this->bootJobs();
         $this->bootObservers();
         $this->bootMiddlewares();
+        $this->bootMacros();
+        $this->bootDirectives();
     }
 
     /**
@@ -125,18 +128,16 @@ class ShopifyAppProvider extends ServiceProvider
             }],
 
             // Actions
-            AuthorizeShopAction::class => [self::CBIND, function ($app) {
-                return new AuthorizeShopAction(
+            InstallShopAction::class => [self::CBIND, function ($app) {
+                return new InstallShopAction(
                     $app->make(IShopQuery::class),
-                    $app->make(IShopCommand::class),
-                    $app->make(ShopSession::class)
+                    $app->make(IShopCommand::class)
                 );
             }],
             AuthenticateShopAction::class => [self::CBIND, function ($app) {
                 return new AuthenticateShopAction(
-                    $app->make(ShopSession::class),
                     $app->make(IApiHelper::class),
-                    $app->make(AuthorizeShopAction::class),
+                    $app->make(InstallShopAction::class),
                     $app->make(DispatchScriptsAction::class),
                     $app->make(DispatchWebhooksAction::class),
                     $app->make(AfterAuthorizeAction::class)
@@ -220,22 +221,10 @@ class ShopifyAppProvider extends ServiceProvider
             }],
 
             // Services (end)
-            ShopSession::class => [self::CBIND, function ($app) {
-                return new ShopSession(
-                    $app->make(AuthManager::class),
-                    $app->make(IApiHelper::class),
-                    $app->make(CookieHelper::class),
-                    $app->make(IShopCommand::class),
-                    $app->make(IShopQuery::class)
-                );
-            }],
             ChargeHelper::class => [self::CBIND, function ($app) {
                 return new ChargeHelper(
                     $app->make(IChargeQuery::class)
                 );
-            }],
-            CookieHelper::class => [self::CBIND, function () {
-                return new CookieHelper();
             }],
         ];
         foreach ($binds as $key => $fn) {
@@ -347,11 +336,30 @@ class ShopifyAppProvider extends ServiceProvider
     private function bootMiddlewares(): void
     {
         // Middlewares
-        $this->app['router']->aliasMiddleware('auth.shopify', AuthShopify::class);
-        $this->app['router']->aliasMiddleware('auth.token', AuthToken::class);
+        $this->app['router']->aliasMiddleware('verify.shopify', VerifyShopify::class);
         $this->app['router']->aliasMiddleware('auth.webhook', AuthWebhook::class);
         $this->app['router']->aliasMiddleware('auth.proxy', AuthProxy::class);
         $this->app['router']->aliasMiddleware('billable', Billable::class);
-        $this->app['router']->aliasMiddleware('itp', ITP::class);
+    }
+
+    /**
+     * Apply macros to Laravel framework.
+     *
+     * @return void
+     */
+    private function bootMacros(): void
+    {
+        Redirector::macro('tokenRedirect', new TokenRedirect());
+        UrlGenerator::macro('tokenRoute', new TokenRoute());
+    }
+
+    /**
+     * Init Blade directives.
+     *
+     * @return void
+     */
+    private function bootDirectives(): void
+    {
+        Blade::directive('sessionToken', new SessionToken());
     }
 }

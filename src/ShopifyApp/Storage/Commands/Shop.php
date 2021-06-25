@@ -2,6 +2,7 @@
 
 namespace Osiset\ShopifyApp\Storage\Commands;
 
+use Illuminate\Support\Carbon;
 use Osiset\ShopifyApp\Contracts\Commands\Shop as ShopCommand;
 use Osiset\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
 use Osiset\ShopifyApp\Contracts\Objects\Values\PlanId as PlanIdValue;
@@ -73,6 +74,7 @@ class Shop implements ShopCommand
     {
         $shop = $this->getShop($shopId);
         $shop->password = $token->toNative();
+        $shop->password_updated_at = Carbon::now();
 
         return $shop->save();
     }

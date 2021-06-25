@@ -6,16 +6,15 @@ use Exception;
 use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use Osiset\ShopifyApp\Objects\Enums\AuthMode;
+use Osiset\ShopifyApp\Objects\Values\AccessToken;
 use Osiset\ShopifyApp\Objects\Values\NullAccessToken;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
-use Osiset\ShopifyApp\Services\ShopSession;
 use Osiset\ShopifyApp\Util;
-use stdClass;
 
 /**
- * Authenticates a shop via HTTP request.
+ * Install steps for a shop.
  */
-class AuthorizeShop
+class InstallShop
 {
     /**
      * Querier for shops.
@@ -32,40 +31,29 @@ class AuthorizeShop
     protected $shopCommand;
 
     /**
-     * The shop session handler.
-     *
-     * @var ShopSession
-     */
-    protected $shopSession;
-
-    /**
      * Setup.
      *
      * @param IShopQuery  $shopQuery   The querier for the shop.
-     * @param ShopSession $shopSession The shop session handler.
      *
      * @return void
      */
     public function __construct(
         IShopQuery $shopQuery,
-        IShopCommand $shopCommand,
-        ShopSession $shopSession
+        IShopCommand $shopCommand
     ) {
         $this->shopQuery = $shopQuery;
         $this->shopCommand = $shopCommand;
-        $this->shopSession = $shopSession;
     }
 
     /**
      * Execution.
-     * TODO: Rethrow an API exception.
      *
      * @param ShopDomain  $shopDomain The shop ID.
      * @param string|null $code       The code from Shopify.
      *
-     * @return stdClass
+     * @return array
      */
-    public function __invoke(ShopDomain $shopDomain, ?string $code): stdClass
+    public function __invoke(ShopDomain $shopDomain, ?string $code): array
     {
         // Get the shop
         $shop = $this->shopQuery->getByDomain($shopDomain, [], true);
@@ -75,42 +63,43 @@ class AuthorizeShop
             $shop = $this->shopQuery->getByDomain($shopDomain);
         }
 
-        // Return data
-        $return = [
-            'completed' => false,
-            'url'       => null,
-        ];
-
-        $apiHelper = $shop->apiHelper();
-
         // Access/grant mode
+        $apiHelper = $shop->apiHelper();
         $grantMode = $shop->hasOfflineAccess() ?
             AuthMode::fromNative(Util::getShopifyConfig('api_grant_mode', $shop)) :
             AuthMode::OFFLINE();
 
-        $return['url'] = $apiHelper->buildAuthUrl($grantMode, Util::getShopifyConfig('api_scopes', $shop));
-
         // If there's no code
         if (empty($code)) {
-            return (object) $return;
+            return [
+                'completed' => false,
+                'url'       => $apiHelper->buildAuthUrl($grantMode, Util::getShopifyConfig('api_scopes', $shop)),
+                'shop_id'   => $shop->getId(),
+            ];
         }
-
-        // if the store has been deleted, restore the store to set the access token
-        if ($shop->trashed()) {
-            $shop->restore();
-        }
-
-        // We have a good code, get the access details
-        $this->shopSession->make($shop->getDomain());
 
         try {
-            $this->shopSession->setAccess($apiHelper->getAccessData($code));
-            $return['url'] = null;
-            $return['completed'] = true;
+            // if the store has been deleted, restore the store to set the access token
+            if ($shop->trashed()) {
+                $shop->restore();
+            }
+
+            // Get the data and set the access token
+            $data = $apiHelper->getAccessData($code);
+            $this->shopCommand->setAccessToken($shop->getId(), AccessToken::fromNative($data['access_token']));
+
+            return [
+                'completed' => true,
+                'url'       => null,
+                'shop_id'   => $shop->getId(),
+            ];
         } catch (Exception $e) {
             // Just return the default setting
+            return [
+                'completed' => false,
+                'url'       => null,
+                'shop_id'   => null,
+            ];
         }
-
-        return (object) $return;
     }
 }

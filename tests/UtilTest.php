@@ -7,7 +7,7 @@ use LogicException;
 use Osiset\ShopifyApp\Util;
 use stdClass;
 
-class HelpersTest extends TestCase
+class UtilTest extends TestCase
 {
     public function testHmacCreator(): void
     {
@@ -18,21 +18,21 @@ class HelpersTest extends TestCase
         $data = 'one-two-three';
         $this->assertSame(
             hash_hmac('sha256', $data, $secret, true),
-            Util::createHmac(['data' => $data, 'raw' => true], $secret)
+            Util::createHmac(['data' => $data, 'raw' => true], $secret)->toNative()
         );
 
         // Raw data encoded
         $data = 'one-two-three';
         $this->assertSame(
             base64_encode(hash_hmac('sha256', $data, $secret, true)),
-            Util::createHmac(['data' => $data, 'raw' => true, 'encode' => true], $secret)
+            Util::createHmac(['data' => $data, 'raw' => true, 'encode' => true], $secret)->toNative()
         );
 
         // Query build (sorts array and builds query string)
         $data = ['one' => 1, 'two' => 2, 'three' => 3];
         $this->assertSame(
             hash_hmac('sha256', 'one=1three=3two=2', $secret, false),
-            Util::createHmac(['data' => $data, 'buildQuery' => true], $secret)
+            Util::createHmac(['data' => $data, 'buildQuery' => true], $secret)->toNative()
         );
     }
 
@@ -61,8 +61,8 @@ class HelpersTest extends TestCase
 
         // dot-notation route name
         $this->assertSame(
-            Util::getShopifyConfig('route_names.authenticate.oauth'),
-            'authenticate.oauth'
+            Util::getShopifyConfig('route_names.authenticate.token'),
+            'authenticate.token'
         );
     }
 
