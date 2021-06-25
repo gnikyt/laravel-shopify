@@ -3,8 +3,8 @@
 namespace Osiset\ShopifyApp\Test\Macros;
 
 use Illuminate\Routing\Redirector;
-use Osiset\ShopifyApp\Test\TestCase;
 use Illuminate\Support\Facades\Request;
+use Osiset\ShopifyApp\Test\TestCase;
 
 class TokenRedirectTest extends TestCase
 {
