@@ -3,17 +3,14 @@
 namespace Osiset\ShopifyApp\Macros;
 
 use Illuminate\Http\RedirectResponse;
+use Osiset\ShopifyApp\Macros\TokenUrl;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Request;
-use Illuminate\Support\Facades\URL;
-use Osiset\ShopifyApp\Objects\Values\ShopDomain;
-use Osiset\ShopifyApp\Util;
 
 /**
  * Method for passing a request through the token route.
  * Used for non-SPAs.
  */
-class TokenRedirect
+class TokenRedirect extends TokenUrl
 {
     /**
      * Return a URL to token path with shop and target (for redirect).
@@ -28,12 +25,7 @@ class TokenRedirect
      */
     public function __invoke(string $route, $params = [], bool $absolute = true): RedirectResponse
     {
-        return Redirect::route(
-            Util::getShopifyConfig('route_names.authenticate.token'),
-            [
-                'shop'   => ShopDomain::fromRequest(Request::instance()),
-                'target' => URL::route($route, $params, $absolute),
-            ]
-        );
+        list($url, $params) = $this->generateParams($route, $params, $absolute);
+        return Redirect::route($url, $params);
     }
 }

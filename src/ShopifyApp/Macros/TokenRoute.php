@@ -2,16 +2,14 @@
 
 namespace Osiset\ShopifyApp\Macros;
 
-use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\URL;
-use Osiset\ShopifyApp\Objects\Values\ShopDomain;
-use Osiset\ShopifyApp\Util;
+use Osiset\ShopifyApp\Macros\TokenUrl;
 
 /**
  * Method for generating a URL to the token route.
  * Used for non-SPAs.
  */
-class TokenRoute
+class TokenRoute extends TokenUrl
 {
     /**
      * Return a URL to token path with shop and target (for redirect).
@@ -27,12 +25,7 @@ class TokenRoute
      */
     public function __invoke(string $route, $params = [], bool $absolute = true): string
     {
-        return URL::route(
-            Util::getShopifyConfig('route_names.authenticate.token'),
-            [
-                'shop'   => ShopDomain::fromRequest(Request::instance()),
-                'target' => URL::route($route, $params, $absolute),
-            ]
-        );
+        list($url, $params) = $this->generateParams($route, $params, $absolute);
+        return URL::route($url, $params);
     }
 }
