@@ -2,9 +2,9 @@
 
 namespace Osiset\ShopifyApp\Test\Macros;
 
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Routing\Redirector;
 use Osiset\ShopifyApp\Test\TestCase;
+use Illuminate\Support\Facades\Request;
 
 class TokenRedirectTest extends TestCase
 {
@@ -21,7 +21,7 @@ class TokenRedirectTest extends TestCase
         Request::swap($newRequest);
 
         // Run the macro and get the location header
-        $response = Redirect::tokenRedirect('home');
+        $response = Redirector::tokenRedirect('home');
         $location = $response->headers->get('location');
 
         $this->assertEquals(

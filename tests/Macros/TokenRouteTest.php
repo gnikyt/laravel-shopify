@@ -2,9 +2,9 @@
 
 namespace Osiset\ShopifyApp\Test\Macros;
 
-use Illuminate\Support\Facades\Request;
-use Illuminate\Support\Facades\URL;
+use Illuminate\Routing\UrlGenerator;
 use Osiset\ShopifyApp\Test\TestCase;
+use Illuminate\Support\Facades\Request;
 
 class TokenRouteTest extends TestCase
 {
@@ -21,7 +21,7 @@ class TokenRouteTest extends TestCase
         Request::swap($newRequest);
 
         // Run the macro and get the link
-        $result = URL::tokenRoute('home');
+        $result = UrlGenerator::tokenRoute('home');
 
         $this->assertEquals(
             'http://localhost/authenticate/token?shop=example.myshopify.com&target=http%3A%2F%2Flocalhost',
