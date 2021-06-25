@@ -171,7 +171,7 @@ interface ApiHelper
      *
      * @return void
      */
-    public function deleteWebhook(string $webhookId);
+    public function deleteWebhook(string $webhookId): void;
 
     /**
      * Creates a usage charge for a recurring charge.
