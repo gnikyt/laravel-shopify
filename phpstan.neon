@@ -9,6 +9,5 @@ parameters:
 		- '#Variable \$factory might not be defined\.#'
 		- '#Call to an undefined static method Illuminate\\Routing\\Redirector::tokenRedirect\(\).#'
 		- '#Call to an undefined static method Illuminate\\Routing\\UrlGenerator::tokenRoute\(\).#'
-		- '#Function factory not found.#'
 	parallel:
 		maximumNumberOfProcesses: 2
