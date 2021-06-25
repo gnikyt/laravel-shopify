@@ -1,0 +1,11 @@
+parameters:
+	level: 1
+	paths:
+		- src
+		- tests
+	ignoreErrors:
+		- '#Access to an undefined property Osiset\\ShopifyApp\\Storage\\Models\\.*::\$.*\.#'
+		- '#Access to an undefined property Osiset\\ShopifyApp\\Test\\Stubs\\.*::\$.*\.#'
+		- '#Variable \$factory might not be defined\.#'
+	parallel:
+		maximumNumberOfProcesses: 2

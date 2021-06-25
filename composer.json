@@ -3,9 +3,17 @@
     "description": "Shopify package for Laravel to aide in app development",
     "keywords": [
         "api",
+        "callback-url",
+        "driver",
+        "facade",
         "laravel",
+        "laravel-package",
+        "laravel-shopify",
+        "scripttags",
         "shopify",
-        "shopify-api"
+        "shopify-api",
+        "shopify-app",
+        "webhook"
     ],
     "license": "MIT",
     "authors": [
@@ -16,7 +24,7 @@
     ],
     "require": {
         "php": ">=7.2",
-        "doctrine/dbal": "~2.5",
+        "ext-json": "*",
         "funeralzone/valueobjects": "^0.5",
         "jenssegers/agent": "^2.6",
         "laravel/framework": "^7.0 || ^8.0",
@@ -27,8 +35,8 @@
         "mockery/mockery": "^1.0",
         "orchestra/database": "~3.8 || ~4.0 || ~5.0 || ~6.0",
         "orchestra/testbench": "~3.8 || ~4.0 || ~5.0 || ~6.0",
-        "phpunit/phpunit": "~8.0 || ^9.0",
-        "squizlabs/php_codesniffer": "^3.0"
+        "phpstan/phpstan": "^0.12",
+        "phpunit/phpunit": "~8.0 || ^9.0"
     },
     "config": {
         "sort-packages": true
@@ -43,10 +51,7 @@
     "autoload": {
         "psr-4": {
             "Osiset\\ShopifyApp\\": "src/ShopifyApp"
-        },
-        "files": [
-            "src/ShopifyApp/helpers.php"
-        ]
+        }
     },
     "autoload-dev": {
         "psr-4": {
@@ -62,6 +67,8 @@
     },
     "support": {
         "issues": "https://github.com/osiset/laravel-shopify/issues",
+        "forum": "https://github.com/osiset/laravel-shopify/discussions",
+        "wiki": "https://github.com/osiset/laravel-shopify/wiki",
         "source": "https://github.com/osiset/laravel-shopify"
     }
 }

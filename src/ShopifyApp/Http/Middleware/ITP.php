@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
-use function Osiset\ShopifyApp\getShopifyConfig;
+use Osiset\ShopifyApp\Util;
 
 /**
  * Ensuring ITP process.
@@ -58,7 +58,7 @@ class ITP
     {
         $authUrl = URL::secure(
             URL::route(
-                getShopifyConfig('route_names.itp'),
+                Util::getShopifyConfig('route_names.itp'),
                 ['shop' => $request->get('shop')],
                 false
             )
@@ -82,6 +82,6 @@ class ITP
      */
     protected function ask(): RedirectResponse
     {
-        return Redirect::route(getShopifyConfig('route_names.itp.ask'));
+        return Redirect::route(Util::getShopifyConfig('route_names.itp.ask'));
     }
 }

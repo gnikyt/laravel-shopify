@@ -3,10 +3,10 @@
 namespace Osiset\ShopifyApp\Test\Traits;
 
 use Illuminate\Support\Facades\Request;
-use function Osiset\ShopifyApp\base64url_encode;
 use Osiset\ShopifyApp\Objects\Enums\PlanType;
 use Osiset\ShopifyApp\Storage\Models\Plan;
 use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Util;
 
 class ApiControllerTest extends TestCase
 {
@@ -15,14 +15,9 @@ class ApiControllerTest extends TestCase
      */
     protected $shopSession;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-    }
-
     public function testApiWithoutToken(): void
     {
-        $shop = factory($this->model)->create();
+        factory($this->model)->create();
 
         $response = $this->get('/api');
 
@@ -32,7 +27,7 @@ class ApiControllerTest extends TestCase
 
     public function testApiWithoutTokenJson(): void
     {
-        $shop = factory($this->model)->create();
+        factory($this->model)->create();
 
         $response = $this->get('/api', [
             'accept' => 'application/json',
@@ -44,12 +39,12 @@ class ApiControllerTest extends TestCase
 
     public function testApiWithToken(): void
     {
-        $now = time();
+        $now = $this->now->getTimestamp();
 
-        $body = base64url_encode(json_encode([
+        $body = Util::base64UrlEncode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
-            'aud' => env('SHOPIFY_API_KEY'),
+            'aud' => Util::getShopifyConfig('api_key'),
             'sub' => '123',
             'exp' => $now + 60,
             'nbf' => $now,
@@ -60,13 +55,13 @@ class ApiControllerTest extends TestCase
 
         $payload = sprintf('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.%s', $body);
 
-        $secret = env('SHOPIFY_API_SECRET');
+        $secret = Util::getShopifyConfig('api_secret');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = Util::base64UrlEncode(hash_hmac('sha256', $payload, $secret, true));
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
-        $shop = factory($this->model)->create([
+        factory($this->model)->create([
             'name' => 'shop-name.myshopify.com',
         ]);
 
@@ -82,12 +77,12 @@ class ApiControllerTest extends TestCase
 
     public function testApiWithTokenJson(): void
     {
-        $now = time();
+        $now = $this->now->getTimestamp();
 
-        $body = base64url_encode(json_encode([
+        $body = Util::base64UrlEncode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
-            'aud' => env('SHOPIFY_API_KEY'),
+            'aud' => Util::getShopifyConfig('api_key'),
             'sub' => '123',
             'exp' => $now + 60,
             'nbf' => $now,
@@ -98,13 +93,13 @@ class ApiControllerTest extends TestCase
 
         $payload = sprintf('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.%s', $body);
 
-        $secret = env('SHOPIFY_API_SECRET');
+        $secret = Util::getShopifyConfig('api_secret');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = Util::base64UrlEncode(hash_hmac('sha256', $payload, $secret, true));
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
-        $shop = factory($this->model)->create([
+        factory($this->model)->create([
             'name' => 'shop-name.myshopify.com',
         ]);
 
@@ -121,12 +116,12 @@ class ApiControllerTest extends TestCase
 
     public function testApiWithExpiredToken(): void
     {
-        $now = time();
+        $now = $this->now->getTimestamp();
 
-        $body = base64url_encode(json_encode([
+        $body = Util::base64UrlEncode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
-            'aud' => env('SHOPIFY_API_KEY'),
+            'aud' => Util::getShopifyConfig('api_key'),
             'sub' => '123',
             'exp' => $now - 120,
             'nbf' => $now - 180,
@@ -137,13 +132,13 @@ class ApiControllerTest extends TestCase
 
         $payload = sprintf('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.%s', $body);
 
-        $secret = env('SHOPIFY_API_SECRET');
+        $secret = Util::getShopifyConfig('api_secret');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = Util::base64UrlEncode(hash_hmac('sha256', $payload, $secret, true));
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
-        $shop = factory($this->model)->create([
+        factory($this->model)->create([
             'name' => 'shop-name.myshopify.com',
         ]);
 
@@ -159,12 +154,12 @@ class ApiControllerTest extends TestCase
 
     public function testApiWithExpiredTokenJson(): void
     {
-        $now = time();
+        $now = $this->now->getTimestamp();
 
-        $body = base64url_encode(json_encode([
+        $body = Util::base64UrlEncode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
-            'aud' => env('SHOPIFY_API_KEY'),
+            'aud' => Util::getShopifyConfig('api_key'),
             'sub' => '123',
             'exp' => $now - 120,
             'nbf' => $now - 180,
@@ -175,13 +170,13 @@ class ApiControllerTest extends TestCase
 
         $payload = sprintf('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.%s', $body);
 
-        $secret = env('SHOPIFY_API_SECRET');
+        $secret = Util::getShopifyConfig('api_secret');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = Util::base64UrlEncode(hash_hmac('sha256', $payload, $secret, true));
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
-        $shop = factory($this->model)->create([
+        factory($this->model)->create([
             'name' => 'shop-name.myshopify.com',
         ]);
 
@@ -198,12 +193,12 @@ class ApiControllerTest extends TestCase
 
     public function testApiWithMalformedToken(): void
     {
-        $now = time();
+        $now = $this->now->getTimestamp();
 
-        $body = base64url_encode(json_encode([
+        $body = Util::base64UrlEncode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
-            'aud' => env('SHOPIFY_API_KEY'),
+            'aud' => Util::getShopifyConfig('api_key'),
             'sub' => '123',
             'exp' => $now + 60,
             'nbf' => $now,
@@ -213,13 +208,13 @@ class ApiControllerTest extends TestCase
 
         $payload = sprintf('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.%s', $body);
 
-        $secret = env('SHOPIFY_API_SECRET');
+        $secret = Util::getShopifyConfig('api_secret');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = Util::base64UrlEncode(hash_hmac('sha256', $payload, $secret, true));
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
-        $shop = factory($this->model)->create([
+        factory($this->model)->create([
             'name' => 'shop-name.myshopify.com',
         ]);
 
@@ -235,12 +230,12 @@ class ApiControllerTest extends TestCase
 
     public function testApiWithMalformedTokenJson(): void
     {
-        $now = time();
+        $now = $this->now->getTimestamp();
 
-        $body = base64url_encode(json_encode([
+        $body = Util::base64UrlEncode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
-            'aud' => env('SHOPIFY_API_KEY'),
+            'aud' => Util::getShopifyConfig('api_key'),
             'sub' => '123',
             'exp' => $now + 60,
             'nbf' => $now,
@@ -250,13 +245,13 @@ class ApiControllerTest extends TestCase
 
         $payload = sprintf('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.%s', $body);
 
-        $secret = env('SHOPIFY_API_SECRET');
+        $secret = Util::getShopifyConfig('api_secret');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = Util::base64UrlEncode(hash_hmac('sha256', $payload, $secret, true));
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
-        $shop = factory($this->model)->create([
+        factory($this->model)->create([
             'name' => 'shop-name.myshopify.com',
         ]);
 
@@ -273,12 +268,12 @@ class ApiControllerTest extends TestCase
 
     public function testApiWithDomainMismatch(): void
     {
-        $now = time();
+        $now = $this->now->getTimestamp();
 
-        $body = base64url_encode(json_encode([
+        $body = Util::base64UrlEncode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://another-shop-name.myshopify.com',
-            'aud' => env('SHOPIFY_API_KEY'),
+            'aud' => Util::getShopifyConfig('api_key'),
             'sub' => '123',
             'exp' => $now + 60,
             'nbf' => $now,
@@ -289,13 +284,13 @@ class ApiControllerTest extends TestCase
 
         $payload = sprintf('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.%s', $body);
 
-        $secret = env('SHOPIFY_API_SECRET');
+        $secret = Util::getShopifyConfig('api_secret');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = Util::base64UrlEncode(hash_hmac('sha256', $payload, $secret, true));
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
-        $shop = factory($this->model)->create([
+        factory($this->model)->create([
             'name' => 'shop-name.myshopify.com',
         ]);
 
@@ -311,12 +306,12 @@ class ApiControllerTest extends TestCase
 
     public function testApiWithDomainMismatchJson(): void
     {
-        $now = time();
+        $now = $this->now->getTimestamp();
 
-        $body = base64url_encode(json_encode([
+        $body = Util::base64UrlEncode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://another-shop-name.myshopify.com',
-            'aud' => env('SHOPIFY_API_KEY'),
+            'aud' => Util::getShopifyConfig('api_key'),
             'sub' => '123',
             'exp' => $now + 60,
             'nbf' => $now,
@@ -327,13 +322,13 @@ class ApiControllerTest extends TestCase
 
         $payload = sprintf('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.%s', $body);
 
-        $secret = env('SHOPIFY_API_SECRET');
+        $secret = Util::getShopifyConfig('api_secret');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = Util::base64UrlEncode(hash_hmac('sha256', $payload, $secret, true));
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
-        $shop = factory($this->model)->create([
+        factory($this->model)->create([
             'name' => 'shop-name.myshopify.com',
         ]);
 
@@ -350,12 +345,12 @@ class ApiControllerTest extends TestCase
 
     public function testApiWithInvalidTokenHeader(): void
     {
-        $now = time();
+        $now = $this->now->getTimestamp();
 
-        $body = base64url_encode(json_encode([
+        $body = Util::base64UrlEncode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
-            'aud' => env('SHOPIFY_API_KEY'),
+            'aud' => Util::getShopifyConfig('api_key'),
             'sub' => '123',
             'exp' => $now + 60,
             'nbf' => $now,
@@ -366,13 +361,13 @@ class ApiControllerTest extends TestCase
 
         $payload = sprintf('xxxxxx.%s', $body);
 
-        $secret = env('SHOPIFY_API_SECRET');
+        $secret = Util::getShopifyConfig('api_secret');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = Util::base64UrlEncode(hash_hmac('sha256', $payload, $secret, true));
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
-        $shop = factory($this->model)->create([
+        factory($this->model)->create([
             'name' => 'shop-name.myshopify.com',
         ]);
 
@@ -388,12 +383,12 @@ class ApiControllerTest extends TestCase
 
     public function testApiWithInvalidTokenHeaderJson(): void
     {
-        $now = time();
+        $now = $this->now->getTimestamp();
 
-        $body = base64url_encode(json_encode([
+        $body = Util::base64UrlEncode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
-            'aud' => env('SHOPIFY_API_KEY'),
+            'aud' => Util::getShopifyConfig('api_key'),
             'sub' => '123',
             'exp' => $now + 60,
             'nbf' => $now,
@@ -404,13 +399,13 @@ class ApiControllerTest extends TestCase
 
         $payload = sprintf('xxxxxx.%s', $body);
 
-        $secret = env('SHOPIFY_API_SECRET');
+        $secret = Util::getShopifyConfig('api_secret');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = Util::base64UrlEncode(hash_hmac('sha256', $payload, $secret, true));
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
-        $shop = factory($this->model)->create([
+        factory($this->model)->create([
             'name' => 'shop-name.myshopify.com',
         ]);
 
@@ -427,12 +422,12 @@ class ApiControllerTest extends TestCase
 
     public function testApiGetSelf(): void
     {
-        $now = time();
+        $now = $this->now->getTimestamp();
 
-        $body = base64url_encode(json_encode([
+        $body = Util::base64UrlEncode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
-            'aud' => env('SHOPIFY_API_KEY'),
+            'aud' => Util::getShopifyConfig('api_key'),
             'sub' => '123',
             'exp' => $now + 60,
             'nbf' => $now,
@@ -443,13 +438,13 @@ class ApiControllerTest extends TestCase
 
         $payload = sprintf('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.%s', $body);
 
-        $secret = env('SHOPIFY_API_SECRET');
+        $secret = Util::getShopifyConfig('api_secret');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = Util::base64UrlEncode(hash_hmac('sha256', $payload, $secret, true));
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
-        $shop = factory($this->model)->create([
+        factory($this->model)->create([
             'name' => 'shop-name.myshopify.com',
         ]);
 
@@ -465,12 +460,12 @@ class ApiControllerTest extends TestCase
 
     public function testApiGetPlans(): void
     {
-        $now = time();
+        $now = $this->now->getTimestamp();
 
-        $body = base64url_encode(json_encode([
+        $body = Util::base64UrlEncode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
-            'aud' => env('SHOPIFY_API_KEY'),
+            'aud' => Util::getShopifyConfig('api_key'),
             'sub' => '123',
             'exp' => $now + 60,
             'nbf' => $now,
@@ -481,17 +476,17 @@ class ApiControllerTest extends TestCase
 
         $payload = sprintf('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.%s', $body);
 
-        $secret = env('SHOPIFY_API_SECRET');
+        $secret = Util::getShopifyConfig('api_secret');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = Util::base64UrlEncode(hash_hmac('sha256', $payload, $secret, true));
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
-        $shop = factory($this->model)->create([
+        factory($this->model)->create([
             'name' => 'shop-name.myshopify.com',
         ]);
 
-        $plan = factory(Plan::class)->create([
+        factory(Plan::class)->create([
             'type' => PlanType::RECURRING()->toNative(),
         ]);
 
@@ -505,7 +500,7 @@ class ApiControllerTest extends TestCase
 
         $this->assertNotEmpty($result);
         $this->assertNotEmpty($result);
-        $this->assertEquals(sizeof($result), 1);
+        $this->assertCount(1, $result);
         $this->assertStringContainsString('RECURRING', $response->getContent());
     }
 }

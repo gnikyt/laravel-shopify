@@ -24,7 +24,7 @@ class OrdersCreateJob implements ShouldQueue
         $this->data = $data;
     }
 
-    public function handle()
+    public function handle(): void
     {
         // Do what you wish with the data
     }

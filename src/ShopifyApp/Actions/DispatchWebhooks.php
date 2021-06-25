@@ -4,7 +4,7 @@ namespace Osiset\ShopifyApp\Actions;
 
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopId as ShopIdValue;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
-use function Osiset\ShopifyApp\getShopifyConfig;
+use Osiset\ShopifyApp\Util;
 
 /**
  * Attempt to install webhooks on a shop.
@@ -49,15 +49,15 @@ class DispatchWebhooks
      */
     public function __invoke(ShopIdValue $shopId, bool $inline = false): bool
     {
-        // Get the shop
-        $shop = $this->shopQuery->getById($shopId);
-
         // Get the webhooks
-        $webhooks = getShopifyConfig('webhooks');
+        $webhooks = Util::getShopifyConfig('webhooks');
         if (count($webhooks) === 0) {
             // Nothing to do
             return false;
         }
+
+        // Get the shop
+        $shop = $this->shopQuery->getById($shopId);
 
         // Run the installer job
         if ($inline) {
@@ -69,7 +69,7 @@ class DispatchWebhooks
             ($this->jobClass)::dispatch(
                 $shop->getId(),
                 $webhooks
-            )->onQueue(getShopifyConfig('job_queues')['webhooks']);
+            )->onQueue(Util::getShopifyConfig('job_queues')['webhooks']);
         }
 
         return true;

@@ -1,16 +1,16 @@
 {
-  "access_token": "f85632530bf277ec9ac6f649fc327f17",
-  "scope": "write_orders,read_customers",
-  "expires_in": 86399,
-  "associated_user_scope": "write_orders",
-  "associated_user": {
-    "id": 902541635,
-    "first_name": "John",
-    "last_name": "Smith",
-    "email": "john@example.com",
-    "email_verified": true,
-    "account_owner": true,
-    "locale": "en",
-    "collaborator": false
-  }
+    "access_token": "f85632530bf277ec9ac6f649fc327f17",
+    "scope": "write_orders,read_customers",
+    "expires_in": 86399,
+    "associated_user_scope": "write_orders",
+    "associated_user": {
+        "id": 902541635,
+        "first_name": "John",
+        "last_name": "Smith",
+        "email": "john@example.com",
+        "email_verified": true,
+        "account_owner": true,
+        "locale": "en",
+        "collaborator": false
+    }
 }

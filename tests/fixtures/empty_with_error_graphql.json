@@ -1,5 +1,7 @@
 {
-  "errors": [{
-    "message": "Error!"
-  }]
+    "errors": [
+        {
+            "message": "Error!"
+        }
+    ]
 }

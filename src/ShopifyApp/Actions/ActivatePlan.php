@@ -121,16 +121,21 @@ class ActivatePlan
         $this->chargeCommand->delete($chargeRef, $shopId);
 
         // Create the charge transfer
-        $isRecurring = $plan->isType(PlanType::RECURRING());
         $transfer = new ChargeTransfer();
         $transfer->shopId = $shopId;
         $transfer->planId = $planId;
         $transfer->chargeReference = $chargeRef;
         $transfer->chargeType = $chargeType;
         $transfer->chargeStatus = ChargeStatus::fromNative(strtoupper($response['status']));
-        $transfer->activatedOn = $isRecurring ? new Carbon($response['activated_on']) : Carbon::today();
-        $transfer->billingOn = $isRecurring ? new Carbon($response['billing_on']) : null;
-        $transfer->trialEndsOn = $isRecurring ? new Carbon($response['trial_ends_on']) : null;
+        if ($plan->isType(PlanType::RECURRING())) {
+            $transfer->activatedOn = new Carbon($response['activated_on']);
+            $transfer->billingOn = new Carbon($response['billing_on']);
+            $transfer->trialEndsOn = new Carbon($response['trial_ends_on']);
+        } else {
+            $transfer->activatedOn = Carbon::today();
+            $transfer->billingOn = null;
+            $transfer->trialEndsOn = null;
+        }
         $transfer->planDetails = $this->chargeHelper->details($plan, $shop);
 
         // Create the charge

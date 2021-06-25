@@ -4,7 +4,7 @@ namespace Osiset\ShopifyApp\Objects\Values;
 
 use Funeralzone\ValueObjects\Scalars\StringTrait;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
-use function Osiset\ShopifyApp\getShopifyConfig;
+use Osiset\ShopifyApp\Util;
 
 /**
  * Value object for shop's domain.
@@ -34,7 +34,7 @@ final class ShopDomain implements ShopDomainValue
      */
     protected function sanitizeShopDomain(string $domain): ?string
     {
-        $configEndDomain = getShopifyConfig('myshopify_domain');
+        $configEndDomain = Util::getShopifyConfig('myshopify_domain');
         $domain = strtolower(preg_replace('/https?:\/\//i', '', trim($domain)));
 
         if (strpos($domain, $configEndDomain) === false && strpos($domain, '.') === false) {

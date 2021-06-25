@@ -2,7 +2,6 @@
 
 namespace Osiset\ShopifyApp\Test\Services;
 
-use Illuminate\Support\Carbon;
 use Osiset\BasicShopifyAPI\ResponseAccess;
 use Osiset\ShopifyApp\Objects\Enums\ChargeStatus;
 use Osiset\ShopifyApp\Objects\Transfers\PlanDetails;
@@ -59,7 +58,7 @@ class ChargeHelperTest extends TestCase
         // Seed
         $seed = $this->seedData([
             'trial_days'    => 7,
-            'trial_ends_on' => Carbon::today()->addDays(7)->format('Y-m-d'),
+            'trial_ends_on' => $this->now->today()->addDays(7)->format('Y-m-d'),
         ]);
         $this->chargeHelper->useCharge($seed->charge->getReference());
 
@@ -111,11 +110,11 @@ class ChargeHelperTest extends TestCase
         $this->chargeHelper->useCharge($seed->charge->getReference());
 
         $this->assertSame(
-            Carbon::today()->format('Y-m-d'),
+            $this->now->today()->format('Y-m-d'),
             $this->chargeHelper->periodBeginDate()
         );
         $this->assertSame(
-            Carbon::today()->addDays(30)->format('Y-m-d'),
+            $this->now->today()->addDays(30)->format('Y-m-d'),
             $this->chargeHelper->periodEndDate()
         );
         $this->assertSame(30, $this->chargeHelper->remainingDaysForPeriod());

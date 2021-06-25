@@ -5,6 +5,7 @@ namespace Osiset\ShopifyApp\Test\Traits;
 use Osiset\ShopifyApp\Services\ShopSession;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
 use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Util;
 
 class AuthControllerTest extends TestCase
 {
@@ -33,7 +34,7 @@ class AuthControllerTest extends TestCase
         $response->assertViewHas('shopDomain', 'example.myshopify.com');
         $response->assertViewHas(
             'authUrl',
-            'https://example.myshopify.com/admin/oauth/authorize?client_id='.env('SHOPIFY_API_KEY').'&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalhost%2Fauthenticate'
+            'https://example.myshopify.com/admin/oauth/authorize?client_id='.Util::getShopifyConfig('api_key').'&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalhost%2Fauthenticate'
         );
     }
 
@@ -98,7 +99,7 @@ class AuthControllerTest extends TestCase
         $response = $this->call('get', '/authenticate/oauth', ['shop' => 'example.myshopify.com']);
         $response->assertViewHas(
             'authUrl',
-            'https://example.myshopify.com/admin/oauth/authorize?client_id='.env('SHOPIFY_API_KEY').'&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalhost%2Fauthenticate'
+            'https://example.myshopify.com/admin/oauth/authorize?client_id='.Util::getShopifyConfig('api_key').'&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalhost%2Fauthenticate'
         );
     }
 }

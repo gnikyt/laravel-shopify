@@ -64,7 +64,7 @@ class AuthShopifyTest extends TestCase
 
     public function testHmacFail(): void
     {
-        $this->expectException(SignatureVerificationException::class);
+        $this->expectExceptionObject(new SignatureVerificationException('Unable to verify signature.', 0));
 
         // Create the shop
         factory($this->model)->create(['name' => 'mystore123.myshopify.com']);
@@ -274,7 +274,7 @@ class AuthShopifyTest extends TestCase
 
     public function testLoginShopWithoutShopDomain(): void
     {
-        $this->expectException(MissingShopDomainException::class);
+        $this->expectExceptionObject(new MissingShopDomainException('', 0));
 
         // Now, invalidation should cause redirect
         $this->runAuth();

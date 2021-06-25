@@ -1,11 +1,11 @@
 {
-  "data": {
-    "appSubscriptionCreate": {
-      "userErrors": [],
-      "confirmationUrl": "https://domain.myshopify.com/admin/charges/4019552312/confirm_recurring_application_charge?signature=BAh7BzoHaWRsKwc4gJXvOhJhdXRvX2FjdGl2YXRlVA%3D%3D--74e39487ff00313ca4409dea7ab00081001c45d5",
-      "appSubscription": {
-        "id": "gid://shopify/AppSubscription/4019552312"
-      }
+    "data": {
+        "appSubscriptionCreate": {
+            "userErrors": [],
+            "confirmationUrl": "https://domain.myshopify.com/admin/charges/4019552312/confirm_recurring_application_charge?signature=BAh7BzoHaWRsKwc4gJXvOhJhdXRvX2FjdGl2YXRlVA%3D%3D--74e39487ff00313ca4409dea7ab00081001c45d5",
+            "appSubscription": {
+                "id": "gid://shopify/AppSubscription/4019552312"
+            }
+        }
     }
-  }
 }

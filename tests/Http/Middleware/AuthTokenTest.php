@@ -3,10 +3,10 @@
 namespace Osiset\ShopifyApp\Test\Http\Middleware;
 
 use Illuminate\Support\Facades\Request;
-use function Osiset\ShopifyApp\base64url_encode;
 use Osiset\ShopifyApp\Exceptions\HttpException;
 use Osiset\ShopifyApp\Http\Middleware\AuthToken as AuthTokenMiddleware;
 use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Util;
 
 class AuthTokenTest extends TestCase
 {
@@ -29,12 +29,10 @@ class AuthTokenTest extends TestCase
         );
         Request::swap($newRequest);
 
-        $this->expectException(HttpException::class);
-        $this->expectExceptionMessage('Missing authentication token');
-        $this->expectExceptionCode(401);
+        $this->expectExceptionObject(new HttpException('Missing authentication token', 401));
 
         // Run the middleware
-        $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function ($r) {
+        ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function ($r) {
             // ...
         });
     }
@@ -61,12 +59,10 @@ class AuthTokenTest extends TestCase
         );
         Request::swap($newRequest);
 
-        $this->expectException(HttpException::class);
-        $this->expectExceptionMessage('Missing authentication token');
-        $this->expectExceptionCode(401);
+        $this->expectExceptionObject(new HttpException('Missing authentication token', 401));
 
         // Run the middleware
-        $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
+        ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
             // ...
         });
     }
@@ -93,12 +89,10 @@ class AuthTokenTest extends TestCase
         );
         Request::swap($newRequest);
 
-        $this->expectException(HttpException::class);
-        $this->expectExceptionMessage('Malformed token');
-        $this->expectExceptionCode(400);
+        $this->expectExceptionObject(new HttpException('Malformed token', 400));
 
         // Run the middleware
-        $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
+        ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
             // ...
         });
     }
@@ -125,12 +119,10 @@ class AuthTokenTest extends TestCase
         );
         Request::swap($newRequest);
 
-        $this->expectException(HttpException::class);
-        $this->expectExceptionMessage('Unable to verify signature');
-        $this->expectExceptionCode(400);
+        $this->expectExceptionObject(new HttpException('Unable to verify signature', 400));
 
         // Run the middleware
-        $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
+        ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
             // ...
         });
     }
@@ -157,19 +149,17 @@ class AuthTokenTest extends TestCase
         );
         Request::swap($newRequest);
 
-        $this->expectException(HttpException::class);
-        $this->expectExceptionMessage('Malformed token');
-        $this->expectExceptionCode(400);
+        $this->expectExceptionObject(new HttpException('Malformed token', 400));
 
         // Run the middleware
-        $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
+        ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
             // ...
         });
     }
 
     public function testDenysForValidRegexValidSignatureBadBody(): void
     {
-        $invalidBody = base64url_encode(json_encode([
+        $invalidBody = Util::base64UrlEncode(json_encode([
             'dest' => '<shop-name.myshopify.com>',
             'aud' => '<api key>',
             'sub' => '<user ID>',
@@ -182,9 +172,9 @@ class AuthTokenTest extends TestCase
 
         $invalidPayload = sprintf('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.%s', $invalidBody);
 
-        $secret = env('SHOPIFY_API_SECRET');
+        $secret = Util::getShopifyConfig('api_secret');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $invalidPayload, $secret, true));
+        $hmac = Util::base64UrlEncode(hash_hmac('sha256', $invalidPayload, $secret, true));
 
         $validTokenInvalidBody = sprintf('%s.%s', $invalidPayload, $hmac);
 
@@ -208,24 +198,22 @@ class AuthTokenTest extends TestCase
         );
         Request::swap($newRequest);
 
-        $this->expectException(HttpException::class);
-        $this->expectExceptionMessage('Malformed token');
-        $this->expectExceptionCode(400);
+        $this->expectExceptionObject(new HttpException('Malformed token', 400));
 
         // Run the middleware
-        $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
+        ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
             // ...
         });
     }
 
     public function testDenysForExpiredToken(): void
     {
-        $now = time();
+        $now = $this->now->getTimestamp();
 
-        $expiredBody = base64url_encode(json_encode([
+        $expiredBody = Util::base64UrlEncode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
-            'aud' => env('SHOPIFY_API_KEY'),
+            'aud' => Util::getShopifyConfig('api_key'),
             'sub' => '123',
             'exp' => $now - 60,
             'nbf' => $now - 120,
@@ -236,9 +224,9 @@ class AuthTokenTest extends TestCase
 
         $payload = sprintf('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.%s', $expiredBody);
 
-        $secret = env('SHOPIFY_API_SECRET');
+        $secret = Util::getShopifyConfig('api_secret');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = Util::base64UrlEncode(hash_hmac('sha256', $payload, $secret, true));
 
         $expiredTokenBody = sprintf('%s.%s', $payload, $hmac);
 
@@ -262,24 +250,22 @@ class AuthTokenTest extends TestCase
         );
         Request::swap($newRequest);
 
-        $this->expectException(HttpException::class);
-        $this->expectExceptionMessage('Expired token');
-        $this->expectExceptionCode(403);
+        $this->expectExceptionObject(new HttpException('Expired token', 403));
 
         // Run the middleware
-        $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
+        ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
             // ...
         });
     }
 
     public function testDenysForFutureToken(): void
     {
-        $now = time();
+        $now = $this->now->getTimestamp();
 
-        $expiredBody = base64url_encode(json_encode([
+        $expiredBody = Util::base64UrlEncode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
-            'aud' => env('SHOPIFY_API_KEY'),
+            'aud' => Util::getShopifyConfig('api_key'),
             'sub' => '123',
             'exp' => $now + 60,
             'nbf' => $now + 120,
@@ -290,9 +276,9 @@ class AuthTokenTest extends TestCase
 
         $payload = sprintf('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.%s', $expiredBody);
 
-        $secret = env('SHOPIFY_API_SECRET');
+        $secret = Util::getShopifyConfig('api_secret');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = Util::base64UrlEncode(hash_hmac('sha256', $payload, $secret, true));
 
         $expiredTokenBody = sprintf('%s.%s', $payload, $hmac);
 
@@ -316,24 +302,22 @@ class AuthTokenTest extends TestCase
         );
         Request::swap($newRequest);
 
-        $this->expectException(HttpException::class);
-        $this->expectExceptionMessage('Expired token');
-        $this->expectExceptionCode(403);
+        $this->expectExceptionObject(new HttpException('Expired token', 403));
 
         // Run the middleware
-        $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
+        ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
             // ...
         });
     }
 
     public function testDenysForInvalidUrl(): void
     {
-        $now = time();
+        $now = $this->now->getTimestamp();
 
-        $expiredBody = base64url_encode(json_encode([
+        $expiredBody = Util::base64UrlEncode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://another-name.myshopify.com',
-            'aud' => env('SHOPIFY_API_KEY'),
+            'aud' => Util::getShopifyConfig('api_key'),
             'sub' => '123',
             'exp' => $now + 60,
             'nbf' => $now,
@@ -344,9 +328,9 @@ class AuthTokenTest extends TestCase
 
         $payload = sprintf('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.%s', $expiredBody);
 
-        $secret = env('SHOPIFY_API_SECRET');
+        $secret = Util::getShopifyConfig('api_secret');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = Util::base64UrlEncode(hash_hmac('sha256', $payload, $secret, true));
 
         $expiredTokenBody = sprintf('%s.%s', $payload, $hmac);
 
@@ -370,21 +354,19 @@ class AuthTokenTest extends TestCase
         );
         Request::swap($newRequest);
 
-        $this->expectException(HttpException::class);
-        $this->expectExceptionMessage('Invalid token');
-        $this->expectExceptionCode(400);
+        $this->expectExceptionObject(new HttpException('Invalid token', 400));
 
         // Run the middleware
-        $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
+        ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
             // ...
         });
     }
 
     public function testDenysForInvalidApiKey(): void
     {
-        $now = time();
+        $now = $this->now->getTimestamp();
 
-        $expiredBody = base64url_encode(json_encode([
+        $expiredBody = Util::base64UrlEncode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
             'aud' => 'invalid',
@@ -398,9 +380,9 @@ class AuthTokenTest extends TestCase
 
         $payload = sprintf('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.%s', $expiredBody);
 
-        $secret = env('SHOPIFY_API_SECRET');
+        $secret = Util::getShopifyConfig('api_secret');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = Util::base64UrlEncode(hash_hmac('sha256', $payload, $secret, true));
 
         $expiredTokenBody = sprintf('%s.%s', $payload, $hmac);
 
@@ -424,24 +406,22 @@ class AuthTokenTest extends TestCase
         );
         Request::swap($newRequest);
 
-        $this->expectException(HttpException::class);
-        $this->expectExceptionMessage('Invalid token');
-        $this->expectExceptionCode(400);
+        $this->expectExceptionObject(new HttpException('Invalid token', 400));
 
         // Run the middleware
-        $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
+        ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () {
             // ...
         });
     }
 
     public function testRuns(): void
     {
-        $now = time();
+        $now = $this->now->getTimestamp();
 
-        $body = base64url_encode(json_encode([
+        $body = Util::base64UrlEncode(json_encode([
             'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
-            'aud' => env('SHOPIFY_API_KEY'),
+            'aud' => Util::getShopifyConfig('api_key'),
             'sub' => '123',
             'exp' => $now + 60,
             'nbf' => $now,
@@ -452,9 +432,9 @@ class AuthTokenTest extends TestCase
 
         $payload = sprintf('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.%s', $body);
 
-        $secret = env('SHOPIFY_API_SECRET');
+        $secret = Util::getShopifyConfig('api_secret');
 
-        $hmac = base64url_encode(hash_hmac('sha256', $payload, $secret, true));
+        $hmac = Util::base64UrlEncode(hash_hmac('sha256', $payload, $secret, true));
 
         $token = sprintf('%s.%s', $payload, $hmac);
 
@@ -480,7 +460,7 @@ class AuthTokenTest extends TestCase
 
         // Run the middleware
         $called = false;
-        $response = ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () use (&$called) {
+        ($this->app->make(AuthTokenMiddleware::class))->handle(request(), function () use (&$called) {
             $called = true;
         });
 

@@ -1,9 +1,9 @@
 name: Package Test
 
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 jobs:
-  build:
+  ci:
     runs-on: ubuntu-latest
 
     strategy:
@@ -14,57 +14,81 @@ jobs:
           - '7.3'
           - '7.4'
           - '8.0'
+        analysis: [ false ]
+        coverage: [ 'none' ]
+        normalize: [ false ]
+        validate: [ false ]
         laravel:
-            - '7.0'
-            - '8.22'
+          - '7.0'
+          - '8.22'
         exclude:
-            - php: '7.2'
-              laravel: '8.22'
-            - php: '8.0'
-              laravel: '7.0'
+          - php: '7.2'
+            laravel: '8.22'
+          - php: '8.0'
+            laravel: '7.0'
+          - php: '8.0'
+            laravel: '8.22'
+        include:
+          - php: '8.0'
+            laravel: '8.22'
+            analysis: true
+            coverage: 'xdebug'
+            normalize: true
+            validate: true
 
     name: PHP ${{ matrix.php }} / Laravel ${{ matrix.laravel }}
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Checkout the code
+        uses: actions/checkout@v2
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: ${{ matrix.php }}
-        coverage: xdebug
-        extensions: mbstring, dom, fileinfo, pdo_sqlite
-        tools: composer
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: ${{ matrix.coverage }}
+          extensions: dom, fileinfo, json, mbstring, pdo_sqlite
 
-    - name: Validate composer setup
-      run: composer validate --strict
+      - name: Validate composer setup
+        if: matrix.validate == true
+        run: composer validate --strict
 
-    - name: Install Laravel legacy factories support
-      if: matrix.laravel == '8.22'
-      run: composer require "laravel/legacy-factories:^1.0" --no-interaction --no-update
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
-    - name: Install Laravel and Orchestra Testbench
-      run: composer require "illuminate/contracts:${{ matrix.laravel }}" --no-interaction --no-update
+      - name: Cache composer dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: "php-${{ matrix.php }}-laravel-${{ matrix.laravel }}-${{ hashFiles('**/composer.json') }}"
+          restore-keys: "php-${{ matrix.php }}-laravel-${{ matrix.laravel }}-${{ hashFiles('**/composer.json') }}"
 
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress --no-suggest
+      - name: Install Laravel legacy factories support
+        if: matrix.laravel == '8.22'
+        run: composer require "laravel/legacy-factories:^1.1" --no-interaction --no-update
 
-    - name: Normalize composer file
-      run: composer normalize --dry-run
+      - name: Install Laravel and Orchestra Testbench
+        run: composer require "illuminate/contracts:${{ matrix.laravel }}" --no-interaction --no-update
 
-    - name: Validate code style
-      run: |
-        composer require "squizlabs/php_codesniffer=*"
-        vendor/bin/phpcs --standard="phpcs.xml" .
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
 
-    - name: Run test suite
-      run: vendor/bin/phpunit
+      - name: Normalize composer file
+        if: matrix.normalize == true
+        run: composer normalize --dry-run
 
-    - name: Upload coverage results
-      if: matrix.php == '8.22' && matrix.laravel == '8.22'
-      env:
-        COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        composer require cedx/coveralls
-        vendor/bin/coveralls build/logs/clover.xml
+      - name: Run test suite
+        run: vendor/bin/phpunit -v
+
+      - name: Run static code analysis
+        if: matrix.analysis == true
+        run: vendor/bin/phpstan --memory-limit 0
+
+      - name: Upload coverage results
+        if: matrix.coverage != 'none'
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          composer require php-coveralls/php-coveralls --dev
+          vendor/bin/php-coveralls --coverage_clover=build/logs/clover.xml -v

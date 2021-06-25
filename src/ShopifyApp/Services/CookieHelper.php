@@ -75,8 +75,7 @@ class CookieHelper
             $compatible = true;
         }
 
-        if ($this->agent->is('OS X') &&
-            ($this->agent->is('Safari') && ! $this->agent->is('iOS')) &&
+        if ($this->agent->is('OS X') && $this->agent->is('Safari') && ! $this->agent->is('iOS') &&
             $platform['float'] > 10.14
         ) {
             $compatible = true;
@@ -124,8 +123,8 @@ class CookieHelper
         $pieces = explode('.', str_replace('_', '.', $version));
 
         return [
-            'major' => isset($pieces[0]) ? $pieces[0] : null,
-            'minor' => isset($pieces[1]) ? $pieces[1] : null,
+            'major' => $pieces[0] ?? null,
+            'minor' => $pieces[1] ?? null,
             'float' => isset($pieces[0]) && isset($pieces[1]) ? (float) sprintf('%s.%s', $pieces[0], $pieces[1]) : null,
         ];
     }

@@ -12,11 +12,11 @@ use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
 use Osiset\ShopifyApp\Exceptions\MissingShopDomainException;
 use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
-use function Osiset\ShopifyApp\getShopifyConfig;
 use Osiset\ShopifyApp\Objects\Enums\DataSource;
 use Osiset\ShopifyApp\Objects\Values\NullShopDomain;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Services\ShopSession;
+use Osiset\ShopifyApp\Util;
 
 /**
  * Response for ensuring an authenticated request.
@@ -259,7 +259,7 @@ class AuthShopify
         ];
 
         // Loop through each until we find the HMAC
-        foreach ($options as $method => $value) {
+        foreach ($options as $value) {
             $result = is_callable($value) ? $value() : $value;
             if ($result !== null) {
                 // Found a shop
@@ -364,7 +364,7 @@ class AuthShopify
 
         // Mis-match of shops
         return Redirect::route(
-            getShopifyConfig('route_names.authenticate.oauth'),
+            Util::getShopifyConfig('route_names.authenticate.oauth'),
             ['shop' => $domain->toNative()]
         );
     }
