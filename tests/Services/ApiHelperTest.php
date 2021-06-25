@@ -3,19 +3,20 @@
 namespace Osiset\ShopifyApp\Test\Services;
 
 use Exception;
-use Osiset\BasicShopifyAPI\BasicShopifyAPI;
+use Osiset\ShopifyApp\Util;
+use Osiset\ShopifyApp\Test\TestCase;
 use Osiset\BasicShopifyAPI\ResponseAccess;
-use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
-use Osiset\ShopifyApp\Exceptions\ApiException;
+use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
+use Osiset\BasicShopifyAPI\BasicShopifyAPI;
 use Osiset\ShopifyApp\Objects\Enums\AuthMode;
+use Osiset\ShopifyApp\Exceptions\ApiException;
 use Osiset\ShopifyApp\Objects\Enums\ChargeType;
+use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
 use Osiset\ShopifyApp\Objects\Enums\PlanInterval;
+use Osiset\ShopifyApp\Objects\Values\ChargeReference;
+use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use Osiset\ShopifyApp\Objects\Transfers\PlanDetails as PlanDetailsTransfer;
 use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
-use Osiset\ShopifyApp\Objects\Values\ChargeReference;
-use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
-use Osiset\ShopifyApp\Test\TestCase;
-use Osiset\ShopifyApp\Util;
 
 class ApiHelperTest extends TestCase
 {
@@ -192,15 +193,19 @@ class ApiHelperTest extends TestCase
     public function testCreateWebhook(): void
     {
         // Create a shop
+        /** @var IShopModel $shop */
         $shop = factory($this->model)->create();
 
         // Response stubbing
         $this->setApiStub();
         ApiStub::stubResponses(['post_webhook']);
 
-        $data = $shop->apiHelper()->createWebhook([]);
+        $data = $shop->apiHelper()->createWebhook([
+            'topic'   => 'ORDERS_CREATE',
+            'address' => 'https://localhost/webhook/orders-create'
+        ]);
         $this->assertInstanceOf(ResponseAccess::class, $data);
-        $this->assertSame('app/uninstalled', $data['topic']);
+        $this->assertSame('ORDERS_CREATE', $data['data']['webhookSubscriptionCreate']['topic']);
     }
 
     public function testDeleteWebhook(): void
@@ -237,20 +242,6 @@ class ApiHelperTest extends TestCase
     }
 
     public function testErrors(): void
-    {
-        $this->expectExceptionObject(new ApiException('Unknown error', 0));
-
-        // Create a shop
-        $shop = factory($this->model)->create();
-
-        // Response stubbing
-        $this->setApiStub();
-        ApiStub::stubResponses(['empty_with_error']);
-
-        $shop->apiHelper()->deleteWebhook(1);
-    }
-
-    public function testErrorsGraphQL(): void
     {
         $this->expectExceptionObject(new Exception('Error!', 0));
 

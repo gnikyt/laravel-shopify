@@ -1,7 +1,8 @@
 {
     "data": {
         "webhookSubscriptionCreate": {
-            "id": "gid://shopify/WebhookSubscription/1016678842437"
+            "id": "gid://shopify/WebhookSubscription/1016678842437",
+            "topic": "ORDERS_CREATE"
         }
     }
 }
