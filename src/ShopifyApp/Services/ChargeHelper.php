@@ -267,7 +267,7 @@ class ChargeHelper
         $transfer->returnUrl = URL::secure(
             Util::getShopifyConfig('billing_redirect'),
             ['plan' => $plan->getId()->toNative()]
-        )."?shop={$shop->getDomain()->toNative()}";
+        ).'?'.http_build_query(['shop' => $shop->getDomain()->toNative()]);
 
         return $transfer;
     }
