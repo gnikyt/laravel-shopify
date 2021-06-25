@@ -3,7 +3,6 @@
 namespace Osiset\ShopifyApp\Macros;
 
 use Illuminate\Http\RedirectResponse;
-use Osiset\ShopifyApp\Macros\TokenUrl;
 use Illuminate\Support\Facades\Redirect;
 
 /**
@@ -25,7 +24,8 @@ class TokenRedirect extends TokenUrl
      */
     public function __invoke(string $route, $params = [], bool $absolute = true): RedirectResponse
     {
-        list($url, $params) = $this->generateParams($route, $params, $absolute);
+        [$url, $params] = $this->generateParams($route, $params, $absolute);
+
         return Redirect::route($url, $params);
     }
 }

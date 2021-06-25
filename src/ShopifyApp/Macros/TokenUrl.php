@@ -2,10 +2,10 @@
 
 namespace Osiset\ShopifyApp\Macros;
 
-use Osiset\ShopifyApp\Util;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\URL;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
+use Osiset\ShopifyApp\Util;
 
 /**
  * Common URL generation for TokenRedirect and TokenRoute macros.
@@ -28,7 +28,7 @@ abstract class TokenUrl
             [
                 'shop'   => ShopDomain::fromRequest(Request::instance())->toNative(),
                 'target' => URL::route($route, $params, $absolute),
-            ]
+            ],
         ];
     }
 }

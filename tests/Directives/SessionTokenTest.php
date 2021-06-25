@@ -4,7 +4,6 @@ namespace Osiset\ShopifyApp\Test\Directives;
 
 use Osiset\ShopifyApp\Directives\SessionToken;
 use Osiset\ShopifyApp\Test\TestCase;
-use Symfony\Component\Routing\Route;
 
 class SessionTokenTest extends TestCase
 {

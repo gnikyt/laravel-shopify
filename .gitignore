@@ -1,5 +1,5 @@
+/bin
 /build
 /vendor
 composer.lock
 .phpunit.result.cache
-/bin

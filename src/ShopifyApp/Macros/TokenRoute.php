@@ -3,7 +3,6 @@
 namespace Osiset\ShopifyApp\Macros;
 
 use Illuminate\Support\Facades\URL;
-use Osiset\ShopifyApp\Macros\TokenUrl;
 
 /**
  * Method for generating a URL to the token route.
@@ -25,7 +24,8 @@ class TokenRoute extends TokenUrl
      */
     public function __invoke(string $route, $params = [], bool $absolute = true): string
     {
-        list($url, $params) = $this->generateParams($route, $params, $absolute);
+        [$url, $params] = $this->generateParams($route, $params, $absolute);
+
         return URL::route($url, $params);
     }
 }

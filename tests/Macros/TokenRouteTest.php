@@ -2,9 +2,9 @@
 
 namespace Osiset\ShopifyApp\Test\Macros;
 
-use Osiset\ShopifyApp\Test\TestCase;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\URL;
+use Osiset\ShopifyApp\Test\TestCase;
 
 class TokenRouteTest extends TestCase
 {
