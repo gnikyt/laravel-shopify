@@ -52,7 +52,7 @@ class AfterAuthorize
          */
         $fireJob = function (array $config, IShopModel $shop): bool {
             $job = Arr::get($config, 'job');
-            if (Arr::get($job, 'inline', false)) {
+            if (Arr::get($config, 'inline', false)) {
                 // Run this job immediately
                 $job::dispatchNow($shop);
             } else {
