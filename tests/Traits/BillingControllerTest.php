@@ -2,8 +2,8 @@
 
 namespace Osiset\ShopifyApp\Test\Traits;
 
+use Illuminate\Auth\AuthManager;
 use function Osiset\ShopifyApp\createHmac;
-use Osiset\ShopifyApp\Services\ShopSession;
 use Osiset\ShopifyApp\Storage\Models\Charge;
 use Osiset\ShopifyApp\Storage\Models\Plan;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
@@ -12,9 +12,9 @@ use Osiset\ShopifyApp\Test\TestCase;
 class BillingControllerTest extends TestCase
 {
     /**
-     * @var \Osiset\ShopifyApp\Services\ShopSession
+     * @var AuthManager
      */
-    protected $shopSession;
+    protected $auth;
 
     public function setUp(): void
     {
@@ -23,8 +23,7 @@ class BillingControllerTest extends TestCase
         // Stub in our API class
         $this->setApiStub();
 
-        // Shop session helper
-        $this->shopSession = $this->app->make(ShopSession::class);
+        $this->auth = $this->app->make(AuthManager::class);
     }
 
     public function testSendsShopToBillingScreen(): void
@@ -37,7 +36,7 @@ class BillingControllerTest extends TestCase
 
         // Create the shop and log them in
         $shop = factory($this->model)->create();
-        $this->shopSession->make($shop->getDomain());
+        $this->auth->login($shop);
 
         // Create a on-install plan
         factory(Plan::class)->states('type_recurring', 'installable')->create();
@@ -60,7 +59,7 @@ class BillingControllerTest extends TestCase
 
         // Create the shop and log them in
         $shop = factory($this->model)->create();
-        $this->shopSession->make($shop->getDomain());
+        $this->auth->login($shop);
 
         // Make the plan
         $plan = factory(Plan::class)->states('type_recurring')->create();
@@ -94,8 +93,8 @@ class BillingControllerTest extends TestCase
             'user_id' => $shop->getId()->toNative(),
         ]);
 
-        // Log the shop in
-        $this->shopSession->make($shop->getDomain());
+        // Login the shop
+        $this->auth->login($shop);
 
         // Setup the data for the usage charge and the signature for it
         $secret = $this->app['config']->get('shopify-app.api_secret');
@@ -103,7 +102,11 @@ class BillingControllerTest extends TestCase
         $signature = createHmac(['data' => $data, 'buildQuery' => true], $secret);
 
         // Run the call
-        $response = $this->call('post', '/billing/usage-charge', array_merge($data, ['signature' => $signature]));
+        $response = $this->call(
+            'post',
+            '/billing/usage-charge',
+            array_merge($data, ['signature' => $signature->toNative()])
+        );
         $response->assertRedirect($data['redirect']);
         $response->assertSessionHas('success');
 
@@ -112,7 +115,11 @@ class BillingControllerTest extends TestCase
         $signature = createHmac(['data' => $data, 'buildQuery' => true], $secret);
 
         // Run the call
-        $response = $this->call('post', '/billing/usage-charge', array_merge($data, ['signature' => $signature]));
+        $response = $this->call(
+            'post',
+            '/billing/usage-charge',
+            array_merge($data, ['signature' => $signature->toNative()])
+        );
         $response->assertRedirect('http://localhost');
         $response->assertSessionHas('success');
     }

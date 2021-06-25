@@ -1,52 +1,7 @@
 @extends('shopify-app::layouts.default')
 
 @section('styles')
-    <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
-
-    <style>
-        html, body {
-            background-color: #fff;
-            color: #636b6f;
-            font-family: 'Raleway', sans-serif;
-            font-weight: 100;
-            height: 100vh;
-            margin: 0;
-        }
-        .full-height {
-            height: 100vh;
-        }
-        .flex-center {
-            align-items: center;
-            display: flex;
-            justify-content: center;
-        }
-        .position-ref {
-            position: relative;
-        }
-        .top-right {
-            position: absolute;
-            right: 10px;
-            top: 18px;
-        }
-        .content {
-            text-align: center;
-        }
-        .title {
-            font-size: 84px;
-        }
-        .links > a {
-            color: #636b6f;
-            padding: 0 25px;
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: .1rem;
-            text-decoration: none;
-            text-transform: uppercase;
-        }
-        .m-b-md {
-            margin-bottom: 30px;
-        }
-    </style>
+    @include('shopify-app::partials.laravel_skeleton_css')
 @endsection
 
 @section('content')
@@ -57,7 +12,9 @@
             </div>
 
             <p>Welcome to your Shopify App powered by Laravel.</p>
-            <p>{{ Auth::user()->name }}</p>
+            <p>&nbsp;</p>
+            <p>{{ $shop->name }}</p>
+            <p>&nbsp;</p>
 
             <div class="links">
                 <a href="https://github.com/osiset/laravel-shopify" target="_blank">Package</a>
@@ -72,16 +29,8 @@
     @parent
 
     @if(config('shopify-app.appbridge_enabled'))
-        <script type="text/javascript">
-            var AppBridge = window['app-bridge'];
-            var actions = AppBridge.actions;
-            var TitleBar = actions.TitleBar;
-            var Button = actions.Button;
-            var Redirect = actions.Redirect;
-            var titleBarOptions = {
-                title: 'Welcome',
-            };
-            var myTitleBar = TitleBar.create(app, titleBarOptions);
+        <script>
+            actions.TitleBar.create(app, { title: 'Welcome' });
         </script>
     @endif
 @endsection

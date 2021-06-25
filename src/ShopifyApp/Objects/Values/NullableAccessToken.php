@@ -15,7 +15,7 @@ final class NullableAccessToken extends Nullable implements AccessTokenValue
      */
     public function isEmpty(): bool
     {
-        return $this->value->isEmpty();
+        return empty($this->value->toNative());
     }
 
     /**

@@ -6,6 +6,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use LogicException;
+use Osiset\ShopifyApp\Objects\Values\Hmac;
 
 /**
  * HMAC creation helper.
@@ -13,9 +14,9 @@ use LogicException;
  * @param array  $opts   The options for building the HMAC.
  * @param string $secret The app secret key.
  *
- * @return string
+ * @return Hmac
  */
-function createHmac(array $opts, string $secret): string
+function createHmac(array $opts, string $secret): Hmac
 {
     // Setup defaults
     $data = $opts['data'];
@@ -41,7 +42,9 @@ function createHmac(array $opts, string $secret): string
     $hmac = hash_hmac('sha256', $data, $secret, $raw);
 
     // Return based on options
-    return $encode ? base64_encode($hmac) : $hmac;
+    $result = $encode ? base64_encode($hmac) : $hmac;
+
+    return Hmac::fromNative($result);
 }
 
 /**
@@ -160,7 +163,7 @@ function getShopifyConfig(string $key, $shop = null)
 
     if (Str::is('route_names.*', $key)) {
         // scope the Arr::get() call to the "route_names" array
-        // to allow for dot-notation keys like "authenticate.oauth"
+        // to allow for dot-notation keys like "authenticate.token"
         // this is necessary because Arr::get() only finds dot-notation keys
         // if they are at the top level of the given array
         return Arr::get(

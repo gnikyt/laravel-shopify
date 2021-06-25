@@ -5,20 +5,12 @@ namespace Osiset\ShopifyApp\Actions;
 use Illuminate\Http\Request;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
-use Osiset\ShopifyApp\Services\ShopSession;
 
 /**
  * Authenticates a shop and fires post authentication actions.
  */
 class AuthenticateShop
 {
-    /**
-     * The shop session handler.
-     *
-     * @var ShopSession
-     */
-    protected $shopSession;
-
     /**
      * The API helper.
      *
@@ -27,11 +19,11 @@ class AuthenticateShop
     protected $apiHelper;
 
     /**
-     * The action for authorizing a shop.
+     * The action for installing a shop.
      *
-     * @var AuthorizeShop
+     * @var InstallShop
      */
-    protected $authorizeShopAction;
+    protected $installShopAction;
 
     /**
      * The action for dispatching scripts.
@@ -57,9 +49,8 @@ class AuthenticateShop
     /**
      * Setup.
      *
-     * @param ShopSession      $shopSession            The shop session handler.
      * @param IApiHelper       $apiHelper              The API helper.
-     * @param AuthorizeShop    $authorizeShopAction    The action for authorizing a shop.
+     * @param InstallShop      $installShopAction      The action for installing a shop.
      * @param DispatchScripts  $dispatchScriptsAction  The action for dispatching scripts.
      * @param DispatchWebhooks $dispatchWebhooksAction The action for dispatching webhooks.
      * @param AfterAuthorize   $afterAuthorizeAction   The action for after authorize actions.
@@ -67,16 +58,14 @@ class AuthenticateShop
      * @return void
      */
     public function __construct(
-        ShopSession $shopSession,
         IApiHelper $apiHelper,
-        AuthorizeShop $authorizeShopAction,
+        InstallShop $installShopAction,
         DispatchScripts $dispatchScriptsAction,
         DispatchWebhooks $dispatchWebhooksAction,
         AfterAuthorize $afterAuthorizeAction
     ) {
-        $this->shopSession = $shopSession;
         $this->apiHelper = $apiHelper;
-        $this->authorizeShopAction = $authorizeShopAction;
+        $this->installShopAction = $installShopAction;
         $this->dispatchScriptsAction = $dispatchScriptsAction;
         $this->dispatchWebhooksAction = $dispatchWebhooksAction;
         $this->afterAuthorizeAction = $afterAuthorizeAction;
@@ -91,13 +80,15 @@ class AuthenticateShop
      */
     public function __invoke(Request $request): array
     {
-        // Setup
-        $shopDomain = ShopDomain::fromNative($request->get('shop'));
-        $code = $request->get('code');
-
         // Run the check
-        $result = call_user_func($this->authorizeShopAction, $shopDomain, $code);
-        if (! $result->completed) {
+        /** @var $result array */
+        $result = call_user_func(
+            $this->installShopAction,
+            ShopDomain::fromNative($request->get('shop')),
+            $request->query('code')
+        );
+
+        if (! $result['completed']) {
             // No code, redirect to auth URL
             return [$result, false];
         }
@@ -110,10 +101,9 @@ class AuthenticateShop
         }
 
         // Fire the post processing jobs
-        $shopId = $this->shopSession->getShop()->getId();
-        call_user_func($this->dispatchScriptsAction, $shopId, false);
-        call_user_func($this->dispatchWebhooksAction, $shopId, false);
-        call_user_func($this->afterAuthorizeAction, $shopId);
+        call_user_func($this->dispatchScriptsAction, $result['shop_id'], false);
+        call_user_func($this->dispatchWebhooksAction, $result['shop_id'], false);
+        call_user_func($this->afterAuthorizeAction, $result['shop_id']);
 
         return [$result, true];
     }

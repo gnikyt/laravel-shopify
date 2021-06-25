@@ -21,8 +21,7 @@ if ($manualRoutes) {
     $manualRoutes = explode(',', $manualRoutes);
 }
 
-// Route which require ITP checks
-Route::group(['prefix' => getShopifyConfig('prefix'), 'middleware' => ['itp', 'web']], function () use ($manualRoutes) {
+Route::group(['prefix' => getShopifyConfig('prefix'), 'middleware' => ['web']], function () use ($manualRoutes) {
     /*
     |--------------------------------------------------------------------------
     | Home Route
@@ -38,44 +37,22 @@ Route::group(['prefix' => getShopifyConfig('prefix'), 'middleware' => ['itp', 'w
             '/',
             'Osiset\ShopifyApp\Http\Controllers\HomeController@index'
         )
-        ->middleware(['auth.shopify', 'billable'])
+        ->middleware(['verify.shopify', 'billable'])
         ->name(getShopifyConfig('route_names.home'));
     }
 
     /*
     |--------------------------------------------------------------------------
-    | ITP
+    | Authenticate: Install & Authorize
     |--------------------------------------------------------------------------
     |
-    | Handles ITP and issues with it.
-    |
-    */
-
-    if (registerPackageRoute('itp', $manualRoutes)) {
-        Route::get('/itp', 'Osiset\ShopifyApp\Http\Controllers\ItpController@attempt')
-            ->name(getShopifyConfig('route_names.itp'));
-    }
-
-    if (registerPackageRoute('itp.ask', $manualRoutes)) {
-        Route::get('/itp/ask', 'Osiset\ShopifyApp\Http\Controllers\ItpController@ask')
-            ->name(getShopifyConfig('route_names.itp.ask'));
-    }
-});
-
-// Routes without ITP checks
-Route::group(['prefix' => getShopifyConfig('prefix'), 'middleware' => ['web']], function () use ($manualRoutes) {
-    /*
-    |--------------------------------------------------------------------------
-    | Authenticate Method
-    |--------------------------------------------------------------------------
-    |
-    | Authenticates a shop.
+    | Install a shop and go through Shopify OAuth.
     |
     */
 
     if (registerPackageRoute('authenticate', $manualRoutes)) {
         Route::match(
-            ['get', 'post'],
+            ['GET', 'POST'],
             '/authenticate',
             'Osiset\ShopifyApp\Http\Controllers\AuthController@authenticate'
         )
@@ -84,19 +61,22 @@ Route::group(['prefix' => getShopifyConfig('prefix'), 'middleware' => ['web']], 
 
     /*
     |--------------------------------------------------------------------------
-    | Authenticate OAuth
+    | Authenticate: Token
     |--------------------------------------------------------------------------
     |
-    | Redirect to Shopify's OAuth screen.
+    | This route is hit when a shop comes to the app without a session token
+    | yet. A token will be grabbed from Shopify's AppBridge Javascript
+    | and then forwarded back to the home route.
     |
     */
 
-    if (registerPackageRoute('authenticate.oauth', $manualRoutes)) {
+    if (registerPackageRoute('authenticate.token', $manualRoutes)) {
         Route::get(
-            '/authenticate/oauth',
-            'Osiset\ShopifyApp\Http\Controllers\AuthController@oauth'
+            '/authenticate/token',
+            'Osiset\ShopifyApp\Http\Controllers\AuthController@token'
         )
-        ->name(getShopifyConfig('route_names.authenticate.oauth'));
+        ->middleware(['verify.shopify'])
+        ->name(getShopifyConfig('route_names.authenticate.token'));
     }
 
     /*
@@ -113,7 +93,7 @@ Route::group(['prefix' => getShopifyConfig('prefix'), 'middleware' => ['web']], 
             '/billing/{plan?}',
             'Osiset\ShopifyApp\Http\Controllers\BillingController@index'
         )
-        ->middleware(['auth.shopify'])
+        ->middleware(['verify.shopify'])
         ->where('plan', '^([0-9]+|)$')
         ->name(getShopifyConfig('route_names.billing'));
     }
@@ -132,7 +112,7 @@ Route::group(['prefix' => getShopifyConfig('prefix'), 'middleware' => ['web']], 
             '/billing/process/{plan?}',
             'Osiset\ShopifyApp\Http\Controllers\BillingController@process'
         )
-        ->middleware(['auth.shopify'])
+        ->middleware(['verify.shopify'])
         ->where('plan', '^([0-9]+|)$')
         ->name(getShopifyConfig('route_names.billing.process'));
     }
@@ -152,7 +132,7 @@ Route::group(['prefix' => getShopifyConfig('prefix'), 'middleware' => ['web']], 
             '/billing/usage-charge',
             'Osiset\ShopifyApp\Http\Controllers\BillingController@usageCharge'
         )
-        ->middleware(['auth.shopify'])
+        ->middleware(['verify.shopify'])
         ->name(getShopifyConfig('route_names.billing.usage_charge'));
     }
 });
