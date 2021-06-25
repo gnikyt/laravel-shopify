@@ -122,7 +122,7 @@ final class SessionContext implements ValueObject
             $currentToken = $this->getSessionToken();
 
             // Compare the domains
-            $domainCheck = $previousToken->getShopDomain()->isSame($currentToken);
+            $domainCheck = $previousToken->getShopDomain()->isSame($currentToken->getShopDomain());
 
             // Compare the session IDs
             if (! $previousContext->getSessionId()->isNull() && ! $this->getSessionId()->isNull()) {
