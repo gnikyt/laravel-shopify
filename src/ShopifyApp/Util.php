@@ -3,6 +3,7 @@
 namespace Osiset\ShopifyApp;
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use LogicException;
@@ -193,5 +194,104 @@ class Util
         }
 
         return Arr::get($config, $key);
+    }
+
+    /**
+     * Save the current user to the cache. Used for Apple Safari and working in private mode.
+     * @param string $clientIp
+     * @param string $userAgent
+     * @return void
+     */
+    public static function putUserToCache(string $clientIp, string $userAgent): void
+    {
+        $hash = self::getAppCache($clientIp, $userAgent);
+        Cache::put($hash, auth()->user(), now()->addDay());
+    }
+
+    /**
+     * Get the current user from the cache. Used for Apple Safari and working in private mode.
+     * @param string $clientIp
+     * @param string $userAgent
+     * @return mixed
+     */
+    public static function getUserFromCache(string $clientIp, string $userAgent)
+    {
+        $hash = self::getAppCache($clientIp, $userAgent);
+
+        return Cache::get($hash);
+    }
+
+    /**
+     * Cache generation based on user data
+     * @param string $clientIp
+     * @param string $userAgent
+     * @return string
+     */
+    public static function getAppCache(string $clientIp, string $userAgent): string
+    {
+        $string = implode('-',
+            array_merge(
+                [$clientIp, now()->dayOfWeek, now()->monthName, now()->year],
+                self::getSystemInfo($userAgent)
+            )
+        );
+
+        return md5($string);
+    }
+
+    /**
+     * User agent info
+     * @param string $userAgent
+     * @return array
+     */
+    public static function getSystemInfo(string $userAgent): array
+    {
+        $platrofm = self::getPlatformInfo($userAgent);
+        $browser = self::getBrowserInfo($userAgent);
+
+        return [
+            'platrofm'          => $platrofm,
+            'browserName'       => $browser['name'],
+            'browserVersion'    => $browser['version']
+        ];
+    }
+
+    /**
+     * User browser info
+     * @param string $userAgent
+     * @return array
+     */
+    public static function getBrowserInfo(string $userAgent): array
+    {
+        preg_match_all("/(Edg|Opera|Firefox|Chrome|Version)(?:\/| )([0-9.]+)/", $userAgent, $browserInfo);
+
+        list($name, $version) = explode('/', collect($browserInfo[0])->last());
+
+        return [
+            'name' => Str::replace('Version', 'Safari', $name),
+            'version' => $version
+        ];
+    }
+
+    /**
+     * User OS info
+     * @param string $userAgent
+     * @return string
+     */
+    public static function getPlatformInfo(string $userAgent): string
+    {
+        $availablePlatforms = [
+            'Linux' => '/linux/i',
+            'Mac' => '/macintosh|mac os x/i',
+            'Windows' => '/windows|win32/i'
+        ];
+
+        foreach ($availablePlatforms as $platform => $pattern) {
+            if (preg_match($pattern, $userAgent)) {
+                return $platform;
+            }
+        }
+
+        return 'Undefined';
     }
 }

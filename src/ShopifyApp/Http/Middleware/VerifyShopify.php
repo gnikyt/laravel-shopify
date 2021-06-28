@@ -134,6 +134,8 @@ class VerifyShopify
             return $this->handleInvalidShop($request);
         }
 
+        Util::putUserToCache($request->ip(), $request->userAgent());
+
         return $next($request);
     }
 
