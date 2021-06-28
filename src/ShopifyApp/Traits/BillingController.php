@@ -41,9 +41,13 @@ trait BillingController
         GetPlanUrl $getPlanUrl
     ): ViewView {
         // Get the shop
-        $shop = auth()->user() ?? $request->get('shop')
-            ? $shopQuery->getByDomain(ShopDomain::fromNative($request->get('shop')))
-            : Util::getUserFromCache($request->ip(), $request->userAgent());
+        if (auth()->check()) {
+            $shop = auth()->user();
+        } else {
+            $shop = $request->get('shop')
+                ? $shopQuery->getByDomain(ShopDomain::fromNative($request->get('shop')))
+                : Util::getUserFromCache($request->ip(), $request->userAgent());
+        }
 
         // Get the plan URL for redirect
         $url = $getPlanUrl(
@@ -76,9 +80,13 @@ trait BillingController
     ): RedirectResponse {
         // Get the shop
 
-        $shop = auth()->user() ?? $request->get('shop')
-            ? $shopQuery->getByDomain(ShopDomain::fromNative($request->get('shop')))
-            : Util::getUserFromCache($request->ip(), $request->userAgent());
+        if (auth()->check()) {
+            $shop = auth()->user();
+        } else {
+            $shop = $request->get('shop')
+                ? $shopQuery->getByDomain(ShopDomain::fromNative($request->get('shop')))
+                : Util::getUserFromCache($request->ip(), $request->userAgent());
+        }
 
         // Activate the plan and save
         $result = $activatePlan(
