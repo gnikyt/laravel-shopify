@@ -1,163 +1,2424 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
-    <meta charset="utf-8"/>
-    <title>     &raquo; Markers
+    <meta charset="utf-8">
+    <title>    Documentation &raquo; Markers
 </title>
-    <meta name="author" content=""/>
-    <meta name="description" content=""/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="../">
+    <link rel="icon" href="images/favicon.ico"/>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/base.css">
+            <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="css/template.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0/css/all.min.css" integrity="sha256-ybRkN9dBjhcS2qrW1z+hfCxq+1aBdwyQM5wlQoQVt/0=" crossorigin="anonymous" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/themes/prism-okaidia.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-numbers/prism-line-numbers.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-highlight/prism-line-highlight.css">
+                <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.4.6"></script>
+        <script src="https://cdn.jsdelivr.net/npm/css-vars-ponyfill@2"></script>
+        <script src="js/search.js"></script>
+        <script defer src="js/searchIndex.js"></script>
+    </head>
+<body id="top">
+    <header class="phpdocumentor-header phpdocumentor-section">
+    <h1 class="phpdocumentor-title"><a href="" class="phpdocumentor-title__link">Documentation</a></h1>
+    <input class="phpdocumentor-header__menu-button" type="checkbox" id="menu-button" name="menu-button" />
+    <label class="phpdocumentor-header__menu-icon" for="menu-button">
+        <i class="fas fa-bars"></i>
+    </label>
+    <section data-search-form class="phpdocumentor-search">
+    <label>
+        <span class="visually-hidden">Search for</span>
+        <svg class="phpdocumentor-search__icon" width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="7.5" cy="7.5" r="6.5" stroke="currentColor" stroke-width="2"/>
+            <line x1="12.4892" y1="12.2727" x2="19.1559" y2="18.9393" stroke="currentColor" stroke-width="3"/>
+        </svg>
+        <input type="search" class="phpdocumentor-field phpdocumentor-search__field" placeholder="Loading .." disabled />
+    </label>
+</section>
 
-    <link href="../css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
-    <link href="../css/font-awesome.min.css" rel="stylesheet">
-    <link href="../css/prism.css" rel="stylesheet" media="all"/>
-    <link href="../css/template.css" rel="stylesheet" media="all"/>
+    <nav class="phpdocumentor-topnav">
+    <ul class="phpdocumentor-topnav__menu">
+        </ul>
+</nav>
+</header>
+
+    <main class="phpdocumentor">
+        <div class="phpdocumentor-section">
+            <input class="phpdocumentor-sidebar__menu-button" type="checkbox" id="sidebar-button" name="sidebar-button" />
+<label class="phpdocumentor-sidebar__menu-icon" for="sidebar-button">
+    Menu
+</label>
+<aside class="phpdocumentor-column -four phpdocumentor-sidebar">
+        
+    <section class="phpdocumentor-sidebar__category">
+        <h2 class="phpdocumentor-sidebar__category-header">Namespaces</h2>
+                                <h3 class="phpdocumentor-sidebar__root-namespace"><a href="namespaces/default.html"><abbr title="\">Global</abbr></a></h3>
+                                        <h4 class="phpdocumentor-sidebar__root-namespace"><a href="namespaces/app.html"><abbr title="\App">App</abbr></a></h4>
+                <ul class="phpdocumentor-list">
+                                            <li><a href="namespaces/app-jobs.html"><abbr title="\App\Jobs">Jobs</abbr></a></li>
+                                    </ul>
+                            <h4 class="phpdocumentor-sidebar__root-namespace"><a href="namespaces/osiset.html"><abbr title="\Osiset">Osiset</abbr></a></h4>
+                <ul class="phpdocumentor-list">
+                                            <li><a href="namespaces/osiset-shopifyapp.html"><abbr title="\Osiset\ShopifyApp">ShopifyApp</abbr></a></li>
+                                    </ul>
+                        </section>
+
     
-    <!--[if lt IE 9]>
-    <script src="../js/html5.js"></script>
-    <![endif]-->
-    <script src="../js/jquery-1.11.0.min.js"></script>
-    <script src="../js/ui/1.10.4/jquery-ui.min.js"></script>
-    <script src="../js/bootstrap.min.js"></script>
-    <script src="../js/jquery.smooth-scroll.js"></script>
-    <script src="../js/prism.min.js"></script>
-    <!-- TODO: Add http://jscrollpane.kelvinluck.com/ to style the scrollbars for browsers not using webkit-->
-    
-    <link rel="shortcut icon" href="../images/favicon.ico"/>
-    <link rel="apple-touch-icon" href="../images/apple-touch-icon.png"/>
-    <link rel="apple-touch-icon" sizes="72x72" href="../images/apple-touch-icon-72x72.png"/>
-    <link rel="apple-touch-icon" sizes="114x114" href="../images/apple-touch-icon-114x114.png"/>
-</head>
-<body>
-
-<div class="navbar navbar-fixed-top">
-    <div class="navbar-inner">
-        <div class="container">
-            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <i class="icon-ellipsis-vertical"></i>
-            </a>
-            <a class="brand" href="../index.html">API Documentation</a>
-
-            <div class="nav-collapse">
-                <ul class="nav pull-right">
-                                        <li class="dropdown">
-                        <a href="../index.html" class="dropdown-toggle" data-toggle="dropdown">
-                            API Documentation <b class="caret"></b>
-                        </a>
-                        <ul class="dropdown-menu">
-                                                        <li><a href="../namespaces/App.html">\App</a></li>
-                                                        <li><a href="../namespaces/Osiset.html">\Osiset</a></li>
-                                                    </ul>
-                    </li>
-                                        <li class="dropdown" id="charts-menu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            Charts <b class="caret"></b>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="../graphs/class.html">
-                                    <i class="icon-list-alt"></i>&#160;Class hierarchy diagram
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="dropdown" id="reports-menu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            Reports <b class="caret"></b>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="../reports/errors.html">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">144</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="../reports/markers.html">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <i class="icon-list-alt"></i>&#160;Markers <span class="label label-info pull-right">0</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="../reports/deprecated.html">
-                                                                                                            <i class="icon-list-alt"></i>&#160;Deprecated <span class="label label-info pull-right">0</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <!--<div class="go_to_top">-->
-    <!--<a href="#___" style="color: inherit">Back to top&#160;&#160;<i class="icon-upload icon-white"></i></a>-->
-    <!--</div>-->
-</div>
-
-<div id="___" class="container-fluid">
-        <section class="row-fluid">
-        <div class="span2 sidebar">
-            <ul class="side-nav nav nav-list">
-                <li class="nav-header">Navigation</li>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </ul>
-        </div>
-
-        <div class="span10 offset2">
-
-            <ul class="breadcrumb">
-                <li><a href="../"><i class="icon-map-marker"></i></a><span class="divider">\</span></li>
-                <li>Markers</li>
-            </ul>
-
-                            <div class="alert alert-info">No markers have been found in this project.</div>
-            
-            <div id="marker-accordion">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
-        </div>
+    <section class="phpdocumentor-sidebar__category">
+        <h2 class="phpdocumentor-sidebar__category-header">Reports</h2>
+                <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/deprecated.html">Deprecated</a></h3>
+        <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/errors.html">Errors</a></h3>
+        <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/markers.html">Markers</a></h3>
     </section>
 
-    <footer class="row-fluid">
-        <section class="span10 offset2">
-            <section class="row-fluid">
-                <section class="span10 offset1">
-                    <section class="row-fluid footer-sections">
-                        <section class="span4">
-                                                        <h1><i class="icon-code"></i></h1>
-                            <div>
-                                <ul>
-                                                                            <li><a href="../namespaces/App.html">\App</a></li>
-                                                                            <li><a href="../namespaces/Osiset.html">\Osiset</a></li>
-                                                                    </ul>
-                            </div>
-                        </section>
-                        <section class="span4">
-                                                        <h1><i class="icon-bar-chart"></i></h1>
-                            <div>
-                                <ul>
-                                    <li><a href="../graphs/class.html">Class Hierarchy Diagram</a></li>
-                                </ul>
-                            </div>
-                        </section>
-                        <section class="span4">
-                                                        <h1><i class="icon-pushpin"></i></h1>
-                            <div>
-                                <ul>
-                                    <li><a href="../reports/errors.html">Errors</a></li>
-                                    <li><a href="../reports/markers.html">Markers</a></li>
-                                </ul>
-                            </div>
-                        </section>
-                    </section>
-                </section>
-            </section>
-            <section class="row-fluid">
-                <section class="span10 offset1">
-                    <hr />
-                    Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
-                    on March 17th, 2020 at 01:16.
-                </section>
-            </section>
-        </section>
-    </footer>
-</div>
+    <section class="phpdocumentor-sidebar__category">
+        <h2 class="phpdocumentor-sidebar__category-header">Indices</h2>
+        <h3 class="phpdocumentor-sidebar__root-package"><a href="indices/files.html">Files</a></h3>
+    </section>
+</aside>
 
+            <div class="phpdocumentor-column -eight phpdocumentor-content">
+                    <ul class="phpdocumentor-breadcrumbs">
+        <li><a href="">Home</a></li>
+    </ul>
+
+    <div class="phpdocumentor-row">
+        <h2 class="phpdocumentor-content__title">Markers</h2>
+
+                    <h3>Table of Contents</h3>
+            <table class="phpdocumentor-table_of_contents">
+                                                            <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/Actions/ActivatePlan.php">src/ShopifyApp/Actions/ActivatePlan.php</a></td>
+                            <td class="phpdocumentor-cell">7</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/Actions/ActivateUsageCharge.php">src/ShopifyApp/Actions/ActivateUsageCharge.php</a></td>
+                            <td class="phpdocumentor-cell">6</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/Actions/AfterAuthorize.php">src/ShopifyApp/Actions/AfterAuthorize.php</a></td>
+                            <td class="phpdocumentor-cell">8</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/Actions/AuthenticateShop.php">src/ShopifyApp/Actions/AuthenticateShop.php</a></td>
+                            <td class="phpdocumentor-cell">5</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/Actions/CancelCharge.php">src/ShopifyApp/Actions/CancelCharge.php</a></td>
+                            <td class="phpdocumentor-cell">3</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/Actions/CancelCurrentPlan.php">src/ShopifyApp/Actions/CancelCurrentPlan.php</a></td>
+                            <td class="phpdocumentor-cell">5</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/Actions/CreateScripts.php">src/ShopifyApp/Actions/CreateScripts.php</a></td>
+                            <td class="phpdocumentor-cell">8</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/Actions/CreateWebhooks.php">src/ShopifyApp/Actions/CreateWebhooks.php</a></td>
+                            <td class="phpdocumentor-cell">7</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/Actions/DeleteWebhooks.php">src/ShopifyApp/Actions/DeleteWebhooks.php</a></td>
+                            <td class="phpdocumentor-cell">4</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/Actions/DispatchScripts.php">src/ShopifyApp/Actions/DispatchScripts.php</a></td>
+                            <td class="phpdocumentor-cell">4</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/Actions/DispatchWebhooks.php">src/ShopifyApp/Actions/DispatchWebhooks.php</a></td>
+                            <td class="phpdocumentor-cell">4</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/Actions/GetPlanUrl.php">src/ShopifyApp/Actions/GetPlanUrl.php</a></td>
+                            <td class="phpdocumentor-cell">3</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/Actions/InstallShop.php">src/ShopifyApp/Actions/InstallShop.php</a></td>
+                            <td class="phpdocumentor-cell">7</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/Console/WebhookJobMakeCommand.php">src/ShopifyApp/Console/WebhookJobMakeCommand.php</a></td>
+                            <td class="phpdocumentor-cell">2</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/Http/Middleware/AuthProxy.php">src/ShopifyApp/Http/Middleware/AuthProxy.php</a></td>
+                            <td class="phpdocumentor-cell">6</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/Http/Middleware/AuthWebhook.php">src/ShopifyApp/Http/Middleware/AuthWebhook.php</a></td>
+                            <td class="phpdocumentor-cell">2</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/Http/Middleware/Billable.php">src/ShopifyApp/Http/Middleware/Billable.php</a></td>
+                            <td class="phpdocumentor-cell">2</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/Http/Middleware/VerifyShopify.php">src/ShopifyApp/Http/Middleware/VerifyShopify.php</a></td>
+                            <td class="phpdocumentor-cell">38</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/Http/Requests/StoreUsageCharge.php">src/ShopifyApp/Http/Requests/StoreUsageCharge.php</a></td>
+                            <td class="phpdocumentor-cell">4</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/Messaging/Jobs/AppUninstalledJob.php">src/ShopifyApp/Messaging/Jobs/AppUninstalledJob.php</a></td>
+                            <td class="phpdocumentor-cell">7</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/Objects/Transfers/AbstractTransfer.php">src/ShopifyApp/Objects/Transfers/AbstractTransfer.php</a></td>
+                            <td class="phpdocumentor-cell">2</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/Objects/Values/SessionContext.php">src/ShopifyApp/Objects/Values/SessionContext.php</a></td>
+                            <td class="phpdocumentor-cell">4</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/Objects/Values/SessionToken.php">src/ShopifyApp/Objects/Values/SessionToken.php</a></td>
+                            <td class="phpdocumentor-cell">9</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/Objects/Values/ShopDomain.php">src/ShopifyApp/Objects/Values/ShopDomain.php</a></td>
+                            <td class="phpdocumentor-cell">12</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/resources/config/shopify-app.php">src/ShopifyApp/resources/config/shopify-app.php</a></td>
+                            <td class="phpdocumentor-cell">7</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/resources/database/migrations/2020_01_29_010501_create_plans_table.php">src/ShopifyApp/resources/database/migrations/2020_01_29_010501_create_plans_table.php</a></td>
+                            <td class="phpdocumentor-cell">9</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/resources/database/migrations/2020_01_29_231006_create_charges_table.php">src/ShopifyApp/resources/database/migrations/2020_01_29_231006_create_charges_table.php</a></td>
+                            <td class="phpdocumentor-cell">23</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/resources/routes/api.php">src/ShopifyApp/resources/routes/api.php</a></td>
+                            <td class="phpdocumentor-cell">2</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/resources/routes/shopify.php">src/ShopifyApp/resources/routes/shopify.php</a></td>
+                            <td class="phpdocumentor-cell">2</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/resources/views/auth/fullpage_redirect.blade.php">src/ShopifyApp/resources/views/auth/fullpage_redirect.blade.php</a></td>
+                            <td class="phpdocumentor-cell">3</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/resources/views/home/index.blade.php">src/ShopifyApp/resources/views/home/index.blade.php</a></td>
+                            <td class="phpdocumentor-cell">3</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/resources/views/layouts/default.blade.php">src/ShopifyApp/resources/views/layouts/default.blade.php</a></td>
+                            <td class="phpdocumentor-cell">2</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/resources/views/layouts/error.blade.php">src/ShopifyApp/resources/views/layouts/error.blade.php</a></td>
+                            <td class="phpdocumentor-cell">1</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/resources/views/partials/laravel_skeleton_css.blade.php">src/ShopifyApp/resources/views/partials/laravel_skeleton_css.blade.php</a></td>
+                            <td class="phpdocumentor-cell">1</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/resources/views/partials/token_handler.blade.php">src/ShopifyApp/resources/views/partials/token_handler.blade.php</a></td>
+                            <td class="phpdocumentor-cell">6</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/Services/ApiHelper.php">src/ShopifyApp/Services/ApiHelper.php</a></td>
+                            <td class="phpdocumentor-cell">28</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/Services/ChargeHelper.php">src/ShopifyApp/Services/ChargeHelper.php</a></td>
+                            <td class="phpdocumentor-cell">9</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/Services/CookieHelper.php">src/ShopifyApp/Services/CookieHelper.php</a></td>
+                            <td class="phpdocumentor-cell">1</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/ShopifyAppProvider.php">src/ShopifyApp/ShopifyAppProvider.php</a></td>
+                            <td class="phpdocumentor-cell">15</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/Storage/Commands/Charge.php">src/ShopifyApp/Storage/Commands/Charge.php</a></td>
+                            <td class="phpdocumentor-cell">3</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/Storage/Observers/Shop.php">src/ShopifyApp/Storage/Observers/Shop.php</a></td>
+                            <td class="phpdocumentor-cell">2</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/Traits/AuthController.php">src/ShopifyApp/Traits/AuthController.php</a></td>
+                            <td class="phpdocumentor-cell">6</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/Traits/BillingController.php">src/ShopifyApp/Traits/BillingController.php</a></td>
+                            <td class="phpdocumentor-cell">9</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/Traits/ShopModel.php">src/ShopifyApp/Traits/ShopModel.php</a></td>
+                            <td class="phpdocumentor-cell">1</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/Traits/WebhookController.php">src/ShopifyApp/Traits/WebhookController.php</a></td>
+                            <td class="phpdocumentor-cell">1</td>
+                        </tr>
+                                                                                <tr>
+                            <td class="phpdocumentor-cell"><a href="reports/markers.html#src/ShopifyApp/Util.php">src/ShopifyApp/Util.php</a></td>
+                            <td class="phpdocumentor-cell">11</td>
+                        </tr>
+                                                </table>
+        
+                    <a id="src/ShopifyApp/Actions/ActivatePlan.php"></a>
+            <h3><abbr title="src/ShopifyApp/Actions/ActivatePlan.php">ActivatePlan.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">107</td>
+                        <td class="phpdocumentor-cell">Get the shop</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">110</td>
+                        <td class="phpdocumentor-cell">Get the plan</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">114</td>
+                        <td class="phpdocumentor-cell">Activate the plan on Shopify</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">117</td>
+                        <td class="phpdocumentor-cell">Cancel the shop&#039;s current plan</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">120</td>
+                        <td class="phpdocumentor-cell">Cancel the existing charge if it exists (happens if someone refreshes during)</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">123</td>
+                        <td class="phpdocumentor-cell">Create the charge transfer</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">141</td>
+                        <td class="phpdocumentor-cell">Create the charge</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/Actions/ActivateUsageCharge.php"></a>
+            <h3><abbr title="src/ShopifyApp/Actions/ActivateUsageCharge.php">ActivateUsageCharge.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">75</td>
+                        <td class="phpdocumentor-cell">Get the shop</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">78</td>
+                        <td class="phpdocumentor-cell">Ensure we have a recurring charge</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">84</td>
+                        <td class="phpdocumentor-cell">Create the usage charge</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">88</td>
+                        <td class="phpdocumentor-cell">Could not make usage charge, limit possibily reached</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">92</td>
+                        <td class="phpdocumentor-cell">Create the transder</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">100</td>
+                        <td class="phpdocumentor-cell">Save the usage charge</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/Actions/AfterAuthorize.php"></a>
+            <h3><abbr title="src/ShopifyApp/Actions/AfterAuthorize.php">AfterAuthorize.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">56</td>
+                        <td class="phpdocumentor-cell">Run this job immediately</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">59</td>
+                        <td class="phpdocumentor-cell">Run later</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">67</td>
+                        <td class="phpdocumentor-cell">Get the shop</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">70</td>
+                        <td class="phpdocumentor-cell">Grab the jobs config</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">73</td>
+                        <td class="phpdocumentor-cell">We have multi-jobs</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">75</td>
+                        <td class="phpdocumentor-cell">We have a job, pass the shop object to the contructor</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">81</td>
+                        <td class="phpdocumentor-cell">We have a single job</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">85</td>
+                        <td class="phpdocumentor-cell">We have no jobs</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/Actions/AuthenticateShop.php"></a>
+            <h3><abbr title="src/ShopifyApp/Actions/AuthenticateShop.php">AuthenticateShop.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">83</td>
+                        <td class="phpdocumentor-cell">Run the check</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">92</td>
+                        <td class="phpdocumentor-cell">No code, redirect to auth URL</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">96</td>
+                        <td class="phpdocumentor-cell">Determine if the HMAC is correct</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">99</td>
+                        <td class="phpdocumentor-cell">Throw exception, something is wrong</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">103</td>
+                        <td class="phpdocumentor-cell">Fire the post processing jobs</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/Actions/CancelCharge.php"></a>
+            <h3><abbr title="src/ShopifyApp/Actions/CancelCharge.php">CancelCharge.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">56</td>
+                        <td class="phpdocumentor-cell">Get the charge</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">61</td>
+                        <td class="phpdocumentor-cell">Not a recurring or one-time charge, someone trying to cancel a usage charge?</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">67</td>
+                        <td class="phpdocumentor-cell">Save the details to the database</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/Actions/CancelCurrentPlan.php"></a>
+            <h3><abbr title="src/ShopifyApp/Actions/CancelCurrentPlan.php">CancelCurrentPlan.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">61</td>
+                        <td class="phpdocumentor-cell">Get the shop and its plan</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">66</td>
+                        <td class="phpdocumentor-cell">Shop has no plan...</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">70</td>
+                        <td class="phpdocumentor-cell">Cancel the last charge</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">75</td>
+                        <td class="phpdocumentor-cell">Charge has been cancelled</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">79</td>
+                        <td class="phpdocumentor-cell">Shop had a plan with no charge attached, usually means its a custom plan</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/Actions/CreateScripts.php"></a>
+            <h3><abbr title="src/ShopifyApp/Actions/CreateScripts.php">CreateScripts.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">55</td>
+                        <td class="phpdocumentor-cell">Found the scripttag in our list</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">63</td>
+                        <td class="phpdocumentor-cell">Get the shop</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">67</td>
+                        <td class="phpdocumentor-cell">Get the scripts existing in for the shop</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">70</td>
+                        <td class="phpdocumentor-cell">Keep track of whats created, deleted, and used</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">75</td>
+                        <td class="phpdocumentor-cell">Check if the required scripttag exists on the shop</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">77</td>
+                        <td class="phpdocumentor-cell">It does not... create the scripttag</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">85</td>
+                        <td class="phpdocumentor-cell">Delete unused scripttags</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">88</td>
+                        <td class="phpdocumentor-cell">Scripttag should be deleted</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/Actions/CreateWebhooks.php"></a>
+            <h3><abbr title="src/ShopifyApp/Actions/CreateWebhooks.php">CreateWebhooks.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">55</td>
+                        <td class="phpdocumentor-cell">Found the webhook in our list</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">63</td>
+                        <td class="phpdocumentor-cell">Get the shop</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">67</td>
+                        <td class="phpdocumentor-cell">Get the webhooks existing in for the shop</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">74</td>
+                        <td class="phpdocumentor-cell">Check if the required webhook exists on the shop</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">76</td>
+                        <td class="phpdocumentor-cell">It does not... create the webhook</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">84</td>
+                        <td class="phpdocumentor-cell">Delete unused webhooks</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">87</td>
+                        <td class="phpdocumentor-cell">Webhook should be deleted</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/Actions/DeleteWebhooks.php"></a>
+            <h3><abbr title="src/ShopifyApp/Actions/DeleteWebhooks.php">DeleteWebhooks.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">42</td>
+                        <td class="phpdocumentor-cell">Get the shop</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">46</td>
+                        <td class="phpdocumentor-cell">Get the webhooks</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">51</td>
+                        <td class="phpdocumentor-cell">Its a webhook in the config, delete it</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">54</td>
+                        <td class="phpdocumentor-cell">Keep track of what was deleted</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/Actions/DispatchScripts.php"></a>
+            <h3><abbr title="src/ShopifyApp/Actions/DispatchScripts.php">DispatchScripts.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">52</td>
+                        <td class="phpdocumentor-cell">Get the shop</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">55</td>
+                        <td class="phpdocumentor-cell">Get the scripttags</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">58</td>
+                        <td class="phpdocumentor-cell">Nothing to do</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">62</td>
+                        <td class="phpdocumentor-cell">Run the installer job</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/Actions/DispatchWebhooks.php"></a>
+            <h3><abbr title="src/ShopifyApp/Actions/DispatchWebhooks.php">DispatchWebhooks.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">52</td>
+                        <td class="phpdocumentor-cell">Get the webhooks</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">55</td>
+                        <td class="phpdocumentor-cell">Nothing to do</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">59</td>
+                        <td class="phpdocumentor-cell">Get the shop</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">62</td>
+                        <td class="phpdocumentor-cell">Run the installer job</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/Actions/GetPlanUrl.php"></a>
+            <h3><abbr title="src/ShopifyApp/Actions/GetPlanUrl.php">GetPlanUrl.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">66</td>
+                        <td class="phpdocumentor-cell">Get the shop</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">69</td>
+                        <td class="phpdocumentor-cell">Get the plan</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">72</td>
+                        <td class="phpdocumentor-cell">Confirmation URL</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/Actions/InstallShop.php"></a>
+            <h3><abbr title="src/ShopifyApp/Actions/InstallShop.php">InstallShop.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">58</td>
+                        <td class="phpdocumentor-cell">Get the shop</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">61</td>
+                        <td class="phpdocumentor-cell">Shop does not exist, make them and re-get</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">66</td>
+                        <td class="phpdocumentor-cell">Access/grant mode</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">72</td>
+                        <td class="phpdocumentor-cell">If there&#039;s no code</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">82</td>
+                        <td class="phpdocumentor-cell">if the store has been deleted, restore the store to set the access token</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">87</td>
+                        <td class="phpdocumentor-cell">Get the data and set the access token</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">97</td>
+                        <td class="phpdocumentor-cell">Just return the default setting</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/Console/WebhookJobMakeCommand.php"></a>
+            <h3><abbr title="src/ShopifyApp/Console/WebhookJobMakeCommand.php">WebhookJobMakeCommand.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">57</td>
+                        <td class="phpdocumentor-cell">Remind user to enter job into config</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">63</td>
+                        <td class="phpdocumentor-cell">your-domain.com/webhook/{$this-&gt;getUrlFromName(trim($this-&gt;argument(&#039;name&#039;)))}&#039;</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/Http/Middleware/AuthProxy.php"></a>
+            <h3><abbr title="src/ShopifyApp/Http/Middleware/AuthProxy.php">AuthProxy.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">59</td>
+                        <td class="phpdocumentor-cell">Grab the query parameters we need</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">65</td>
+                        <td class="phpdocumentor-cell">Remove signature since its not part of the signature calculation</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">69</td>
+                        <td class="phpdocumentor-cell">Build a local signature</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">78</td>
+                        <td class="phpdocumentor-cell">Issue with HMAC or missing shop header</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">82</td>
+                        <td class="phpdocumentor-cell">Login the shop</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">88</td>
+                        <td class="phpdocumentor-cell">All good, process proxy request</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/Http/Middleware/AuthWebhook.php"></a>
+            <h3><abbr title="src/ShopifyApp/Http/Middleware/AuthWebhook.php">AuthWebhook.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">41</td>
+                        <td class="phpdocumentor-cell">Issue with HMAC or missing shop header</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">45</td>
+                        <td class="phpdocumentor-cell">All good, process webhook</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/Http/Middleware/Billable.php"></a>
+            <h3><abbr title="src/ShopifyApp/Http/Middleware/Billable.php">Billable.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">30</td>
+                        <td class="phpdocumentor-cell">They&#039;re not grandfathered in, and there is no charge or charge was declined... redirect to billing</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">38</td>
+                        <td class="phpdocumentor-cell">Move on, everything&#039;s fine</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/Http/Middleware/VerifyShopify.php"></a>
+            <h3><abbr title="src/ShopifyApp/Http/Middleware/VerifyShopify.php">VerifyShopify.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">92</td>
+                        <td class="phpdocumentor-cell">Verify the HMAC (if available)</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">95</td>
+                        <td class="phpdocumentor-cell">Invalid HMAC</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">99</td>
+                        <td class="phpdocumentor-cell">Continue if current route is an auth or billing route</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">106</td>
+                        <td class="phpdocumentor-cell">Check if there is a store record in the database</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">108</td>
+                        <td class="phpdocumentor-cell">Shop exists, token not available, we need to get one</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">110</td>
+                        <td class="phpdocumentor-cell">Shop does not exist</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">115</td>
+                        <td class="phpdocumentor-cell">Try and process the token</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">118</td>
+                        <td class="phpdocumentor-cell">Invalid or expired token, we need a new one</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">122</td>
+                        <td class="phpdocumentor-cell">Set the previous shop (if available)</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">127</td>
+                        <td class="phpdocumentor-cell">Login the shop</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">133</td>
+                        <td class="phpdocumentor-cell">Shop is not installed or something is missing from it&#039;s data</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">152</td>
+                        <td class="phpdocumentor-cell">AJAX, return HTTP exception</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">173</td>
+                        <td class="phpdocumentor-cell">AJAX, return HTTP exception</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">195</td>
+                        <td class="phpdocumentor-cell">AJAX, return HTTP exception</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">215</td>
+                        <td class="phpdocumentor-cell">No HMAC, skip</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">219</td>
+                        <td class="phpdocumentor-cell">We have HMAC, validate it</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">235</td>
+                        <td class="phpdocumentor-cell">Get the shop</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">241</td>
+                        <td class="phpdocumentor-cell">Set the session details for the token, session ID, and access token</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">247</td>
+                        <td class="phpdocumentor-cell">Something is invalid</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">251</td>
+                        <td class="phpdocumentor-cell">All is well, login the shop</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">266</td>
+                        <td class="phpdocumentor-cell">At this point the HMAC and other details are verified already, filter it out</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">323</td>
+                        <td class="phpdocumentor-cell">All possible methods</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">325</td>
+                        <td class="phpdocumentor-cell">GET/POST</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">327</td>
+                        <td class="phpdocumentor-cell">Headers</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">329</td>
+                        <td class="phpdocumentor-cell">Headers: Referer</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">341</td>
+                        <td class="phpdocumentor-cell">Loop through each until we find the HMAC</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">363</td>
+                        <td class="phpdocumentor-cell">Bearer tokens collect.</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">364</td>
+                        <td class="phpdocumentor-cell">Turbo does not refresh the page, values are attached to the same header.</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">387</td>
+                        <td class="phpdocumentor-cell">All possible methods</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">389</td>
+                        <td class="phpdocumentor-cell">GET/POST</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">391</td>
+                        <td class="phpdocumentor-cell">Verify</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">399</td>
+                        <td class="phpdocumentor-cell">Headers</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">401</td>
+                        <td class="phpdocumentor-cell">Always present</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">412</td>
+                        <td class="phpdocumentor-cell">Sometimes present</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">427</td>
+                        <td class="phpdocumentor-cell">Headers: Referer</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">432</td>
+                        <td class="phpdocumentor-cell">Verify</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">466</td>
+                        <td class="phpdocumentor-cell">Nested array</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">471</td>
+                        <td class="phpdocumentor-cell">Array or basic value</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/Http/Requests/StoreUsageCharge.php"></a>
+            <h3><abbr title="src/ShopifyApp/Http/Requests/StoreUsageCharge.php">StoreUsageCharge.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">34</td>
+                        <td class="phpdocumentor-cell">Determine if the HMAC is correct</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">36</td>
+                        <td class="phpdocumentor-cell">Get the input values needed</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">49</td>
+                        <td class="phpdocumentor-cell">Confirm the charge hasn&#039;t been tampered with</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">58</td>
+                        <td class="phpdocumentor-cell">Possible tampering</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/Messaging/Jobs/AppUninstalledJob.php"></a>
+            <h3><abbr title="src/ShopifyApp/Messaging/Jobs/AppUninstalledJob.php">AppUninstalledJob.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">69</td>
+                        <td class="phpdocumentor-cell">Convert the domain</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">72</td>
+                        <td class="phpdocumentor-cell">Get the shop</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">76</td>
+                        <td class="phpdocumentor-cell">Cancel the current plan</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">79</td>
+                        <td class="phpdocumentor-cell">Purge shop of token, plan, etc.</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">82</td>
+                        <td class="phpdocumentor-cell">Check freemium mode</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">85</td>
+                        <td class="phpdocumentor-cell">Add the freemium flag to the shop</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">89</td>
+                        <td class="phpdocumentor-cell">Soft delete the shop.</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/Objects/Transfers/AbstractTransfer.php"></a>
+            <h3><abbr title="src/ShopifyApp/Objects/Transfers/AbstractTransfer.php">AbstractTransfer.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">26</td>
+                        <td class="phpdocumentor-cell">Does not exist, throw exception</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">43</td>
+                        <td class="phpdocumentor-cell">Not allowed, throw exception</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/Objects/Values/SessionContext.php"></a>
+            <h3><abbr title="src/ShopifyApp/Objects/Values/SessionContext.php">SessionContext.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">112</td>
+                        <td class="phpdocumentor-cell">Confirm access token and session token are good</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">115</td>
+                        <td class="phpdocumentor-cell">Compare data</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">124</td>
+                        <td class="phpdocumentor-cell">Compare the domains</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">127</td>
+                        <td class="phpdocumentor-cell">Compare the session IDs</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/Objects/Values/SessionToken.php"></a>
+            <h3><abbr title="src/ShopifyApp/Objects/Values/SessionToken.php">SessionToken.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">135</td>
+                        <td class="phpdocumentor-cell">Confirm token formatting and decode the token</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">140</td>
+                        <td class="phpdocumentor-cell">Confirm token signature, validity, and expiration</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">156</td>
+                        <td class="phpdocumentor-cell">Confirm token formatting</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">159</td>
+                        <td class="phpdocumentor-cell">Decode the token</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">163</td>
+                        <td class="phpdocumentor-cell">Confirm token is not malformed</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">176</td>
+                        <td class="phpdocumentor-cell">Format the values</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">187</td>
+                        <td class="phpdocumentor-cell">Parse the shop domain from the destination</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">231</td>
+                        <td class="phpdocumentor-cell">Get the token without the signature present</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">236</td>
+                        <td class="phpdocumentor-cell">Create a local HMAC</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/Objects/Values/ShopDomain.php"></a>
+            <h3><abbr title="src/ShopifyApp/Objects/Values/ShopDomain.php">ShopDomain.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">46</td>
+                        <td class="phpdocumentor-cell">All possible methods</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">48</td>
+                        <td class="phpdocumentor-cell">GET/POST</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">51</td>
+                        <td class="phpdocumentor-cell">Headers</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">54</td>
+                        <td class="phpdocumentor-cell">Headers: Referer</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">75</td>
+                        <td class="phpdocumentor-cell">Unable to decode the token</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">84</td>
+                        <td class="phpdocumentor-cell">Loop through each until we find the shop</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">88</td>
+                        <td class="phpdocumentor-cell">Found a shop</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">93</td>
+                        <td class="phpdocumentor-cell">No shop domain found in any source</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">107</td>
+                        <td class="phpdocumentor-cell">i&#039;, &#039;&#039;, trim($domain)));</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">110</td>
+                        <td class="phpdocumentor-cell">No myshopify.com ($configEndDomain) in shop&#039;s name</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">114</td>
+                        <td class="phpdocumentor-cell">Return the host after cleaned up</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">115</td>
+                        <td class="phpdocumentor-cell">{$domain}&quot;, PHP_URL_HOST);</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/resources/config/shopify-app.php"></a>
+            <h3><abbr title="src/ShopifyApp/resources/config/shopify-app.php">shopify-app.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">119</td>
+                        <td class="phpdocumentor-cell">Use semver range to link to a major or minor version number.</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">120</td>
+                        <td class="phpdocumentor-cell">Leaving empty will use the latest verison - not recommended in production.</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">322</td>
+                        <td class="phpdocumentor-cell">some-app.com/webhook/orders-create&#039;)</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">325</td>
+                        <td class="phpdocumentor-cell">some-app.com/webhook/purchase&#039;),</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">343</td>
+                        <td class="phpdocumentor-cell">some-app.com/some-controller/js-method-response&#039;),</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">365</td>
+                        <td class="phpdocumentor-cell">example: \App\Jobs\AfterAuthorizeJob::class</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">366</td>
+                        <td class="phpdocumentor-cell">False = dispatch job for later, true = dispatch immediately</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/resources/database/migrations/2020_01_29_010501_create_plans_table.php"></a>
+            <h3><abbr title="src/ShopifyApp/resources/database/migrations/2020_01_29_010501_create_plans_table.php">2020_01_29_010501_create_plans_table.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">19</td>
+                        <td class="phpdocumentor-cell">The type of plan, either PlanType::RECURRING (0) or PlanType::ONETIME (1)</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">22</td>
+                        <td class="phpdocumentor-cell">Name of the plan</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">25</td>
+                        <td class="phpdocumentor-cell">Price of the plan</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">28</td>
+                        <td class="phpdocumentor-cell">Store the amount of the charge, this helps if you are experimenting with pricing</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">31</td>
+                        <td class="phpdocumentor-cell">Terms for the usage charges</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">34</td>
+                        <td class="phpdocumentor-cell">Nullable in case of 0 trial days</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">37</td>
+                        <td class="phpdocumentor-cell">Is a test plan or not</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">40</td>
+                        <td class="phpdocumentor-cell">On-install</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">43</td>
+                        <td class="phpdocumentor-cell">Provides created_at &amp;&amp; updated_at columns</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/resources/database/migrations/2020_01_29_231006_create_charges_table.php"></a>
+            <h3><abbr title="src/ShopifyApp/resources/database/migrations/2020_01_29_231006_create_charges_table.php">2020_01_29_231006_create_charges_table.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">17</td>
+                        <td class="phpdocumentor-cell">Thanks to @ncpope of Github.com</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">21</td>
+                        <td class="phpdocumentor-cell">Filled in when the charge is created, provided by shopify, unique makes it indexed</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">24</td>
+                        <td class="phpdocumentor-cell">Test mode or real</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">29</td>
+                        <td class="phpdocumentor-cell">Name of the charge (for recurring or one time charges)</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">32</td>
+                        <td class="phpdocumentor-cell">Terms for the usage charges</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">35</td>
+                        <td class="phpdocumentor-cell">Integer value reprecenting a recurring, one time, usage, or application_credit.</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">36</td>
+                        <td class="phpdocumentor-cell">This also allows us to store usage based charges not just subscription or one time charges.</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">37</td>
+                        <td class="phpdocumentor-cell">We will be able to do things like create a charge history for a shop if they have multiple charges.</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">38</td>
+                        <td class="phpdocumentor-cell">For instance, usage based or an app that has multiple purchases.</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">41</td>
+                        <td class="phpdocumentor-cell">Store the amount of the charge, this helps if you are experimenting with pricing</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">44</td>
+                        <td class="phpdocumentor-cell">Store the amount of the charge, this helps if you are experimenting with pricing</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">47</td>
+                        <td class="phpdocumentor-cell">Nullable in case of 0 trial days</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">50</td>
+                        <td class="phpdocumentor-cell">The recurring application charge must be accepted or the returned value is null</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">53</td>
+                        <td class="phpdocumentor-cell">When activation happened</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">56</td>
+                        <td class="phpdocumentor-cell">Date the trial period ends</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">59</td>
+                        <td class="phpdocumentor-cell">Not supported on Shopify&#039;s initial billing screen, but good for future use</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">62</td>
+                        <td class="phpdocumentor-cell">Expires on</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">65</td>
+                        <td class="phpdocumentor-cell">Plan ID for the charge</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">68</td>
+                        <td class="phpdocumentor-cell">Description support</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">71</td>
+                        <td class="phpdocumentor-cell">Linking to charge_id</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">74</td>
+                        <td class="phpdocumentor-cell">Provides created_at &amp;&amp; updated_at columns</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">77</td>
+                        <td class="phpdocumentor-cell">Allows for soft deleting</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">86</td>
+                        <td class="phpdocumentor-cell">Linking</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/resources/routes/api.php"></a>
+            <h3><abbr title="src/ShopifyApp/resources/routes/api.php">api.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">8</td>
+                        <td class="phpdocumentor-cell">Check if manual routes override is to be use</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">12</td>
+                        <td class="phpdocumentor-cell">Get a list of route names to exclude</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/resources/routes/shopify.php"></a>
+            <h3><abbr title="src/ShopifyApp/resources/routes/shopify.php">shopify.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">18</td>
+                        <td class="phpdocumentor-cell">Check if manual routes override is to be use</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">22</td>
+                        <td class="phpdocumentor-cell">Get a list of route names to exclude</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/resources/views/auth/fullpage_redirect.blade.php"></a>
+            <h3><abbr title="src/ShopifyApp/resources/views/auth/fullpage_redirect.blade.php">fullpage_redirect.blade.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">13</td>
+                        <td class="phpdocumentor-cell">If the current window is the &#039;parent&#039;, change the URL by setting location.href</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">16</td>
+                        <td class="phpdocumentor-cell">If the current window is the &#039;child&#039;, change the parent&#039;s URL with postMessage</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">24</td>
+                        <td class="phpdocumentor-cell">{{ $shopDomain }}&quot;);</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/resources/views/home/index.blade.php"></a>
+            <h3><abbr title="src/ShopifyApp/resources/views/home/index.blade.php">index.blade.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">20</td>
+                        <td class="phpdocumentor-cell">github.com/osiset/laravel-shopify&quot; target=&quot;_blank&quot;&gt;Package&lt;/a&gt;</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">21</td>
+                        <td class="phpdocumentor-cell">laravel.com&quot; target=&quot;_blank&quot;&gt;Laravel&lt;/a&gt;</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">22</td>
+                        <td class="phpdocumentor-cell">github.com/osiset/laravel-shopify&quot; target=&quot;_blank&quot;&gt;GitHub&lt;/a&gt;</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/resources/views/layouts/default.blade.php"></a>
+            <h3><abbr title="src/ShopifyApp/resources/views/layouts/default.blade.php">default.blade.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">21</td>
+                        <td class="phpdocumentor-cell">unpkg.com/@shopify/app-bridge{{ \Osiset\ShopifyApp\Util::getShopifyConfig(&#039;appbridge_version&#039;) ? &#039;@&#039;.config(&#039;shopify-app.appbridge_version&#039;) : &#039;&#039; }}&quot;&gt;&lt;/script&gt;</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">22</td>
+                        <td class="phpdocumentor-cell">unpkg.com/@shopify/app-bridge-utils{{ \Osiset\ShopifyApp\Util::getShopifyConfig(&#039;appbridge_version&#039;) ? &#039;@&#039;.config(&#039;shopify-app.appbridge_version&#039;) : &#039;&#039; }}&quot;&gt;&lt;/script&gt;</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/resources/views/layouts/error.blade.php"></a>
+            <h3><abbr title="src/ShopifyApp/resources/views/layouts/error.blade.php">error.blade.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">7</td>
+                        <td class="phpdocumentor-cell">fonts.googleapis.com/css?family=Raleway:100,600&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/resources/views/partials/laravel_skeleton_css.blade.php"></a>
+            <h3><abbr title="src/ShopifyApp/resources/views/partials/laravel_skeleton_css.blade.php">laravel_skeleton_css.blade.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">1</td>
+                        <td class="phpdocumentor-cell">fonts.googleapis.com/css?family=Raleway:100,600&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/resources/views/partials/token_handler.blade.php"></a>
+            <h3><abbr title="src/ShopifyApp/resources/views/partials/token_handler.blade.php">token_handler.blade.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">5</td>
+                        <td class="phpdocumentor-cell">Token updates</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">11</td>
+                        <td class="phpdocumentor-cell">Retrieve session token</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">15</td>
+                        <td class="phpdocumentor-cell">Update everything with the session-token class</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">27</td>
+                        <td class="phpdocumentor-cell">jQuery</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">36</td>
+                        <td class="phpdocumentor-cell">Axios</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">41</td>
+                        <td class="phpdocumentor-cell">Keep retrieving a session token periodically</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/Services/ApiHelper.php"></a>
+            <h3><abbr title="src/ShopifyApp/Services/ApiHelper.php">ApiHelper.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">44</td>
+                        <td class="phpdocumentor-cell">Create the options</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">52</td>
+                        <td class="phpdocumentor-cell">Create the instance</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">54</td>
+                        <td class="phpdocumentor-cell">User-defined init function</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">62</td>
+                        <td class="phpdocumentor-cell">Default init</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">75</td>
+                        <td class="phpdocumentor-cell">Set session?</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">77</td>
+                        <td class="phpdocumentor-cell">Set the session to the shop&#039;s domain/token</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">113</td>
+                        <td class="phpdocumentor-cell">Save current instance</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">116</td>
+                        <td class="phpdocumentor-cell">Run the function, inject the temporary instance</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">120</td>
+                        <td class="phpdocumentor-cell">Put the previous instance back</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">129</td>
+                        <td class="phpdocumentor-cell">Fix for peruser =&gt; per-user</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">165</td>
+                        <td class="phpdocumentor-cell">Setup the params</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">174</td>
+                        <td class="phpdocumentor-cell">Fire the request</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">190</td>
+                        <td class="phpdocumentor-cell">Fire the request</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">206</td>
+                        <td class="phpdocumentor-cell">Fire the request</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">221</td>
+                        <td class="phpdocumentor-cell">API path</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">224</td>
+                        <td class="phpdocumentor-cell">Fire the request</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">239</td>
+                        <td class="phpdocumentor-cell">API path</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">242</td>
+                        <td class="phpdocumentor-cell">Fire the request</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">257</td>
+                        <td class="phpdocumentor-cell">API path</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">260</td>
+                        <td class="phpdocumentor-cell">Fire the request</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">433</td>
+                        <td class="phpdocumentor-cell">Fire the request</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">458</td>
+                        <td class="phpdocumentor-cell">Convert to API path</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">485</td>
+                        <td class="phpdocumentor-cell">Request error somewhere, throw the exception</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">513</td>
+                        <td class="phpdocumentor-cell">Request error somewhere, throw the exception</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">529</td>
+                        <td class="phpdocumentor-cell">Check for existing session passed in</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">535</td>
+                        <td class="phpdocumentor-cell">Input</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">539</td>
+                        <td class="phpdocumentor-cell">Headers</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">543</td>
+                        <td class="phpdocumentor-cell">Headers: Referer</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/Services/ChargeHelper.php"></a>
+            <h3><abbr title="src/ShopifyApp/Services/ChargeHelper.php">ChargeHelper.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">59</td>
+                        <td class="phpdocumentor-cell">Get the charge</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">131</td>
+                        <td class="phpdocumentor-cell">Ensure cancelled date happened before the trial was supposed to end</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">133</td>
+                        <td class="phpdocumentor-cell">Diffeence the two dates and subtract from the total trial days to get whats remaining</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">255</td>
+                        <td class="phpdocumentor-cell">Handle capped amounts for UsageCharge API</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">258</td>
+                        <td class="phpdocumentor-cell">Build the details object</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">287</td>
+                        <td class="phpdocumentor-cell">Not a trial-type plan, return none</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">291</td>
+                        <td class="phpdocumentor-cell">See if the shop has been charged for this plan before..</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">292</td>
+                        <td class="phpdocumentor-cell">If they have, its a good chance its a reinstall</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">298</td>
+                        <td class="phpdocumentor-cell">Seems like a fresh trial... return the days set in database</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/Services/CookieHelper.php"></a>
+            <h3><abbr title="src/ShopifyApp/Services/CookieHelper.php">CookieHelper.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">37</td>
+                        <td class="phpdocumentor-cell">www.chromium.org/updates/same-site/incompatible-clients</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/ShopifyAppProvider.php"></a>
+            <h3><abbr title="src/ShopifyApp/ShopifyAppProvider.php">ShopifyAppProvider.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">89</td>
+                        <td class="phpdocumentor-cell">Merge options with published config</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">95</td>
+                        <td class="phpdocumentor-cell">Commands</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">100</td>
+                        <td class="phpdocumentor-cell">Binds</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">102</td>
+                        <td class="phpdocumentor-cell">Services (start)</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">107</td>
+                        <td class="phpdocumentor-cell">Queriers</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">118</td>
+                        <td class="phpdocumentor-cell">Commands</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">130</td>
+                        <td class="phpdocumentor-cell">Actions</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">216</td>
+                        <td class="phpdocumentor-cell">Observers</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">223</td>
+                        <td class="phpdocumentor-cell">Services (end)</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">253</td>
+                        <td class="phpdocumentor-cell">Views</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">259</td>
+                        <td class="phpdocumentor-cell">Views publish</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">275</td>
+                        <td class="phpdocumentor-cell">Config publish</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">291</td>
+                        <td class="phpdocumentor-cell">Database migrations</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">311</td>
+                        <td class="phpdocumentor-cell">Job publish</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">338</td>
+                        <td class="phpdocumentor-cell">Middlewares</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/Storage/Commands/Charge.php"></a>
+            <h3><abbr title="src/ShopifyApp/Storage/Commands/Charge.php">Charge.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">69</td>
+                        <td class="phpdocumentor-cell">Save the charge</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">90</td>
+                        <td class="phpdocumentor-cell">Create the charge</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">101</td>
+                        <td class="phpdocumentor-cell">Save the charge</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/Storage/Observers/Shop.php"></a>
+            <h3><abbr title="src/ShopifyApp/Storage/Observers/Shop.php">Shop.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">47</td>
+                        <td class="phpdocumentor-cell">Automatically add the current namespace to new records</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">52</td>
+                        <td class="phpdocumentor-cell">Add the freemium flag to the shop</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/Traits/AuthController.php"></a>
+            <h3><abbr title="src/ShopifyApp/Traits/AuthController.php">AuthController.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">29</td>
+                        <td class="phpdocumentor-cell">Get the shop domain</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">31</td>
+                        <td class="phpdocumentor-cell">If the user clicked on any link before load Turbo and receiving the token</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">38</td>
+                        <td class="phpdocumentor-cell">Run the action</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">42</td>
+                        <td class="phpdocumentor-cell">Show exception, something is wrong</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">57</td>
+                        <td class="phpdocumentor-cell">Go to home route</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">79</td>
+                        <td class="phpdocumentor-cell">remove &quot;token&quot; from the target&#039;s query string</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/Traits/BillingController.php"></a>
+            <h3><abbr title="src/ShopifyApp/Traits/BillingController.php">BillingController.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">43</td>
+                        <td class="phpdocumentor-cell">Get the shop</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">46</td>
+                        <td class="phpdocumentor-cell">Get the plan URL for redirect</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">52</td>
+                        <td class="phpdocumentor-cell">Do a fullpage redirect</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">75</td>
+                        <td class="phpdocumentor-cell">Get the shop</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">78</td>
+                        <td class="phpdocumentor-cell">Activate the plan and save</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">85</td>
+                        <td class="phpdocumentor-cell">Go to homepage of app</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">106</td>
+                        <td class="phpdocumentor-cell">Create the transfer object</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">111</td>
+                        <td class="phpdocumentor-cell">Activate and save the usage charge</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">114</td>
+                        <td class="phpdocumentor-cell">All done, return with success</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/Traits/ShopModel.php"></a>
+            <h3><abbr title="src/ShopifyApp/Traits/ShopModel.php">ShopModel.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">149</td>
+                        <td class="phpdocumentor-cell">Set the session</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/Traits/WebhookController.php"></a>
+            <h3><abbr title="src/ShopifyApp/Traits/WebhookController.php">WebhookController.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">25</td>
+                        <td class="phpdocumentor-cell">Get the job class and dispatch</td>
+                    </tr>
+                                </tbody>
+            </table>
+                    <a id="src/ShopifyApp/Util.php"></a>
+            <h3><abbr title="src/ShopifyApp/Util.php">Util.php</abbr></h3>
+            <table>
+                <thead>
+                <tr>
+                    <th class="phpdocumentor-heading">Type</th>
+                    <th class="phpdocumentor-heading">Line</th>
+                    <th class="phpdocumentor-heading">Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">26</td>
+                        <td class="phpdocumentor-cell">Setup defaults</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">34</td>
+                        <td class="phpdocumentor-cell">Query params must be sorted and compiled</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">46</td>
+                        <td class="phpdocumentor-cell">Create the hmac all based on the secret</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">49</td>
+                        <td class="phpdocumentor-cell">Return based on options</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">60</td>
+                        <td class="phpdocumentor-cell">github.com/rack/rack/blob/f9ad97fd69a6b3616d0a99e6bedcfb9de2f81f6c/lib/rack/query_parser.rb#L36</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">173</td>
+                        <td class="phpdocumentor-cell">scope the Arr::get() call to the &quot;route_names&quot; array</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">174</td>
+                        <td class="phpdocumentor-cell">to allow for dot-notation keys like &quot;authenticate.oauth&quot;</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">175</td>
+                        <td class="phpdocumentor-cell">this is necessary because Arr::get() only finds dot-notation keys</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">176</td>
+                        <td class="phpdocumentor-cell">if they are at the top level of the given array</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">183</td>
+                        <td class="phpdocumentor-cell">Check if config API callback is defined</td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"></td>
+                        <td class="phpdocumentor-cell">187</td>
+                        <td class="phpdocumentor-cell">It is, use this to get the config value</td>
+                    </tr>
+                                </tbody>
+            </table>
+            </div>
+                <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
+    <section class="phpdocumentor-search-results__dialog">
+        <header class="phpdocumentor-search-results__header">
+            <h2 class="phpdocumentor-search-results__title">Search results</h2>
+            <button class="phpdocumentor-search-results__close"><i class="fas fa-times"></i></button>
+        </header>
+        <section class="phpdocumentor-search-results__body">
+            <ul class="phpdocumentor-search-results__entries"></ul>
+        </section>
+    </section>
+</section>
+            </div>
+        </div>
+        <a href="reports/markers.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
+
+    </main>
+
+    <script>
+        cssVars({});
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/prism.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-highlight/prism-line-highlight.min.js"></script>
 </body>
 </html>

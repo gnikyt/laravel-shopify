@@ -1,743 +1,150 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
-    <meta charset="utf-8"/>
-    <title>API Documentation</title>
-    <meta name="author" content=""/>
-    <meta name="description" content=""/>
-
-    <link href="css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
-    <link href="css/font-awesome.min.css" rel="stylesheet">
-    <link href="css/prism.css" rel="stylesheet" media="all"/>
-    <link href="css/template.css" rel="stylesheet" media="all"/>
+    <meta charset="utf-8">
+    <title>Documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!--[if lt IE 9]>
-    <script src="js/html5.js"></script>
-    <![endif]-->
-    <script src="js/jquery-1.11.0.min.js"></script>
-    <script src="js/ui/1.10.4/jquery-ui.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/jquery.smooth-scroll.js"></script>
-    <script src="js/prism.min.js"></script>
-    <!-- TODO: Add http://jscrollpane.kelvinluck.com/ to style the scrollbars for browsers not using webkit-->
+    <link rel="icon" href="images/favicon.ico"/>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/base.css">
+            <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="css/template.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0/css/all.min.css" integrity="sha256-ybRkN9dBjhcS2qrW1z+hfCxq+1aBdwyQM5wlQoQVt/0=" crossorigin="anonymous" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/themes/prism-okaidia.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-numbers/prism-line-numbers.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-highlight/prism-line-highlight.css">
+                <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.4.6"></script>
+        <script src="https://cdn.jsdelivr.net/npm/css-vars-ponyfill@2"></script>
+        <script src="js/search.js"></script>
+        <script defer src="js/searchIndex.js"></script>
+    </head>
+<body id="top">
+    <header class="phpdocumentor-header phpdocumentor-section">
+    <h1 class="phpdocumentor-title"><a href="" class="phpdocumentor-title__link">Documentation</a></h1>
+    <input class="phpdocumentor-header__menu-button" type="checkbox" id="menu-button" name="menu-button" />
+    <label class="phpdocumentor-header__menu-icon" for="menu-button">
+        <i class="fas fa-bars"></i>
+    </label>
+    <section data-search-form class="phpdocumentor-search">
+    <label>
+        <span class="visually-hidden">Search for</span>
+        <svg class="phpdocumentor-search__icon" width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="7.5" cy="7.5" r="6.5" stroke="currentColor" stroke-width="2"/>
+            <line x1="12.4892" y1="12.2727" x2="19.1559" y2="18.9393" stroke="currentColor" stroke-width="3"/>
+        </svg>
+        <input type="search" class="phpdocumentor-field phpdocumentor-search__field" placeholder="Loading .." disabled />
+    </label>
+</section>
+
+    <nav class="phpdocumentor-topnav">
+    <ul class="phpdocumentor-topnav__menu">
+        </ul>
+</nav>
+</header>
+
+    <main class="phpdocumentor">
+        <div class="phpdocumentor-section">
+            <input class="phpdocumentor-sidebar__menu-button" type="checkbox" id="sidebar-button" name="sidebar-button" />
+<label class="phpdocumentor-sidebar__menu-icon" for="sidebar-button">
+    Menu
+</label>
+<aside class="phpdocumentor-column -four phpdocumentor-sidebar">
+        
+    <section class="phpdocumentor-sidebar__category">
+        <h2 class="phpdocumentor-sidebar__category-header">Namespaces</h2>
+                                <h3 class="phpdocumentor-sidebar__root-namespace"><a href="namespaces/default.html"><abbr title="\">Global</abbr></a></h3>
+                                        <h4 class="phpdocumentor-sidebar__root-namespace"><a href="namespaces/app.html"><abbr title="\App">App</abbr></a></h4>
+                <ul class="phpdocumentor-list">
+                                            <li><a href="namespaces/app-jobs.html"><abbr title="\App\Jobs">Jobs</abbr></a></li>
+                                    </ul>
+                            <h4 class="phpdocumentor-sidebar__root-namespace"><a href="namespaces/osiset.html"><abbr title="\Osiset">Osiset</abbr></a></h4>
+                <ul class="phpdocumentor-list">
+                                            <li><a href="namespaces/osiset-shopifyapp.html"><abbr title="\Osiset\ShopifyApp">ShopifyApp</abbr></a></li>
+                                    </ul>
+                        </section>
+
     
-    <link rel="shortcut icon" href="images/favicon.ico"/>
-    <link rel="apple-touch-icon" href="images/apple-touch-icon.png"/>
-    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png"/>
-    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png"/>
-</head>
-<body>
-
-<div class="navbar navbar-fixed-top">
-    <div class="navbar-inner">
-        <div class="container">
-            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <i class="icon-ellipsis-vertical"></i>
-            </a>
-            <a class="brand" href="index.html">API Documentation</a>
-
-            <div class="nav-collapse">
-                <ul class="nav pull-right">
-                                        <li class="dropdown">
-                        <a href="index.html" class="dropdown-toggle" data-toggle="dropdown">
-                            API Documentation <b class="caret"></b>
-                        </a>
-                        <ul class="dropdown-menu">
-                                                        <li><a href="namespaces/App.html">\App</a></li>
-                                                        <li><a href="namespaces/Osiset.html">\Osiset</a></li>
-                                                    </ul>
-                    </li>
-                                        <li class="dropdown" id="charts-menu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            Charts <b class="caret"></b>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="graphs/class.html">
-                                    <i class="icon-list-alt"></i>&#160;Class hierarchy diagram
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="dropdown" id="reports-menu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            Reports <b class="caret"></b>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="reports/errors.html">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">144</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="reports/markers.html">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <i class="icon-list-alt"></i>&#160;Markers <span class="label label-info pull-right">0</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="reports/deprecated.html">
-                                                                                                            <i class="icon-list-alt"></i>&#160;Deprecated <span class="label label-info pull-right">0</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <!--<div class="go_to_top">-->
-    <!--<a href="#___" style="color: inherit">Back to top&#160;&#160;<i class="icon-upload icon-white"></i></a>-->
-    <!--</div>-->
-</div>
-
-<div id="___" class="container-fluid">
-        <section class="row-fluid">
-        <div class="span2 sidebar">
-                                <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-1319969034"></a>
-                                <a href="namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
-            </div>
-            <div id="namespace-1319969034" class="accordion-body collapse in">
-                <div class="accordion-inner">
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1505472274"></a>
-                                <a href="namespaces/App.html" style="margin-left: 30px; padding-left: 0">App</a>
-            </div>
-            <div id="namespace-1505472274" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-299201657"></a>
-                                <a href="namespaces/App.Jobs.html" style="margin-left: 30px; padding-left: 0">Jobs</a>
-            </div>
-            <div id="namespace-299201657" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="classes/App.Jobs.AppUninstalledJob.html">AppUninstalledJob</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                    
-                    <ul>
-                                                                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1314663897"></a>
-                                <a href="namespaces/Osiset.html" style="margin-left: 30px; padding-left: 0">Osiset</a>
-            </div>
-            <div id="namespace-1314663897" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-723727707"></a>
-                                <a href="namespaces/Osiset.ShopifyApp.html" style="margin-left: 30px; padding-left: 0">ShopifyApp</a>
-            </div>
-            <div id="namespace-723727707" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1876608934"></a>
-                                <a href="namespaces/Osiset.ShopifyApp.Actions.html" style="margin-left: 30px; padding-left: 0">Actions</a>
-            </div>
-            <div id="namespace-1876608934" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Actions.ActivatePlan.html">ActivatePlan</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Actions.ActivateUsageCharge.html">ActivateUsageCharge</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Actions.AfterAuthorize.html">AfterAuthorize</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Actions.AuthenticateShop.html">AuthenticateShop</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Actions.CancelCharge.html">CancelCharge</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Actions.CancelCurrentPlan.html">CancelCurrentPlan</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Actions.CreateScripts.html">CreateScripts</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Actions.CreateWebhooks.html">CreateWebhooks</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Actions.DeleteWebhooks.html">DeleteWebhooks</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Actions.GetPlanUrl.html">GetPlanUrl</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-182336439"></a>
-                                <a href="namespaces/Osiset.ShopifyApp.Console.html" style="margin-left: 30px; padding-left: 0">Console</a>
-            </div>
-            <div id="namespace-182336439" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Console.WebhookJobMakeCommand.html">WebhookJobMakeCommand</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-2083444726"></a>
-                                <a href="namespaces/Osiset.ShopifyApp.Contracts.html" style="margin-left: 30px; padding-left: 0">Contracts</a>
-            </div>
-            <div id="namespace-2083444726" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-977296013"></a>
-                                <a href="namespaces/Osiset.ShopifyApp.Contracts.Commands.html" style="margin-left: 30px; padding-left: 0">Commands</a>
-            </div>
-            <div id="namespace-977296013" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                    <li class="interface"><a href="classes/Osiset.ShopifyApp.Contracts.Commands.Shop.html">Shop</a></li>
-                                                                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-487966911"></a>
-                                <a href="namespaces/Osiset.ShopifyApp.Contracts.Objects.html" style="margin-left: 30px; padding-left: 0">Objects</a>
-            </div>
-            <div id="namespace-487966911" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1397279771"></a>
-                                <a href="namespaces/Osiset.ShopifyApp.Contracts.Objects.Values.html" style="margin-left: 30px; padding-left: 0">Values</a>
-            </div>
-            <div id="namespace-1397279771" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                    <li class="interface"><a href="classes/Osiset.ShopifyApp.Contracts.Objects.Values.AccessToken.html">AccessToken</a></li>
-                                                    <li class="interface"><a href="classes/Osiset.ShopifyApp.Contracts.Objects.Values.PlanId.html">PlanId</a></li>
-                                                    <li class="interface"><a href="classes/Osiset.ShopifyApp.Contracts.Objects.Values.ShopDomain.html">ShopDomain</a></li>
-                                                                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                    
-                    <ul>
-                                                                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                    
-                    <ul>
-                                                    <li class="interface"><a href="classes/Osiset.ShopifyApp.Contracts.ApiHelper.html">ApiHelper</a></li>
-                                                    <li class="interface"><a href="classes/Osiset.ShopifyApp.Contracts.ShopModel.html">ShopModel</a></li>
-                                                                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1893511766"></a>
-                                <a href="namespaces/Osiset.ShopifyApp.Exceptions.html" style="margin-left: 30px; padding-left: 0">Exceptions</a>
-            </div>
-            <div id="namespace-1893511766" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Exceptions.ApiException.html">ApiException</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Exceptions.BaseException.html">BaseException</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Exceptions.ChargeNotRecurringException.html">ChargeNotRecurringException</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Exceptions.ChargeNotRecurringOrOnetimeException.html">ChargeNotRecurringOrOnetimeException</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Exceptions.MissingShopDomainException.html">MissingShopDomainException</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Exceptions.SignatureVerificationException.html">SignatureVerificationException</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1939804949"></a>
-                                <a href="namespaces/Osiset.ShopifyApp.Http.html" style="margin-left: 30px; padding-left: 0">Http</a>
-            </div>
-            <div id="namespace-1939804949" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-910159063"></a>
-                                <a href="namespaces/Osiset.ShopifyApp.Http.Controllers.html" style="margin-left: 30px; padding-left: 0">Controllers</a>
-            </div>
-            <div id="namespace-910159063" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Http.Controllers.AuthController.html">AuthController</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Http.Controllers.BillingController.html">BillingController</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Http.Controllers.HomeController.html">HomeController</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Http.Controllers.WebhookController.html">WebhookController</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1390045311"></a>
-                                <a href="namespaces/Osiset.ShopifyApp.Http.Middleware.html" style="margin-left: 30px; padding-left: 0">Middleware</a>
-            </div>
-            <div id="namespace-1390045311" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Http.Middleware.AuthProxy.html">AuthProxy</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Http.Middleware.AuthWebhook.html">AuthWebhook</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Http.Middleware.Billable.html">Billable</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-92395993"></a>
-                                <a href="namespaces/Osiset.ShopifyApp.Http.Requests.html" style="margin-left: 30px; padding-left: 0">Requests</a>
-            </div>
-            <div id="namespace-92395993" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Http.Requests.StoreUsageCharge.html">StoreUsageCharge</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                    
-                    <ul>
-                                                                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1936728243"></a>
-                                <a href="namespaces/Osiset.ShopifyApp.Messaging.html" style="margin-left: 30px; padding-left: 0">Messaging</a>
-            </div>
-            <div id="namespace-1936728243" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1885601956"></a>
-                                <a href="namespaces/Osiset.ShopifyApp.Messaging.Events.html" style="margin-left: 30px; padding-left: 0">Events</a>
-            </div>
-            <div id="namespace-1885601956" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Messaging.Events.AppLoggedIn.html">AppLoggedIn</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-352276599"></a>
-                                <a href="namespaces/Osiset.ShopifyApp.Messaging.Jobs.html" style="margin-left: 30px; padding-left: 0">Jobs</a>
-            </div>
-            <div id="namespace-352276599" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Messaging.Jobs.AppUninstalledJob.html">AppUninstalledJob</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Messaging.Jobs.ScripttagInstaller.html">ScripttagInstaller</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Messaging.Jobs.WebhookInstaller.html">WebhookInstaller</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                    
-                    <ul>
-                                                                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1336904747"></a>
-                                <a href="namespaces/Osiset.ShopifyApp.Objects.html" style="margin-left: 30px; padding-left: 0">Objects</a>
-            </div>
-            <div id="namespace-1336904747" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1773221222"></a>
-                                <a href="namespaces/Osiset.ShopifyApp.Objects.Transfers.html" style="margin-left: 30px; padding-left: 0">Transfers</a>
-            </div>
-            <div id="namespace-1773221222" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Objects.Transfers.AbstractTransfer.html">AbstractTransfer</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Objects.Transfers.ApiSession.html">ApiSession</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Objects.Transfers.Charge.html">Charge</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Objects.Transfers.PlanDetails.html">PlanDetails</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Objects.Transfers.UsageCharge.html">UsageCharge</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Objects.Transfers.UsageChargeDetails.html">UsageChargeDetails</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1793197094"></a>
-                                <a href="namespaces/Osiset.ShopifyApp.Objects.Values.html" style="margin-left: 30px; padding-left: 0">Values</a>
-            </div>
-            <div id="namespace-1793197094" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Objects.Values.AccessToken.html">AccessToken</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Objects.Values.ChargeId.html">ChargeId</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Objects.Values.ChargeReference.html">ChargeReference</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Objects.Values.NullableAccessToken.html">NullableAccessToken</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Objects.Values.NullablePlanId.html">NullablePlanId</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Objects.Values.NullableShopDomain.html">NullableShopDomain</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Objects.Values.NullAccessToken.html">NullAccessToken</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Objects.Values.NullPlanId.html">NullPlanId</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Objects.Values.NullShopDomain.html">NullShopDomain</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Objects.Values.PlanId.html">PlanId</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Objects.Values.ShopId.html">ShopId</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                    
-                    <ul>
-                                                                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1263713635"></a>
-                                <a href="namespaces/Osiset.ShopifyApp.Services.html" style="margin-left: 30px; padding-left: 0">Services</a>
-            </div>
-            <div id="namespace-1263713635" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Services.ApiHelper.html">ApiHelper</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Services.CookieHelper.html">CookieHelper</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-215555553"></a>
-                                <a href="namespaces/Osiset.ShopifyApp.Storage.html" style="margin-left: 30px; padding-left: 0">Storage</a>
-            </div>
-            <div id="namespace-215555553" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-592046506"></a>
-                                <a href="namespaces/Osiset.ShopifyApp.Storage.Models.html" style="margin-left: 30px; padding-left: 0">Models</a>
-            </div>
-            <div id="namespace-592046506" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Storage.Models.Charge.html">Charge</a></li>
-                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Storage.Models.Plan.html">Plan</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1753475625"></a>
-                                <a href="namespaces/Osiset.ShopifyApp.Storage.Observers.html" style="margin-left: 30px; padding-left: 0">Observers</a>
-            </div>
-            <div id="namespace-1753475625" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Storage.Observers.Shop.html">Shop</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1456833574"></a>
-                                <a href="namespaces/Osiset.ShopifyApp.Storage.Scopes.html" style="margin-left: 30px; padding-left: 0">Scopes</a>
-            </div>
-            <div id="namespace-1456833574" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.Storage.Scopes.Namespacing.html">Namespacing</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                    
-                    <ul>
-                                                                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                                                    <div class="accordion" style="margin-bottom: 0">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1326470677"></a>
-                                <a href="namespaces/Osiset.ShopifyApp.Traits.html" style="margin-left: 30px; padding-left: 0">Traits</a>
-            </div>
-            <div id="namespace-1326470677" class="accordion-body collapse ">
-                <div class="accordion-inner">
-
-                    
-                    <ul>
-                                                                            <li class="trait"><a href="classes/Osiset.ShopifyApp.Traits.AuthController.html">AuthController</a></li>
-                                                    <li class="trait"><a href="classes/Osiset.ShopifyApp.Traits.ConfigAccessible.html">ConfigAccessible</a></li>
-                                                    <li class="trait"><a href="classes/Osiset.ShopifyApp.Traits.HomeController.html">HomeController</a></li>
-                                                    <li class="trait"><a href="classes/Osiset.ShopifyApp.Traits.ShopAccessible.html">ShopAccessible</a></li>
-                                                    <li class="trait"><a href="classes/Osiset.ShopifyApp.Traits.ShopModel.html">ShopModel</a></li>
-                                                    <li class="trait"><a href="classes/Osiset.ShopifyApp.Traits.WebhookController.html">WebhookController</a></li>
-                                                                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="classes/Osiset.ShopifyApp.ShopifyAppProvider.html">ShopifyAppProvider</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                    
-                    <ul>
-                                                                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-                    
-                    <ul>
-                                                                                                    <li class="class"><a href="classes/CreateChargesTable.html">CreateChargesTable</a></li>
-                                                    <li class="class"><a href="classes/CreatePlansTable.html">CreatePlansTable</a></li>
-                                                    <li class="class"><a href="classes/CreateShopsTable.html">CreateShopsTable</a></li>
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-        </div>
-    </section>
-    <section class="row-fluid">
-        <div class="span10 offset2">
-            <div class="row-fluid">
-                <div class="span8 content namespace">
-                    <nav>
-                                                
-                                            </nav>
-                    <h1><small></small>\</h1>
-
-                                        <h2>Namespaces</h2>
-                    <table class="table table-hover">
-                                                    <tr>
-                                <td><a href="namespaces/App.html">App</a></td>
-                            </tr>
-                                                    <tr>
-                                <td><a href="namespaces/Osiset.html">Osiset</a></td>
-                            </tr>
-                                            </table>
-                    
-                    
-                    
-                                        <h2>Classes</h2>
-                    <table class="table table-hover">
-                                            <tr>
-                            <td><a href="classes/CreateChargesTable.html">CreateChargesTable</a></td>
-                            <td><em></em></td>
-                        </tr>
-                                            <tr>
-                            <td><a href="classes/CreatePlansTable.html">CreatePlansTable</a></td>
-                            <td><em></em></td>
-                        </tr>
-                                            <tr>
-                            <td><a href="classes/CreateShopsTable.html">CreateShopsTable</a></td>
-                            <td><em></em></td>
-                        </tr>
-                                        </table>
-                                    </div>
-
-                <aside class="span4 detailsbar">
-                    <dl>
-                        <dt>Namespace hierarchy</dt>
-                        <dd class="hierarchy">
-                                                                                                                                                <div class="namespace-wrapper">\</div>
-                        </dd>
-                    </dl>
-                </aside>
-            </div>
-
-            
-            
-        </div>
+    <section class="phpdocumentor-sidebar__category">
+        <h2 class="phpdocumentor-sidebar__category-header">Reports</h2>
+                <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/deprecated.html">Deprecated</a></h3>
+        <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/errors.html">Errors</a></h3>
+        <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/markers.html">Markers</a></h3>
     </section>
 
-    <footer class="row-fluid">
-        <section class="span10 offset2">
-            <section class="row-fluid">
-                <section class="span10 offset1">
-                    <section class="row-fluid footer-sections">
-                        <section class="span4">
-                                                        <h1><i class="icon-code"></i></h1>
-                            <div>
-                                <ul>
-                                                                            <li><a href="namespaces/App.html">\App</a></li>
-                                                                            <li><a href="namespaces/Osiset.html">\Osiset</a></li>
-                                                                    </ul>
-                            </div>
-                        </section>
-                        <section class="span4">
-                                                        <h1><i class="icon-bar-chart"></i></h1>
-                            <div>
-                                <ul>
-                                    <li><a href="graphs/class.html">Class Hierarchy Diagram</a></li>
-                                </ul>
-                            </div>
-                        </section>
-                        <section class="span4">
-                                                        <h1><i class="icon-pushpin"></i></h1>
-                            <div>
-                                <ul>
-                                    <li><a href="reports/errors.html">Errors</a></li>
-                                    <li><a href="reports/markers.html">Markers</a></li>
-                                </ul>
-                            </div>
-                        </section>
-                    </section>
-                </section>
-            </section>
-            <section class="row-fluid">
-                <section class="span10 offset1">
-                    <hr />
-                    Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
-                    on March 17th, 2020 at 01:15.
-                </section>
-            </section>
+    <section class="phpdocumentor-sidebar__category">
+        <h2 class="phpdocumentor-sidebar__category-header">Indices</h2>
+        <h3 class="phpdocumentor-sidebar__root-package"><a href="indices/files.html">Files</a></h3>
+    </section>
+</aside>
+
+            <div class="phpdocumentor-column -eight phpdocumentor-content">
+                    <h2>Documentation</h2>
+
+    
+    
+<h3 id="namespaces">
+    Namespaces
+    <a href="#namespaces" class="headerlink"><i class="fas fa-link"></i></a>
+</h3>
+
+<dl class="phpdocumentor-table-of-contents">
+            <dt class="phpdocumentor-table-of-contents__entry -namespace"><a href="namespaces/app.html"><abbr title="\App">App</abbr></a></dt>
+            <dt class="phpdocumentor-table-of-contents__entry -namespace"><a href="namespaces/osiset.html"><abbr title="\Osiset">Osiset</abbr></a></dt>
+    </dl>
+
+<h3 id="interfaces_class_traits">
+    Interfaces, Classes and Traits
+    <a href="#interfaces_class_traits" class="headerlink"><i class="fas fa-link"></i></a>
+</h3>
+
+<dl class="phpdocumentor-table-of-contents">
+    
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/CreatePlansTable.html"><abbr title="\CreatePlansTable">CreatePlansTable</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/CreateShopsTable.html"><abbr title="\CreateShopsTable">CreateShopsTable</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/CreateChargesTable.html"><abbr title="\CreateChargesTable">CreateChargesTable</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/AddIntervalColumnToChargesTable.html"><abbr title="\AddIntervalColumnToChargesTable">AddIntervalColumnToChargesTable</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/AddIntervalColumnToPlansTable.html"><abbr title="\AddIntervalColumnToPlansTable">AddIntervalColumnToPlansTable</abbr></a></dt>
+        <dd></dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/AddPasswordUpdatedAtToUsersTable.html"><abbr title="\AddPasswordUpdatedAtToUsersTable">AddPasswordUpdatedAtToUsersTable</abbr></a></dt>
+        <dd></dd>
+    
+    </dl>
+
+
+
+    
+
+    
+                <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
+    <section class="phpdocumentor-search-results__dialog">
+        <header class="phpdocumentor-search-results__header">
+            <h2 class="phpdocumentor-search-results__title">Search results</h2>
+            <button class="phpdocumentor-search-results__close"><i class="fas fa-times"></i></button>
+        </header>
+        <section class="phpdocumentor-search-results__body">
+            <ul class="phpdocumentor-search-results__entries"></ul>
         </section>
-    </footer>
-</div>
+    </section>
+</section>
+            </div>
+        </div>
+        <a href="index.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
 
+    </main>
+
+    <script>
+        cssVars({});
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/prism.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-highlight/prism-line-highlight.min.js"></script>
 </body>
 </html>
