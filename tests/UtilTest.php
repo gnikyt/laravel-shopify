@@ -82,4 +82,27 @@ class UtilTest extends TestCase
         $this->assertEquals('hello world', $secret);
         $this->assertEquals('OFFLINE', $grantMode);
     }
+
+    public function testGraphQLWebhookTopic(): void
+    {
+        // REST-format topics are changed to the GraphQL format
+        $topics = [
+            'app/uninstalled' => 'APP_UNINSTALLED',
+            'orders/partially_fulfilled' => 'ORDERS_PARTIALLY_FULFILLED',
+            'order_transactions/create' => 'ORDER_TRANSACTIONS_CREATE',
+        ];
+
+        foreach ($topics as $restTopic => $graphQLTopic) {
+            $this->assertEquals(
+                $graphQLTopic,
+                Util::getGraphQLWebhookTopic($restTopic)
+            );
+        }
+
+        // GraphQL-format topics are unchanged
+        $this->assertEquals(
+            'ORDERS_PARTIALLY_FULFILLED',
+            Util::getGraphQLWebhookTopic('ORDERS_PARTIALLY_FULFILLED')
+        );
+    }
 }

@@ -194,4 +194,19 @@ class Util
 
         return Arr::get($config, $key);
     }
+
+    /**
+     * Convert a REST-format webhook topic ("resource/event")
+     * to a GraphQL-format webhook topic ("RESOURCE_EVENT").
+     *
+     * @param string $topic
+     *
+     * @return string
+     */
+    public static function getGraphQLWebhookTopic(string $topic): string
+    {
+        return Str::of($topic)
+                  ->upper()
+                  ->replaceMatches('/[^A-Z_]/', '_');
+    }
 }
