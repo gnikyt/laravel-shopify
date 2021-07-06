@@ -384,8 +384,12 @@ class ApiHelper implements IApiHelper
         }
         ';
 
+        // change REST-format topics ("resource/event")
+        // to GraphQL-format topics ("RESOURCE_EVENT") for pre-v17 compatibility
+        $topic = Util::getGraphQLWebhookTopic($payload['topic']);
+
         $variables = [
-            'topic'               => $payload['topic'],
+            'topic'               => $topic,
             'webhookSubscription' => [
                 'callbackUrl' => $payload['address'],
                 'format'      => 'JSON',
