@@ -95,7 +95,7 @@ class WebhookJobMakeCommand extends JobMakeCommand
     {
         return Str::of($name)
                   ->trim()
-                  ->beforeLast('Job')
+                  ->replaceMatches('/Job$/', '')
                   ->replaceMatches('/(?<!^)[A-Z]/', '-$0')
                   ->lower();
     }
