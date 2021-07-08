@@ -24,7 +24,7 @@ class TokenRedirectTest extends TestCase
         $response = Redirector::tokenRedirect('home');
         $location = $response->headers->get('location');
 
-        $this->assertEquals(
+        $this->assertSame(
             'http://localhost/authenticate/token?shop=example.myshopify.com&target=http%3A%2F%2Flocalhost',
             $location
         );

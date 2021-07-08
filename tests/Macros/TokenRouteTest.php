@@ -23,7 +23,7 @@ class TokenRouteTest extends TestCase
         // Run the macro and get the link
         $result = UrlGenerator::tokenRoute('home');
 
-        $this->assertEquals(
+        $this->assertSame(
             'http://localhost/authenticate/token?shop=example.myshopify.com&target=http%3A%2F%2Flocalhost',
             $result
         );

@@ -79,7 +79,7 @@ class UtilTest extends TestCase
         $secret = Util::getShopifyConfig('api_secret');
         $grantMode = Util::getShopifyConfig('api_grant_mode');
 
-        $this->assertEquals('hello world', $secret);
-        $this->assertEquals('OFFLINE', $grantMode);
+        $this->assertSame('hello world', $secret);
+        $this->assertSame('OFFLINE', $grantMode);
     }
 }
