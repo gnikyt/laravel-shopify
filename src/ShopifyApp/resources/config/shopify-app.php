@@ -310,8 +310,11 @@ return [
     |--------------------------------------------------------------------------
     |
     | This option is for defining webhooks.
-    | Key is for the Shopify webhook event
-    | Value is for the endpoint to call
+    | `topic` is the GraphQL value of the Shopify webhook event.
+    | `address` is the endpoint to call.
+    |
+    | Valid values for `topic` can be found here:
+    | https://shopify.dev/api/admin/graphql/reference/events/webhooksubscriptiontopic
     |
     */
 

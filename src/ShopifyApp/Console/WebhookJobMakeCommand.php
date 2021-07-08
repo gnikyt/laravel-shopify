@@ -4,6 +4,7 @@ namespace Osiset\ShopifyApp\Console;
 
 use Illuminate\Foundation\Console\JobMakeCommand;
 use Illuminate\Support\Str;
+use Osiset\ShopifyApp\Util;
 use Symfony\Component\Console\Input\InputArgument;
 
 class WebhookJobMakeCommand extends JobMakeCommand
@@ -54,13 +55,18 @@ class WebhookJobMakeCommand extends JobMakeCommand
     {
         $result = parent::handle();
 
+        $topic = Util::getGraphQLWebhookTopic($this->argument('topic'));
+
+        $type = $this->getUrlFromName($this->argument('name'));
+        $address = route(Util::getShopifyConfig('route_names.webhook'), $type);
+
         // Remind user to enter job into config
         $this->info("For non-GDPR webhooks, don't forget to register the webhook in config/shopify-app.php. Example:");
         $this->info("
     'webhooks' => [
         [
-            'topic' => '{$this->argument('topic')}',
-            'address' => 'https://your-domain.com/webhook/{$this->getUrlFromName(trim($this->argument('name')))}'
+            'topic' => '$topic',
+            'address' => '$address'
         ]
     ]
         ");
@@ -75,13 +81,7 @@ class WebhookJobMakeCommand extends JobMakeCommand
      */
     protected function getNameInput(): string
     {
-        $name = parent::getNameInput();
-        $suffix = 'Job';
-        if (! Str::endsWith($name, $suffix)) {
-            $name .= $suffix;
-        }
-
-        return $name;
+        return Str::finish(parent::getNameInput(), 'Job');
     }
 
     /**
@@ -93,10 +93,10 @@ class WebhookJobMakeCommand extends JobMakeCommand
      */
     protected function getUrlFromName(string $name): string
     {
-        if (Str::endsWith($name, 'Job')) {
-            $name = substr($name, 0, -3);
-        }
-
-        return strtolower(preg_replace('/(?<!^)[A-Z]/', '-$0', $name));
+        return Str::of($name)
+                  ->trim()
+                  ->replaceMatches('/Job$/', '')
+                  ->replaceMatches('/(?<!^)[A-Z]/', '-$0')
+                  ->lower();
     }
 }
