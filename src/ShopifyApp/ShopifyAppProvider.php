@@ -54,12 +54,12 @@ class ShopifyAppProvider extends ServiceProvider
      *
      * @var string
      */
-    const CBIND = 'bind';
+    public const CBIND = 'bind';
 
     /**
      * Bind type: singleton.
      */
-    const CSINGLETON = 'singleton';
+    public const CSINGLETON = 'singleton';
 
     /**
      * Bootstrap the application services.
