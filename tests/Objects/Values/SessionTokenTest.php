@@ -47,7 +47,7 @@ class SessionTokenTest extends TestCase
     {
         $this->expectException(AssertionFailedException::class);
 
-        $token = $this->buildToken(['exp' => Carbon::now()->subDay(1)]);
+        $token = $this->buildToken(['exp' => Carbon::now()->subDay()]);
         SessionToken::fromNative($token);
     }
 }

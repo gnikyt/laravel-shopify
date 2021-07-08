@@ -13,7 +13,7 @@ class ApiControllerTest extends TestCase
 
         $response = $this->getJson('/api', ['HTTP_X-Shop-Domain' => $shop->name]);
         $response->assertStatus(Response::HTTP_BAD_REQUEST);
-        $response->assertExactJson(['error' => 'Session token is invalid.'], $response->getContent());
+        $response->assertExactJson(['error' => 'Session token is invalid.']);
     }
 
     public function testApiWithToken(): void
@@ -24,7 +24,7 @@ class ApiControllerTest extends TestCase
             'HTTP_X-Shop-Domain' => $shop->name,
             'HTTP_Authorization' => "Bearer {$this->buildToken()}",
         ]);
-        $response->assertExactJson([], $response->getContent());
+        $response->assertExactJson([]);
         $response->assertOk();
     }
 
