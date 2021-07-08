@@ -38,7 +38,7 @@ class CancelCurrentPlan
      *
      * @param IShopQuery     $shopQuery     The querier for shops.
      * @param IChargeCommand $chargeCommand The commands for charges.
-     * @param ChargeHelper   $chargeType    The charge helper.
+     * @param ChargeHelper   $chargeHelper  The charge helper.
      *
      * @return void
      */

@@ -26,7 +26,7 @@ interface Shop
     /**
      * Get by domain.
      *
-     * @param ShopDomain $domain      The shop domain.
+     * @param ShopDomainValue $domain      The shop domain.
      * @param array      $with        The relations to eager load.
      * @param bool       $withTrashed Include trashed shops?
      *

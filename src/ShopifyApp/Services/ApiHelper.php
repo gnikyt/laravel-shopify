@@ -520,7 +520,7 @@ class ApiHelper implements IApiHelper
     /**
      * Find shop from session or request.
      *
-     * @param Session $session
+     * @param Session|null $session
      *
      * @return NullableShopDomain
      */

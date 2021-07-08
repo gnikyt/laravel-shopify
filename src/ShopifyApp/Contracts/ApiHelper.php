@@ -20,7 +20,7 @@ interface ApiHelper
     /**
      * Create an API instance (without a context to a shop).
      *
-     * @param Session $session The shop API session details.
+     * @param Session|null $session The shop API session details.
      *
      * @return self
      */
