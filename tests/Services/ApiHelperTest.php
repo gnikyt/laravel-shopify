@@ -200,7 +200,7 @@ class ApiHelperTest extends TestCase
         ApiStub::stubResponses(['post_webhook']);
 
         $data = $shop->apiHelper()->createWebhook([
-            'topic'   => 'ORDERS_CREATE',
+            'topic' => 'ORDERS_CREATE',
             'address' => 'https://localhost/webhook/orders-create',
         ]);
         $this->assertInstanceOf(ResponseAccess::class, $data);

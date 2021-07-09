@@ -38,9 +38,9 @@ class AuthControllerTest extends TestCase
         // HMAC for regular tests
         $hmac = '6f16da24e8185e717f22a3373a1928fcaea7ea2401be40ab0d160f5bed7fe55a';
         $hmacParams = [
-            'hmac'      => $hmac,
-            'shop'      => 'example.myshopify.com',
-            'code'      => '1234678',
+            'hmac' => $hmac,
+            'shop' => 'example.myshopify.com',
+            'code' => '1234678',
             'timestamp' => '1337178173',
         ];
 
@@ -54,9 +54,9 @@ class AuthControllerTest extends TestCase
         ApiStub::stubResponses(['access_token_grant']);
 
         $hmacParams = [
-            'hmac'      => 'badhmac',
-            'shop'      => 'example.myshopify.com',
-            'code'      => '1234678',
+            'hmac' => 'badhmac',
+            'shop' => 'example.myshopify.com',
+            'code' => '1234678',
             'timestamp' => '1337178173',
         ];
 

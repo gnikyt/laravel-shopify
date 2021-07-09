@@ -26,22 +26,22 @@ class AuthProxyTest extends TestCase
 
         // From Shopify's docs
         $this->queryParams = [
-            'extra'       => ['1', '2'],
-            'shop'        => 'shop-name.myshopify.com',
+            'extra' => ['1', '2'],
+            'shop' => 'shop-name.myshopify.com',
             'path_prefix' => '/apps/awesome_reviews',
-            'timestamp'   => '1317327555',
-            'signature'   => 'a9718877bea71c2484f91608a7eaea1532bdf71f5c56825065fa4ccabe549ef3',
+            'timestamp' => '1317327555',
+            'signature' => 'a9718877bea71c2484f91608a7eaea1532bdf71f5c56825065fa4ccabe549ef3',
         ];
 
         // Array parameter format
         $this->queryStringArrayFormat = 'extra[]=1&extra[]=2&shop=shop-name.myshopify.com&path_prefix=%2Fapps%2Fawesome_reviews&timestamp=1317327555&signature=6f4b878d5340128aab03a234676dba228432b0b8b72863828ec143e4c5772124';
 
         $this->queryParamsArrayFormat = [
-            'extra'       => ['1', '2'],
-            'shop'        => 'shop-name.myshopify.com',
+            'extra' => ['1', '2'],
+            'shop' => 'shop-name.myshopify.com',
             'path_prefix' => '/apps/awesome_reviews',
-            'timestamp'   => '1317327555',
-            'signature'   => '6f4b878d5340128aab03a234676dba228432b0b8b72863828ec143e4c5772124',
+            'timestamp' => '1317327555',
+            'signature' => '6f4b878d5340128aab03a234676dba228432b0b8b72863828ec143e4c5772124',
         ];
 
         // Set the app secret to match Shopify's docs

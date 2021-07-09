@@ -285,7 +285,7 @@ class VerifyShopify
         return Redirect::route(
             Util::getShopifyConfig('route_names.authenticate.token'),
             [
-                'shop'   => ShopDomain::fromRequest($request)->toNative(),
+                'shop' => ShopDomain::fromRequest($request)->toNative(),
                 'target' => $target,
             ]
         );
@@ -404,8 +404,8 @@ class VerifyShopify
                 $timestamp = $request->header('X-Shop-Time');
 
                 $verify = [
-                    'shop'      => $shop,
-                    'hmac'      => $signature,
+                    'shop' => $shop,
+                    'hmac' => $signature,
                     'timestamp' => $timestamp,
                 ];
 

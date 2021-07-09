@@ -23,17 +23,17 @@ class Kernel extends \Orchestra\Testbench\Http\Kernel
      * @var array
      */
     protected $routeMiddleware = [
-        'auth'       => Authenticate::class,
+        'auth' => Authenticate::class,
         'auth.basic' => AuthenticateWithBasicAuth::class,
-        'bindings'   => SubstituteBindings::class,
-        'can'        => Authorize::class,
-        'guest'      => RedirectIfAuthenticated::class,
-        'throttle'   => ThrottleRequests::class,
+        'bindings' => SubstituteBindings::class,
+        'can' => Authorize::class,
+        'guest' => RedirectIfAuthenticated::class,
+        'throttle' => ThrottleRequests::class,
 
         // Added for testing
         'verify.shopify' => VerifyShopify::class,
-        'auth.webhook'   => AuthWebhook::class,
-        'auth.proxy'     => AuthProxy::class,
-        'billable'       => Billable::class,
+        'auth.webhook' => AuthWebhook::class,
+        'auth.proxy' => AuthProxy::class,
+        'billable' => Billable::class,
     ];
 }

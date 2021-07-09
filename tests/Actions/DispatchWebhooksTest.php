@@ -49,11 +49,11 @@ class DispatchWebhooksTest extends TestCase
         // Create the config
         $this->app['config']->set('shopify-app.webhooks', [
             [
-                'topic'   => 'orders/create',
+                'topic' => 'orders/create',
                 'address' => 'https://localhost/webhooks/orders-create',
             ],
             [
-                'topic'   => 'app/uninstalled',
+                'topic' => 'app/uninstalled',
                 'address' => 'http://apple.com/uninstall',
             ],
         ]);
@@ -84,11 +84,11 @@ class DispatchWebhooksTest extends TestCase
         // Create the config
         $this->app['config']->set('shopify-app.webhooks', [
             [
-                'topic'   => 'orders/create',
+                'topic' => 'orders/create',
                 'address' => 'https://localhost/webhooks/orders-create',
             ],
             [
-                'topic'   => 'app/uninstalled',
+                'topic' => 'app/uninstalled',
                 'address' => 'http://apple.com/uninstall',
             ],
         ]);

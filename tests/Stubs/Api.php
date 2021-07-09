@@ -35,10 +35,10 @@ class Api extends BasicShopifyAPI
         }
 
         return [
-            'errors'     => $errors,
-            'exception'  => $exception,
-            'body'       => new ResponseAccess($response),
-            'status'     => Response::HTTP_OK,
+            'errors' => $errors,
+            'exception' => $exception,
+            'body' => new ResponseAccess($response),
+            'status' => Response::HTTP_OK,
         ];
     }
 
@@ -59,11 +59,11 @@ class Api extends BasicShopifyAPI
         }
 
         return [
-            'errors'     => $errors,
-            'exception'  => $exception,
-            'response'   => $response,
-            'status'     => Response::HTTP_OK,
-            'body'       => new ResponseAccess($response),
+            'errors' => $errors,
+            'exception' => $exception,
+            'response' => $response,
+            'status' => Response::HTTP_OK,
+            'body' => new ResponseAccess($response),
         ];
     }
 

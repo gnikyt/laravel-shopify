@@ -56,7 +56,7 @@ class ChargeHelperTest extends TestCase
     {
         // Seed
         $seed = $this->seedData([
-            'trial_days'    => 7,
+            'trial_days' => 7,
             'trial_ends_on' => $this->now->today()->addDays(7)->format('Y-m-d'),
         ]);
         $this->chargeHelper->useCharge($seed['charge']->getReference());
@@ -72,7 +72,7 @@ class ChargeHelperTest extends TestCase
     {
         // Seed
         $seed = $this->seedData([
-            'trial_days'    => 0,
+            'trial_days' => 0,
         ]);
         $this->chargeHelper->useCharge($seed['charge']->getReference());
 
@@ -87,11 +87,11 @@ class ChargeHelperTest extends TestCase
     {
         // Seed
         $seed = $this->seedData([
-            'status'        => ChargeStatus::CANCELLED()->toNative(),
-            'trial_days'    => 7,
+            'status' => ChargeStatus::CANCELLED()->toNative(),
+            'trial_days' => 7,
             'trial_ends_on' => '2020-01-10',
-            'cancelled_on'  => '2020-01-05',
-            'expires_on'    => '2020-01-11',
+            'cancelled_on' => '2020-01-05',
+            'expires_on' => '2020-01-11',
         ]);
         $this->chargeHelper->useCharge($seed['charge']->getReference());
 
@@ -180,16 +180,16 @@ class ChargeHelperTest extends TestCase
             array_merge(
                 [
                     'charge_id' => 12345,
-                    'plan_id'   => $plan->getId()->toNative(),
-                    'user_id'   => $shop->getId()->toNative(),
+                    'plan_id' => $plan->getId()->toNative(),
+                    'user_id' => $shop->getId()->toNative(),
                 ],
                 $extraCharge
             )
         );
 
         return [
-            'plan'   => $plan,
-            'shop'   => $shop,
+            'plan' => $plan,
+            'shop' => $shop,
             'charge' => $charge,
         ];
     }

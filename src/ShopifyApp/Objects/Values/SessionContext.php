@@ -107,7 +107,7 @@ final class SessionContext implements ValueObject
      *
      * @return bool
      */
-    public function isValid(?SessionContext $previousContext = null): bool
+    public function isValid(?self $previousContext = null): bool
     {
         // Confirm access token and session token are good
         $tokenCheck = ! $this->getAccessToken()->isEmpty() && ! $this->getSessionToken()->isNull();

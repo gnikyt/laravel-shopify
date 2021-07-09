@@ -23,7 +23,7 @@ class StoreUsageChargeTest extends TestCase
     public function testFailsForInvalidSignature(): void
     {
         $data = [
-            'price'       => '1.00',
+            'price' => '1.00',
             'description' => 'Testing',
         ];
 
@@ -41,9 +41,9 @@ class StoreUsageChargeTest extends TestCase
     public function testPasses(): void
     {
         $data = [
-            'price'       => '1.00',
+            'price' => '1.00',
             'description' => 'Testing',
-            'redirect'    => '/',
+            'redirect' => '/',
         ];
         $signature = Util::createHmac(['data' => $data, 'buildQuery' => true], $this->app['config']->get('shopify-app.api_secret'));
         $data['signature'] = $signature->toNative();

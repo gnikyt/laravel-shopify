@@ -19,10 +19,10 @@ class VerifyShopifyTest extends TestCase
         $newRequest = $currentRequest->duplicate(
             // Query Params
             [
-                'shop'      => 'mystore123.myshopify.com',
-                'hmac'      => '9f4d79eb5ab1806c390b3dda0bfc7be714a92df165d878f22cf3cc8145249ca8',
+                'shop' => 'mystore123.myshopify.com',
+                'hmac' => '9f4d79eb5ab1806c390b3dda0bfc7be714a92df165d878f22cf3cc8145249ca8',
                 'timestamp' => 'oops',
-                'code'      => 'oops',
+                'code' => 'oops',
             ],
             // Request Params
             null,
@@ -114,7 +114,7 @@ class VerifyShopifyTest extends TestCase
             // Server vars
             [
                 'HTTP_X-Requested-With' => 'XMLHttpRequest',
-                'HTTP_X-Shop-Domain'    => $shop->name,
+                'HTTP_X-Shop-Domain' => $shop->name,
             ]
         );
 
@@ -143,7 +143,7 @@ class VerifyShopifyTest extends TestCase
             null,
             // Server vars
             [
-                'HTTP_Authorization'    => "Bearer {$this->buildToken()}",
+                'HTTP_Authorization' => "Bearer {$this->buildToken()}",
                 'HTTP_X-Requested-With' => 'XMLHttpRequest',
             ]
         );
@@ -161,7 +161,7 @@ class VerifyShopifyTest extends TestCase
             // Query Params
             [
                 'token' => $this->buildToken(),
-                'shop'  => 'non-existent.myshopify.com',
+                'shop' => 'non-existent.myshopify.com',
             ],
             // Request Params
             null,
@@ -199,7 +199,7 @@ class VerifyShopifyTest extends TestCase
             null,
             // Server vars
             [
-                'HTTP_Authorization'    => "Bearer {$this->buildToken()}",
+                'HTTP_Authorization' => "Bearer {$this->buildToken()}",
                 'HTTP_X-Requested-With' => 'XMLHttpRequest',
             ]
         );
@@ -252,7 +252,7 @@ class VerifyShopifyTest extends TestCase
             null,
             // Server vars
             [
-                'HTTP_Authorization'    => "Bearer {$this->buildToken()}OOPS",
+                'HTTP_Authorization' => "Bearer {$this->buildToken()}OOPS",
                 'HTTP_X-Requested-With' => 'XMLHttpRequest',
             ]
         );
@@ -284,7 +284,7 @@ class VerifyShopifyTest extends TestCase
             null,
             // Server vars
             [
-                'HTTP_Authorization'    => "Bearer {$token}",
+                'HTTP_Authorization' => "Bearer {$token}",
                 'HTTP_X-Requested-With' => 'XMLHttpRequest',
             ]
         );
@@ -309,7 +309,7 @@ class VerifyShopifyTest extends TestCase
             null,
             // Server vars
             [
-                'HTTP_Authorization'    => "Bearer {$token}",
+                'HTTP_Authorization' => "Bearer {$token}",
                 'HTTP_X-Requested-With' => 'XMLHttpRequest',
             ]
         );

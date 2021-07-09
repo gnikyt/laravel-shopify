@@ -56,12 +56,12 @@ class AuthenticateShopTest extends TestCase
         $newRequest = $currentRequest->duplicate(
             // Query Params
             [
-                'shop'      => 'mystore123.myshopify.com',
-                'hmac'      => 'badhmac',
+                'shop' => 'mystore123.myshopify.com',
+                'hmac' => 'badhmac',
                 'timestamp' => '1565631587',
-                'code'      => '123',
-                'locale'    => 'de',
-                'state'     => '3.14',
+                'code' => '123',
+                'locale' => 'de',
+                'state' => '3.14',
             ],
             // Request Params
             null,
@@ -93,12 +93,12 @@ class AuthenticateShopTest extends TestCase
         $newRequest = $currentRequest->duplicate(
             // Query Params
             [
-                'shop'      => 'mystore123.myshopify.com',
-                'hmac'      => '3d9768c9cc44b8bd66125cb82b6a59a3d835432f560d19b3f79b9fc696ef6396',
+                'shop' => 'mystore123.myshopify.com',
+                'hmac' => '3d9768c9cc44b8bd66125cb82b6a59a3d835432f560d19b3f79b9fc696ef6396',
                 'timestamp' => '1565631587',
-                'code'      => '123',
-                'locale'    => 'de',
-                'state'     => '3.14',
+                'code' => '123',
+                'locale' => 'de',
+                'state' => '3.14',
             ],
             // Request Params
             null,

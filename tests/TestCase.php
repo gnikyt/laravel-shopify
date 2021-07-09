@@ -38,6 +38,7 @@ abstract class TestCase extends OrchestraTestCase
 
     /**
      * Carbon time.
+     *
      * @var CarbonImmutable
      */
     protected $now;
@@ -58,15 +59,15 @@ abstract class TestCase extends OrchestraTestCase
         // Token defaults
         $now = Carbon::now()->unix();
         $this->tokenDefaults = [
-            'iss'  => 'https://shop-name.myshopify.com/admin',
+            'iss' => 'https://shop-name.myshopify.com/admin',
             'dest' => 'https://shop-name.myshopify.com',
-            'aud'  => Util::getShopifyConfig('api_key'),
-            'sub'  => '123',
-            'exp'  => $now + 60,
-            'nbf'  => $now,
-            'iat'  => $now,
-            'jti'  => '00000000-0000-0000-0000-000000000000',
-            'sid'  => '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+            'aud' => Util::getShopifyConfig('api_key'),
+            'sub' => '123',
+            'exp' => $now + 60,
+            'nbf' => $now,
+            'iat' => $now,
+            'jti' => '00000000-0000-0000-0000-000000000000',
+            'sid' => '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ',
         ];
     }
 
@@ -90,9 +91,9 @@ abstract class TestCase extends OrchestraTestCase
         // Use memory SQLite, cleans it self up
         $app['config']->set('database.default', 'sqlite');
         $app['config']->set('database.connections.sqlite', [
-            'driver'   => 'sqlite',
+            'driver' => 'sqlite',
             'database' => ':memory:',
-            'prefix'   => '',
+            'prefix' => '',
         ]);
         $app['config']->set('auth.providers.users.model', UserStub::class);
     }

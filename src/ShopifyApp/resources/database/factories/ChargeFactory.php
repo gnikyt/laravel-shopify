@@ -9,9 +9,9 @@ use Osiset\ShopifyApp\Storage\Models\Charge;
 $factory->define(Charge::class, function (Faker $faker) {
     return [
         'charge_id' => $faker->randomNumber(8),
-        'name'      => $faker->word,
-        'price'     => $faker->randomFloat(),
-        'status'    => ChargeStatus::ACCEPTED()->toNative(),
+        'name' => $faker->word,
+        'price' => $faker->randomFloat(),
+        'status' => ChargeStatus::ACCEPTED()->toNative(),
     ];
 });
 
@@ -39,7 +39,7 @@ $factory->state(Charge::class, 'trial', function ($faker) {
     $days = $faker->numberBetween(7, 14);
 
     return [
-        'trial_days'    => $days,
+        'trial_days' => $days,
         'trial_ends_on' => Carbon::today()->addDays($days),
     ];
 });

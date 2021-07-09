@@ -22,7 +22,7 @@ class AppUninstalledTest extends TestCase
         factory(Charge::class)->states('type_recurring')->create([
             'plan_id' => $plan->getId()->toNative(),
             'user_id' => $shop->getId()->toNative(),
-            'status'  => ChargeStatus::ACTIVE()->toNative(),
+            'status' => ChargeStatus::ACTIVE()->toNative(),
         ]);
 
         // Ensure shop is not trashed, and has charges

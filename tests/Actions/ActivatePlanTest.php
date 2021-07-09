@@ -37,8 +37,8 @@ class ActivatePlanTest extends TestCase
         // Create a charge for the plan and shop
         factory(Charge::class)->states('type_recurring')->create([
             'charge_id' => 12345,
-            'plan_id'   => $plan->getId()->toNative(),
-            'user_id'   => $shop->getId()->toNative(),
+            'plan_id' => $plan->getId()->toNative(),
+            'user_id' => $shop->getId()->toNative(),
         ]);
 
         // Setup API stub
@@ -69,8 +69,8 @@ class ActivatePlanTest extends TestCase
         // Create a charge for the plan and shop
         factory(Charge::class)->states('type_recurring')->create([
             'charge_id' => 12345,
-            'plan_id'   => $plan->getId()->toNative(),
-            'user_id'   => $shop->getId()->toNative(),
+            'plan_id' => $plan->getId()->toNative(),
+            'user_id' => $shop->getId()->toNative(),
         ]);
 
         // Setup API stub
