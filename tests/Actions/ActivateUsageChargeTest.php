@@ -64,7 +64,8 @@ class ActivateUsageChargeTest extends TestCase
     public function testRunWithoutRecurringCharge(): void
     {
         $this->expectExceptionObject(new ChargeNotRecurringException(
-            'Can only create usage charges for recurring charge.', 0
+            'Can only create usage charges for recurring charge.',
+            0
         ));
 
         // Create a plan

@@ -51,7 +51,8 @@ class CancelChargeTest extends TestCase
     public function testCancelOfNonRecurringNonOnetime(): void
     {
         $this->expectExceptionObject(new ChargeNotRecurringOrOnetimeException(
-            'Cancel may only be called for single and recurring charges.', 0
+            'Cancel may only be called for single and recurring charges.',
+            0
         ));
 
         // Create a charge reference

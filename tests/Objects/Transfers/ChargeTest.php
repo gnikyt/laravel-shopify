@@ -23,7 +23,8 @@ class ChargeTest extends TestCase
     public function testGetThrowsAnError(): void
     {
         $this->expectExceptionObject(new Exception(
-            'Property doesNotExist does not exist on transfer class '.Charge::class, 0
+            'Property doesNotExist does not exist on transfer class '.Charge::class,
+            0
         ));
 
         $_ = $this->charge->doesNotExist;
@@ -32,7 +33,8 @@ class ChargeTest extends TestCase
     public function testSetThrowsAnError(): void
     {
         $this->expectExceptionObject(new Exception(
-            'Setting property doesNotExist for transfer class '.Charge::class, 0
+            'Setting property doesNotExist for transfer class '.Charge::class,
+            0
         ));
 
         $this->charge->doesNotExist = false;
