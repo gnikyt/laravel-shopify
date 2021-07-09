@@ -138,11 +138,12 @@ return [
     |
     | This option is for the app's API version string.
     | Use "YYYY-MM" or "unstable". Refer to Shopify's documentation
-    | on API versioning for the current stable version.
+    | at https://shopify.dev/api/usage/versioning#release-schedule
+    | for the current stable version.
     |
     */
 
-    'api_version' => env('SHOPIFY_API_VERSION', '2020-01'),
+    'api_version' => env('SHOPIFY_API_VERSION', '2021-01'),
 
     /*
     |--------------------------------------------------------------------------
