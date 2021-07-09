@@ -63,7 +63,7 @@ class ActivateUsageCharge
      * Execute.
      * TODO: Rethrow an API exception.
      *
-     * @param ShopeId                    $shopId The shop ID.
+     * @param ShopId                    $shopId The shop ID.
      * @param UsageChargeDetailsTransfer $ucd    The usage charge details (without charge ID).
      *
      * @throws ChargeNotRecurringException

@@ -60,7 +60,7 @@ class Util
      * See: https://github.com/rack/rack/blob/f9ad97fd69a6b3616d0a99e6bedcfb9de2f81f6c/lib/rack/query_parser.rb#L36
      *
      * @param string $qs The query string.
-     * @param string $d  The delimiter.
+     * @param string|null $d  The delimiter.
      *
      * @return mixed
      */

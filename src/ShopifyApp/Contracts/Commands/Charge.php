@@ -44,8 +44,8 @@ interface Charge
      * Cancels a charge for a shop.
      *
      * @param ChargeReference $chargeRef   The charge ID from Shopify.
-     * @param Carbon          $expiresOn   Date of expiration.
-     * @param Carbon          $trialEndsOn Date of when trial ends on based on remaining.
+     * @param Carbon|null          $expiresOn   Date of expiration.
+     * @param Carbon|null          $trialEndsOn Date of when trial ends on based on remaining.
      *
      * @return bool
      */

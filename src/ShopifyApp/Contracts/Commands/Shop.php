@@ -15,7 +15,9 @@ interface Shop
     /**
      * Create a shop.
      *
-     * @return ShopId
+     * @param  ShopDomainValue  $domain
+     * @param  AccessTokenValue  $token
+     * @return ShopIdValue
      */
     public function make(ShopDomainValue $domain, AccessTokenValue $token): ShopIdValue;
 
