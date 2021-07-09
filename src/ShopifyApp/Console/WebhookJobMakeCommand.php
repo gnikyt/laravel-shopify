@@ -54,9 +54,7 @@ class WebhookJobMakeCommand extends JobMakeCommand
     public function handle()
     {
         $result = parent::handle();
-
         $topic = Util::getGraphQLWebhookTopic($this->argument('topic'));
-
         $type = $this->getUrlFromName($this->argument('name'));
         $address = route(Util::getShopifyConfig('route_names.webhook'), $type);
 
