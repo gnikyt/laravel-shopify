@@ -47,7 +47,7 @@ class AfterAuthorizeTest extends TestCase
         // Run
         call_user_func(
             $this->action,
-            $shop->getId(0)
+            $shop->getId()
         );
 
         Queue::assertPushed($jobClass);
@@ -68,7 +68,7 @@ class AfterAuthorizeTest extends TestCase
         // Run
         $result = call_user_func(
             $this->action,
-            $shop->getId(0)
+            $shop->getId()
         );
 
         $this->assertTrue($result);
@@ -85,7 +85,7 @@ class AfterAuthorizeTest extends TestCase
         // Run
         $result = call_user_func(
             $this->action,
-            $shop->getId(0)
+            $shop->getId()
         );
 
         $this->assertFalse($result);
