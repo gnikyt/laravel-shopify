@@ -139,7 +139,7 @@ return [
     | This option is for the app's API version string.
     | Use "YYYY-MM" or "unstable". Refer to Shopify's documentation
     | at https://shopify.dev/api/usage/versioning#release-schedule
-    | on API versioning for the current stable version.
+    | for the current stable version.
     |
     */
 
