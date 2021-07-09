@@ -53,6 +53,13 @@ jobs:
         if: matrix.validate == true
         run: composer validate --strict
 
+      - name: Install Laravel legacy factories support
+        if: matrix.laravel == '8.22'
+        run: composer require "laravel/legacy-factories:^1.1" --dev --no-interaction --no-update
+
+      - name: Install Laravel and Orchestra Testbench
+        run: composer require "illuminate/contracts:${{ matrix.laravel }}" --no-interaction --no-update
+
       - name: Get composer cache directory
         id: composer-cache
         run: echo "::set-output name=dir::$(composer config cache-files-dir)"
@@ -63,13 +70,6 @@ jobs:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: "php-${{ matrix.php }}-laravel-${{ matrix.laravel }}-${{ hashFiles('**/composer.json') }}"
           restore-keys: "php-${{ matrix.php }}-laravel-${{ matrix.laravel }}-${{ hashFiles('**/composer.json') }}"
-
-      - name: Install Laravel legacy factories support
-        if: matrix.laravel == '8.22'
-        run: composer require "laravel/legacy-factories:^1.1" --no-interaction --no-update
-
-      - name: Install Laravel and Orchestra Testbench
-        run: composer require "illuminate/contracts:${{ matrix.laravel }}" --no-interaction --no-update
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
