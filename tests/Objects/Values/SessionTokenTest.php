@@ -21,10 +21,10 @@ class SessionTokenTest extends TestCase
         $this->assertTrue(Str::contains($this->tokenDefaults['dest'], $st->getShopDomain()->toNative()));
 
         $this->assertInstanceOf(SessionIdValue::class, $st->getSessionId());
-        $this->assertEquals($this->tokenDefaults['sid'], $st->getSessionId()->toNative());
+        $this->assertSame($this->tokenDefaults['sid'], $st->getSessionId()->toNative());
 
         $this->assertInstanceOf(Carbon::class, $st->getExpiration());
-        $this->assertEquals($this->tokenDefaults['exp'], $st->getExpiration()->unix());
+        $this->assertSame($this->tokenDefaults['exp'], $st->getExpiration()->unix());
     }
 
     public function testShouldThrowExceptionForMalformedToken(): void

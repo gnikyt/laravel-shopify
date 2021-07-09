@@ -42,7 +42,7 @@ class ChargeTest extends TestCase
 
     public function testToArray(): void
     {
-        $this->assertEquals([
+        $this->assertSame([
             'shopId' => null,
             'planId' => null,
             'chargeReference' => null,
