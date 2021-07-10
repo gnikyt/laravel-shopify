@@ -50,7 +50,7 @@ abstract class TestCase extends OrchestraTestCase
 
         // Setup database
         $this->setupDatabase($this->app);
-        $this->withFactories(__DIR__.'/../src/ShopifyApp/resources/database/factories');
+        $this->withFactories(__DIR__.'/../src/resources/database/factories');
 
         // Assign the user model
         $this->model = $this->app['config']->get('auth.providers.users.model');
