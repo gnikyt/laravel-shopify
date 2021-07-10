@@ -50,18 +50,6 @@ use Osiset\ShopifyApp\Storage\Queries\Shop as ShopQuery;
 class ShopifyAppProvider extends ServiceProvider
 {
     /**
-     * Bind type: new instances.
-     *
-     * @var string
-     */
-    public const CBIND = 'bind';
-
-    /**
-     * Bind type: singleton.
-     */
-    public const CSINGLETON = 'singleton';
-
-    /**
      * Bootstrap the application services.
      *
      * @return void
@@ -86,150 +74,143 @@ class ShopifyAppProvider extends ServiceProvider
      */
     public function register()
     {
-        // Merge options with published config
-        $this->mergeConfigFrom(
-            __DIR__.'/resources/config/shopify-app.php',
-            'shopify-app'
-        );
+        $this->mergeConfigFrom(__DIR__.'/resources/config/shopify-app.php', 'shopify-app');
 
-        // Commands
         $this->commands([
             WebhookJobMakeCommand::class,
         ]);
 
-        // Binds
-        $binds = [
-            // Services (start)
-            IApiHelper::class => [self::CBIND, function () {
-                return new ApiHelper();
-            }],
+        // Services (start)
+        $this->app->bind(IApiHelper::class, function () {
+            return new ApiHelper();
+        });
 
-            // Queriers
-            IShopQuery::class => [self::CSINGLETON, function () {
-                return new ShopQuery();
-            }],
-            IPlanQuery::class => [self::CSINGLETON, function () {
-                return new PlanQuery();
-            }],
-            IChargeQuery::class => [self::CSINGLETON, function () {
-                return new ChargeQuery();
-            }],
+        // Queriers
+        $this->app->singleton(IShopQuery::class, function () {
+            return new ShopQuery();
+        });
 
-            // Commands
-            IChargeCommand::class => [self::CSINGLETON, function ($app) {
-                return new ChargeCommand(
-                    $app->make(IChargeQuery::class)
-                );
-            }],
-            IShopCommand::class => [self::CSINGLETON, function ($app) {
-                return new ShopCommand(
-                    $app->make(IShopQuery::class)
-                );
-            }],
+        $this->app->singleton(IPlanQuery::class, function () {
+            return new PlanQuery();
+        });
 
-            // Actions
-            InstallShopAction::class => [self::CBIND, function ($app) {
-                return new InstallShopAction(
-                    $app->make(IShopQuery::class),
-                    $app->make(IShopCommand::class)
-                );
-            }],
-            AuthenticateShopAction::class => [self::CBIND, function ($app) {
-                return new AuthenticateShopAction(
-                    $app->make(IApiHelper::class),
-                    $app->make(InstallShopAction::class),
-                    $app->make(DispatchScriptsAction::class),
-                    $app->make(DispatchWebhooksAction::class),
-                    $app->make(AfterAuthorizeAction::class)
-                );
-            }],
-            GetPlanUrlAction::class => [self::CBIND, function ($app) {
-                return new GetPlanUrlAction(
-                    $app->make(ChargeHelper::class),
-                    $app->make(IPlanQuery::class),
-                    $app->make(IShopQuery::class)
-                );
-            }],
-            CancelCurrentPlanAction::class => [self::CBIND, function ($app) {
-                return new CancelCurrentPlanAction(
-                    $app->make(IShopQuery::class),
-                    $app->make(IChargeCommand::class),
-                    $app->make(ChargeHelper::class)
-                );
-            }],
-            DispatchWebhooksAction::class => [self::CBIND, function ($app) {
-                return new DispatchWebhooksAction(
-                    $app->make(IShopQuery::class),
-                    WebhookInstaller::class
-                );
-            }],
-            DispatchScriptsAction::class => [self::CBIND, function ($app) {
-                return new DispatchScriptsAction(
-                    $app->make(IShopQuery::class),
-                    ScripttagInstaller::class
-                );
-            }],
-            AfterAuthorizeAction::class => [self::CBIND, function ($app) {
-                return new AfterAuthorizeAction(
-                    $app->make(IShopQuery::class)
-                );
-            }],
-            ActivatePlanAction::class => [self::CBIND, function ($app) {
-                return new ActivatePlanAction(
-                    $app->make(CancelCurrentPlanAction::class),
-                    $app->make(ChargeHelper::class),
-                    $app->make(IShopQuery::class),
-                    $app->make(IPlanQuery::class),
-                    $app->make(IChargeCommand::class),
-                    $app->make(IShopCommand::class)
-                );
-            }],
-            ActivateUsageChargeAction::class => [self::CBIND, function ($app) {
-                return new ActivateUsageChargeAction(
-                    $app->make(ChargeHelper::class),
-                    $app->make(IChargeCommand::class),
-                    $app->make(IShopQuery::class)
-                );
-            }],
-            DeleteWebhooksAction::class => [self::CBIND, function ($app) {
-                return new DeleteWebhooksAction(
-                    $app->make(IShopQuery::class)
-                );
-            }],
-            CreateWebhooksAction::class => [self::CBIND, function ($app) {
-                return new CreateWebhooksAction(
-                    $app->make(IShopQuery::class)
-                );
-            }],
-            CreateScriptsAction::class => [self::CBIND, function ($app) {
-                return new CreateScriptsAction(
-                    $app->make(IShopQuery::class)
-                );
-            }],
-            CancelChargeAction::class => [self::CBIND, function ($app) {
-                return new CancelChargeAction(
-                    $app->make(IChargeCommand::class),
-                    $app->make(ChargeHelper::class)
-                );
-            }],
+        $this->app->singleton(IChargeQuery::class, function () {
+            return new ChargeQuery();
+        });
 
-            // Observers
-            ShopObserver::class => [self::CBIND, function ($app) {
-                return new ShopObserver(
-                    $app->make(IShopCommand::class)
-                );
-            }],
+        // Commands
+        $this->app->singleton(IChargeCommand::class, function ($app) {
+            return new ChargeCommand($app->make(IChargeQuery::class));
+        });
 
-            // Services (end)
-            ChargeHelper::class => [self::CBIND, function ($app) {
-                return new ChargeHelper(
-                    $app->make(IChargeQuery::class)
-                );
-            }],
-        ];
-        foreach ($binds as $key => $fn) {
-            $this->app->{$fn[0]}($key, $fn[1]);
-        }
+        $this->app->singleton(IShopCommand::class, function ($app) {
+            return new ShopCommand($app->make(IShopQuery::class));
+        });
+
+        // Actions
+        $this->app->bind(InstallShopAction::class, function ($app) {
+            return new InstallShopAction(
+                $app->make(IShopQuery::class),
+                $app->make(IShopCommand::class)
+            );
+        });
+
+        $this->app->bind(AuthenticateShopAction::class, function ($app) {
+            return new AuthenticateShopAction(
+                $app->make(IApiHelper::class),
+                $app->make(InstallShopAction::class),
+                $app->make(DispatchScriptsAction::class),
+                $app->make(DispatchWebhooksAction::class),
+                $app->make(AfterAuthorizeAction::class)
+            );
+        });
+
+        $this->app->bind(GetPlanUrlAction::class, function ($app) {
+            return new GetPlanUrlAction(
+                $app->make(ChargeHelper::class),
+                $app->make(IPlanQuery::class),
+                $app->make(IShopQuery::class));
+        });
+
+        $this->app->bind(CancelCurrentPlanAction::class, function ($app) {
+            return new CancelCurrentPlanAction(
+                $app->make(IShopQuery::class),
+                $app->make(IChargeCommand::class),
+                $app->make(ChargeHelper::class)
+            );
+        });
+
+        $this->app->bind(DispatchWebhooksAction::class, function ($app) {
+            return new DispatchWebhooksAction(
+                $app->make(IShopQuery::class),
+                WebhookInstaller::class
+            );
+        });
+
+        $this->app->bind(DispatchScriptsAction::class, function ($app) {
+            return new DispatchScriptsAction(
+                $app->make(IShopQuery::class),
+                ScripttagInstaller::class
+            );
+        });
+
+        $this->app->bind(AfterAuthorizeAction::class, function ($app) {
+            return new AfterAuthorizeAction($app->make(IShopQuery::class));
+        });
+
+        $this->app->bind(ActivatePlanAction::class, function ($app) {
+            return new ActivatePlanAction(
+                $app->make(CancelCurrentPlanAction::class),
+                $app->make(ChargeHelper::class),
+                $app->make(IShopQuery::class),
+                $app->make(IPlanQuery::class),
+                $app->make(IChargeCommand::class),
+                $app->make(IShopCommand::class)
+            );
+        });
+
+        $this->app->bind(ActivateUsageChargeAction::class, function ($app) {
+            return new ActivateUsageChargeAction(
+                $app->make(ChargeHelper::class),
+                $app->make(IChargeCommand::class),
+                $app->make(IShopQuery::class)
+            );
+        });
+
+        $this->app->bind(DeleteWebhooksAction::class, function ($app) {
+            return new DeleteWebhooksAction(
+                $app->make(IShopQuery::class)
+            );
+        });
+
+        $this->app->bind(CreateWebhooksAction::class, function ($app) {
+            return new CreateWebhooksAction(
+                $app->make(IShopQuery::class)
+            );
+        });
+
+        $this->app->bind(CreateScriptsAction::class, function ($app) {
+            return new CreateScriptsAction(
+                $app->make(IShopQuery::class)
+            );
+        });
+
+        $this->app->bind(CancelChargeAction::class, function ($app) {
+            return new CancelChargeAction(
+                $app->make(IChargeCommand::class),
+                $app->make(ChargeHelper::class)
+            );
+        });
+
+        // Observers
+        $this->app->bind(ShopObserver::class, function ($app) {
+            return new ShopObserver($app->make(IShopCommand::class));
+        });
+
+        // Services (end)
+        $this->app->bind(ChargeHelper::class, function ($app) {
+            return new ChargeHelper($app->make(IChargeQuery::class));
+        });
     }
 
     /**
@@ -239,8 +220,8 @@ class ShopifyAppProvider extends ServiceProvider
      */
     private function bootRoutes(): void
     {
-        $this->loadRoutesFrom(__DIR__.'/resources/routes/shopify.php');
         $this->loadRoutesFrom(__DIR__.'/resources/routes/api.php');
+        $this->loadRoutesFrom(__DIR__.'/resources/routes/shopify.php');
     }
 
     /**
@@ -250,19 +231,13 @@ class ShopifyAppProvider extends ServiceProvider
      */
     private function bootViews(): void
     {
-        // Views
-        $this->loadViewsFrom(
-            __DIR__.'/resources/views',
-            'shopify-app'
-        );
+        $viewResourcesPath = __DIR__.'/resources/views';
 
-        // Views publish
-        $this->publishes(
-            [
-                __DIR__.'/resources/views' => resource_path('views/vendor/shopify-app'),
-            ],
-            'shopify-views'
-        );
+        $this->loadViewsFrom($viewResourcesPath, 'shopify-app');
+
+        $this->publishes([
+            $viewResourcesPath => resource_path('views/vendor/shopify-app'),
+        ], 'shopify-views');
     }
 
     /**
@@ -272,13 +247,9 @@ class ShopifyAppProvider extends ServiceProvider
      */
     private function bootConfig(): void
     {
-        // Config publish
-        $this->publishes(
-            [
-                __DIR__.'/resources/config/shopify-app.php' => "{$this->app->configPath()}/shopify-app.php",
-            ],
-            'shopify-config'
-        );
+        $this->publishes([
+            __DIR__.'/resources/config/shopify-app.php' => "{$this->app->configPath()}/shopify-app.php",
+        ], 'shopify-config');
     }
 
     /**
@@ -288,16 +259,14 @@ class ShopifyAppProvider extends ServiceProvider
      */
     private function bootDatabase(): void
     {
-        // Database migrations
+        $databaseMigrationsPath = __DIR__.'/resources/database/migrations';
+
         if ($this->app['config']->get('shopify-app.manual_migrations')) {
-            $this->publishes(
-                [
-                    __DIR__.'/resources/database/migrations' => "{$this->app->databasePath()}/migrations",
-                ],
-                'shopify-migrations'
-            );
+            $this->publishes([
+                $databaseMigrationsPath => "{$this->app->databasePath()}/migrations",
+            ], 'shopify-migrations');
         } else {
-            $this->loadMigrationsFrom(__DIR__.'/resources/database/migrations');
+            $this->loadMigrationsFrom($databaseMigrationsPath);
         }
     }
 
@@ -308,13 +277,9 @@ class ShopifyAppProvider extends ServiceProvider
      */
     private function bootJobs(): void
     {
-        // Job publish
-        $this->publishes(
-            [
-                __DIR__.'/resources/jobs/AppUninstalledJob.php' => "{$this->app->path()}/Jobs/AppUninstalledJob.php",
-            ],
-            'shopify-jobs'
-        );
+        $this->publishes([
+            __DIR__.'/resources/jobs/AppUninstalledJob.php' => "{$this->app->path()}/Jobs/AppUninstalledJob.php",
+        ], 'shopify-jobs');
     }
 
     /**
@@ -335,11 +300,10 @@ class ShopifyAppProvider extends ServiceProvider
      */
     private function bootMiddlewares(): void
     {
-        // Middlewares
-        $this->app['router']->aliasMiddleware('verify.shopify', VerifyShopify::class);
-        $this->app['router']->aliasMiddleware('auth.webhook', AuthWebhook::class);
         $this->app['router']->aliasMiddleware('auth.proxy', AuthProxy::class);
+        $this->app['router']->aliasMiddleware('auth.webhook', AuthWebhook::class);
         $this->app['router']->aliasMiddleware('billable', Billable::class);
+        $this->app['router']->aliasMiddleware('verify.shopify', VerifyShopify::class);
     }
 
     /**
