@@ -54,7 +54,7 @@ $rules = [
 
 $finder = Finder::create()->in(__DIR__)
     ->notPath([
-        'src/ShopifyApp/resources/config/shopify-app.php',
+        'src/resources/config/shopify-app.php',
     ]);
 
 return (new Config())
