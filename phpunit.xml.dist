@@ -17,15 +17,15 @@
 >
     <coverage>
         <include>
-            <directory suffix=".php">src/ShopifyApp/</directory>
+            <directory suffix=".php">src/</directory>
         </include>
         <exclude>
-            <directory>src/ShopifyApp/Contracts/</directory>
-            <directory>src/ShopifyApp/Exceptions/</directory>
-            <directory>src/ShopifyApp/Objects/Enums/</directory>
-            <directory>src/ShopifyApp/resources/</directory>
-            <file>src/ShopifyApp/Messaging/Events/AppLoggedIn.php</file>
-            <file>src/ShopifyApp/ShopifyAppProvider.php</file>
+            <directory>src/Contracts/</directory>
+            <directory>src/Exceptions/</directory>
+            <directory>src/Objects/Enums/</directory>
+            <directory>src/resources/</directory>
+            <file>src/Messaging/Events/AppLoggedIn.php</file>
+            <file>src/ShopifyAppProvider.php</file>
         </exclude>
         <report>
             <clover outputFile="build/logs/clover.xml"/>
