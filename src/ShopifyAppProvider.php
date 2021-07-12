@@ -129,7 +129,8 @@ class ShopifyAppProvider extends ServiceProvider
             return new GetPlanUrlAction(
                 $app->make(ChargeHelper::class),
                 $app->make(IPlanQuery::class),
-                $app->make(IShopQuery::class));
+                $app->make(IShopQuery::class)
+            );
         });
 
         $this->app->bind(CancelCurrentPlanAction::class, function ($app) {
