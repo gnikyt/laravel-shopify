@@ -21,7 +21,7 @@ class WebhookControllerTest extends TestCase
         // Mock headers that match Shopify
         $shop = factory($this->model)->create(['name' => 'example.myshopify.com']);
         $headers = [
-            'HTTP_CONTENT_TYPE'          => 'application/json',
+            'HTTP_CONTENT_TYPE' => 'application/json',
             'HTTP_X_SHOPIFY_SHOP_DOMAIN' => $shop->name,
             'HTTP_X_SHOPIFY_HMAC_SHA256' => 'hvTE9wpDzMcDnPEuHWvYZ58ElKn5vHs0LomurfNIuUc=', // Matches fixture data and API secret
         ];

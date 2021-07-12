@@ -70,7 +70,7 @@ class BillingControllerTest extends TestCase
             "/billing/process/{$plan->id}",
             [
                 'charge_id' => 1,
-                'shop'      => $shop->getDomain()->toNative(),
+                'shop' => $shop->getDomain()->toNative(),
             ]
         );
 

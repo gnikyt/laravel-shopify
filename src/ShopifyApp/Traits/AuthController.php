@@ -50,7 +50,7 @@ trait AuthController
             return View::make(
                 'shopify-app::auth.fullpage_redirect',
                 [
-                    'authUrl'    => $result['url'],
+                    'authUrl' => $result['url'],
                     'shopDomain' => $shopDomain->toNative(),
                 ]
             );
@@ -88,7 +88,7 @@ trait AuthController
             'shopify-app::auth.token',
             [
                 'shopDomain' => $shopDomain->toNative(),
-                'target'     => $cleanTarget,
+                'target' => $cleanTarget,
             ]
         );
     }

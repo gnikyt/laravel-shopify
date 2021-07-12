@@ -35,9 +35,9 @@ class StoreUsageCharge extends FormRequest
         $validator->after(function (Validator $validator) {
             // Get the input values needed
             $data = [
-                'price'       => $this->request->get('price'),
+                'price' => $this->request->get('price'),
                 'description' => $this->request->get('description'),
-                'signature'   => $this->request->get('signature'),
+                'signature' => $this->request->get('signature'),
             ];
             if ($this->request->has('redirect')) {
                 $data['redirect'] = $this->request->get('redirect');
@@ -49,7 +49,7 @@ class StoreUsageCharge extends FormRequest
             // Confirm the charge hasn't been tampered with
             $signatureLocal = Util::createHmac(
                 [
-                    'data'       => $data,
+                    'data' => $data,
                     'buildQuery' => true,
                 ],
                 Util::getShopifyConfig('api_secret')
@@ -69,10 +69,10 @@ class StoreUsageCharge extends FormRequest
     public function rules(): array
     {
         return [
-            'signature'   => 'required|string',
-            'price'       => 'required|numeric',
+            'signature' => 'required|string',
+            'price' => 'required|numeric',
             'description' => 'required|string',
-            'redirect'    => 'nullable|string',
+            'redirect' => 'nullable|string',
         ];
     }
 }

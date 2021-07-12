@@ -7,7 +7,7 @@ use Osiset\ShopifyApp\Storage\Models\Plan;
 
 $factory->define(Plan::class, function (Faker $faker) {
     return [
-        'name'  => $faker->word,
+        'name' => $faker->word,
         'price' => $faker->randomFloat(),
     ];
 });
@@ -15,7 +15,7 @@ $factory->define(Plan::class, function (Faker $faker) {
 $factory->state(Plan::class, 'usage', function ($faker) {
     return [
         'capped_amount' => $faker->randomFloat(),
-        'terms'         => $faker->sentence,
+        'terms' => $faker->sentence,
     ];
 });
 

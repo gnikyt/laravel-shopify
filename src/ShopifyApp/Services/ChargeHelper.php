@@ -168,7 +168,7 @@ class ChargeHelper
     public function remainingDaysForPeriod(): int
     {
         $pastDaysForPeriod = $this->pastDaysForPeriod();
-        if (is_null($pastDaysForPeriod) ||
+        if ($pastDaysForPeriod === null ||
             ($pastDaysForPeriod === 0 && Carbon::parse($this->charge->cancelled_on)->lt(Carbon::today()))
         ) {
             return 0;

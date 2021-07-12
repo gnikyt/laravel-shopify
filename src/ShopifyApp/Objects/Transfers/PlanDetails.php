@@ -68,13 +68,13 @@ final class PlanDetails extends AbstractTransfer
     public function toArray(): array
     {
         return [
-            'name'          => $this->name,
-            'price'         => $this->price,
-            'interval'      => $this->interval,
-            'test'          => $this->test,
-            'trial_days'    => $this->trialDays,
-            'return_url'    => $this->returnUrl,
-            'terms'         => $this->terms,
+            'name' => $this->name,
+            'price' => $this->price,
+            'interval' => $this->interval,
+            'test' => $this->test,
+            'trial_days' => $this->trialDays,
+            'return_url' => $this->returnUrl,
+            'terms' => $this->terms,
             'capped_amount' => $this->cappedAmount,
         ];
     }

@@ -25,6 +25,7 @@ abstract class AbstractTransfer implements IteratorAggregate, JsonSerializable
     {
         // Does not exist, throw exception
         $className = get_class($this);
+
         throw new Exception("Property {$key} does not exist on transfer class {$className}");
     }
 
@@ -42,6 +43,7 @@ abstract class AbstractTransfer implements IteratorAggregate, JsonSerializable
     {
         // Not allowed, throw exception
         $className = get_class($this);
+
         throw new Exception("Setting property {$key} for transfer class {$className} is not allowed");
     }
 

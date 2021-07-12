@@ -25,7 +25,7 @@ class CreateWebhooksTest extends TestCase
         // Create the config
         $webhooks = [
             [
-                'topic'   => 'ORDERS_CREATE',
+                'topic' => 'ORDERS_CREATE',
                 'address' => 'https://localhost/webhooks/orders-create',
             ],
         ];
@@ -58,15 +58,15 @@ class CreateWebhooksTest extends TestCase
         // Create the config
         $webhooks = [
             [
-                'topic'   => 'ORDERS_CREATE',
+                'topic' => 'ORDERS_CREATE',
                 'address' => 'https://localhost/webhooks/orders-create',
             ],
             [
-                'topic'   => 'ORDERS_CREATE',
+                'topic' => 'ORDERS_CREATE',
                 'address' => 'https://localhost/webhooks/orders-create-different',
             ],
             [
-                'topic'   => 'APP_UNINSTALLED',
+                'topic' => 'APP_UNINSTALLED',
                 'address' => 'http://apple.com/uninstall',
             ],
         ];

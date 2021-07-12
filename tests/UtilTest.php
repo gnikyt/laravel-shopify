@@ -87,9 +87,9 @@ class UtilTest extends TestCase
     {
         // REST-format topics are changed to the GraphQL format
         $topics = [
-            'app/uninstalled'            => 'APP_UNINSTALLED',
+            'app/uninstalled' => 'APP_UNINSTALLED',
             'orders/partially_fulfilled' => 'ORDERS_PARTIALLY_FULFILLED',
-            'order_transactions/create'  => 'ORDER_TRANSACTIONS_CREATE',
+            'order_transactions/create' => 'ORDER_TRANSACTIONS_CREATE',
         ];
 
         foreach ($topics as $restTopic => $graphQLTopic) {

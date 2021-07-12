@@ -26,7 +26,7 @@ abstract class TokenUrl
         return [
             Util::getShopifyConfig('route_names.authenticate.token'),
             [
-                'shop'   => ShopDomain::fromRequest(Request::instance())->toNative(),
+                'shop' => ShopDomain::fromRequest(Request::instance())->toNative(),
                 'target' => URL::route($route, $params, $absolute),
             ],
         ];

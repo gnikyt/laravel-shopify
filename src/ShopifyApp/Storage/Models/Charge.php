@@ -37,9 +37,9 @@ class Charge extends Model
      * @var array
      */
     protected $casts = [
-        'test'          => 'bool',
+        'test' => 'bool',
         'capped_amount' => 'float',
-        'price'         => 'float',
+        'price' => 'float',
     ];
 
     /**
@@ -103,8 +103,8 @@ class Charge extends Model
     public function getTypeApiString($plural = false): string
     {
         $types = [
-            ChargeType::CREDIT()->toNative()    => 'application_credit',
-            ChargeType::CHARGE()->toNative()    => 'application_charge',
+            ChargeType::CREDIT()->toNative() => 'application_credit',
+            ChargeType::CHARGE()->toNative() => 'application_charge',
             ChargeType::RECURRING()->toNative() => 'recurring_application_charge',
         ];
         $type = $types[$this->getType()->toNative()];
@@ -151,7 +151,7 @@ class Charge extends Model
      */
     public function isTrial(): bool
     {
-        return ! is_null($this->trial_ends_on);
+        return $this->trial_ends_on !== null;
     }
 
     /**
@@ -213,7 +213,7 @@ class Charge extends Model
      */
     public function isCancelled(): bool
     {
-        return ! is_null($this->cancelled_on) || $this->isStatus(ChargeStatus::CANCELLED());
+        return $this->cancelled_on !== null || $this->isStatus(ChargeStatus::CANCELLED());
     }
 
     /**

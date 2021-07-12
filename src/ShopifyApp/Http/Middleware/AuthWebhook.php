@@ -30,8 +30,8 @@ class AuthWebhook
         $data = $request->getContent();
         $hmacLocal = Util::createHmac(
             [
-                'data'   => $data,
-                'raw'    => true,
+                'data' => $data,
+                'raw' => true,
                 'encode' => true,
             ],
             Util::getShopifyConfig('api_secret', $shop)

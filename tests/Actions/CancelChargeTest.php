@@ -39,8 +39,8 @@ class CancelChargeTest extends TestCase
         // Create a charge for the plan and shop
         factory(Charge::class)->states('type_recurring')->create([
             'charge_id' => $chargeRef->toNative(),
-            'plan_id'   => $plan->getId()->toNative(),
-            'user_id'   => $shop->getId()->toNative(),
+            'plan_id' => $plan->getId()->toNative(),
+            'user_id' => $shop->getId()->toNative(),
         ]);
 
         $result = call_user_func($this->action, $chargeRef);
@@ -69,8 +69,8 @@ class CancelChargeTest extends TestCase
         // Create a charge for the plan and shop
         factory(Charge::class)->states('type_usage')->create([
             'charge_id' => $chargeRef->toNative(),
-            'plan_id'   => $plan->getId()->toNative(),
-            'user_id'   => $shop->getId()->toNative(),
+            'plan_id' => $plan->getId()->toNative(),
+            'user_id' => $shop->getId()->toNative(),
         ]);
 
         call_user_func($this->action, $chargeRef);

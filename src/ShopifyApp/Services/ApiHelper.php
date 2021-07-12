@@ -165,7 +165,7 @@ class ApiHelper implements IApiHelper
         // Setup the params
         $reqParams = array_merge(
             [
-                'limit'  => 250,
+                'limit' => 250,
                 'fields' => 'id,src',
             ],
             $params
@@ -269,6 +269,7 @@ class ApiHelper implements IApiHelper
 
     /**
      * {@inheritdoc}
+     *
      * @throws Exception
      */
     public function createChargeGraphQL(PlanDetailsTransfer $payload): ResponseAccess
@@ -300,16 +301,16 @@ class ApiHelper implements IApiHelper
         }
         ';
         $variables = [
-            'name'      => $payload->name,
+            'name' => $payload->name,
             'returnUrl' => $payload->returnUrl,
             'trialDays' => $payload->trialDays,
-            'test'      => $payload->test,
+            'test' => $payload->test,
             'lineItems' => [
                 [
                     'plan' => [
                         'appRecurringPricingDetails' => [
-                            'price'    => [
-                                'amount'       => $payload->price,
+                            'price' => [
+                                'amount' => $payload->price,
                                 'currencyCode' => 'USD',
                             ],
                             'interval' => $payload->interval,
@@ -326,6 +327,7 @@ class ApiHelper implements IApiHelper
 
     /**
      * {@inheritdoc}
+     *
      * @throws Exception
      */
     public function getWebhooks(array $params = []): ResponseAccess
@@ -359,6 +361,7 @@ class ApiHelper implements IApiHelper
 
     /**
      * {@inheritdoc}
+     *
      * @throws Exception
      */
     public function createWebhook(array $payload): ResponseAccess
@@ -388,10 +391,10 @@ class ApiHelper implements IApiHelper
         // to GraphQL-format topics ("RESOURCE_EVENT"), for pre-v17 compatibility
         $topic = Util::getGraphQLWebhookTopic($payload['topic']);
         $variables = [
-            'topic'               => $topic,
+            'topic' => $topic,
             'webhookSubscription' => [
                 'callbackUrl' => $payload['address'],
-                'format'      => 'JSON',
+                'format' => 'JSON',
             ],
         ];
 
@@ -402,6 +405,7 @@ class ApiHelper implements IApiHelper
 
     /**
      * {@inheritdoc}
+     *
      * @throws Exception
      */
     public function deleteWebhook(string $webhookId): ResponseAccess
@@ -439,7 +443,7 @@ class ApiHelper implements IApiHelper
             "/admin/recurring_application_charges/{$payload->chargeReference->toNative()}/usage_charges.json",
             [
                 'usage_charge' => [
-                    'price'       => $payload->price,
+                    'price' => $payload->price,
                     'description' => $payload->description,
                 ],
             ]
@@ -553,7 +557,7 @@ class ApiHelper implements IApiHelper
         ];
         foreach ($options as $fn) {
             $result = $fn();
-            if (! is_null($result)) {
+            if ($result !== null) {
                 return NullableShopDomain::fromNative($result);
             }
         }

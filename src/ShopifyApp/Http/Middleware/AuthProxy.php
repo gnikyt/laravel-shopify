@@ -69,7 +69,7 @@ class AuthProxy
         // Build a local signature
         $signatureLocal = Util::createHmac(
             [
-                'data'       => $query,
+                'data' => $query,
                 'buildQuery' => true,
             ],
             Util::getShopifyConfig('api_secret', $shop)

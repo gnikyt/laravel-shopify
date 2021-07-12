@@ -19,10 +19,10 @@ class Plan extends Model
      * @var array
      */
     protected $casts = [
-        'test'          => 'bool',
-        'on_install'    => 'bool',
+        'test' => 'bool',
+        'on_install' => 'bool',
         'capped_amount' => 'float',
-        'price'         => 'float',
+        'price' => 'float',
     ];
 
     /**
@@ -87,7 +87,7 @@ class Plan extends Model
     public function getTypeApiString($plural = false): string
     {
         $types = [
-            PlanType::ONETIME()->toNative()   => 'application_charge',
+            PlanType::ONETIME()->toNative() => 'application_charge',
             PlanType::RECURRING()->toNative() => 'recurring_application_charge',
         ];
         $type = $types[$this->getType()->toNative()];
