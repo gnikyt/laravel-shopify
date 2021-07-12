@@ -59,42 +59,42 @@ class Util
      * Array parameters such as `name[]=value1&name[]=value2` becomes `['name[]' => ['value1', 'value2']] in Shopify.
      * See: https://github.com/rack/rack/blob/f9ad97fd69a6b3616d0a99e6bedcfb9de2f81f6c/lib/rack/query_parser.rb#L36
      *
-     * @param string $qs The query string.
-     * @param string|null $d  The delimiter.
+     * @param string $queryString The query string.
+     * @param string|null $delimiter  The delimiter.
      *
      * @return mixed
      */
-    public static function parseQueryString(string $qs, string $d = null): array
+    public static function parseQueryString(string $queryString, string $delimiter = null): array
     {
-        $COMMON_SEP = [';' => '/[;]\s*/', ';,' => '/[;,]\s*/', '&' => '/[&]\s*/'];
-        $DEFAULT_SEP = '/[&;]\s*/';
+        $commonSeparator = [';' => '/[;]\s*/', ';,' => '/[;,]\s*/', '&' => '/[&]\s*/'];
+        $defaultSeparator = '/[&;]\s*/';
 
         $params = [];
         $split = preg_split(
-            $d ? $COMMON_SEP[$d] || '/['.$d.']\s*/' : $DEFAULT_SEP,
-            $qs ?? ''
+            $delimiter ? $commonSeparator[$delimiter] || '/['.$delimiter.']\s*/' : $defaultSeparator,
+            $queryString ?? ''
         );
 
-        foreach ($split as $p) {
-            if (! $p) {
+        foreach ($split as $part) {
+            if (! $part) {
                 continue;
             }
 
-            [$k, $v] = strpos($p, '=') !== false ? explode('=', $p, 2) : [$p, null];
+            [$key, $value] = strpos($part, '=') !== false ? explode('=', $part, 2) : [$part, null];
 
-            $k = urldecode($k);
-            $v = $v !== null ? urldecode($v) : $v;
+            $key = urldecode($key);
+            $value = $value !== null ? urldecode($value) : $value;
 
-            if (isset($params[$k])) {
-                $cur = $params[$k];
+            if (isset($params[$key])) {
+                $cur = $params[$key];
 
                 if (is_array($cur)) {
-                    $params[$k][] = $v;
+                    $params[$key][] = $value;
                 } else {
-                    $params[$k] = [$cur, $v];
+                    $params[$key] = [$cur, $value];
                 }
             } else {
-                $params[$k] = $v;
+                $params[$key] = $value;
             }
         }
 
