@@ -26,7 +26,7 @@ class Billable
         if (Util::getShopifyConfig('billing_enabled') === true) {
             /** @var $shop IShopModel */
             $shop = auth()->user();
-            if (! $shop->isFreemium() && ! $shop->isGrandfathered() && ! $shop->plan) {
+            if (! $shop->plan && ! $shop->isFreemium() && ! $shop->isGrandfathered()) {
                 // They're not grandfathered in, and there is no charge or charge was declined... redirect to billing
                 return Redirect::route(
                     Util::getShopifyConfig('route_names.billing'),
