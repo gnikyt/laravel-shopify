@@ -36,7 +36,7 @@ For more information, tutorials, etc., please view the project's [wiki](https://
 - [x] Authentication & installation for shops (both per-user and offline types)
 - [x] Plan & billing integration for single, recurring, and usage-types
 - [x] Tracking charges to a shop (recurring, single, usage, etc) with trial support
-- [x] Auto install app webhooks and scripttags thorugh background jobs
+- [x] Auto install app webhooks and scripttags through background jobs
 - [x] Provide basic AppBridge views
 - [x] Handles and processes incoming webhooks
 - [x] Handles and verifies incoming app proxy requests
@@ -62,13 +62,13 @@ This project is released under the MIT [license](https://github.com/osiset/larav
 
 #### Contributors
 
-Contibutions are always welcome! Contibutors are updated each release, pulled from Github. See `CONTRIBUTORS.txt`.
+Contributions are always welcome! Contibutors are updated each release, pulled from Github. See `CONTRIBUTORS.txt`.
 
 If you're looking to become a contributor, please see `CONTRIBUTING.md`.
 
 #### Maintainers
 
-Maintainers are users who manage the repository itself, wheather its managing the issues, assisting in releases, or helping with pull requests.
+Maintainers are users who manage the repository itself, whether it's managing the issues, assisting in releases, or helping with pull requests.
 
 Currently this repository is maintained by:
 

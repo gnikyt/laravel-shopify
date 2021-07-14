@@ -10,7 +10,7 @@ use Osiset\ShopifyApp\Objects\Values\ChargeReference;
 use Osiset\ShopifyApp\Objects\Values\ShopId;
 
 /**
- * Reprecents commands for charges.
+ * Represents commands for charges.
  */
 interface Charge
 {

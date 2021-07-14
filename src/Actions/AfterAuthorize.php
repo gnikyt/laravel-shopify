@@ -72,7 +72,7 @@ class AfterAuthorize
         if (Arr::has($jobsConfig, 0)) {
             // We have multi-jobs
             foreach ($jobsConfig as $jobConfig) {
-                // We have a job, pass the shop object to the contructor
+                // We have a job, pass the shop object to the constructor
                 $fireJob($jobConfig, $shop);
             }
 

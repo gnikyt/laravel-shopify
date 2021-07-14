@@ -117,7 +117,7 @@ return [
     'appbridge_enabled' => (bool) env('SHOPIFY_APPBRIDGE_ENABLED', true),
 
     // Use semver range to link to a major or minor version number.
-    // Leaving empty will use the latest verison - not recommended in production.
+    // Leaving empty will use the latest version - not recommended in production.
     'appbridge_version' => env('SHOPIFY_APPBRIDGE_VERSION', 'latest'),
 
     /*
@@ -137,7 +137,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | This option is for the app's API version string.
-    | Use "YYYY-MM" or "unstable". Refer to Shopify's documentation
+    | Use "YYYY-MM" or "unstable". Refer to Shopify documentation
     | at https://shopify.dev/api/usage/versioning#release-schedule
     | for the current stable version.
     |
@@ -243,7 +243,7 @@ return [
     | Shopify API Init Function
     |--------------------------------------------------------------------------
     |
-    | This option is for initing the BasicShopifyAPI package yourself.
+    | This option is for initializing the BasicShopifyAPI package yourself.
     | The first param injected in is the current options.
     |    (\Osiset\BasicShopifyAPI\Options)
     | The second param injected in is the session (if available) .

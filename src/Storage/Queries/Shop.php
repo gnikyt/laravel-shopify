@@ -10,7 +10,7 @@ use Osiset\ShopifyApp\Contracts\ShopModel;
 use Osiset\ShopifyApp\Util;
 
 /**
- * Reprecents shop queries.
+ * Represents shop queries.
  */
 class Shop implements IShopQuery
 {

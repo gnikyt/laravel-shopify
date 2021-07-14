@@ -109,7 +109,7 @@ abstract class TestCase extends OrchestraTestCase
 
     protected function swapEnvironment(string $env, Closure $fn): void
     {
-        // Get the current environemnt
+        // Get the current environment
         $currentEnv = App::environment();
 
         // Set the environment

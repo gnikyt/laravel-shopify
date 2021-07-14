@@ -11,7 +11,7 @@ use Osiset\ShopifyApp\Contracts\Objects\Values\SessionToken as SessionTokenValue
 
 /**
  * Used to inject current session data into the user's model.
- * TODO: Possibily move this to a composite VO?
+ * TODO: Possibly move this to a composite VO?
  */
 final class SessionContext implements ValueObject
 {

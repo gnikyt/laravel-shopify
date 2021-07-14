@@ -8,7 +8,7 @@ use Osiset\ShopifyApp\Objects\Values\ShopId;
 use Osiset\ShopifyApp\Services\ChargeHelper;
 
 /**
- * Cancel's the shop's current plan (in the database).
+ * Cancels the shop's current plan (in the database).
  */
 class CancelCurrentPlan
 {

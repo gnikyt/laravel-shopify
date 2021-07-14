@@ -8,7 +8,7 @@ use Osiset\ShopifyApp\Contracts\Queries\Plan as IPlanQuery;
 use Osiset\ShopifyApp\Storage\Models\Plan as PlanModel;
 
 /**
- * Reprecents plan queries.
+ * Represents plan queries.
  */
 class Plan implements IPlanQuery
 {

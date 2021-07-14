@@ -10,7 +10,7 @@ use Osiset\ShopifyApp\Objects\Values\ChargeReference;
 use Osiset\ShopifyApp\Objects\Values\ShopId;
 
 /**
- * Reprecents create charge.
+ * Represents create charge.
  */
 final class Charge extends AbstractTransfer
 {

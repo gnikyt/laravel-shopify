@@ -18,7 +18,7 @@ final class ShopDomain implements ShopDomainValue
     use StringTrait;
 
     /**
-     * Contructor.
+     * Constructor.
      *
      * @param string $domain The shop's domain.
      *

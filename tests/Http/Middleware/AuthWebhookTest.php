@@ -54,7 +54,7 @@ class AuthWebhookTest extends TestCase
             // Server vars
             // This valid referer should be ignored as there is a get variable
             array_merge(Request::server(), [
-                'HTTP_X_Shopify_Shop_Domain' => 'exapmle.myshopify.com',
+                'HTTP_X_Shopify_Shop_Domain' => 'example.myshopify.com',
             ])
         );
 

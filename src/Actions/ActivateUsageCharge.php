@@ -85,11 +85,11 @@ class ActivateUsageCharge
         $ucd->chargeReference = $currentCharge->getReference();
         $response = $shop->apiHelper()->createUsageCharge($ucd);
         if (! $response) {
-            // Could not make usage charge, limit possibily reached
+            // Could not make usage charge, limit possibly reached
             return false;
         }
 
-        // Create the transder
+        // Create the transfer
         $uct = new UsageChargeTransfer();
         $uct->shopId = $shopId;
         $uct->planId = $shop->plan->getId();

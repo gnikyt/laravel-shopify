@@ -7,7 +7,7 @@ use Osiset\ShopifyApp\Contracts\Objects\Values\PlanId;
 use Osiset\ShopifyApp\Storage\Models\Plan as PlanModel;
 
 /**
- * Reprecents a queries for plans.
+ * Represents a queries for plans.
  */
 interface Plan
 {

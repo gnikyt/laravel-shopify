@@ -20,7 +20,7 @@ use Osiset\ShopifyApp\Storage\Models\Plan;
 use Osiset\ShopifyApp\Storage\Scopes\Namespacing;
 
 /**
- * Responsible for reprecenting a shop record.
+ * Responsible for representing a shop record.
  */
 trait ShopModel
 {
@@ -43,7 +43,7 @@ trait ShopModel
     /**
      * Boot the trait.
      *
-     * Note that the method boot[TraitName] is auotmatically booted by Laravel.
+     * Note that the method boot[TraitName] is automatically booted by Laravel.
      *
      * @return void
      */

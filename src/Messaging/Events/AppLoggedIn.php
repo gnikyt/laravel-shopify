@@ -22,7 +22,7 @@ class AppLoggedIn
     protected $shop;
 
     /**
-     * Create a new evebt instance.
+     * Create a new event instance.
      *
      * @param IShopModel $shop The shop.
      *

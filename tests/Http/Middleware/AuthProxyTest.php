@@ -21,10 +21,10 @@ class AuthProxyTest extends TestCase
         // Make the shop
         factory($this->model)->create(['name' => 'shop-name.myshopify.com']);
 
-        // From Shopify's docs
+        // From Shopify docs
         $this->queryString = 'extra=1&extra=2&shop=shop-name.myshopify.com&path_prefix=%2Fapps%2Fawesome_reviews&timestamp=1317327555&signature=a9718877bea71c2484f91608a7eaea1532bdf71f5c56825065fa4ccabe549ef3';
 
-        // From Shopify's docs
+        // From Shopify docs
         $this->queryParams = [
             'extra' => ['1', '2'],
             'shop' => 'shop-name.myshopify.com',
@@ -44,7 +44,7 @@ class AuthProxyTest extends TestCase
             'signature' => '6f4b878d5340128aab03a234676dba228432b0b8b72863828ec143e4c5772124',
         ];
 
-        // Set the app secret to match Shopify's docs
+        // Set the app secret to match Shopify docs
         $this->app['config']->set('shopify-app.api_secret', 'hush');
     }
 

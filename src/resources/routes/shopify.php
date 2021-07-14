@@ -67,7 +67,7 @@ Route::group(['prefix' => Util::getShopifyConfig('prefix'), 'middleware' => ['we
     |--------------------------------------------------------------------------
     |
     | This route is hit when a shop comes to the app without a session token
-    | yet. A token will be grabbed from Shopify's AppBridge Javascript
+    | yet. A token will be grabbed from Shopify AppBridge Javascript
     | and then forwarded back to the home route.
     |
     */

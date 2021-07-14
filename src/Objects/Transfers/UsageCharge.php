@@ -9,7 +9,7 @@ use Osiset\ShopifyApp\Objects\Enums\ChargeType;
 use Osiset\ShopifyApp\Objects\Values\ShopId;
 
 /**
- * Reprecents create usage charge.
+ * Represents create usage charge.
  */
 final class UsageCharge extends AbstractTransfer
 {

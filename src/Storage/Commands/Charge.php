@@ -14,7 +14,7 @@ use Osiset\ShopifyApp\Objects\Values\ShopId;
 use Osiset\ShopifyApp\Storage\Models\Charge as ChargeModel;
 
 /**
- * Reprecents the commands for charges.
+ * Represents the commands for charges.
  */
 class Charge implements ChargeCommand
 {
