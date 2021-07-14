@@ -55,7 +55,7 @@ class Util
     /**
      * Parse query strings the same way as Rack::Until in Ruby. (This is a port from Rack 2.3.0.).
      *
-     * From Shopify's docs, they use Rack::Util.parse_query, which does *not* parse array parameters properly.
+     * From Shopify docs, they use Rack::Util.parse_query, which does *not* parse array parameters properly.
      * Array parameters such as `name[]=value1&name[]=value2` becomes `['name[]' => ['value1', 'value2']] in Shopify.
      * See: https://github.com/rack/rack/blob/f9ad97fd69a6b3616d0a99e6bedcfb9de2f81f6c/lib/rack/query_parser.rb#L36
      *

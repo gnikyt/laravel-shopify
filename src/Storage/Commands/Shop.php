@@ -13,7 +13,7 @@ use Osiset\ShopifyApp\Contracts\ShopModel;
 use Osiset\ShopifyApp\Util;
 
 /**
- * Reprecents the commands for shops.
+ * Represents the commands for shops.
  */
 class Shop implements ShopCommand
 {

@@ -3,7 +3,7 @@
 namespace Osiset\ShopifyApp\Objects\Transfers;
 
 /**
- * Reprecents details for a plan.
+ * Represents details for a plan.
  */
 final class PlanDetails extends AbstractTransfer
 {

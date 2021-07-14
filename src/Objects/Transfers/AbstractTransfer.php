@@ -8,7 +8,7 @@ use IteratorAggregate;
 use JsonSerializable;
 
 /**
- * Reprecents the base for DTO.
+ * Represents the base for DTO.
  */
 abstract class AbstractTransfer implements IteratorAggregate, JsonSerializable
 {

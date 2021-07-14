@@ -32,7 +32,7 @@ class CreateChargesTable extends Migration
             // Terms for the usage charges
             $table->string('terms')->nullable();
 
-            // Integer value reprecenting a recurring, one time, usage, or application_credit.
+            // Integer value representing a recurring, one time, usage, or application_credit.
             // This also allows us to store usage based charges not just subscription or one time charges.
             // We will be able to do things like create a charge history for a shop if they have multiple charges.
             // For instance, usage based or an app that has multiple purchases.
@@ -56,7 +56,7 @@ class CreateChargesTable extends Migration
             // Date the trial period ends
             $table->timestamp('trial_ends_on')->nullable();
 
-            // Not supported on Shopify's initial billing screen, but good for future use
+            // Not supported on Shopify initial billing screen, but good for future use
             $table->timestamp('cancelled_on')->nullable();
 
             // Expires on
@@ -100,7 +100,7 @@ class CreateChargesTable extends Migration
     }
 
     /**
-     * Get Laravel's version.
+     * Get Laravel version.
      *
      * @return float
      */

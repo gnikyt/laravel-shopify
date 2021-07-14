@@ -8,7 +8,7 @@ use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopId as ShopIdValue;
 
 /**
- * Reprecents commands for shops.
+ * Represents commands for shops.
  */
 interface Shop
 {

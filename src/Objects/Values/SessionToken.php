@@ -123,7 +123,7 @@ final class SessionToken implements SessionTokenValue
     protected $shopDomain;
 
     /**
-     * Contructor.
+     * Constructor.
      *
      * @param string $token The JWT.
      * @param bool $verifyToken Should the token be verified? Use false to only decode the token.

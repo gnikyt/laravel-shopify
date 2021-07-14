@@ -13,7 +13,7 @@ use Osiset\ShopifyApp\Contracts\Objects\Values\ShopId as ShopIdValue;
 use Osiset\ShopifyApp\Objects\Values\SessionContext;
 
 /**
- * Reprecents the shop model.
+ * Represents the shop model.
  */
 interface ShopModel extends Authenticatable
 {

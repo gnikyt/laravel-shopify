@@ -5,7 +5,7 @@ namespace Osiset\ShopifyApp\Objects\Transfers;
 use Osiset\ShopifyApp\Objects\Values\ChargeReference;
 
 /**
- * Reprecents details for a usage charge.
+ * Represents details for a usage charge.
  */
 final class UsageChargeDetails extends AbstractTransfer
 {
@@ -24,7 +24,7 @@ final class UsageChargeDetails extends AbstractTransfer
     public $price;
 
     /**
-     * Useage charge description.
+     * Usage charge description.
      *
      * @var string
      */

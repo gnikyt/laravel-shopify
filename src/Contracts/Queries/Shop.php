@@ -8,7 +8,7 @@ use Osiset\ShopifyApp\Contracts\Objects\Values\ShopId as ShopIdValue;
 use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
 
 /**
- * Reprecents a queries for shops.
+ * Represents a queries for shops.
  */
 interface Shop
 {

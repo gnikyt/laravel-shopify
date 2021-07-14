@@ -9,7 +9,7 @@ use Osiset\ShopifyApp\Objects\Values\ShopId;
 use Osiset\ShopifyApp\Storage\Models\Charge as ChargeModel;
 
 /**
- * Reprecents a queries for charges.
+ * Represents a queries for charges.
  */
 class Charge implements IChargeQuery
 {

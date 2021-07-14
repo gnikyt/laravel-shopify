@@ -13,7 +13,7 @@ use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails;
 use Osiset\ShopifyApp\Objects\Values\ChargeReference;
 
 /**
- * Reprecents the API helper.
+ * Represents the API helper.
  */
 interface ApiHelper
 {
