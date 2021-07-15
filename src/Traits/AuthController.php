@@ -58,7 +58,10 @@ trait AuthController
             // Go to home route
             return Redirect::route(
                 Util::getShopifyConfig('route_names.home'),
-                ['shop' => $shopDomain->toNative()]
+                [
+                    'shop' => $shopDomain->toNative(),
+                    'host' => $request->host,
+                ]
             );
         }
     }
