@@ -83,12 +83,8 @@ jobs:
 
       - name: Run static code analysis
         if: matrix.analysis == true
-        run: vendor/bin/phpstan --memory-limit 0
+        run: vendor/bin/phpstan --memory-limit=-1
 
       - name: Upload coverage results
+        uses: codecov/codecov-action@v1
         if: matrix.coverage != 'none'
-        env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          composer require php-coveralls/php-coveralls --dev
-          vendor/bin/php-coveralls --coverage_clover=build/logs/clover.xml -v

@@ -1,8 +1,7 @@
 # Laravel Shopify App
 
 ![Tests](https://github.com/osiset/laravel-shopify/workflows/Package%20Test/badge.svg?branch=master)
-[![Coverage](https://coveralls.io/repos/github/osiset/laravel-shopify/badge.svg?branch=master)](https://coveralls.io/github/osiset/laravel-shopify?branch=master)
-[![StyleCI](https://styleci.io/repos/96462257/shield?style=flat)](https://github.styleci.io/repos/96462257)
+[![codecov](https://codecov.io/gh/osiset/laravel-shopify/branch/master/graph/badge.svg?token=qqUuLItqJj)](https://codecov.io/gh/osiset/laravel-shopify)
 [![License](https://poser.pugx.org/osiset/laravel-shopify/license)](https://packagist.org/packages/osiset/laravel-shopify)
 
 ----
