@@ -54,7 +54,7 @@ class ShopifyAppProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         $this->bootRoutes();
         $this->bootViews();
@@ -72,7 +72,7 @@ class ShopifyAppProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         $this->mergeConfigFrom(__DIR__.'/resources/config/shopify-app.php', 'shopify-app');
 

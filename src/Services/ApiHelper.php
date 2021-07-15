@@ -201,7 +201,7 @@ class ApiHelper implements IApiHelper
      * {@inheritdoc}
      * TODO: Convert to GraphQL.
      */
-    public function deleteScriptTag(int $scriptTagId): ResponseAccess
+    public function deleteScriptTag(int $scriptTagId)
     {
         // Fire the request
         $response = $this->doRequest(
@@ -485,7 +485,7 @@ class ApiHelper implements IApiHelper
      *
      * @return array
      */
-    protected function doRequest(ApiMethod $method, string $path, array $payload = null)
+    protected function doRequest(ApiMethod $method, string $path, array $payload = null): array
     {
         $response = $this->api->rest($method->toNative(), $path, $payload);
         if ($response['errors'] === true) {

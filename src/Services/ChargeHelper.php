@@ -77,7 +77,7 @@ class ChargeHelper
      *
      * @param IShopModel $shop The shop.
      *
-     * @return array
+     * @return \Osiset\BasicShopifyAPI\ResponseAccess
      */
     public function retrieve(IShopModel $shop)
     {

@@ -51,7 +51,7 @@ class WebhookJobMakeCommand extends JobMakeCommand
     /**
      * {@inheritDoc}
      */
-    public function handle()
+    public function handle(): ?bool
     {
         $result = parent::handle();
         $topic = Util::getGraphQLWebhookTopic($this->argument('topic'));

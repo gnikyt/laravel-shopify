@@ -68,7 +68,7 @@ trait AuthController
      *
      * @return ViewView
      */
-    public function token(Request $request)
+    public function token(Request $request): ViewView
     {
         $request->session()->reflash();
         $shopDomain = ShopDomain::fromRequest($request);

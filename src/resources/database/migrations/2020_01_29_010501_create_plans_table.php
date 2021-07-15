@@ -11,7 +11,7 @@ class CreatePlansTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('plans', function (Blueprint $table) {
             $table->increments('id');
@@ -50,7 +50,7 @@ class CreatePlansTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::drop('plans');
     }

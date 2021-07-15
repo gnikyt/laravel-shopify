@@ -12,7 +12,7 @@ class CreateChargesTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         // Thanks to @ncpope of Github.com
         Schema::create('charges', function (Blueprint $table) {
@@ -94,7 +94,7 @@ class CreateChargesTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::drop('charges');
     }
@@ -104,7 +104,7 @@ class CreateChargesTable extends Migration
      *
      * @return float
      */
-    private function getLaravelVersion()
+    private function getLaravelVersion(): float
     {
         $version = Application::VERSION;
 
