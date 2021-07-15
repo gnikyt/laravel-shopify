@@ -60,7 +60,7 @@ trait AuthController
                 Util::getShopifyConfig('route_names.home'),
                 [
                     'shop' => $shopDomain->toNative(),
-                    'host' => $request->host
+                    'host' => $request->host,
                 ]
             );
         }
