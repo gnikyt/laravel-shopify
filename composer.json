@@ -10,6 +10,7 @@
         "laravel-package",
         "laravel-shopify",
         "scripttags",
+        "sdk",
         "shopify",
         "shopify-api",
         "shopify-app",
