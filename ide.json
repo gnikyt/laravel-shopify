@@ -1,0 +1,17 @@
+{
+    "$schema": "http://laravel-ide.com/schema/laravel-ide-v1.json",
+    "completion": {
+        "route": [
+            {
+                "methods": ["tokenRedirect"],
+                "classes": ["Redirect", "Redirector"],
+                "parameters": [1]
+            },
+            {
+                "methods": ["tokenRoute"],
+                "classes": ["URL", "UrlGenerator"],
+                "parameters": [1]
+            }
+        ]
+    }
+}
