@@ -12,7 +12,7 @@ Personally, I have been opposed to opening up sponsorship or donations in the pa
 
 Most developers in the open source world are bogged down by full time jobs, family life, and of course one's own personal life. Working and maintaining open source projects means the developer has to sacrifice personal time... either very early mornings, evenings/weekends after work, or late at night.
 
-Its often hard for developers to explain to their non-techy family why they need to sit in front of a computer at those odd hours, to work on "free" projects.
+It's often hard for developers to explain to their non-techy family why they need to sit in front of a computer at those odd hours, to work on "free" projects.
 
 Sponsorship and donations not only help ease that conversation, but it also gives a nice "thank you" to the developers, just like buying them a cup of coffee or frosty mug of beer. It also gives confidence that what's being developed is helping others in a meaningful way.
 
@@ -26,7 +26,7 @@ Any sponsorship or donation will also add the individual's Github profile to thi
 
 Please see the `Sponsor` button at the top of this repository.
 
-Currently `Open Collective` and `Paypal.me` is supported.
+Currently `Github`, `Open Collective` and `Paypal.me` is supported.
 
 ## Conditions of Funding
 
