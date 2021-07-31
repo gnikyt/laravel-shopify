@@ -14,8 +14,10 @@ jobs:
           - '7.3'
           - '7.4'
           - '8.0'
+          - '8.1'
         analysis: [ false ]
         coverage: [ 'none' ]
+        fast-fail: [ false ]
         normalize: [ false ]
         validate: [ false ]
         laravel:
@@ -28,6 +30,10 @@ jobs:
             laravel: '7.0'
           - php: '8.0'
             laravel: '8.22'
+          - php: '8.1'
+            laravel: '7.0'
+          - php: '8.1'
+            laravel: '8.22'
         include:
           - php: '8.0'
             laravel: '8.22'
@@ -35,6 +41,9 @@ jobs:
             coverage: 'xdebug'
             normalize: true
             validate: true
+          - php: '8.1'
+            laravel: '8.22'
+            fast-fail: true
 
     name: PHP ${{ matrix.php }} / Laravel ${{ matrix.laravel }}
 
@@ -48,6 +57,8 @@ jobs:
           php-version: ${{ matrix.php }}
           coverage: ${{ matrix.coverage }}
           extensions: dom, fileinfo, json, mbstring, pdo_sqlite
+        env:
+          fail-fast: ${{ matrix.fail-fast }}
 
       - name: Validate composer setup
         if: matrix.validate == true
