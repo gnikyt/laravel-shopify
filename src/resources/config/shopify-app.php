@@ -67,20 +67,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Route middlewares
-    |--------------------------------------------------------------------------
-    |
-    | This option allows you to override middlewares used by package's built-in route names.
-    |
-    */
-
-    'route_middlewares' => [
-        'web' => env('SHOPIFY_ROUTE_MIDDLEWARE_WEB', 'web'),
-        'api' => env('SHOPIFY_ROUTE_MIDDLEWARE_API', 'api'),
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
     | Shop auth provider
     |--------------------------------------------------------------------------
     |
