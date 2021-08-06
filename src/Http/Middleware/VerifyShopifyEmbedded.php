@@ -27,7 +27,7 @@ use Osiset\ShopifyApp\Util;
 /**
  * Responsible for validating the request.
  */
-class VerifyShopify
+class VerifyShopifyEmbedded
 {
     /**
      * The auth manager.
