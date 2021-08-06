@@ -16,18 +16,14 @@ use Osiset\ShopifyApp\Objects\Values\NullShopDomain;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Services\ShopSession;
 use Osiset\ShopifyApp\Util;
+use Osiset\ShopifyApp\Traits\VerifyShopifyMiddleware;
+
 
 /**
  * Response for ensuring an authenticated request.
  */
-class VerifyShopifyExternal
+class VerifyShopifyExternal extends VerifyShopify
 {
-    /**
-     * The API helper.
-     *
-     * @var IApiHelper
-     */
-    protected $apiHelper;
 
     /**
      * The shop session helper.
@@ -67,14 +63,9 @@ class VerifyShopifyExternal
     {
         // Grab the domain and check the HMAC (if present)
         $domain = $this->getShopDomainFromRequest($request);
-        $hmac = $this->verifyHmac($request);
 
         $checks = [];
         if ($this->shopSession->guest()) {
-            if ($hmac === null) {
-                // Auth flow required if not yet logged in
-                return $this->handleBadVerification($request, $domain);
-            }
 
             // Login the shop and verify their data
             $checks[] = 'loginShop';
@@ -92,33 +83,6 @@ class VerifyShopifyExternal
         }
 
         return $next($request);
-    }
-
-    /**
-     * Verify HMAC data, if present.
-     *
-     * @param Request $request The request object.
-     *
-     * @throws SignatureVerificationException
-     *
-     * @return bool|null
-     */
-    private function verifyHmac(Request $request): ?bool
-    {
-        $hmac = $this->getHmac($request);
-        if ($hmac === null) {
-            // No HMAC, move on...
-            return null;
-        }
-
-        // We have HMAC, validate it
-        $data = $this->getData($request, $hmac[1]);
-        if ($this->apiHelper->verifyRequest($data)) {
-            return true;
-        }
-
-        // Something didn't match
-        throw new SignatureVerificationException('Unable to verify signature.');
     }
 
     /**
@@ -186,49 +150,6 @@ class VerifyShopifyExternal
     }
 
     /**
-     * Grab the HMAC value, if present, and how it was found.
-     * Order of precedence is:.
-     *
-     *  - GET/POST Variable
-     *  - Headers
-     *  - Referer
-     *
-     * @param Request $request The request object.
-     *
-     * @return null|array
-     */
-    private function getHmac(Request $request): ?array
-    {
-        // All possible methods
-        $options = [
-            // GET/POST
-            DataSource::INPUT()->toNative() => $request->input('hmac'),
-            // Headers
-            DataSource::HEADER()->toNative() => $request->header('X-Shop-Signature'),
-            // Headers: Referer
-            DataSource::REFERER()->toNative() => function () use ($request): ?string {
-                $url = parse_url($request->header('referer'), PHP_URL_QUERY);
-                parse_str($url, $refererQueryParams);
-                if (! $refererQueryParams || ! isset($refererQueryParams['hmac'])) {
-                    return null;
-                }
-
-                return $refererQueryParams['hmac'];
-            },
-        ];
-
-        // Loop through each until we find the HMAC
-        foreach ($options as $method => $value) {
-            $result = is_callable($value) ? $value() : $value;
-            if ($result !== null) {
-                return [$result, $method];
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * Grab the shop, if present, and how it was found.
      * Order of precedence is:.
      *
@@ -273,73 +194,6 @@ class VerifyShopifyExternal
         return NullShopDomain::fromNative(null);
     }
 
-    /**
-     * Grab the data.
-     *
-     * @param Request $request The request object.
-     * @param string  $source  The source of the data.
-     *
-     * @return array
-     */
-    private function getData(Request $request, string $source): array
-    {
-        // All possible methods
-        $options = [
-            // GET/POST
-            DataSource::INPUT()->toNative() => function () use ($request): array {
-                // Verify
-                $verify = [];
-                foreach ($request->query() as $key => $value) {
-                    $verify[$key] = $this->parseDataSourceValue($value);
-                }
-
-                return $verify;
-            },
-            // Headers
-            DataSource::HEADER()->toNative() => function () use ($request): array {
-                // Always present
-                $shop = $request->header('X-Shop-Domain');
-                $signature = $request->header('X-Shop-Signature');
-                $timestamp = $request->header('X-Shop-Time');
-
-                $verify = [
-                    'shop'      => $shop,
-                    'hmac'      => $signature,
-                    'timestamp' => $timestamp,
-                ];
-
-                // Sometimes present
-                $code = $request->header('X-Shop-Code') ?? null;
-                $locale = $request->header('X-Shop-Locale') ?? null;
-                $state = $request->header('X-Shop-State') ?? null;
-                $id = $request->header('X-Shop-ID') ?? null;
-                $ids = $request->header('X-Shop-IDs') ?? null;
-
-                foreach (compact('code', 'locale', 'state', 'id', 'ids') as $key => $value) {
-                    if ($value) {
-                        $verify[$key] = $this->parseDataSourceValue($value);
-                    }
-                }
-
-                return $verify;
-            },
-            // Headers: Referer
-            DataSource::REFERER()->toNative() => function () use ($request): array {
-                $url = parse_url($request->header('referer'), PHP_URL_QUERY);
-                parse_str($url, $refererQueryParams);
-
-                // Verify
-                $verify = [];
-                foreach ($refererQueryParams as $key => $value) {
-                    $verify[$key] = $this->parseDataSourceValue($value);
-                }
-
-                return $verify;
-            },
-        ];
-
-        return $options[$source]();
-    }
 
     /**
      * Handle bad verification by killing the session and redirecting to auth.
@@ -371,33 +225,4 @@ class VerifyShopifyExternal
         );
     }
 
-    /**
-     * Parse the data source value.
-     * Handle simple key/values, arrays, and nested arrays.
-     *
-     * @param mixed $value
-     *
-     * @return string
-     */
-    private function parseDataSourceValue($value): string
-    {
-        /**
-         * Format the value.
-         *
-         * @param mixed $val
-         *
-         * @return string
-         */
-        $formatValue = function ($val): string {
-            return is_array($val) ? '["'.implode('", "', $val).'"]' : $val;
-        };
-
-        // Nested array
-        if (is_array($value) && is_array(current($value))) {
-            return implode(', ', array_map($formatValue, $value));
-        }
-
-        // Array or basic value
-        return $formatValue($value);
-    }
 }
