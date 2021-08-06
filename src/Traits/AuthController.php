@@ -51,8 +51,7 @@ trait AuthController
                 'shopify-app::auth.fullpage_redirect',
                 [
                     'authUrl' => $result['url'],
-                    'shopDomain' => $shopDomain->toNative(),
-                    'appUrl' => config('app.url')
+                    'shopDomain' => $shopDomain->toNative()
                 ]
             );
         } else {
