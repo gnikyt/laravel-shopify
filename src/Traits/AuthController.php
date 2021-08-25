@@ -86,6 +86,9 @@ trait AuthController
             unset($params['token']);
 
             $cleanTarget = trim(explode('?', $target)[0].'?'.http_build_query($params), '?');
+        } else {
+            $params = ['shop' => $shopDomain->toNative() ?? ''];
+            $cleanTarget = trim(explode('?', $target)[0].'?'.http_build_query($params), '?');
         }
 
         return View::make(
