@@ -1,13 +1,12 @@
 # Laravel Shopify App
 
 ![Tests](https://github.com/osiset/laravel-shopify/workflows/Package%20Test/badge.svg?branch=master)
-[![Coverage](https://coveralls.io/repos/github/osiset/laravel-shopify/badge.svg?branch=master)](https://coveralls.io/github/osiset/laravel-shopify?branch=master)
-[![StyleCI](https://styleci.io/repos/96462257/shield?style=flat)](https://github.styleci.io/repos/96462257)
+[![codecov](https://codecov.io/gh/osiset/laravel-shopify/branch/master/graph/badge.svg?token=qqUuLItqJj)](https://codecov.io/gh/osiset/laravel-shopify)
 [![License](https://poser.pugx.org/osiset/laravel-shopify/license)](https://packagist.org/packages/osiset/laravel-shopify)
 
 ----
 
-A full-featured Laravel package for aiding in Shopify App development, similar to `shopify_app` for Rails. Works for Laravel 5.6+
+A full-featured Laravel package for aiding in Shopify App development, similar to `shopify_app` for Rails. Works for Laravel 7 and up.
 
 ![Screenshot](https://github.com/osiset/laravel-shopify/raw/master/screenshot.png)
 ![Screenshot: Billable](https://github.com/osiset/laravel-shopify/raw/master/screenshot-billable.png)
@@ -36,7 +35,7 @@ For more information, tutorials, etc., please view the project's [wiki](https://
 - [x] Authentication & installation for shops (both per-user and offline types)
 - [x] Plan & billing integration for single, recurring, and usage-types
 - [x] Tracking charges to a shop (recurring, single, usage, etc) with trial support
-- [x] Auto install app webhooks and scripttags thorugh background jobs
+- [x] Auto install app webhooks and scripttags through background jobs
 - [x] Provide basic AppBridge views
 - [x] Handles and processes incoming webhooks
 - [x] Handles and verifies incoming app proxy requests
@@ -62,13 +61,13 @@ This project is released under the MIT [license](https://github.com/osiset/larav
 
 #### Contributors
 
-Contibutions are always welcome! Contibutors are updated each release, pulled from Github. See `CONTRIBUTORS.txt`.
+Contributions are always welcome! Contibutors are updated each release, pulled from Github. See `CONTRIBUTORS.txt`.
 
 If you're looking to become a contributor, please see `CONTRIBUTING.md`.
 
 #### Maintainers
 
-Maintainers are users who manage the repository itself, wheather its managing the issues, assisting in releases, or helping with pull requests.
+Maintainers are users who manage the repository itself, whether it's managing the issues, assisting in releases, or helping with pull requests.
 
 Currently this repository is maintained by:
 

@@ -6,7 +6,7 @@ use Exception;
 use Osiset\BasicShopifyAPI\BasicShopifyAPI;
 use Osiset\BasicShopifyAPI\ResponseAccess;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
-use Osiset\ShopifyApp\Exceptions\ApiException;
+use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
 use Osiset\ShopifyApp\Objects\Enums\AuthMode;
 use Osiset\ShopifyApp\Objects\Enums\ChargeType;
 use Osiset\ShopifyApp\Objects\Enums\PlanInterval;
@@ -15,6 +15,7 @@ use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetails
 use Osiset\ShopifyApp\Objects\Values\ChargeReference;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
 use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Util;
 
 class ApiHelperTest extends TestCase
 {
@@ -39,9 +40,9 @@ class ApiHelperTest extends TestCase
         $api = $this->api->make()->getApi();
 
         $this->assertInstanceOf(BasicShopifyAPI::class, $api);
-        $this->assertSame(env('SHOPIFY_API_SECRET'), $this->app['config']->get('shopify-app.api_secret'));
-        $this->assertSame(env('SHOPIFY_API_KEY'), $this->app['config']->get('shopify-app.api_key'));
-        $this->assertSame($this->app['config']->get('shopify-app.api_version'), '2020-01');
+        $this->assertSame(Util::getShopifyConfig('api_secret'), $this->app['config']->get('shopify-app.api_secret'));
+        $this->assertSame(Util::getShopifyConfig('api_key'), $this->app['config']->get('shopify-app.api_key'));
+        $this->assertSame($this->app['config']->get('shopify-app.api_version'), '2021-01');
     }
 
     public function testSetAndGetApi(): void
@@ -191,15 +192,19 @@ class ApiHelperTest extends TestCase
     public function testCreateWebhook(): void
     {
         // Create a shop
+        /** @var IShopModel $shop */
         $shop = factory($this->model)->create();
 
         // Response stubbing
         $this->setApiStub();
         ApiStub::stubResponses(['post_webhook']);
 
-        $data = $shop->apiHelper()->createWebhook([]);
+        $data = $shop->apiHelper()->createWebhook([
+            'topic' => 'ORDERS_CREATE',
+            'address' => 'https://localhost/webhook/orders-create',
+        ]);
         $this->assertInstanceOf(ResponseAccess::class, $data);
-        $this->assertSame('app/uninstalled', $data['topic']);
+        $this->assertSame('ORDERS_CREATE', $data['data']['webhookSubscriptionCreate']['topic']);
     }
 
     public function testDeleteWebhook(): void
@@ -237,21 +242,7 @@ class ApiHelperTest extends TestCase
 
     public function testErrors(): void
     {
-        $this->expectException(ApiException::class);
-
-        // Create a shop
-        $shop = factory($this->model)->create();
-
-        // Response stubbing
-        $this->setApiStub();
-        ApiStub::stubResponses(['empty_with_error']);
-
-        $shop->apiHelper()->deleteWebhook(1);
-    }
-
-    public function testErrorsGraphQL(): void
-    {
-        $this->expectException(Exception::class);
+        $this->expectExceptionObject(new Exception('Error!', 0));
 
         // Create a shop
         $shop = factory($this->model)->create();

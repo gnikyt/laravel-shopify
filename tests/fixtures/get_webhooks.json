@@ -1,28 +1,32 @@
 {
-  "webhooks": [
-    {
-      "id": 4759306,
-      "address": "https:\/\/localhost\/webhooks\/orders-create",
-      "topic": "orders\/create",
-      "created_at": "2017-03-20T16:02:17-04:00",
-      "updated_at": "2017-03-20T16:02:17-04:00",
-      "format": "json",
-      "fields": [
-      ],
-      "metafield_namespaces": [
-      ]
-    },
-    {
-      "id": 901431826,
-      "address": "http:\/\/apple.com\/uninstall",
-      "topic": "app\/uninstalled",
-      "created_at": "2017-03-20T16:02:17-04:00",
-      "updated_at": "2017-03-20T16:02:17-04:00",
-      "format": "json",
-      "fields": [
-      ],
-      "metafield_namespaces": [
-      ]
+    "data": {
+        "webhookSubscriptions": {
+            "edges": [
+                {
+                    "node": {
+                        "id": "gid://shopify/WebhookSubscription/1016678842437",
+                        "topic": "ORDERS_CREATE",
+                        "endpoint": {
+                            "callbackUrl": "https:\/\/localhost\/webhooks\/orders-create"
+                        },
+                        "created_at": "2017-03-20T16:02:17-04:00",
+                        "updated_at": "2017-03-20T16:02:17-04:00",
+                        "format": "JSON"
+                    }
+                },
+                {
+                    "node": {
+                        "id": "gid://shopify/WebhookSubscription/1016678907973",
+                        "topic": "APP_UNINSTALLED",
+                        "endpoint": {
+                            "callbackUrl": "http://apple.com/uninstall"
+                        },
+                        "created_at": "2017-03-20T16:02:17-04:00",
+                        "updated_at": "2017-03-20T16:02:17-04:00",
+                        "format": "JSON"
+                    }
+                }
+            ]
+        }
     }
-  ]
 }

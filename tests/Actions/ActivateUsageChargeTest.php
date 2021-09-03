@@ -38,8 +38,8 @@ class ActivateUsageChargeTest extends TestCase
         // Create a charge for the plan and shop
         factory(Charge::class)->states('type_recurring')->create([
             'charge_id' => 12345,
-            'plan_id'   => $plan->getId()->toNative(),
-            'user_id'   => $shop->getId()->toNative(),
+            'plan_id' => $plan->getId()->toNative(),
+            'user_id' => $shop->getId()->toNative(),
         ]);
 
         // Create the transfer
@@ -63,7 +63,10 @@ class ActivateUsageChargeTest extends TestCase
 
     public function testRunWithoutRecurringCharge(): void
     {
-        $this->expectException(ChargeNotRecurringException::class);
+        $this->expectExceptionObject(new ChargeNotRecurringException(
+            'Can only create usage charges for recurring charge.',
+            0
+        ));
 
         // Create a plan
         $plan = factory(Plan::class)->states('type_onetime')->create();
@@ -76,8 +79,8 @@ class ActivateUsageChargeTest extends TestCase
         // Create a charge for the plan and shop
         factory(Charge::class)->states('type_onetime')->create([
             'charge_id' => 12345,
-            'plan_id'   => $plan->getId()->toNative(),
-            'user_id'   => $shop->getId()->toNative(),
+            'plan_id' => $plan->getId()->toNative(),
+            'user_id' => $shop->getId()->toNative(),
         ]);
 
         // Create the transfer
@@ -105,8 +108,8 @@ class ActivateUsageChargeTest extends TestCase
         // Create a charge for the plan and shop
         factory(Charge::class)->states('type_recurring')->create([
             'charge_id' => 12345,
-            'plan_id'   => $plan->getId()->toNative(),
-            'user_id'   => $shop->getId()->toNative(),
+            'plan_id' => $plan->getId()->toNative(),
+            'user_id' => $shop->getId()->toNative(),
         ]);
 
         // Create the transfer

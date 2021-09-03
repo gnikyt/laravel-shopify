@@ -15,7 +15,7 @@ class WebhookJobMakeCommandTest extends TestCase
             ->artisan(
                 'shopify-app:make:webhook',
                 [
-                    'name'  => 'OrdersCreate',
+                    'name' => 'OrdersCreate',
                     'topic' => 'orders/create',
                 ]
             )
@@ -36,8 +36,8 @@ class WebhookJobMakeCommandTest extends TestCase
         $method->setAccessible(true);
 
         $jobs = [
-            'OrdersCreateJob'       => 'orders-create',
-            'OrdersCreate'          => 'orders-create',
+            'OrdersCreateJob' => 'orders-create',
+            'OrdersCreate' => 'orders-create',
             'OrdersCreateCustomJob' => 'orders-create-custom',
         ];
         foreach ($jobs as $className => $route) {

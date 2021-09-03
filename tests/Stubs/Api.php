@@ -4,6 +4,7 @@ namespace Osiset\ShopifyApp\Test\Stubs;
 
 use ErrorException;
 use Exception;
+use Illuminate\Http\Response;
 use Osiset\BasicShopifyAPI\BasicShopifyAPI;
 use Osiset\BasicShopifyAPI\ResponseAccess;
 
@@ -18,8 +19,9 @@ class Api extends BasicShopifyAPI
 
     public function rest(string $method, string $path, array $params = null, array $headers = [], bool $sync = true): array
     {
+        $filename = array_shift(self::$stubFiles);
+
         try {
-            $filename = array_shift(self::$stubFiles);
             $response = json_decode(file_get_contents(__DIR__."/../fixtures/{$filename}.json"), true);
         } catch (ErrorException $error) {
             throw new Exception("Missing fixture for {$method} @ {$path}, tried: '{$filename}.json'");
@@ -33,10 +35,10 @@ class Api extends BasicShopifyAPI
         }
 
         return [
-            'errors'     => $errors,
-            'exception'  => $exception,
-            'body'       => new ResponseAccess($response),
-            'status'     => 200,
+            'errors' => $errors,
+            'exception' => $exception,
+            'body' => new ResponseAccess($response),
+            'status' => Response::HTTP_OK,
         ];
     }
 
@@ -57,11 +59,11 @@ class Api extends BasicShopifyAPI
         }
 
         return [
-            'errors'     => $errors,
-            'exception'  => $exception,
-            'response'   => $response,
-            'status'     => 200,
-            'body'       => new ResponseAccess($response),
+            'errors' => $errors,
+            'exception' => $exception,
+            'response' => $response,
+            'status' => Response::HTTP_OK,
+            'body' => new ResponseAccess($response),
         ];
     }
 

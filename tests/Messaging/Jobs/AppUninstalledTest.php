@@ -10,12 +10,7 @@ use Osiset\ShopifyApp\Test\TestCase;
 
 class AppUninstalledTest extends TestCase
 {
-    public function setUp(): void
-    {
-        parent::setUp();
-    }
-
-    public function testJobSoftDeletesShopAndCharges()
+    public function testJobSoftDeletesShopAndCharges(): void
     {
         // Create a plan
         $plan = factory(Plan::class)->states('type_recurring')->create();
@@ -27,7 +22,7 @@ class AppUninstalledTest extends TestCase
         factory(Charge::class)->states('type_recurring')->create([
             'plan_id' => $plan->getId()->toNative(),
             'user_id' => $shop->getId()->toNative(),
-            'status'  => ChargeStatus::ACTIVE()->toNative(),
+            'status' => ChargeStatus::ACTIVE()->toNative(),
         ]);
 
         // Ensure shop is not trashed, and has charges
