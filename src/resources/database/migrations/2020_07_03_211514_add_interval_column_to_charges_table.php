@@ -13,7 +13,7 @@ class AddIntervalColumnToChargesTable extends Migration
      */
     public function up()
     {
-        Schema::table('charges', function (Blueprint $table) {
+        Schema::table(config('shopify-app.table_names.charges', 'charges'), function (Blueprint $table) {
             $table->string('interval')->nullable()->after('price');
         });
     }
@@ -25,7 +25,7 @@ class AddIntervalColumnToChargesTable extends Migration
      */
     public function down()
     {
-        Schema::table('charges', function (Blueprint $table) {
+        Schema::table(config('shopify-app.table_names.charges', 'charges'), function (Blueprint $table) {
             $table->dropColumn('interval');
         });
     }

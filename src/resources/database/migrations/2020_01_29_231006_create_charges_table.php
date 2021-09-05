@@ -15,7 +15,7 @@ class CreateChargesTable extends Migration
     public function up()
     {
         // Thanks to @ncpope of Github.com
-        Schema::create('charges', function (Blueprint $table) {
+        Schema::create(config('shopify-app.table_names.charges', 'charges'), function (Blueprint $table) {
             $table->increments('id');
 
             // Filled in when the charge is created, provided by shopify, unique makes it indexed
@@ -85,7 +85,7 @@ class CreateChargesTable extends Migration
 
             // Linking
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('plan_id')->references('id')->on('plans');
+            $table->foreign('plan_id')->references('id')->on(config('shopify-app.table_names.plans', 'plans'));
         });
     }
 
@@ -96,7 +96,7 @@ class CreateChargesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('charges');
+        Schema::drop(config('shopify-app.table_names.charges', 'charges'));
     }
 
     /**

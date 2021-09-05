@@ -13,7 +13,7 @@ class AddIntervalColumnToPlansTable extends Migration
      */
     public function up()
     {
-        Schema::table('plans', function (Blueprint $table) {
+        Schema::table(config('shopify-app.table_names.plans', 'plans'), function (Blueprint $table) {
             $table->string('interval')->nullable()->after('price');
         });
     }
@@ -25,7 +25,7 @@ class AddIntervalColumnToPlansTable extends Migration
      */
     public function down()
     {
-        Schema::table('plans', function (Blueprint $table) {
+        Schema::table(config('shopify-app.table_names.plans', 'plans'), function (Blueprint $table) {
             $table->dropColumn('interval');
         });
     }

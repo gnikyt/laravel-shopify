@@ -23,7 +23,7 @@ class CreateShopsTable extends Migration
                 $table->softDeletes();
             }
 
-            $table->foreign('plan_id')->references('id')->on('plans');
+            $table->foreign('plan_id')->references('id')->on(config('shopify-app.table_names.plans', 'plans'));
         });
     }
 

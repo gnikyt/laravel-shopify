@@ -418,12 +418,36 @@ return [
     'turbo_enabled' => (bool) env('SHOPIFY_TURBO_ENABLED', false),
 
     /*
-     * The fully qualified class name of the tag model.
-     */
-    'charge_model' => Osiset\ShopifyApp\Storage\Models\Charge::class,
+    |--------------------------------------------------------------------------
+    | Customize Models and Table Name
+    |--------------------------------------------------------------------------
+    |
+    | You can customize you model and extend them
+    | also you can customize tables name for charge and plan models.
+    |
+    */
 
-    /*
-     * The fully qualified class name of the tag model.
-     */
-    'plan_model' => Osiset\ShopifyApp\Storage\Models\Plan::class,
+    'models' => [
+        /*
+        * The fully qualified class name of the Charge model.
+        */
+        'charge' => Osiset\ShopifyApp\Storage\Models\Charge::class,
+
+        /*
+        * The fully qualified class name of the Plan model.
+        */
+        'plan' => Osiset\ShopifyApp\Storage\Models\Plan::class,
+    ],
+
+    'table_names' => [
+        /*
+        * The table name for Charge model.
+        */
+        'charges' => 'charges',
+
+        /*
+        * The table name for Plan model.
+        */
+        'plans' => 'plans',
+    ]
 ];

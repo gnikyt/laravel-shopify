@@ -26,6 +26,16 @@ class Plan extends Model
     ];
 
     /**
+     * Get table name.
+     *
+     * @return string
+     */
+    public function getTable(): string
+    {
+        return config('shopify-app.table_names.plans', parent::getTable());
+    }
+
+    /**
      * Get the plan ID as a value object.
      *
      * @return PlanId
