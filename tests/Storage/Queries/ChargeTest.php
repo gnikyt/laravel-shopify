@@ -32,7 +32,7 @@ class ChargeTest extends TestCase
     public function testChargeGetById(): void
     {
         // Create a charge
-        $charge = factory(Charge::class)->states('type_recurring')->create([
+        $charge = factory(config('shopify-app.charge_model', Charge::class))->states('type_recurring')->create([
             'user_id' => $this->shop->getId()->toNative(),
         ]);
 
@@ -46,7 +46,7 @@ class ChargeTest extends TestCase
     public function testChargeGetByChargeReference(): void
     {
         // Create a charge
-        $charge = factory(Charge::class)->states('type_recurring')->create([
+        $charge = factory(config('shopify-app.charge_model', Charge::class))->states('type_recurring')->create([
             'user_id' => $this->shop->getId()->toNative(),
         ]);
 
@@ -60,7 +60,7 @@ class ChargeTest extends TestCase
     public function testPlangetByReferenceAndShopId(): void
     {
         // Create a charge
-        $charge = factory(Charge::class)->states('type_recurring')->create([
+        $charge = factory(config('shopify-app.charge_model', Charge::class))->states('type_recurring')->create([
             'user_id' => $this->shop->getId()->toNative(),
         ]);
 

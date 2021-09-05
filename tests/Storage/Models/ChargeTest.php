@@ -18,7 +18,7 @@ class ChargeTest extends TestCase
         $shop = factory($this->model)->create();
 
         // Create a charge
-        $charge = factory(Charge::class)->states('type_recurring')->create([
+        $charge = factory(config('shopify-app.charge_model', Charge::class))->states('type_recurring')->create([
             'user_id' => $shop->getId()->toNative(),
         ]);
 

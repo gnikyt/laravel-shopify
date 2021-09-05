@@ -12,7 +12,7 @@ class PlanTest extends TestCase
     public function testModel(): void
     {
         // Create a plan
-        $plan = factory(Plan::class)->states('type_recurring')->create();
+        $plan = factory(config('shopify-app.plan_model', Plan::class))->states('type_recurring')->create();
 
         $this->assertInstanceOf(PlanId::class, $plan->getId());
         $this->assertCount(0, $plan->charges);

@@ -40,11 +40,11 @@ class BillableTest extends TestCase
     public function testEnabledBillingWithPaidShop(): void
     {
         // Enable billing and set a shop
-        $plan = factory(Plan::class)->states('type_recurring')->create();
+        $plan = factory(config('shopify-app.plan_model', Plan::class))->states('type_recurring')->create();
         $shop = factory($this->model)->create([
             'plan_id' => $plan->getId()->toNative(),
         ]);
-        factory(Charge::class)->states('type_recurring')->create([
+        factory(config('shopify-app.charge_model', Charge::class))->states('type_recurring')->create([
             'plan_id' => $plan->getId()->toNative(),
             'user_id' => $shop->getId()->toNative(),
         ]);

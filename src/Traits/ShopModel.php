@@ -81,7 +81,7 @@ trait ShopModel
      */
     public function charges(): HasMany
     {
-        return $this->hasMany(Charge::class);
+        return $this->hasMany(config('shopify-app.charge_model', Charge::class));
     }
 
     /**
@@ -97,7 +97,7 @@ trait ShopModel
      */
     public function plan(): BelongsTo
     {
-        return $this->belongsTo(Plan::class);
+        return $this->belongsTo(config('shopify-app.plan_model', Plan::class));
     }
 
     /**

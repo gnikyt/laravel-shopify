@@ -13,11 +13,27 @@ use Osiset\ShopifyApp\Storage\Models\Plan as PlanModel;
 class Plan implements IPlanQuery
 {
     /**
+     * the Plan Model.
+     *
+     * @var PlanModel
+     */
+    protected $planModel;
+
+    /**
+     * Init for charge command.
+     */
+    public function __construct()
+    {
+        $this->planModel = new (config('shopify-app.plan_model', PlanModel::class));
+    }
+
+
+    /**
      * {@inheritdoc}
      */
     public function getById(PlanId $planId, array $with = []): ?PlanModel
     {
-        return PlanModel::with($with)
+        return $this->planModel->with($with)
             ->get()
             ->where('id', $planId->toNative())
             ->first();
@@ -28,7 +44,7 @@ class Plan implements IPlanQuery
      */
     public function getDefault(array $with = []): ?PlanModel
     {
-        return PlanModel::with($with)
+        return $this->planModel->with($with)
             ->get()
             ->where('on_install', true)
             ->first();
@@ -39,7 +55,7 @@ class Plan implements IPlanQuery
      */
     public function getAll(array $with = []): Collection
     {
-        return PlanModel::with($with)
+        return $this->planModel->with($with)
             ->get();
     }
 }
