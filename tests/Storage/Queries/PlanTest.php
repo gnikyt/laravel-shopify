@@ -24,7 +24,7 @@ class PlanTest extends TestCase
     public function testPlanGetById(): void
     {
         // Create a plan
-        $plan = factory(config('shopify-app.plan_model', Plan::class))->states('type_recurring')->create();
+        $plan = factory(config('shopify-app.models.plan', Plan::class))->states('type_recurring')->create();
 
         // Query it
         $this->assertNotNull($this->query->getById($plan->getId()));
@@ -39,7 +39,7 @@ class PlanTest extends TestCase
         $this->assertNull($this->query->getDefault());
 
         // Create a plan
-        factory(config('shopify-app.plan_model', Plan::class))->states(['type_recurring', 'installable'])->create();
+        factory(config('shopify-app.models.plan', Plan::class))->states(['type_recurring', 'installable'])->create();
 
         // Query it
         $this->assertNotNull($this->query->getDefault());
@@ -48,7 +48,7 @@ class PlanTest extends TestCase
     public function testPlanGetAll(): void
     {
         // Create a plan
-        factory(config('shopify-app.plan_model', Plan::class))->states('type_onetime')->create();
+        factory(config('shopify-app.models.plan', Plan::class))->states('type_onetime')->create();
 
         // Ensure we get a result
         $this->assertCount(1, $this->query->getAll());

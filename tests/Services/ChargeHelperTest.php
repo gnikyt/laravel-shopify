@@ -126,7 +126,7 @@ class ChargeHelperTest extends TestCase
         $seed = $this->seedData();
 
         $this->assertInstanceOf(
-            config('shopify-app.charge_model', Charge::class),
+            config('shopify-app.models.charge', Charge::class),
             $this->chargeHelper->chargeForPlan($seed['plan']->getId(), $seed['shop'])
         );
     }
@@ -147,7 +147,7 @@ class ChargeHelperTest extends TestCase
     public function testDetails2(): void
     {
         // Create a plan
-        $plan = factory(config('shopify-app.plan_model', Plan::class))->states('type_recurring')->create([
+        $plan = factory(config('shopify-app.models.plan', Plan::class))->states('type_recurring')->create([
             'trial_days' => 7,
         ]);
 
@@ -163,7 +163,7 @@ class ChargeHelperTest extends TestCase
     protected function seedData($extraCharge = [], $extraPlan = [], $type = 'onetime'): array
     {
         // Create a plan
-        $plan = factory(config('shopify-app.plan_model', Plan::class))->states("type_${type}")->create(
+        $plan = factory(config('shopify-app.models.plan', Plan::class))->states("type_${type}")->create(
             array_merge(
                 ['trial_days' => 7],
                 $extraPlan
@@ -176,7 +176,7 @@ class ChargeHelperTest extends TestCase
         ]);
 
         // Create a charge for the plan and shop
-        $charge = factory(config('shopify-app.charge_model', Charge::class))->states("type_${type}")->create(
+        $charge = factory(config('shopify-app.models.charge', Charge::class))->states("type_${type}")->create(
             array_merge(
                 [
                     'charge_id' => 12345,

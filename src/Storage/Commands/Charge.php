@@ -49,7 +49,7 @@ class Charge implements ChargeCommand
             return $obj instanceof Carbon;
         };
 
-        $charge = new (config('shopify-app.charge_model', ChargeModel::class));
+        $charge = new (config('shopify-app.models.charge', ChargeModel::class));
         $charge->plan_id = $chargeObj->planId->toNative();
         $charge->user_id = $chargeObj->shopId->toNative();
         $charge->charge_id = $chargeObj->chargeReference->toNative();
@@ -88,7 +88,7 @@ class Charge implements ChargeCommand
     public function makeUsage(UsageChargeTransfer $chargeObj): ChargeId
     {
         // Create the charge
-        $charge = new (config('shopify-app.charge_model', ChargeModel::class));
+        $charge = new (config('shopify-app.models.charge', ChargeModel::class));
         $charge->user_id = $chargeObj->shopId->toNative();
         $charge->charge_id = $chargeObj->chargeReference->toNative();
         $charge->type = $chargeObj->chargeType->toNative();

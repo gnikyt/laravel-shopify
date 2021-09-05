@@ -43,7 +43,7 @@ trait ApiController
      */
     public function getPlans(): JsonResponse
     {
-        $planModel = new (config('shopify-app.plan_model', Plan::class));
+        $planModel = new (config('shopify-app.models.plan', Plan::class));
 
         return response()->json($planModel->all());
     }

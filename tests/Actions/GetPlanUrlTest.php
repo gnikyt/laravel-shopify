@@ -25,7 +25,7 @@ class GetPlanUrlTest extends TestCase
     public function testRun30Days(): void
     {
         // Create a plan
-        factory(config('shopify-app.plan_model', Plan::class))->states(['installable', 'type_recurring'])->create();
+        factory(config('shopify-app.models.plan', Plan::class))->states(['installable', 'type_recurring'])->create();
 
         // Create the shop with no plan
         $shop = factory($this->model)->create();
@@ -46,7 +46,7 @@ class GetPlanUrlTest extends TestCase
     public function testRunAnnual(): void
     {
         // Create a plan
-        factory(config('shopify-app.plan_model', Plan::class))->states(['installable', 'type_recurring', 'interval_annual'])->create();
+        factory(config('shopify-app.models.plan', Plan::class))->states(['installable', 'type_recurring', 'interval_annual'])->create();
 
         // Create the shop with no plan
         $shop = factory($this->model)->create();

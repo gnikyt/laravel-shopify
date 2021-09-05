@@ -28,7 +28,7 @@ class ActivateUsageChargeTest extends TestCase
     public function testRun(): void
     {
         // Create a plan
-        $plan = factory(config('shopify-app.plan_model', Plan::class))->states('type_recurring')->create();
+        $plan = factory(config('shopify-app.models.plan', Plan::class))->states('type_recurring')->create();
 
         // Create the shop with the plan attached
         $shop = factory($this->model)->create([
@@ -36,7 +36,7 @@ class ActivateUsageChargeTest extends TestCase
         ]);
 
         // Create a charge for the plan and shop
-        factory(config('shopify-app.charge_model', Charge::class))->states('type_recurring')->create([
+        factory(config('shopify-app.models.charge', Charge::class))->states('type_recurring')->create([
             'charge_id' => 12345,
             'plan_id' => $plan->getId()->toNative(),
             'user_id' => $shop->getId()->toNative(),
@@ -69,7 +69,7 @@ class ActivateUsageChargeTest extends TestCase
         ));
 
         // Create a plan
-        $plan = factory(config('shopify-app.plan_model', Plan::class))->states('type_onetime')->create();
+        $plan = factory(config('shopify-app.models.plan', Plan::class))->states('type_onetime')->create();
 
         // Create the shop with the plan attached
         $shop = factory($this->model)->create([
@@ -77,7 +77,7 @@ class ActivateUsageChargeTest extends TestCase
         ]);
 
         // Create a charge for the plan and shop
-        factory(config('shopify-app.charge_model', Charge::class))->states('type_onetime')->create([
+        factory(config('shopify-app.models.charge', Charge::class))->states('type_onetime')->create([
             'charge_id' => 12345,
             'plan_id' => $plan->getId()->toNative(),
             'user_id' => $shop->getId()->toNative(),
@@ -98,7 +98,7 @@ class ActivateUsageChargeTest extends TestCase
     public function testRunWithLimitReached(): void
     {
         // Create a plan
-        $plan = factory(config('shopify-app.plan_model', Plan::class))->states('type_recurring')->create();
+        $plan = factory(config('shopify-app.models.plan', Plan::class))->states('type_recurring')->create();
 
         // Create the shop with the plan attached
         $shop = factory($this->model)->create([
@@ -106,7 +106,7 @@ class ActivateUsageChargeTest extends TestCase
         ]);
 
         // Create a charge for the plan and shop
-        factory(config('shopify-app.charge_model', Charge::class))->states('type_recurring')->create([
+        factory(config('shopify-app.models.charge', Charge::class))->states('type_recurring')->create([
             'charge_id' => 12345,
             'plan_id' => $plan->getId()->toNative(),
             'user_id' => $shop->getId()->toNative(),

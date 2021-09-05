@@ -36,7 +36,7 @@ class CancelCurrentPlanTest extends TestCase
     public function testCancelWithPlanButNoCharge(): void
     {
         // Create a plan
-        $plan = factory(config('shopify-app.plan_model', Plan::class))->states('type_recurring')->create();
+        $plan = factory(config('shopify-app.models.plan', Plan::class))->states('type_recurring')->create();
 
         // Create the shop with the plan attached
         $shop = factory($this->model)->create([

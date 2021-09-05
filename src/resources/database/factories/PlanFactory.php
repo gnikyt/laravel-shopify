@@ -5,7 +5,7 @@ use Osiset\ShopifyApp\Objects\Enums\PlanInterval;
 use Osiset\ShopifyApp\Objects\Enums\PlanType;
 use Osiset\ShopifyApp\Storage\Models\Plan;
 
-$planModel = config('shopify-app.plan_model', Plan::class);
+$planModel = config('shopify-app.models.plan', Plan::class);
 
 $factory->define($planModel, function (Faker $faker) {
     return [

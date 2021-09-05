@@ -13,13 +13,13 @@ class AppUninstalledTest extends TestCase
     public function testJobSoftDeletesShopAndCharges(): void
     {
         // Create a plan
-        $plan = factory(config('shopify-app.plan_model', Plan::class))->states('type_recurring')->create();
+        $plan = factory(config('shopify-app.models.plan', Plan::class))->states('type_recurring')->create();
 
         // Create a shop attached to the plan
         $shop = factory($this->model)->create(['plan_id' => $plan->getId()->toNative()]);
 
         // Create a charge for the shop and plan
-        factory(config('shopify-app.charge_model', Charge::class))->states('type_recurring')->create([
+        factory(config('shopify-app.models.charge', Charge::class))->states('type_recurring')->create([
             'plan_id' => $plan->getId()->toNative(),
             'user_id' => $shop->getId()->toNative(),
             'status' => ChargeStatus::ACTIVE()->toNative(),
