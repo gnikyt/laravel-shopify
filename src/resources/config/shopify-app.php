@@ -416,4 +416,14 @@ return [
     */
 
     'turbo_enabled' => (bool) env('SHOPIFY_TURBO_ENABLED', false),
+
+    /*
+     * The fully qualified class name of the tag model.
+     */
+    'charge_model' => Osiset\ShopifyApp\Storage\Models\Charge::class,
+
+    /*
+     * The fully qualified class name of the tag model.
+     */
+    'plan_model' => Osiset\ShopifyApp\Storage\Models\Plan::class,
 ];
