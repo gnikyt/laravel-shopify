@@ -82,8 +82,12 @@ trait AuthController
         if ($query) {
             // remove "token" from the target's query string
             $params = Util::parseQueryString($query);
+            $params['shop'] = $params['shop'] ?? $shopDomain->toNative() ?? '';
             unset($params['token']);
 
+            $cleanTarget = trim(explode('?', $target)[0].'?'.http_build_query($params), '?');
+        } else {
+            $params = ['shop' => $shopDomain->toNative() ?? ''];
             $cleanTarget = trim(explode('?', $target)[0].'?'.http_build_query($params), '?');
         }
 
