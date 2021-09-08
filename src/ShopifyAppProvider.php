@@ -290,7 +290,7 @@ class ShopifyAppProvider extends ServiceProvider
      */
     private function bootObservers(): void
     {
-        $model = $this->app['config']->get('auth.providers.users.model');
+        $model = Util::getShopifyConfig('user_model');
         $model::observe($this->app->make(ShopObserver::class));
     }
 

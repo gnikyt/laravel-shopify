@@ -164,10 +164,10 @@ class Util
      */
     public static function getShopifyConfig(string $key, $shop = null)
     {
-        $config = array_merge(
-            Config::get('shopify-app', []),
-            ['user_model' => Config::get('auth.providers.users.model')]
-        );
+        $config = Config::get('shopify-app', []);
+
+        $config['user_model'] = Config::get("auth.providers.{$config['shop_auth_provider']}.model", Config::get('auth.providers.users.model'));
+
 
         if (Str::is('route_names.*', $key)) {
             // scope the Arr::get() call to the "route_names" array

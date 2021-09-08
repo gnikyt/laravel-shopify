@@ -82,6 +82,11 @@ class AuthProxy
         // Login the shop
         $shop = $this->shopQuery->getByDomain($shop);
         if ($shop) {
+            // Override auth guard
+            if (($guard = Util::getShopifyConfig('shop_auth_guard'))) {
+                $this->auth->setDefaultDriver($guard);
+            }
+
             $this->auth->login($shop);
         }
 

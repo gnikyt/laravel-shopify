@@ -1,9 +1,9 @@
 <?php
 
 use Faker\Generator as Faker;
-use Illuminate\Support\Facades\Config;
+use Osiset\ShopifyApp\Util;
 
-$model = Config::get('auth.providers.users.model');
+$model = Util::getShopifyConfig('user_model');
 
 $factory->define($model, function (Faker $faker) {
     return [

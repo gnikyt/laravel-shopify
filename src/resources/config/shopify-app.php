@@ -67,6 +67,27 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Shop auth guard
+    |--------------------------------------------------------------------------
+    |
+    | This option allows you to override auth guard used by package middlewares
+    |
+    */
+    'shop_auth_guard' => env('SHOPIFY_SHOP_AUTH_GUARD', null),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Shop auth provider
+    |--------------------------------------------------------------------------
+    |
+    | This option allows you to override package's build-in auth model
+    | If you need to keep User model intact, add custom auth provider and route middlewares for it
+    |
+    */
+    'shop_auth_provider' => env('SHOPIFY_SHOP_AUTH_PROVIDER', 'users'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Namespace
     |--------------------------------------------------------------------------
     |

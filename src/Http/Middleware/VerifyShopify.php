@@ -248,6 +248,11 @@ class VerifyShopify
             return false;
         }
 
+        // Override auth guard
+        if (($guard = Util::getShopifyConfig('shop_auth_guard'))) {
+            $this->auth->setDefaultDriver($guard);
+        }
+
         // All is well, login the shop
         $this->auth->login($shop);
 
