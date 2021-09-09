@@ -17,7 +17,6 @@ __*__ *Wiki pages*
 
 - [Goals](#goals)
 - [Documentation](#documentation)
-- [Requirements](https://github.com/osiset/laravel-shopify/wiki/Requirements)*
 - [Installation](https://github.com/osiset/laravel-shopify/wiki/Installation)*  *(New video guide to come soon)*
 - [Route List](https://github.com/osiset/laravel-shopify/wiki/Route-List)*
 - [Usage](https://github.com/osiset/laravel-shopify/wiki/Usage)*
