@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Osiset\ShopifyApp\Objects\Enums\PlanInterval;
 use Osiset\ShopifyApp\Objects\Enums\PlanType;
 use Osiset\ShopifyApp\Objects\Values\PlanId;
+use Osiset\ShopifyApp\Util;
 
 /**
  * Responsible for reprecenting a plan record.
@@ -32,7 +33,7 @@ class Plan extends Model
      */
     public function getTable(): string
     {
-        return config('shopify-app.table_names.plans', parent::getTable());
+        return Util::getShopifyConfig('table_names.plans', parent::getTable());
     }
 
     /**

@@ -56,7 +56,7 @@ class Charge extends Model
      */
     public function getTable(): string
     {
-        return config('shopify-app.table_names.charges', parent::getTable());
+        return Util::getShopifyConfig('table_names.charges', parent::getTable());
     }
 
     /**

@@ -5,8 +5,9 @@ use Illuminate\Support\Carbon;
 use Osiset\ShopifyApp\Objects\Enums\ChargeStatus;
 use Osiset\ShopifyApp\Objects\Enums\ChargeType;
 use Osiset\ShopifyApp\Storage\Models\Charge;
+use Osiset\ShopifyApp\Util;
 
-$chargeModel = config('shopify-app.models.charge', Charge::class);
+$chargeModel = Util::getShopifyConfig('models.charge', Charge::class);
 
 $factory->define($chargeModel, function (Faker $faker) {
     return [

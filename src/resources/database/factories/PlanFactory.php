@@ -4,8 +4,9 @@ use Faker\Generator as Faker;
 use Osiset\ShopifyApp\Objects\Enums\PlanInterval;
 use Osiset\ShopifyApp\Objects\Enums\PlanType;
 use Osiset\ShopifyApp\Storage\Models\Plan;
+use Osiset\ShopifyApp\Util;
 
-$planModel = config('shopify-app.models.plan', Plan::class);
+$planModel = Util::getShopifyConfig('models.plan', Plan::class);
 
 $factory->define($planModel, function (Faker $faker) {
     return [

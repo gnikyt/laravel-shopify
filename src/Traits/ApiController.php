@@ -5,6 +5,7 @@ namespace Osiset\ShopifyApp\Traits;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Osiset\ShopifyApp\Storage\Models\Plan;
+use Osiset\ShopifyApp\Util;
 
 /**
  * Responsible for showing the main homescreen for the app.
@@ -43,7 +44,7 @@ trait ApiController
      */
     public function getPlans(): JsonResponse
     {
-        $planModel = new (config('shopify-app.models.plan', Plan::class));
+        $planModel = new (Util::getShopifyConfig('models.plan', Plan::class));
 
         return response()->json($planModel->all());
     }

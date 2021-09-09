@@ -12,6 +12,7 @@ use Osiset\ShopifyApp\Objects\Values\ChargeId;
 use Osiset\ShopifyApp\Objects\Values\ChargeReference;
 use Osiset\ShopifyApp\Objects\Values\ShopId;
 use Osiset\ShopifyApp\Storage\Models\Charge as ChargeModel;
+use Osiset\ShopifyApp\Util;
 
 /**
  * Represents the commands for charges.
@@ -49,7 +50,7 @@ class Charge implements ChargeCommand
             return $obj instanceof Carbon;
         };
 
-        $charge = new (config('shopify-app.models.charge', ChargeModel::class));
+        $charge = new (Util::getShopifyConfig('models.charge', ChargeModel::class));
         $charge->plan_id = $chargeObj->planId->toNative();
         $charge->user_id = $chargeObj->shopId->toNative();
         $charge->charge_id = $chargeObj->chargeReference->toNative();
@@ -88,7 +89,7 @@ class Charge implements ChargeCommand
     public function makeUsage(UsageChargeTransfer $chargeObj): ChargeId
     {
         // Create the charge
-        $charge = new (config('shopify-app.models.charge', ChargeModel::class));
+        $charge = new (Util::getShopifyConfig('models.charge', ChargeModel::class));
         $charge->user_id = $chargeObj->shopId->toNative();
         $charge->charge_id = $chargeObj->chargeReference->toNative();
         $charge->type = $chargeObj->chargeType->toNative();

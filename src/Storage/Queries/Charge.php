@@ -7,6 +7,7 @@ use Osiset\ShopifyApp\Objects\Values\ChargeId;
 use Osiset\ShopifyApp\Objects\Values\ChargeReference;
 use Osiset\ShopifyApp\Objects\Values\ShopId;
 use Osiset\ShopifyApp\Storage\Models\Charge as ChargeModel;
+use Osiset\ShopifyApp\Util;
 
 /**
  * Represents a queries for charges.
@@ -25,7 +26,7 @@ class Charge implements IChargeQuery
      */
     public function __construct()
     {
-        $this->chargeModel = new (config('shopify-app.models.charge', ChargeModel::class));
+        $this->chargeModel = new (Util::getShopifyConfig('models.charge', ChargeModel::class));
     }
 
 

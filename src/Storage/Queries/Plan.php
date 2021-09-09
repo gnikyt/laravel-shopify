@@ -6,6 +6,7 @@ use Illuminate\Support\Collection;
 use Osiset\ShopifyApp\Contracts\Objects\Values\PlanId;
 use Osiset\ShopifyApp\Contracts\Queries\Plan as IPlanQuery;
 use Osiset\ShopifyApp\Storage\Models\Plan as PlanModel;
+use Osiset\ShopifyApp\Util;
 
 /**
  * Represents plan queries.
@@ -24,7 +25,7 @@ class Plan implements IPlanQuery
      */
     public function __construct()
     {
-        $this->planModel = new (config('shopify-app.models.plan', PlanModel::class));
+        $this->planModel = new (Util::getShopifyConfig('models.plan', PlanModel::class));
     }
 
 
