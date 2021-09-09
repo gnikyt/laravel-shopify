@@ -3,6 +3,7 @@
 namespace Osiset\ShopifyApp\Test\Traits;
 
 use Illuminate\Http\Response;
+use Osiset\ShopifyApp\Exceptions\MissingShopDomainException;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
 use Osiset\ShopifyApp\Test\TestCase;
 use Osiset\ShopifyApp\Util;
@@ -62,5 +63,14 @@ class AuthControllerTest extends TestCase
 
         $response = $this->call('get', '/authenticate', $hmacParams);
         $response->assertStatus(Response::HTTP_INTERNAL_SERVER_ERROR);
+    }
+
+    public function testAuthThrowExceptionForMissingShopAndAuthenticatedUser(): void
+    {
+        $this->withoutExceptionHandling();
+        $this->expectException(MissingShopDomainException::class);
+
+        // Call authenticate with no parameters
+        $this->call('get', '/authenticate');
     }
 }
