@@ -23,6 +23,8 @@ trait AuthController
     /**
      * Installing/authenticating a shop.
      *
+     * @throws MissingShopDomainException if both shop parameter and authenticated user are missing
+     *
      * @return ViewView|RedirectResponse
      */
     public function authenticate(Request $request, AuthenticateShop $authShop)
