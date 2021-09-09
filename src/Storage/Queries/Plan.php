@@ -25,7 +25,8 @@ class Plan implements IPlanQuery
      */
     public function __construct()
     {
-        $this->planModel = new (Util::getShopifyConfig('models.plan', PlanModel::class));
+        $chargeClass = Util::getShopifyConfig('models.plan', PlanModel::class);
+        $this->planModel = new $chargeClass();
     }
 
 

@@ -44,7 +44,8 @@ trait ApiController
      */
     public function getPlans(): JsonResponse
     {
-        $planModel = new (Util::getShopifyConfig('models.plan', Plan::class));
+        $planClass = Util::getShopifyConfig('models.plan', Plan::class);
+        $planModel = new $planClass();
 
         return response()->json($planModel->all());
     }

@@ -26,7 +26,8 @@ class Charge implements IChargeQuery
      */
     public function __construct()
     {
-        $this->chargeModel = new (Util::getShopifyConfig('models.charge', ChargeModel::class));
+        $chargeClass = Util::getShopifyConfig('models.charge', ChargeModel::class);
+        $this->chargeModel = new $chargeClass();
     }
 
 
