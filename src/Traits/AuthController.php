@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
 use Osiset\ShopifyApp\Actions\AuthenticateShop;
 use Osiset\ShopifyApp\Exceptions\MissingAuthUrlException;
-use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
 use Osiset\ShopifyApp\Exceptions\MissingShopDomainException;
+use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Util;
 
@@ -31,7 +31,7 @@ trait AuthController
             // One or the other is required to authenticate a shop
             throw new MissingShopDomainException('No authenticated user or shop domain');
         }
-        
+
         // Get the shop domain
         $shopDomain = $request->has('shop')
             ? ShopDomain::fromNative($request->get('shop'))
