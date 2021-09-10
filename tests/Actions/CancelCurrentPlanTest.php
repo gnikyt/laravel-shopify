@@ -5,6 +5,7 @@ namespace Osiset\ShopifyApp\Test\Actions;
 use Osiset\ShopifyApp\Actions\CancelCurrentPlan;
 use Osiset\ShopifyApp\Storage\Models\Plan;
 use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Util;
 
 class CancelCurrentPlanTest extends TestCase
 {
@@ -36,7 +37,7 @@ class CancelCurrentPlanTest extends TestCase
     public function testCancelWithPlanButNoCharge(): void
     {
         // Create a plan
-        $plan = factory(Plan::class)->states('type_recurring')->create();
+        $plan = factory(Util::getShopifyConfig('models.plan', Plan::class))->states('type_recurring')->create();
 
         // Create the shop with the plan attached
         $shop = factory($this->model)->create([

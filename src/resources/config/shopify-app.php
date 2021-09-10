@@ -437,4 +437,38 @@ return [
     */
 
     'turbo_enabled' => (bool) env('SHOPIFY_TURBO_ENABLED', false),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Customize Models and Table Name
+    |--------------------------------------------------------------------------
+    |
+    | You can customize you model and extend them
+    | also you can customize tables name for charge and plan models.
+    |
+    */
+
+    'models' => [
+        /*
+        * The fully qualified class name of the Charge model.
+        */
+        'charge' => Osiset\ShopifyApp\Storage\Models\Charge::class,
+
+        /*
+        * The fully qualified class name of the Plan model.
+        */
+        'plan' => Osiset\ShopifyApp\Storage\Models\Plan::class,
+    ],
+
+    'table_names' => [
+        /*
+        * The table name for Charge model.
+        */
+        'charges' => 'charges',
+
+        /*
+        * The table name for Plan model.
+        */
+        'plans' => 'plans',
+    ]
 ];

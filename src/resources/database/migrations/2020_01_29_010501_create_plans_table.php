@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Osiset\ShopifyApp\Util;
 
 class CreatePlansTable extends Migration
 {
@@ -13,7 +14,7 @@ class CreatePlansTable extends Migration
      */
     public function up()
     {
-        Schema::create('plans', function (Blueprint $table) {
+        Schema::create(Util::getShopifyConfig('table_names.plans', 'plans'), function (Blueprint $table) {
             $table->increments('id');
 
             // The type of plan, either PlanType::RECURRING (0) or PlanType::ONETIME (1)
@@ -52,6 +53,6 @@ class CreatePlansTable extends Migration
      */
     public function down()
     {
-        Schema::drop('plans');
+        Schema::drop(Util::getShopifyConfig('table_names.plans', 'plans'));
     }
 }

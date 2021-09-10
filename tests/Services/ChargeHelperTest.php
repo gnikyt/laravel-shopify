@@ -10,6 +10,7 @@ use Osiset\ShopifyApp\Storage\Models\Charge;
 use Osiset\ShopifyApp\Storage\Models\Plan;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
 use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Util;
 
 class ChargeHelperTest extends TestCase
 {
@@ -126,7 +127,7 @@ class ChargeHelperTest extends TestCase
         $seed = $this->seedData();
 
         $this->assertInstanceOf(
-            Charge::class,
+            Util::getShopifyConfig('models.charge', Charge::class),
             $this->chargeHelper->chargeForPlan($seed['plan']->getId(), $seed['shop'])
         );
     }
@@ -147,7 +148,7 @@ class ChargeHelperTest extends TestCase
     public function testDetails2(): void
     {
         // Create a plan
-        $plan = factory(Plan::class)->states('type_recurring')->create([
+        $plan = factory(Util::getShopifyConfig('models.plan', Plan::class))->states('type_recurring')->create([
             'trial_days' => 7,
         ]);
 
@@ -163,7 +164,7 @@ class ChargeHelperTest extends TestCase
     protected function seedData($extraCharge = [], $extraPlan = [], $type = 'onetime'): array
     {
         // Create a plan
-        $plan = factory(Plan::class)->states("type_${type}")->create(
+        $plan = factory(Util::getShopifyConfig('models.plan', Plan::class))->states("type_${type}")->create(
             array_merge(
                 ['trial_days' => 7],
                 $extraPlan
@@ -176,7 +177,7 @@ class ChargeHelperTest extends TestCase
         ]);
 
         // Create a charge for the plan and shop
-        $charge = factory(Charge::class)->states("type_${type}")->create(
+        $charge = factory(Util::getShopifyConfig('models.charge', Charge::class))->states("type_${type}")->create(
             array_merge(
                 [
                     'charge_id' => 12345,

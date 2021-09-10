@@ -39,7 +39,7 @@ class BillingControllerTest extends TestCase
         $this->auth->login($shop);
 
         // Create a on-install plan
-        factory(Plan::class)->states('type_recurring', 'installable')->create();
+        factory(Util::getShopifyConfig('models.plan', Plan::class))->states('type_recurring', 'installable')->create();
 
         // Run the call
         $response = $this->call('get', '/billing', ['shop' => $shop->getDomain()->toNative()]);
@@ -62,7 +62,7 @@ class BillingControllerTest extends TestCase
         $this->auth->login($shop);
 
         // Make the plan
-        $plan = factory(Plan::class)->states('type_recurring')->create();
+        $plan = factory(Util::getShopifyConfig('models.plan', Plan::class))->states('type_recurring')->create();
 
         // Run the call
         $response = $this->call(
@@ -91,11 +91,11 @@ class BillingControllerTest extends TestCase
         ]);
 
         // Create the shop
-        $plan = factory(Plan::class)->states('type_recurring')->create();
+        $plan = factory(Util::getShopifyConfig('models.plan', Plan::class))->states('type_recurring')->create();
         $shop = factory($this->model)->create([
             'plan_id' => $plan->getId()->toNative(),
         ]);
-        factory(Charge::class)->states('type_recurring')->create([
+        factory(Util::getShopifyConfig('models.charge', Charge::class))->states('type_recurring')->create([
             'plan_id' => $plan->getId()->toNative(),
             'user_id' => $shop->getId()->toNative(),
         ]);

@@ -7,6 +7,7 @@ use Osiset\ShopifyApp\Http\Middleware\Billable as BillableMiddleware;
 use Osiset\ShopifyApp\Storage\Models\Charge;
 use Osiset\ShopifyApp\Storage\Models\Plan;
 use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Util;
 
 class BillableTest extends TestCase
 {
@@ -40,11 +41,11 @@ class BillableTest extends TestCase
     public function testEnabledBillingWithPaidShop(): void
     {
         // Enable billing and set a shop
-        $plan = factory(Plan::class)->states('type_recurring')->create();
+        $plan = factory(Util::getShopifyConfig('models.plan', Plan::class))->states('type_recurring')->create();
         $shop = factory($this->model)->create([
             'plan_id' => $plan->getId()->toNative(),
         ]);
-        factory(Charge::class)->states('type_recurring')->create([
+        factory(Util::getShopifyConfig('models.charge', Charge::class))->states('type_recurring')->create([
             'plan_id' => $plan->getId()->toNative(),
             'user_id' => $shop->getId()->toNative(),
         ]);

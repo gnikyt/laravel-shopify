@@ -50,6 +50,16 @@ class Charge extends Model
     protected $dates = ['deleted_at'];
 
     /**
+     * Get table name.
+     *
+     * @return string
+     */
+    public function getTable(): string
+    {
+        return Util::getShopifyConfig('table_names.charges', parent::getTable());
+    }
+
+    /**
      * Get the ID as a value object.
      *
      * @return ChargeId

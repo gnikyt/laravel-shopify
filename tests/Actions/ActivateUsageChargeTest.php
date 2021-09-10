@@ -10,6 +10,7 @@ use Osiset\ShopifyApp\Storage\Models\Charge;
 use Osiset\ShopifyApp\Storage\Models\Plan;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
 use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Util;
 
 class ActivateUsageChargeTest extends TestCase
 {
@@ -28,7 +29,7 @@ class ActivateUsageChargeTest extends TestCase
     public function testRun(): void
     {
         // Create a plan
-        $plan = factory(Plan::class)->states('type_recurring')->create();
+        $plan = factory(Util::getShopifyConfig('models.plan', Plan::class))->states('type_recurring')->create();
 
         // Create the shop with the plan attached
         $shop = factory($this->model)->create([
@@ -36,7 +37,7 @@ class ActivateUsageChargeTest extends TestCase
         ]);
 
         // Create a charge for the plan and shop
-        factory(Charge::class)->states('type_recurring')->create([
+        factory(Util::getShopifyConfig('models.charge', Charge::class))->states('type_recurring')->create([
             'charge_id' => 12345,
             'plan_id' => $plan->getId()->toNative(),
             'user_id' => $shop->getId()->toNative(),
@@ -69,7 +70,7 @@ class ActivateUsageChargeTest extends TestCase
         ));
 
         // Create a plan
-        $plan = factory(Plan::class)->states('type_onetime')->create();
+        $plan = factory(Util::getShopifyConfig('models.plan', Plan::class))->states('type_onetime')->create();
 
         // Create the shop with the plan attached
         $shop = factory($this->model)->create([
@@ -77,7 +78,7 @@ class ActivateUsageChargeTest extends TestCase
         ]);
 
         // Create a charge for the plan and shop
-        factory(Charge::class)->states('type_onetime')->create([
+        factory(Util::getShopifyConfig('models.charge', Charge::class))->states('type_onetime')->create([
             'charge_id' => 12345,
             'plan_id' => $plan->getId()->toNative(),
             'user_id' => $shop->getId()->toNative(),
@@ -98,7 +99,7 @@ class ActivateUsageChargeTest extends TestCase
     public function testRunWithLimitReached(): void
     {
         // Create a plan
-        $plan = factory(Plan::class)->states('type_recurring')->create();
+        $plan = factory(Util::getShopifyConfig('models.plan', Plan::class))->states('type_recurring')->create();
 
         // Create the shop with the plan attached
         $shop = factory($this->model)->create([
@@ -106,7 +107,7 @@ class ActivateUsageChargeTest extends TestCase
         ]);
 
         // Create a charge for the plan and shop
-        factory(Charge::class)->states('type_recurring')->create([
+        factory(Util::getShopifyConfig('models.charge', Charge::class))->states('type_recurring')->create([
             'charge_id' => 12345,
             'plan_id' => $plan->getId()->toNative(),
             'user_id' => $shop->getId()->toNative(),

@@ -18,6 +18,7 @@ use Osiset\ShopifyApp\Objects\Values\ShopId;
 use Osiset\ShopifyApp\Storage\Models\Charge;
 use Osiset\ShopifyApp\Storage\Models\Plan;
 use Osiset\ShopifyApp\Storage\Scopes\Namespacing;
+use Osiset\ShopifyApp\Util;
 
 /**
  * Responsible for representing a shop record.
@@ -81,7 +82,7 @@ trait ShopModel
      */
     public function charges(): HasMany
     {
-        return $this->hasMany(Charge::class);
+        return $this->hasMany(Util::getShopifyConfig('models.charge', Charge::class));
     }
 
     /**
@@ -97,7 +98,7 @@ trait ShopModel
      */
     public function plan(): BelongsTo
     {
-        return $this->belongsTo(Plan::class);
+        return $this->belongsTo(Util::getShopifyConfig('models.plan', Plan::class));
     }
 
     /**

@@ -9,13 +9,14 @@ use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Objects\Values\ShopId;
 use Osiset\ShopifyApp\Storage\Models\Plan;
 use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Util;
 
 class ShopModelTest extends TestCase
 {
     public function testModel(): void
     {
         // Create a plan
-        $plan = factory(Plan::class)->states('type_recurring')->create();
+        $plan = factory(Util::getShopifyConfig('models.plan', Plan::class))->states('type_recurring')->create();
 
         // Create a shop
         $shop = factory($this->model)->create([
@@ -29,7 +30,7 @@ class ShopModelTest extends TestCase
         $this->assertFalse($shop->isFreemium());
         $this->assertCount(0, $shop->charges);
         $this->assertFalse($shop->hasCharges());
-        $this->assertInstanceOf(Plan::class, $shop->plan);
+        $this->assertInstanceOf(Util::getShopifyConfig('models.plan', Plan::class), $shop->plan);
         $this->assertTrue($shop->hasOfflineAccess());
         $this->assertInstanceOf(BasicShopifyAPI::class, $shop->api());
         $this->assertInstanceOf(IApiHelper::class, $shop->apiHelper());

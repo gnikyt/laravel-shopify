@@ -5,8 +5,11 @@ use Illuminate\Support\Carbon;
 use Osiset\ShopifyApp\Objects\Enums\ChargeStatus;
 use Osiset\ShopifyApp\Objects\Enums\ChargeType;
 use Osiset\ShopifyApp\Storage\Models\Charge;
+use Osiset\ShopifyApp\Util;
 
-$factory->define(Charge::class, function (Faker $faker) {
+$chargeModel = Util::getShopifyConfig('models.charge', Charge::class);
+
+$factory->define($chargeModel, function (Faker $faker) {
     return [
         'charge_id' => $faker->randomNumber(8),
         'name' => $faker->word,
@@ -15,27 +18,27 @@ $factory->define(Charge::class, function (Faker $faker) {
     ];
 });
 
-$factory->state(Charge::class, 'test', [
+$factory->state($chargeModel, 'test', [
     'test' => true,
 ]);
 
-$factory->state(Charge::class, 'type_recurring', [
+$factory->state($chargeModel, 'type_recurring', [
     'type' => ChargeType::RECURRING()->toNative(),
 ]);
 
-$factory->state(Charge::class, 'type_onetime', [
+$factory->state($chargeModel, 'type_onetime', [
     'type' => ChargeType::CHARGE()->toNative(),
 ]);
 
-$factory->state(Charge::class, 'type_usage', [
+$factory->state($chargeModel, 'type_usage', [
     'type' => ChargeType::USAGE()->toNative(),
 ]);
 
-$factory->state(Charge::class, 'type_credit', [
+$factory->state($chargeModel, 'type_credit', [
     'type' => ChargeType::CREDIT()->toNative(),
 ]);
 
-$factory->state(Charge::class, 'trial', function ($faker) {
+$factory->state($chargeModel, 'trial', function ($faker) {
     $days = $faker->numberBetween(7, 14);
 
     return [

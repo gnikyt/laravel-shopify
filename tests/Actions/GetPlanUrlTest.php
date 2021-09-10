@@ -7,6 +7,7 @@ use Osiset\ShopifyApp\Objects\Values\NullablePlanId;
 use Osiset\ShopifyApp\Storage\Models\Plan;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
 use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Util;
 
 class GetPlanUrlTest extends TestCase
 {
@@ -25,7 +26,7 @@ class GetPlanUrlTest extends TestCase
     public function testRun30Days(): void
     {
         // Create a plan
-        factory(Plan::class)->states(['installable', 'type_recurring'])->create();
+        factory(Util::getShopifyConfig('models.plan', Plan::class))->states(['installable', 'type_recurring'])->create();
 
         // Create the shop with no plan
         $shop = factory($this->model)->create();
@@ -46,7 +47,7 @@ class GetPlanUrlTest extends TestCase
     public function testRunAnnual(): void
     {
         // Create a plan
-        factory(Plan::class)->states(['installable', 'type_recurring', 'interval_annual'])->create();
+        factory(Util::getShopifyConfig('models.plan', Plan::class))->states(['installable', 'type_recurring', 'interval_annual'])->create();
 
         // Create the shop with no plan
         $shop = factory($this->model)->create();

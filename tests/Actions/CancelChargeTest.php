@@ -8,6 +8,7 @@ use Osiset\ShopifyApp\Objects\Values\ChargeReference;
 use Osiset\ShopifyApp\Storage\Models\Charge;
 use Osiset\ShopifyApp\Storage\Models\Plan;
 use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Util;
 
 class CancelChargeTest extends TestCase
 {
@@ -29,7 +30,7 @@ class CancelChargeTest extends TestCase
         $chargeRef = ChargeReference::fromNative(123456);
 
         // Create a plan
-        $plan = factory(Plan::class)->states('type_recurring')->create();
+        $plan = factory(Util::getShopifyConfig('models.plan', Plan::class))->states('type_recurring')->create();
 
         // Create the shop with the plan attached
         $shop = factory($this->model)->create([
@@ -37,7 +38,7 @@ class CancelChargeTest extends TestCase
         ]);
 
         // Create a charge for the plan and shop
-        factory(Charge::class)->states('type_recurring')->create([
+        factory(Util::getShopifyConfig('models.charge', Charge::class))->states('type_recurring')->create([
             'charge_id' => $chargeRef->toNative(),
             'plan_id' => $plan->getId()->toNative(),
             'user_id' => $shop->getId()->toNative(),
@@ -59,7 +60,7 @@ class CancelChargeTest extends TestCase
         $chargeRef = ChargeReference::fromNative(123456);
 
         // Create a plan
-        $plan = factory(Plan::class)->states('type_recurring')->create();
+        $plan = factory(Util::getShopifyConfig('models.plan', Plan::class))->states('type_recurring')->create();
 
         // Create the shop with the plan attached
         $shop = factory($this->model)->create([
@@ -67,7 +68,7 @@ class CancelChargeTest extends TestCase
         ]);
 
         // Create a charge for the plan and shop
-        factory(Charge::class)->states('type_usage')->create([
+        factory(Util::getShopifyConfig('models.charge', Charge::class))->states('type_usage')->create([
             'charge_id' => $chargeRef->toNative(),
             'plan_id' => $plan->getId()->toNative(),
             'user_id' => $shop->getId()->toNative(),

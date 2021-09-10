@@ -9,6 +9,7 @@ use Osiset\ShopifyApp\Objects\Values\ChargeId;
 use Osiset\ShopifyApp\Objects\Values\ChargeReference;
 use Osiset\ShopifyApp\Storage\Models\Charge;
 use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Util;
 
 class ChargeTest extends TestCase
 {
@@ -18,7 +19,7 @@ class ChargeTest extends TestCase
         $shop = factory($this->model)->create();
 
         // Create a charge
-        $charge = factory(Charge::class)->states('type_recurring')->create([
+        $charge = factory(Util::getShopifyConfig('models.charge', Charge::class))->states('type_recurring')->create([
             'user_id' => $shop->getId()->toNative(),
         ]);
 

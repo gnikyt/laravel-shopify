@@ -6,6 +6,7 @@ use Osiset\ShopifyApp\Contracts\Queries\Plan as IPlanQuery;
 use Osiset\ShopifyApp\Objects\Values\PlanId;
 use Osiset\ShopifyApp\Storage\Models\Plan;
 use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Util;
 
 class PlanTest extends TestCase
 {
@@ -24,7 +25,7 @@ class PlanTest extends TestCase
     public function testPlanGetById(): void
     {
         // Create a plan
-        $plan = factory(Plan::class)->states('type_recurring')->create();
+        $plan = factory(Util::getShopifyConfig('models.plan', Plan::class))->states('type_recurring')->create();
 
         // Query it
         $this->assertNotNull($this->query->getById($plan->getId()));
@@ -39,7 +40,7 @@ class PlanTest extends TestCase
         $this->assertNull($this->query->getDefault());
 
         // Create a plan
-        factory(Plan::class)->states(['type_recurring', 'installable'])->create();
+        factory(Util::getShopifyConfig('models.plan', Plan::class))->states(['type_recurring', 'installable'])->create();
 
         // Query it
         $this->assertNotNull($this->query->getDefault());
@@ -48,7 +49,7 @@ class PlanTest extends TestCase
     public function testPlanGetAll(): void
     {
         // Create a plan
-        factory(Plan::class)->states('type_onetime')->create();
+        factory(Util::getShopifyConfig('models.plan', Plan::class))->states('type_onetime')->create();
 
         // Ensure we get a result
         $this->assertCount(1, $this->query->getAll());

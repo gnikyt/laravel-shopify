@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Osiset\ShopifyApp\Objects\Enums\PlanInterval;
 use Osiset\ShopifyApp\Objects\Enums\PlanType;
 use Osiset\ShopifyApp\Objects\Values\PlanId;
+use Osiset\ShopifyApp\Util;
 
 /**
  * Responsible for reprecenting a plan record.
@@ -24,6 +25,16 @@ class Plan extends Model
         'capped_amount' => 'float',
         'price' => 'float',
     ];
+
+    /**
+     * Get table name.
+     *
+     * @return string
+     */
+    public function getTable(): string
+    {
+        return Util::getShopifyConfig('table_names.plans', parent::getTable());
+    }
 
     /**
      * Get the plan ID as a value object.
