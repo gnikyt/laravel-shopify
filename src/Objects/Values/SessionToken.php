@@ -251,7 +251,7 @@ final class SessionToken implements SessionTokenValue
     protected function verifyValidity(): void
     {
         Assert::that($this->iss)->contains($this->dest, self::EXCEPTION_INVALID);
-        Assert::that($this->aud)->eq(Util::getShopifyConfig('api_key'), self::EXCEPTION_INVALID);
+        Assert::that($this->aud)->eq(Util::getShopifyConfig('api_key', $this->getShopDomain()), self::EXCEPTION_INVALID);
     }
 
     /**
