@@ -311,7 +311,7 @@ class ApiHelper implements IApiHelper
                         'appRecurringPricingDetails' => [
                             'price' => [
                                 'amount' => $payload->price,
-                                'currencyCode' => 'USD',
+                                'currencyCode' => Util::getShopifyConfig('billing_currency_code'),
                             ],
                             'interval' => $payload->interval,
                         ],
