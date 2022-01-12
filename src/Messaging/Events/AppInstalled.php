@@ -28,4 +28,9 @@ class AppInstalled
     {
         $this->shop = $shop;
     }
+
+    public function getShop()
+    {
+        return $this->shop;
+    }
 }
