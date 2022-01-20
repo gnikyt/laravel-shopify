@@ -75,7 +75,7 @@ jobs:
         run: composer install --prefer-dist --no-progress
 
       - name: Normalize composer file
-        if: matrix.normalize == true && matrix.php !== '8.0'
+        if: matrix.normalize == true && matrix.php != '8.0'
         run: composer normalize --dry-run
 
       - name: Run test suite
