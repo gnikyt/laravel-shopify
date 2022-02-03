@@ -100,6 +100,9 @@ class Shop implements ShopCommand
     {
         $shop = $this->getShop($shopId);
         $shop->charges()->delete();
+        
+        $shop->installed = 0;
+        $shop->save();
 
         return $shop->delete();
     }
