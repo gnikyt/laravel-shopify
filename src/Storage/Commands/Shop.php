@@ -74,6 +74,7 @@ class Shop implements ShopCommand
     {
         $shop = $this->getShop($shopId);
         $shop->password = $token->toNative();
+        $shop->installed = 1;
         $shop->password_updated_at = Carbon::now();
 
         return $shop->save();
@@ -86,6 +87,7 @@ class Shop implements ShopCommand
     {
         $shop = $this->getShop($shopId);
         $shop->password = '';
+        $shop->installed = 0;
         $shop->plan_id = null;
 
         return $shop->save();
