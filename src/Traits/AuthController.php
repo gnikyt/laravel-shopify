@@ -50,18 +50,14 @@ trait AuthController
         if ($status === null) {
             // Show exception, something is wrong
             throw new SignatureVerificationException('Invalid HMAC verification');
-        } elseif ($status === false) {
+        } else if ($status === false) {
             if (! $result['url']) {
                 throw new MissingAuthUrlException('Missing auth url');
             }
 
-            return View::make(
-                'shopify-app::auth.fullpage_redirect',
-                [
-                    'authUrl' => $result['url'],
-                    'shopDomain' => $shopDomain->toNative(),
-                ]
-            );
+            // Just return them straight to the OAUTH flow.
+            return Redirect::to($result['url']);
+
         } else {
             // Go to home route
             return Redirect::route(
