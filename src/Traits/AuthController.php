@@ -50,7 +50,7 @@ trait AuthController
         if ($status === null) {
             // Show exception, something is wrong
             throw new SignatureVerificationException('Invalid HMAC verification');
-        } else if ($status === false) {
+        } elseif ($status === false) {
             if (! $result['url']) {
                 throw new MissingAuthUrlException('Missing auth url');
             }
