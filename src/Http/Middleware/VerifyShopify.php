@@ -500,6 +500,6 @@ class VerifyShopify
     {
         $shop = $this->shopQuery->getByDomain(ShopDomain::fromRequest($request), [], true);
 
-         return $shop && ! $shop->trashed() && $shop->installed;
+         return $shop && ! $shop->trashed() && !$shop->getAccessToken()->isEmpty();
     }
 }
