@@ -6,6 +6,8 @@
 
         <title>Redirecting...</title>
 
+        <script src="https://unpkg.com/@shopify/app-bridge{{ \Osiset\ShopifyApp\Util::getShopifyConfig('appbridge_version') ? '@'.config('shopify-app.appbridge_version') : '' }}"></script>
+        <script src="https://unpkg.com/@shopify/app-bridge-utils{{ \Osiset\ShopifyApp\Util::getShopifyConfig('appbridge_version') ? '@'.config('shopify-app.appbridge_version') : '' }}"></script>
         <script type="text/javascript">
             document.addEventListener('DOMContentLoaded', function () {
                 var redirectUrl = "{!! $authUrl !!}";
@@ -17,11 +19,17 @@
                     normalizedLink = document.createElement('a');
                     normalizedLink.href = redirectUrl;
 
-                    data = JSON.stringify({
-                        message: 'Shopify.API.remoteRedirect',
-                        data: { location: redirectUrl },
+                    var AppBridge = window['app-bridge'];
+                    var createApp = AppBridge.default;
+                    var Redirect = AppBridge.actions.Redirect;
+                    var app = createApp({
+                        apiKey: "{{ \Osiset\ShopifyApp\Util::getShopifyConfig('api_key', $shopDomain ?? Auth::user()->name ) }}",
+                        shopOrigin: "{{ $shopDomain ?? Auth::user()->name }}",
+                        host: "{{ \Request::get('host') }}",
                     });
-                    window.parent.postMessage(data, "https://{{ $shopDomain }}");
+
+                    var redirect = Redirect.create(app);
+                    redirect.dispatch(Redirect.Action.REMOTE, normalizedLink.href);
                 }
             });
         </script>
