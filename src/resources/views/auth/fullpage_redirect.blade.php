@@ -6,8 +6,8 @@
 
         <title>Redirecting...</title>
 
-        <script src="https://unpkg.com/@shopify/app-bridge{{ \Osiset\ShopifyApp\Util::getShopifyConfig('appbridge_version') ? '@'.config('shopify-app.appbridge_version') : '' }}"></script>
-        <script src="https://unpkg.com/@shopify/app-bridge-utils{{ \Osiset\ShopifyApp\Util::getShopifyConfig('appbridge_version') ? '@'.config('shopify-app.appbridge_version') : '' }}"></script>
+        <script src="https://unpkg.com/@shopify/app-bridge{!! $appBridgeVersion !!}"></script>
+        <script src="https://unpkg.com/@shopify/app-bridge-utils{!! $appBridgeVersion !!}"></script>
         <script type="text/javascript">
             document.addEventListener('DOMContentLoaded', function () {
                 var redirectUrl = "{!! $authUrl !!}";
@@ -23,9 +23,9 @@
                     var createApp = AppBridge.default;
                     var Redirect = AppBridge.actions.Redirect;
                     var app = createApp({
-                        apiKey: "{{ \Osiset\ShopifyApp\Util::getShopifyConfig('api_key', $shopDomain ?? Auth::user()->name ) }}",
-                        shopOrigin: "{{ $shopDomain ?? Auth::user()->name }}",
-                        host: "{{ \Request::get('host') }}",
+                        apiKey: "{{!! $apiKey !!}}",
+                        shopOrigin: "{{!! $shopOrigin !!}}",
+                        host: "{{!! $host !!}}",
                     });
 
                     var redirect = Redirect.create(app);
