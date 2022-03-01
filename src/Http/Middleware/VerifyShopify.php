@@ -500,6 +500,6 @@ class VerifyShopify
     {
         $shop = $this->shopQuery->getByDomain(ShopDomain::fromRequest($request), [], true);
 
-         return $shop && $shop->password && ! $shop->trashed();
+        return $shop && $shop->password && ! $shop->trashed();
     }
 }
