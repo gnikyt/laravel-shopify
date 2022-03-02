@@ -55,15 +55,18 @@ trait AuthController
                 throw new MissingAuthUrlException('Missing auth url');
             }
 
+            $shopDomain = $shopDomain->toNative();
+            $shopOrigin = $shopDomain ?? $request->user()->name;
+
             return View::make(
                 'shopify-app::auth.fullpage_redirect',
                 [
-                    'apiKey' => Util::getShopifyConfig('api_key', $shopDomain ?? $request->user()->name),
+                    'apiKey' => Util::getShopifyConfig('api_key', $shopOrigin),
                     'appBridgeVersion' => Util::getShopifyConfig('appbridge_version') ? '@'.config('shopify-app.appbridge_version') : '',
                     'authUrl' => $result['url'],
-                    'host' => $request->host,
-                    'shopDomain' => $shopDomain->toNative(),
-                    'shopOrigin' => $shopDomain ?? $request->user()->name,
+                    'host' => $request->host ?? base64_encode($shopOrigin.'/admin'),
+                    'shopDomain' => $shopDomain,
+                    'shopOrigin' => $shopOrigin,
                 ]
             );
         } else {
