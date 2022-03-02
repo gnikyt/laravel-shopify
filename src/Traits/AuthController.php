@@ -58,7 +58,7 @@ trait AuthController
             return View::make(
                 'shopify-app::auth.fullpage_redirect',
                 [
-                    'apiKey' => Util::getShopifyConfig('api_key', $shopDomain ?? $request->user()->name ),
+                    'apiKey' => Util::getShopifyConfig('api_key', $shopDomain ?? $request->user()->name),
                     'appBridgeVersion' => Util::getShopifyConfig('appbridge_version') ? '@'.config('shopify-app.appbridge_version') : '',
                     'authUrl' => $result['url'],
                     'host' => $request->host,
