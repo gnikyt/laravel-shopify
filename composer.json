@@ -1,5 +1,5 @@
 {
-    "name": "osiset/laravel-shopify",
+    "name": "everlytic/laravel-shopify",
     "description": "Shopify package for Laravel to aide in app development",
     "keywords": [
         "api",
