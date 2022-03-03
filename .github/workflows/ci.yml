@@ -21,6 +21,7 @@ jobs:
         laravel:
           - '7.0'
           - '8.22'
+          - '9.0'
         exclude:
           - php: '7.2'
             laravel: '8.22'
@@ -28,6 +29,12 @@ jobs:
             laravel: '7.0'
           - php: '8.0'
             laravel: '8.22'
+          - php: '7.2'
+            laravel: '9.0'
+          - php: '7.3'
+            laravel: '9.0'
+          - php: '7.4'
+            laravel: '9.0'
         include:
           - php: '8.0'
             laravel: '8.22'
