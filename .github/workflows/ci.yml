@@ -79,7 +79,7 @@ jobs:
           restore-keys: "php-${{ matrix.php }}-laravel-${{ matrix.laravel }}-${{ hashFiles('**/composer.json') }}"
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress
+        run: composer install --prefer-dist --no-progress --ignore-platform-reqs
 
       - name: Normalize composer file
         if: matrix.normalize == true && matrix.php != '8.0'
