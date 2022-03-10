@@ -58,7 +58,7 @@ class AddVariablesCommand extends Command
      *
      * @return void
      */
-    protected function successResult()
+    protected function successResult(): void
     {
         $this->info("All variables will be set");
     }
