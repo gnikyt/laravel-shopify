@@ -79,7 +79,7 @@ class ShopifyAppProvider extends ServiceProvider
 
         $this->commands([
             WebhookJobMakeCommand::class,
-            AddVariablesCommand::class
+            AddVariablesCommand::class,
         ]);
 
         // Services (start)

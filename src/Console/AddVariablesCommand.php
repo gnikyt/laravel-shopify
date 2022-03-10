@@ -2,8 +2,8 @@
 
 namespace Osiset\ShopifyApp\Console;
 
-use Illuminate\Support\Str;
 use Illuminate\Console\Command;
+use Illuminate\Support\Str;
 
 class AddVariablesCommand extends Command
 {
@@ -60,14 +60,15 @@ class AddVariablesCommand extends Command
      */
     protected function successResult(): void
     {
-        $this->info("All variables will be set");
+        $this->info('All variables will be set');
     }
 
     /**
      * Check if the modification is confirmed.
      *
      * @param string $key
-     * @return boolean
+     *
+     * @return bool
      */
     protected function isConfirmed(string $key): bool
     {
@@ -96,12 +97,12 @@ class AddVariablesCommand extends Command
     protected function defaultShopifyVariables(): array
     {
         return [
-            "SHOPIFY_APP_NAME"  => config('app.name'),
-            "SHOPIFY_API_KEY" => "",
-            "SHOPIFY_API_SECRET" => "",
-            "SHOPIFY_API_SCOPES" => "read_script_tags,write_script_tags,read_customers,write_customers,read_products,write_products",
-            "SHOPIFY_REDIRECT_AFTER_SUCCESS_CHARGE" => true,
-            "AFTER_AUTHENTICATE_JOB" => "\App\Jobs\AfterAuthenticateJob"
+            'SHOPIFY_APP_NAME' => config('app.name'),
+            'SHOPIFY_API_KEY' => '',
+            'SHOPIFY_API_SECRET' => '',
+            'SHOPIFY_API_SCOPES' => 'read_script_tags,write_script_tags,read_customers,write_customers,read_products,write_products',
+            'SHOPIFY_REDIRECT_AFTER_SUCCESS_CHARGE' => true,
+            'AFTER_AUTHENTICATE_JOB' => "\App\Jobs\AfterAuthenticateJob",
         ];
     }
 }
