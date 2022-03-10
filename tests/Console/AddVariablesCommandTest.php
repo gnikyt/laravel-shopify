@@ -4,7 +4,7 @@ namespace Osiset\ShopifyApp\Test\Console;
 
 use Orchestra\Testbench\TestCase;
 
-class TestTest extends TestCase
+class AddVariablesCommandTest extends TestCase
 {
     public function testItShouldRun(): void
     {
