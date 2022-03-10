@@ -37,22 +37,24 @@ class AddVariablesCommand extends Command
      */
     public function handle()
     {
-        $env = $this->envPath();
+        if ($this->laravel->environment() !== 'testing') {
+            $env = $this->envPath();
 
-        foreach ($this->defaultShopifyVariables() as $key => $variable) {
-            if (Str::contains(file_get_contents($env), $key) === false) {
-                file_put_contents($env, PHP_EOL."$key=$variable", FILE_APPEND);
-            } else {
-                if ($this->option('always-no')) {
-                    $this->comment("Variable $key already exists. Skipping...");
+            foreach ($this->defaultShopifyVariables() as $key => $variable) {
+                if (Str::contains(file_get_contents($env), $key) === false) {
+                    file_put_contents($env, PHP_EOL."$key=$variable", FILE_APPEND);
+                } else {
+                    if ($this->option('always-no')) {
+                        $this->comment("Variable $key already exists. Skipping...");
 
-                    continue;
-                }
+                        continue;
+                    }
 
-                if ($this->isConfirmed($key) === false) {
-                    $this->comment('There has been no change.');
+                    if ($this->isConfirmed($key) === false) {
+                        $this->comment('There has been no change.');
 
-                    continue;
+                        continue;
+                    }
                 }
             }
         }

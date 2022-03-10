@@ -2,15 +2,11 @@
 
 namespace Osiset\ShopifyApp\Test\Console;
 
-use Orchestra\Testbench\TestCase as OrchestraTestCase;
+use Osiset\ShopifyApp\Test\TestCase;
 
-class AddVariablesCommandTest extends OrchestraTestCase
+
+class AddVariablesCommandTest extends TestCase
 {
-    public function setUp(): void
-    {
-        parent::setUp();
-    }
-
     public function testItShouldRunForce(): void
     {
         $this->artisan('shopify-app:add:variables --force')->assertExitCode(0);
