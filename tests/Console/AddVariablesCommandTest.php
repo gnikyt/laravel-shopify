@@ -4,7 +4,6 @@ namespace Osiset\ShopifyApp\Test\Console;
 
 use Osiset\ShopifyApp\Test\TestCase;
 
-
 class AddVariablesCommandTest extends TestCase
 {
     public function testItShouldRunForce(): void
