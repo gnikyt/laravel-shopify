@@ -8,6 +8,13 @@ use Illuminate\Support\Str;
 class AddVariablesCommand extends Command
 {
     /**
+     * The console command name.
+     *
+     * @var string
+     */
+    protected $name = 'shopify-app:add:variables';
+
+    /**
      * The console command signature.
      *
      * @var string
