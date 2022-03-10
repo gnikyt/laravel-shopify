@@ -34,7 +34,7 @@ class AddVariablesCommand extends Command
 
         foreach ($this->defaultShopifyVariables() as $key => $variable) {
             if (Str::contains(file_get_contents($env), $key) === false) {
-                file_put_contents($env, PHP_EOL . "$key=$variable", FILE_APPEND);
+                file_put_contents($env, PHP_EOL."$key=$variable", FILE_APPEND);
             } else {
                 if ($this->option('always-no')) {
                     $this->comment("Variable $key already exists. Skipping...");
