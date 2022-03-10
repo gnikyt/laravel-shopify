@@ -2,7 +2,7 @@
 
 namespace Osiset\ShopifyApp\Test\Console;
 
-use Tests\TestCase;
+use Orchestra\Testbench\TestCase;
 
 class TestTest extends TestCase
 {
