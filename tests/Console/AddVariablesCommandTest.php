@@ -6,6 +6,11 @@ use Orchestra\Testbench\TestCase;
 
 class AddVariablesCommandTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+    }
+
     public function testItShouldRun(): void
     {
         $this->artisan('shopify-app:add:variables')
