@@ -6,9 +6,9 @@ use Illuminate\Contracts\View\View as ViewView;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
 use Osiset\ShopifyApp\Actions\AuthenticateShop;
+use Osiset\ShopifyApp\Actions\AuthorizeShop;
 use Osiset\ShopifyApp\Exceptions\MissingAuthUrlException;
 use Osiset\ShopifyApp\Exceptions\MissingShopDomainException;
 use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
@@ -59,7 +59,7 @@ trait AuthController
                 'shopify-app::auth.fullpage_redirect',
                 [
                     'authUrl' => $result['url'],
-                    'shopDomain' => $shopDomain->toNative(),
+                    'shopDomain' => $shopDomain->toNative()
                 ]
             );
         } else {
@@ -104,6 +104,44 @@ trait AuthController
             [
                 'shopDomain' => $shopDomain->toNative(),
                 'target' => $cleanTarget,
+            ]
+        );
+    }
+
+
+    /**
+     * Simply redirects to Shopify's Oauth screen.
+     *
+     * @param Request       $request  The request object.
+     * @param AuthorizeShop $authShop The action for authenticating a shop.
+     *
+     * @return ViewView
+     */
+    public function oauth(Request $request, AuthorizeShop $authShop): ViewView
+    {
+        // Setup
+        $shopDomain = ShopDomain::fromNative($request->get('shop'));
+        $result = $authShop($shopDomain, null);
+
+        // Redirect
+        return $this->oauthFailure($result->url, $shopDomain);
+    }
+
+    /**
+     * Handles when authentication is unsuccessful or new.
+     *
+     * @param string     $authUrl    The auth URl to redirect the user to get the code.
+     * @param ShopDomain $shopDomain The shop's domain.
+     *
+     * @return ViewView
+     */
+    private function oauthFailure(string $authUrl, ShopDomain $shopDomain): ViewView
+    {
+        return View::make(
+            'shopify-app::auth.fullpage_redirect',
+            [
+                'authUrl'    => $authUrl,
+                'shopDomain' => $shopDomain->toNative(),
             ]
         );
     }

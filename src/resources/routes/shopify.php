@@ -63,6 +63,26 @@ Route::group(['prefix' => Util::getShopifyConfig('prefix'), 'middleware' => ['we
 
     /*
     |--------------------------------------------------------------------------
+    | Authenticate: Auth
+    |--------------------------------------------------------------------------
+    |
+    | This route is hit when a shop comes to the app without a session token
+    | yet. A token will be grabbed from Shopify AppBridge Javascript
+    | and then forwarded back to the home route.
+    |
+    */
+
+    if (Util::registerPackageRoute('authenticate.oauth', $manualRoutes)) {
+        Route::get(
+            '/authenticate/oauth',
+            AuthController::class.'@oauth'
+        )
+            ->middleware(['verify.shopify'])
+            ->name(Util::getShopifyConfig('route_names.authenticate.oauth'));
+    }
+
+    /*
+    |--------------------------------------------------------------------------
     | Authenticate: Token
     |--------------------------------------------------------------------------
     |
