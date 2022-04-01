@@ -29,7 +29,7 @@
         "funeralzone/valueobjects": "^0.5",
         "jenssegers/agent": "^2.6",
         "laravel/framework": "^7.0 || ^8.0 || ^9.0",
-        "osiset/basic-shopify-api": "^9.0 || ^10.0"
+        "osiset/basic-shopify-api": "dev-master"
     },
     "require-dev": {
         "ergebnis/composer-normalize": "^2.8",
@@ -73,5 +73,11 @@
         "forum": "https://github.com/osiset/laravel-shopify/discussions",
         "wiki": "https://github.com/osiset/laravel-shopify/wiki",
         "source": "https://github.com/osiset/laravel-shopify"
-    }
+    },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/EzeeSpace/Basic-Shopify-API.git"
+        }
+    ]
 }
