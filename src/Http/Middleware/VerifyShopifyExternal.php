@@ -220,7 +220,7 @@ class VerifyShopifyExternal extends VerifyShopify
 
         // Mis-match of shops
         return Redirect::route(
-            Util::getShopifyConfig('route_names.authenticate.oauth'),
+            Util::getShopifyConfig('route_names.authenticate'),
             ['shop' => $domain->toNative()]
         );
     }
