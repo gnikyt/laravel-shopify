@@ -366,13 +366,13 @@ class ApiHelper implements IApiHelper
      */
     public function createWebhook(array $payload): ResponseAccess
     {
-
-        $address_type = Util::getShopifyConfig('webhook_address_type');
-        if($address_type === "arn"){
+        $addressType = Util::getShopifyConfig('webhook_address_type');
+        if($addressType === "arn"){
             $query = '
             mutation eventBridgeWebhookSubscriptionCreate($topic: WebhookSubscriptionTopic!, $webhookSubscription: EventBridgeWebhookSubscriptionInput!) {
                 eventBridgeWebhookSubscriptionCreate(topic: $topic, webhookSubscription: $webhookSubscription) {
                   userErrors {
+                    field
                     message
                   }
                   webhookSubscription {
@@ -411,12 +411,13 @@ class ApiHelper implements IApiHelper
         $variables = [
             'topic' => $topic,
             'webhookSubscription' => [
-                $address_type => $payload['address'],
+                $addressType => $payload['address'],
                 'format' => 'JSON',
             ],
         ];
 
         $response = $this->doRequestGraphQL($query, $variables);
+
         return $response['body'];
     }
 
