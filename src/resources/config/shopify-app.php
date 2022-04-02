@@ -328,6 +328,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Shopify Webhooks Address Type
+    |--------------------------------------------------------------------------
+    |
+    | This option is for defining webhooks type.
+    | `callbackUrl` it's use https:// route.
+    | `arn` it's use arn route.
+    |
+    | This documentation will helps you
+    | https://shopify.dev/apps/webhooks/configuration/eventbridge
+    |
+    */
+    
+    'webhook_address_type' => env('SHOPIFY_WEBHOOK_ADDRESS_TYPE', 'arn'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Shopify Webhooks
     |--------------------------------------------------------------------------
     |

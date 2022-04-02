@@ -366,26 +366,44 @@ class ApiHelper implements IApiHelper
      */
     public function createWebhook(array $payload): ResponseAccess
     {
-        $query = '
-        mutation webhookSubscriptionCreate(
-            $topic: WebhookSubscriptionTopic!,
-            $webhookSubscription: WebhookSubscriptionInput!
-        ) {
-            webhookSubscriptionCreate(
-                topic: $topic
-                webhookSubscription: $webhookSubscription
-            ) {
-                userErrors {
-                    field
+
+        $address_type = Util::getShopifyConfig('webhook_address_type');
+        if($address_type === "arn"){
+            $query = '
+            mutation eventBridgeWebhookSubscriptionCreate($topic: WebhookSubscriptionTopic!, $webhookSubscription: EventBridgeWebhookSubscriptionInput!) {
+                eventBridgeWebhookSubscriptionCreate(topic: $topic, webhookSubscription: $webhookSubscription) {
+                  userErrors {
                     message
-                }
-                webhookSubscription {
+                  }
+                  webhookSubscription {
                     id
                     topic
+                  }
+                }
+              }
+              ';
+        }else{
+            $query = '
+            mutation webhookSubscriptionCreate(
+                $topic: WebhookSubscriptionTopic!,
+                $webhookSubscription: WebhookSubscriptionInput!
+            ) {
+                webhookSubscriptionCreate(
+                    topic: $topic
+                    webhookSubscription: $webhookSubscription
+                ) {
+                    userErrors {
+                        field
+                        message
+                    }
+                    webhookSubscription {
+                        id
+                        topic
+                    }
                 }
             }
+            ';
         }
-        ';
 
         // Change REST-format topics ("resource/event")
         // to GraphQL-format topics ("RESOURCE_EVENT"), for pre-v17 compatibility
@@ -393,13 +411,12 @@ class ApiHelper implements IApiHelper
         $variables = [
             'topic' => $topic,
             'webhookSubscription' => [
-                'callbackUrl' => $payload['address'],
+                $address_type => $payload['address'],
                 'format' => 'JSON',
             ],
         ];
 
         $response = $this->doRequestGraphQL($query, $variables);
-
         return $response['body'];
     }
 
