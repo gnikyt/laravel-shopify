@@ -340,7 +340,7 @@ return [
     |
     */
     
-    'webhook_address_type' => env('SHOPIFY_WEBHOOK_ADDRESS_TYPE', 'arn'),
+    'webhook_address_type' => env('SHOPIFY_WEBHOOK_ADDRESS_TYPE', 'callbackUrl'),
 
     /*
     |--------------------------------------------------------------------------
