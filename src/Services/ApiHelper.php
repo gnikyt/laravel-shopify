@@ -367,7 +367,7 @@ class ApiHelper implements IApiHelper
     public function createWebhook(array $payload): ResponseAccess
     {
         $addressType = Util::getShopifyConfig('webhook_address_type');
-        if ($addressType === "arn") {
+        if ($addressType === 'arn') {
             $query = '
             mutation eventBridgeWebhookSubscriptionCreate($topic: WebhookSubscriptionTopic!, $webhookSubscription: EventBridgeWebhookSubscriptionInput!) {
                 eventBridgeWebhookSubscriptionCreate(topic: $topic, webhookSubscription: $webhookSubscription) {
