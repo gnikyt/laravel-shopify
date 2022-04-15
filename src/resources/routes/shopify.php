@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 use Osiset\ShopifyApp\Http\Controllers\AuthController;
 use Osiset\ShopifyApp\Http\Controllers\BillingController;
 use Osiset\ShopifyApp\Http\Controllers\HomeController;
+use Osiset\ShopifyApp\Http\Controllers\LoginController;
 use Osiset\ShopifyApp\Util;
 
 // Check if manual routes override is to be use
@@ -41,6 +42,23 @@ Route::group(['prefix' => Util::getShopifyConfig('prefix'), 'middleware' => ['we
         )
         ->middleware(['verify.shopify', 'billable'])
         ->name(Util::getShopifyConfig('route_names.home'));
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Login Route
+    |--------------------------------------------------------------------------
+    |
+    | Login a shop.
+    |
+    */
+
+    if (Util::registerPackageRoute('login', $manualRoutes)) {
+        Route::get(
+            '/login',
+            LoginController::class . '@index'
+        )
+            ->name(Util::getShopifyConfig('route_names.login'));
     }
 
     /*
