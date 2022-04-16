@@ -101,6 +101,10 @@ class VerifyShopify
             return $next($request);
         }
 
+        if ($request->missing('shop') && $request->missing('token')) {
+            return $this->loginRedirect();
+        }
+
         $tokenSource = $this->getAccessTokenFromRequest($request);
         if ($tokenSource === null) {
             //Check if there is a store record in the database
@@ -257,6 +261,18 @@ class VerifyShopify
         $this->auth->login($shop);
 
         return true;
+    }
+
+    /**
+     * Redirect to login route.
+     *
+     * @return RedirectResponse
+     */
+    protected function loginRedirect(): RedirectResponse
+    {
+        return Redirect::route(
+            Util::getShopifyConfig('route_names.login')
+        );
     }
 
     /**
