@@ -19,7 +19,7 @@ trait LoginController
     {
         return View::make(
             'shopify-app::login.index',
-            ['shop' => $request->user()]
+            ['shop' => $request->get('shop')]
         );
     }
 }
