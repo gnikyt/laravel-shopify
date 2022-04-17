@@ -11,7 +11,7 @@
     }
 
     .full-height {
-        height: 100vh;
+        height: 75vh;
     }
 
     .flex-center {
@@ -35,7 +35,9 @@
     }
 
     .title {
-        font-size: 84px;
+        font-size: 72px;
+        margin: 0;
+        padding: 0;
     }
 
     .links > a {
@@ -48,7 +50,35 @@
         text-transform: uppercase;
     }
 
-    .m-b-md {
-        margin-bottom: 30px;
+    .m-t-0 {
+        margin-top: 0px;
+    }
+
+    input {
+        width: 215px;
+        height: 35px;
+        padding: 5px;
+        border: 1px solid #479CCf;
+        color: #575757;
+        background-color: #ffffff;
+        box-sizing: border-box;
+        border-radius: 4px 0 0 4px;
+        font-size: 14px;
+        float: left;
+    }
+
+    button {
+        color: #ffffff;
+        background-color: #3793cb;
+        width: 75px;
+        height: 35px;
+        padding: 5px;
+        box-sizing: border-box;
+        border: none;
+        text-shadow: 0 1px 0 #3188bc;
+        font-size: 14px;
+        cursor: pointer;
+        border-radius: 0 4px 4px 0;
+        float: right;
     }
 </style>

@@ -17,11 +17,8 @@
                     <main role="main">
                         <div class="flex-center position-ref full-height">
                             <div class="content">
-                                <div class="title m-b-md">
-                                    {{ config('shopify-app.app_name') }}
-                                </div>
-
-                                <p>Enter your Shopify domain to login.</p>
+                                <p class="title">{{ config('shopify-app.app_name') }}</p>
+                                <p class="m-t-0">Enter your Shopify domain to login.</p>
 
                                 @if (session()->has('error'))
                                     <p>{{ session('error') }}</p>
@@ -29,7 +26,7 @@
                                 <form class="form-horizontal" method="POST" action="{{ route('authenticate') }}">
                                     {{ csrf_field() }}
                                     <input type="text" name="shop" id="shop" placeholder="example.myshopify.com">
-                                    <button type="submit">Submit</button>
+                                    <button type="submit">Login</button>
                                 </form>
                             </div>
                         </div>
