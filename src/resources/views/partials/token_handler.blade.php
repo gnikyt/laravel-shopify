@@ -1,5 +1,5 @@
 <script data-turbolinks-eval="false">
-    var SESSION_TOKEN_REFRESH_INTERVAL = {{ \Osiset\ShopifyApp\Util::getShopifyConfig('session_token_refresh_interval') ?? 2000 }};
+    var SESSION_TOKEN_REFRESH_INTERVAL = {{ \Osiset\ShopifyApp\Util::getShopifyConfig('session_token_refresh_interval') }};
     var LOAD_EVENT = '{{ \Osiset\ShopifyApp\Util::getShopifyConfig('turbo_enabled') ? 'turbolinks:load' : 'DOMContentLoaded' }}';
 
     // Token updates
