@@ -28,7 +28,7 @@ class AddVariablesCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Add shopify variables to env';
+    protected $description = 'Add default variables to env';
 
     /**
      * Execute the console command.
@@ -37,9 +37,9 @@ class AddVariablesCommand extends Command
      */
     public function handle()
     {
-        $env =  $this->laravel->basePath('.env');
+        $env = $this->envPath();
 
-        foreach ($this->shopifyVariables() as $key => $variable) {
+        foreach ($this->defaultShopifyVariables() as $key => $variable) {
             if (Str::contains(file_get_contents($env), $key) === false) {
                 file_put_contents($env, PHP_EOL."$key=$variable", FILE_APPEND);
             } else {
@@ -84,6 +84,16 @@ class AddVariablesCommand extends Command
             : $this->confirm(
                 "This will invalidate $key variable. Are you sure you want to override $key?"
             );
+    }
+
+    /**
+     * Get the .env file path.
+     *
+     * @return string
+     */
+    protected function envPath(): string
+    {
+        return $this->laravel->basePath('.env');
     }
 
     /**
