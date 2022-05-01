@@ -39,7 +39,7 @@ class AddVariablesCommand extends Command
     {
         $env = $this->envPath();
 
-        foreach ($this->defaultShopifyVariables() as $key => $variable) {
+        foreach ($this->shopifyVariables() as $key => $variable) {
             if (Str::contains(file_get_contents($env), $key) === false) {
                 file_put_contents($env, PHP_EOL."$key=$variable", FILE_APPEND);
             } else {
