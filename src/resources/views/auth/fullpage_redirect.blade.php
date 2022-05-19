@@ -5,23 +5,26 @@
         <base target="_top">
 
         <title>Redirecting...</title>
-
+        <script src="https://unpkg.com/@shopify/app-bridge{{ \Osiset\ShopifyApp\Util::getShopifyConfig('appbridge_version') ? '@'.config('shopify-app.appbridge_version') : '' }}"></script>
+        <script src="https://unpkg.com/@shopify/app-bridge-utils{{ \Osiset\ShopifyApp\Util::getShopifyConfig('appbridge_version') ? '@'.config('shopify-app.appbridge_version') : '' }}"></script>
         <script type="text/javascript">
             document.addEventListener('DOMContentLoaded', function () {
                 var redirectUrl = "{!! $authUrl !!}";
-                if (window.top == window.self) {
+                if (window.top === window.self) {
                     // If the current window is the 'parent', change the URL by setting location.href
-                    window.top.location.href = redirectUrl;
+                    window.location.assign(redirectUrl)
                 } else {
                     // If the current window is the 'child', change the parent's URL with postMessage
-                    normalizedLink = document.createElement('a');
-                    normalizedLink.href = redirectUrl;
 
-                    data = JSON.stringify({
-                        message: 'Shopify.API.remoteRedirect',
-                        data: { location: redirectUrl },
+                    var AppBridge = window['app-bridge'];
+                    var actions = AppBridge.actions;
+                    var createApp = AppBridge.default;
+                    var Redirect = actions.Redirect;
+                    var app = createApp({
+                        apiKey: "{{ \Osiset\ShopifyApp\Util::getShopifyConfig('api_key', $shopDomain ?? Auth::user()->name ) }}",
+                        host: "{{ \Request::get('host') }}",
                     });
-                    window.parent.postMessage(data, "https://{{ $shopDomain }}");
+                    Redirect.create(app).dispatch(Redirect.Action.REMOTE, redirectUrl);
                 }
             });
         </script>

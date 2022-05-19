@@ -22,9 +22,9 @@ trait AuthController
     /**
      * Installing/authenticating a shop.
      *
+     * @return ViewView|RedirectResponse
      * @throws MissingShopDomainException if both shop parameter and authenticated user are missing
      *
-     * @return ViewView|RedirectResponse
      */
     public function authenticate(Request $request, AuthenticateShop $authShop)
     {
@@ -54,8 +54,15 @@ trait AuthController
                 throw new MissingAuthUrlException('Missing auth url');
             }
 
-            // Just return them straight to the OAUTH flow.
-            return Redirect::to($result['url']);
+            // If we need to reauth this needs to be the parent
+            return View::make(
+                'shopify-app::auth.fullpage_redirect',
+                [
+                    'authUrl' => $result['url'],
+                    'shopDomain' => $shopDomain->toNative(),
+                ]
+            );
+
         } else {
             // Go to home route
             return Redirect::route(
@@ -87,10 +94,10 @@ trait AuthController
             $params['shop'] = $params['shop'] ?? $shopDomain->toNative() ?? '';
             unset($params['token']);
 
-            $cleanTarget = trim(explode('?', $target)[0].'?'.http_build_query($params), '?');
+            $cleanTarget = trim(explode('?', $target)[0] . '?' . http_build_query($params), '?');
         } else {
             $params = ['shop' => $shopDomain->toNative() ?? ''];
-            $cleanTarget = trim(explode('?', $target)[0].'?'.http_build_query($params), '?');
+            $cleanTarget = trim(explode('?', $target)[0] . '?' . http_build_query($params), '?');
         }
 
         return View::make(
