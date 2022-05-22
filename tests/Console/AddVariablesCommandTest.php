@@ -76,17 +76,11 @@ class AddVariablesCommandTest extends TestCase
 
         $this
             ->artisan('shopify-app:add:variables')
-            ->expectsConfirmation('This will invalidate SHOPIFY_APP_NAME variable. Are you sure you want to override SHOPIFY_APP_NAME?', 'no')
-            ->expectsConfirmation('This will invalidate SHOPIFY_API_KEY variable. Are you sure you want to override SHOPIFY_API_KEY?', 'no')
-            ->expectsConfirmation('This will invalidate SHOPIFY_API_SECRET variable. Are you sure you want to override SHOPIFY_API_SECRET?', 'no')
-            ->expectsConfirmation('This will invalidate SHOPIFY_API_SCOPES variable. Are you sure you want to override SHOPIFY_API_SCOPES?', 'no')
-            ->expectsConfirmation('This will invalidate AFTER_AUTHENTICATE_JOB variable. Are you sure you want to override AFTER_AUTHENTICATE_JOB?', 'no')
-            ->expectsOutput('There has been no change.')
-            ->expectsOutput('There has been no change.')
-            ->expectsOutput('There has been no change.')
-            ->expectsOutput('There has been no change.')
-            ->expectsOutput('There has been no change.')
-            ->expectsOutput('All variables will be set')
+            ->expectsQuestion('This will invalidate SHOPIFY_APP_NAME variable. Are you sure you want to override SHOPIFY_APP_NAME?', 'no')
+            ->expectsQuestion('This will invalidate SHOPIFY_API_KEY variable. Are you sure you want to override SHOPIFY_API_KEY?', 'no')
+            ->expectsQuestion('This will invalidate SHOPIFY_API_SECRET variable. Are you sure you want to override SHOPIFY_API_SECRET?', 'no')
+            ->expectsQuestion('This will invalidate SHOPIFY_API_SCOPES variable. Are you sure you want to override SHOPIFY_API_SCOPES?', 'no')
+            ->expectsQuestion('This will invalidate AFTER_AUTHENTICATE_JOB variable. Are you sure you want to override AFTER_AUTHENTICATE_JOB?', 'no')
             ->assertExitCode(0);
     }
 
@@ -104,11 +98,11 @@ class AddVariablesCommandTest extends TestCase
 
         $this
             ->artisan('shopify-app:add:variables')
-            ->expectsConfirmation('This will invalidate SHOPIFY_APP_NAME variable. Are you sure you want to override SHOPIFY_APP_NAME?', 'yes')
-            ->expectsConfirmation('This will invalidate SHOPIFY_API_KEY variable. Are you sure you want to override SHOPIFY_API_KEY?', 'yes')
-            ->expectsConfirmation('This will invalidate SHOPIFY_API_SECRET variable. Are you sure you want to override SHOPIFY_API_SECRET?', 'yes')
-            ->expectsConfirmation('This will invalidate SHOPIFY_API_SCOPES variable. Are you sure you want to override SHOPIFY_API_SCOPES?', 'yes')
-            ->expectsConfirmation('This will invalidate AFTER_AUTHENTICATE_JOB variable. Are you sure you want to override AFTER_AUTHENTICATE_JOB?', 'yes')
+            ->expectsQuestion('This will invalidate SHOPIFY_APP_NAME variable. Are you sure you want to override SHOPIFY_APP_NAME?', 'yes')
+            ->expectsQuestion('This will invalidate SHOPIFY_API_KEY variable. Are you sure you want to override SHOPIFY_API_KEY?', 'yes')
+            ->expectsQuestion('This will invalidate SHOPIFY_API_SECRET variable. Are you sure you want to override SHOPIFY_API_SECRET?', 'yes')
+            ->expectsQuestion('This will invalidate SHOPIFY_API_SCOPES variable. Are you sure you want to override SHOPIFY_API_SCOPES?', 'yes')
+            ->expectsQuestion('This will invalidate AFTER_AUTHENTICATE_JOB variable. Are you sure you want to override AFTER_AUTHENTICATE_JOB?', 'yes')
             ->expectsOutput('All variables will be set')
             ->assertExitCode(0);
     }
