@@ -87,21 +87,11 @@ class AddVariablesCommand extends Command
     }
 
     /**
-     * Get the .env file path.
-     *
-     * @return string
-     */
-    protected function envPath(): string
-    {
-        return $this->laravel->basePath('.env');
-    }
-
-    /**
      * Get shopify env variables
      *
      * @return array
      */
-    protected function shopifyVariables(): array
+    public function shopifyVariables(): array
     {
         return [
             'SHOPIFY_APP_NAME' => config('app.name'),
@@ -110,5 +100,19 @@ class AddVariablesCommand extends Command
             'SHOPIFY_API_SCOPES' => config('shopify-app.api_scopes'),
             'AFTER_AUTHENTICATE_JOB' => "\App\Jobs\AfterAuthenticateJob",
         ];
+    }
+
+    /**
+     * Get the .env file path.
+     *
+     * @return string
+     */
+    protected function envPath()
+    {
+        if (method_exists($this->laravel, 'environmentFile')) {
+            return $this->laravel->environmentFile();
+        }
+
+        return $this->laravel->basePath('.env');
     }
 }
