@@ -125,7 +125,7 @@ class VerifyThemeSupport
                 return ThemeSupportLevel::PARTIAL;
 
             default:
-                ThemeSupportLevel::UNSUPPORTED;
+                return ThemeSupportLevel::UNSUPPORTED;
         }
     }
 
