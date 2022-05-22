@@ -100,33 +100,38 @@ class VerifyThemeSupport
      *
      * @param ShopId $shopId The shop ID.
      *
-     * @return ThemeSupport
+     * @return int
      */
-    public function __invoke(ShopId $shopId)
+    public function __invoke(ShopId $shopId): int
     {
         $shop = $this->shopQuery->getById($shopId);
 
         $this->mainTheme = $this->extractStoreMainTheme($shop);
-        $this->assets = $this->extractThemeAssets($shop);
 
-        $templateJSONFiles = $this->templateJSONFiles();
-        $templateMainSections = $this->mainSections($shop, $templateJSONFiles);
-        $sectionsWithAppBlock = $this->sectionsWithAppBlock($shop, $templateMainSections);
+        if ($this->mainTheme->getId()->toNative()) {
+            $this->assets = $this->extractThemeAssets($shop);
 
-        $hasTemplates = count($templateJSONFiles) > 0;
-        $allTemplatesHasRightType = count($templateJSONFiles) === count($sectionsWithAppBlock);
-        $templatesСountWithRightType = count($sectionsWithAppBlock);
+            $templateJSONFiles = $this->templateJSONFiles();
+            $templateMainSections = $this->mainSections($shop, $templateJSONFiles);
+            $sectionsWithAppBlock = $this->sectionsWithAppBlock($shop, $templateMainSections);
 
-        switch (true) {
-            case $hasTemplates && $allTemplatesHasRightType:
-                return ThemeSupportLevel::FULL;
+            $hasTemplates = count($templateJSONFiles) > 0;
+            $allTemplatesHasRightType = count($templateJSONFiles) === count($sectionsWithAppBlock);
+            $templatesСountWithRightType = count($sectionsWithAppBlock);
 
-            case $templatesСountWithRightType:
-                return ThemeSupportLevel::PARTIAL;
+            switch (true) {
+                case $hasTemplates && $allTemplatesHasRightType:
+                    return ThemeSupportLevel::FULL;
 
-            default:
-                return ThemeSupportLevel::UNSUPPORTED;
+                case $templatesСountWithRightType:
+                    return ThemeSupportLevel::PARTIAL;
+
+                default:
+                    return ThemeSupportLevel::UNSUPPORTED;
+            }
         }
+
+        return ThemeSupportLevel::UNSUPPORTED;
     }
 
     /**
@@ -140,10 +145,14 @@ class VerifyThemeSupport
     {
         $themesResponse = $shop->api()->rest('GET', '/admin/themes.json');
 
-        $themes = $themesResponse['body']['themes']->toArray();
-        $key = array_search($this::MAIN_ROLE, array_column($themes, $this::THEME_FIELD));
+        if (!$themesResponse['errors'] && isset($themesResponse['body']['themes'])) {
+            $themes = $themesResponse['body']['themes']->toArray();
+            $key = array_search($this::MAIN_ROLE, array_column($themes, $this::THEME_FIELD));
 
-        return MainTheme::fromNative($themes[$key]);
+            return MainTheme::fromNative($themes[$key]);
+        }
+
+        return MainTheme::fromNative([]);
     }
 
     /**
