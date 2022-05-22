@@ -117,11 +117,16 @@ class VerifyThemeSupport
         $allTemplatesHasRightType = count($templateJSONFiles) === count($sectionsWithAppBlock);
         $templatesСountWithRightType = count($sectionsWithAppBlock);
 
-        return match (true) {
-            $hasTemplates && $allTemplatesHasRightType => ThemeSupportLevel::FULL,
-            (bool) $templatesСountWithRightType => ThemeSupportLevel::PARTIAL,
-            default => ThemeSupportLevel::UNSUPPORTED,
-        };
+        switch (true) {
+            case $hasTemplates && $allTemplatesHasRightType:
+                return ThemeSupportLevel::FULL;
+
+            case $templatesСountWithRightType:
+                return ThemeSupportLevel::PARTIAL;
+
+            default:
+                ThemeSupportLevel::UNSUPPORTED;
+        }
     }
 
     /**
@@ -153,10 +158,12 @@ class VerifyThemeSupport
         return Cache::remember(
             "assets_{$this->mainTheme->getId()->toNative()}",
             now()->{$this->cacheInterval}($this->cacheDuration),
-            fn () => $shop->api()->rest(
-                'GET',
-                "/admin/themes/{$this->mainTheme->getId()->toNative()}/assets.json"
-            )['body']['assets']->toArray()
+            function ($shop) {
+                return $shop->api()->rest(
+                    'GET',
+                    "/admin/themes/{$this->mainTheme->getId()->toNative()}/assets.json"
+                )['body']['assets']->toArray();
+            }
         );
     }
 
@@ -250,13 +257,15 @@ class VerifyThemeSupport
         return Cache::remember(
             "asset_{$this->mainTheme->getId()->toNative()}_{$file['key']}",
             now()->{$this->cacheInterval}($this->cacheDuration),
-            fn () => $shop->api()->rest(
-                'GET',
-                "/admin/themes/{$this->mainTheme->getId()->toNative()}/assets",
-                [
-                    'asset' => ['key' => $file['key']],
-                ]
-            )
+            function (ShopModel $shop, array $file) {
+                return $shop->api()->rest(
+                    'GET',
+                    "/admin/themes/{$this->mainTheme->getId()->toNative()}/assets",
+                    [
+                        'asset' => ['key' => $file['key']],
+                    ]
+                );
+            }
         );
     }
 }
