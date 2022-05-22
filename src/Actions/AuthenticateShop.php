@@ -4,8 +4,8 @@ namespace Osiset\ShopifyApp\Actions;
 
 use Illuminate\Http\Request;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
-use Osiset\ShopifyApp\Objects\Enums\ThemeSupportLevel;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
+use Osiset\ShopifyApp\Util;
 
 /**
  * Authenticates a shop and fires post authentication actions.
@@ -114,9 +114,10 @@ class AuthenticateShop
         // Fire the post processing jobs
         $themeSupportLevel = call_user_func($this->verifyThemeSupport, $result['shop_id']);
 
-        if ($themeSupportLevel == ThemeSupportLevel::UNSUPPORTED) {
+        if (in_array($themeSupportLevel, Util::getShopifyConfig('theme_support.unacceptable_levels'))) {
             call_user_func($this->dispatchScriptsAction, $result['shop_id'], false);
         }
+
         call_user_func($this->dispatchWebhooksAction, $result['shop_id'], false);
         call_user_func($this->afterAuthorizeAction, $result['shop_id']);
 
