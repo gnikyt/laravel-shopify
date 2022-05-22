@@ -32,8 +32,18 @@ class VerifyThemeSupport
      */
     const ASSET_FIELD = 'key';
 
+    /**
+     * Interval for caching the request: minutes, seconds, hours, days, etc.
+     *
+     * @var string
+     */
     protected $cacheInterval;
 
+    /**
+     * Cache duration
+     *
+     * @var int
+     */
     protected $cacheDuration;
 
     /**
@@ -110,7 +120,7 @@ class VerifyThemeSupport
 
         return match (true) {
             $hasTemplates && $allTemplatesHasRightType => ThemeSupportLevel::FULL,
-            $templatesСountWithRightType => ThemeSupportLevel::PARTIAL,
+            (bool) $templatesСountWithRightType => ThemeSupportLevel::PARTIAL,
             default => ThemeSupportLevel::UNSUPPORTED,
         };
     }
