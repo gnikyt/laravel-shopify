@@ -31,5 +31,5 @@ class ThemeSupportLevel implements ValueObject
      *
      * @var int
      */
-    public const UNSUPPORTED = 2;
+    public const UNSUPPORTED = 3;
 }
