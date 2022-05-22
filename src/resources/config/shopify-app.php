@@ -197,7 +197,7 @@ return [
     |
     */
 
-    'api_scopes' => env('SHOPIFY_API_SCOPES', 'read_products,write_products,read_theme'),
+    'api_scopes' => env('SHOPIFY_API_SCOPES', 'read_products,write_products,read_themes'),
 
     /*
     |--------------------------------------------------------------------------
@@ -492,6 +492,14 @@ return [
         /**
          * Cache duration
          */
-        'cache_duration' => '12'
+        'cache_duration' => '12',
+         /**
+         * At which levels of theme support the use of "theme app extension" is not available
+         * and script tags will be installed.
+         * Available levels: FULL, PARTIAL, UNSUPPORTED.
+         */
+        'unacceptable_levels' => [
+            Osiset\ShopifyApp\Objects\Enums\ThemeSupportLevel::UNSUPPORTED
+        ]
     ]
 ];
