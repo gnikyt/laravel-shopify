@@ -2,15 +2,15 @@
 
 namespace Osiset\ShopifyApp\Actions;
 
-use Illuminate\Support\Str;
-use Osiset\ShopifyApp\Util;
 use Illuminate\Support\Facades\Cache;
-use Osiset\ShopifyApp\Contracts\ShopModel;
-use Osiset\ShopifyApp\Objects\Values\ShopId;
-use Osiset\ShopifyApp\Objects\Values\MainTheme;
-use Osiset\ShopifyApp\Objects\Enums\ThemeSupportLevel;
-use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use Illuminate\Support\Str;
 use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
+use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use Osiset\ShopifyApp\Contracts\ShopModel;
+use Osiset\ShopifyApp\Objects\Enums\ThemeSupportLevel;
+use Osiset\ShopifyApp\Objects\Values\MainTheme;
+use Osiset\ShopifyApp\Objects\Values\ShopId;
+use Osiset\ShopifyApp\Util;
 
 /**
  * Activates a plan for a shop.
@@ -20,17 +20,17 @@ class VerifyThemeSupport
     /**
      * Main theme role
      */
-    const MAIN_ROLE = 'main';
+    public const MAIN_ROLE = 'main';
 
     /**
      * Theme field
      */
-    const THEME_FIELD = 'role';
+    public const THEME_FIELD = 'role';
 
     /**
      * Asset field
      */
-    const ASSET_FIELD = 'key';
+    public const ASSET_FIELD = 'key';
 
     /**
      * Interval for caching the request: minutes, seconds, hours, days, etc.
@@ -55,7 +55,6 @@ class VerifyThemeSupport
 
     /**
      * Theme assets
-     *
      */
     protected $assets;
 
@@ -175,6 +174,7 @@ class VerifyThemeSupport
             foreach ($blockTemplates as $template) {
                 if ($asset['key'] == "templates/$template.json") {
                     $match = true;
+
                     break;
                 }
             }
@@ -204,7 +204,7 @@ class VerifyThemeSupport
 
             if ($mainAsset) {
                 return array_merge(...array_filter($this->assets, function ($asset) use ($mainAsset) {
-                    return $asset['key'] === 'sections/' . end($mainAsset)['type'] . '.liquid';
+                    return $asset['key'] === 'sections/'.end($mainAsset)['type'].'.liquid';
                 }));
             }
         }, $templateJSONFiles));
@@ -254,7 +254,7 @@ class VerifyThemeSupport
                 'GET',
                 "/admin/themes/{$this->mainTheme->getId()->toNative()}/assets",
                 [
-                    'asset' => [ 'key' => $file['key'] ]
+                    'asset' => ['key' => $file['key']],
                 ]
             )
         );
