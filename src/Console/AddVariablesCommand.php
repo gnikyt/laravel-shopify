@@ -21,7 +21,7 @@ class AddVariablesCommand extends Command
      */
     protected $signature = 'shopify-app:add:variables
         {--always-no : Skip generating variable if it already exists.}
-        {--f|force : Skip confirmation when overwriting an existing variable.}';
+        {--force : Skip confirmation when overwriting an existing variable.}';
 
     /**
      * The console command description.
@@ -39,20 +39,22 @@ class AddVariablesCommand extends Command
     {
         $env = $this->envPath();
 
-        foreach ($this->shopifyVariables() as $key => $variable) {
-            if (Str::contains(file_get_contents($env), $key) === false) {
-                file_put_contents($env, PHP_EOL."$key=$variable", FILE_APPEND);
-            } else {
-                if ($this->option('always-no')) {
-                    $this->comment("Variable $key already exists. Skipping...");
+        if (file_exists($env)) {
+            foreach ($this->shopifyVariables() as $key => $variable) {
+                if (Str::contains(file_get_contents($env), $key) === false) {
+                    file_put_contents($env, PHP_EOL."$key=$variable", FILE_APPEND);
+                } else {
+                    if ($this->option('always-no')) {
+                        $this->comment("Variable $key already exists. Skipping...");
 
-                    continue;
-                }
+                        continue;
+                    }
 
-                if ($this->isConfirmed($key) === false) {
-                    $this->comment('There has been no change.');
+                    if ($this->isConfirmed($key) === false) {
+                        $this->comment('There has been no change.');
 
-                    continue;
+                        continue;
+                    }
                 }
             }
         }
@@ -109,10 +111,13 @@ class AddVariablesCommand extends Command
      */
     protected function envPath()
     {
-        if (method_exists($this->laravel, 'environmentFile')) {
-            return $this->laravel->environmentFile();
+        $enviromemtFile = $this->laravel->environmentFile();
+        $baseEnvFile = $this->laravel->basePath('.env');
+
+        if (file_exists($enviromemtFile) && method_exists($this->laravel, 'environmentFile')) {
+            return $enviromemtFile;
         }
 
-        return $this->laravel->basePath('.env');
+        return $baseEnvFile;
     }
 }
