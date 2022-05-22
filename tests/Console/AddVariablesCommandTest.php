@@ -43,4 +43,81 @@ class AddVariablesCommandTest extends TestCase
             ->expectsOutput('All variables will be set')
             ->assertExitCode(0);
     }
+
+    public function testItShouldRunWithForce(): void
+    {
+        $tempEnv = tempnam(sys_get_temp_dir(), 'ENV');
+        $command = new AddVariablesCommand();
+
+        foreach ($command->shopifyVariables() as $key => $variable) {
+            file_put_contents($tempEnv, PHP_EOL."$key=$variable", FILE_APPEND);
+        }
+
+        $this->app->loadEnvironmentFrom($tempEnv);
+        $this->app->bootstrapWith([LoadEnvironmentVariables::class]);
+
+        $this
+            ->artisan('shopify-app:add:variables --force')
+            ->expectsOutput('All variables will be set')
+            ->assertExitCode(0);
+    }
+
+    public function testItShouldRunWithoutForceAndNo(): void
+    {
+        $tempEnv = tempnam(sys_get_temp_dir(), 'ENV');
+        $command = new AddVariablesCommand();
+
+        foreach ($command->shopifyVariables() as $key => $variable) {
+            file_put_contents($tempEnv, PHP_EOL."$key=$variable", FILE_APPEND);
+        }
+
+        $this->app->loadEnvironmentFrom($tempEnv);
+        $this->app->bootstrapWith([LoadEnvironmentVariables::class]);
+
+        $this
+            ->artisan('shopify-app:add:variables')
+            ->expectsConfirmation('This will invalidate SHOPIFY_APP_NAME variable. Are you sure you want to override SHOPIFY_APP_NAME?', 'no')
+            ->expectsConfirmation('This will invalidate SHOPIFY_API_KEY variable. Are you sure you want to override SHOPIFY_API_KEY?', 'no')
+            ->expectsConfirmation('This will invalidate SHOPIFY_API_SECRET variable. Are you sure you want to override SHOPIFY_API_SECRET?', 'no')
+            ->expectsConfirmation('This will invalidate SHOPIFY_API_SCOPES variable. Are you sure you want to override SHOPIFY_API_SCOPES?', 'no')
+            ->expectsConfirmation('This will invalidate AFTER_AUTHENTICATE_JOB variable. Are you sure you want to override AFTER_AUTHENTICATE_JOB?', 'no')
+            ->expectsOutput('There has been no change.')
+            ->expectsOutput('There has been no change.')
+            ->expectsOutput('There has been no change.')
+            ->expectsOutput('There has been no change.')
+            ->expectsOutput('There has been no change.')
+            ->expectsOutput('All variables will be set')
+            ->assertExitCode(0);
+    }
+
+    public function testItShouldRunWithoutForceAndYes(): void
+    {
+        $tempEnv = tempnam(sys_get_temp_dir(), 'ENV');
+        $command = new AddVariablesCommand();
+
+        foreach ($command->shopifyVariables() as $key => $variable) {
+            file_put_contents($tempEnv, PHP_EOL."$key=$variable", FILE_APPEND);
+        }
+
+        $this->app->loadEnvironmentFrom($tempEnv);
+        $this->app->bootstrapWith([LoadEnvironmentVariables::class]);
+
+        $this
+            ->artisan('shopify-app:add:variables')
+            ->expectsConfirmation('This will invalidate SHOPIFY_APP_NAME variable. Are you sure you want to override SHOPIFY_APP_NAME?', 'yes')
+            ->expectsConfirmation('This will invalidate SHOPIFY_API_KEY variable. Are you sure you want to override SHOPIFY_API_KEY?', 'yes')
+            ->expectsConfirmation('This will invalidate SHOPIFY_API_SECRET variable. Are you sure you want to override SHOPIFY_API_SECRET?', 'yes')
+            ->expectsConfirmation('This will invalidate SHOPIFY_API_SCOPES variable. Are you sure you want to override SHOPIFY_API_SCOPES?', 'yes')
+            ->expectsConfirmation('This will invalidate AFTER_AUTHENTICATE_JOB variable. Are you sure you want to override AFTER_AUTHENTICATE_JOB?', 'yes')
+            ->expectsOutput('All variables will be set')
+            ->assertExitCode(0);
+    }
+
+    public function testItShouldRunWithMissingEnv(): void
+    {
+        $this
+            ->artisan('shopify-app:add:variables')
+            ->expectsOutput('All variables will be set')
+            ->assertExitCode(0);
+    }
 }
