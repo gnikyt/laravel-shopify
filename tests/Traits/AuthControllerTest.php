@@ -23,12 +23,9 @@ class AuthControllerTest extends TestCase
         // Run the request
         $response = $this->call('post', '/authenticate', ['shop' => 'example.myshopify.com']);
 
-        // Check the view
-        $response->assertViewHas('shopDomain', 'example.myshopify.com');
-        $response->assertViewHas(
-            'authUrl',
-            'https://example.myshopify.com/admin/oauth/authorize?client_id='.Util::getShopifyConfig('api_key').'&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalhost%2Fauthenticate'
-        );
+        // Check the redirect happens and location is set properly in the header.
+        $response->assertStatus(302);
+        $response->assertHeader('location', 'https://example.myshopify.com/admin/oauth/authorize?client_id='.Util::getShopifyConfig('api_key').'&scope=read_products%2Cwrite_products&redirect_uri=https%3A%2F%2Flocalhost%2Fauthenticate');
     }
 
     public function testAuthAcceptsShopWithCode(): void
