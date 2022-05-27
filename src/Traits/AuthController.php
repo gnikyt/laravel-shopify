@@ -6,7 +6,6 @@ use Illuminate\Contracts\View\View as ViewView;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
 use Osiset\ShopifyApp\Actions\AuthenticateShop;
 use Osiset\ShopifyApp\Exceptions\MissingAuthUrlException;
@@ -51,17 +50,12 @@ trait AuthController
             // Show exception, something is wrong
             throw new SignatureVerificationException('Invalid HMAC verification');
         } elseif ($status === false) {
-            if (! $result['url']) {
+            if (!$result['url']) {
                 throw new MissingAuthUrlException('Missing auth url');
             }
 
-            return View::make(
-                'shopify-app::auth.fullpage_redirect',
-                [
-                    'authUrl' => $result['url'],
-                    'shopDomain' => $shopDomain->toNative(),
-                ]
-            );
+            // Just return them straight to the OAUTH flow.
+            return Redirect::to($result['url']);
         } else {
             // Go to home route
             return Redirect::route(
