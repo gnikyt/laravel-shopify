@@ -5,6 +5,7 @@ namespace Osiset\ShopifyApp\Actions;
 use Illuminate\Http\Request;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
+use Osiset\ShopifyApp\Util;
 
 /**
  * Authenticates a shop and fires post authentication actions.
@@ -24,6 +25,13 @@ class AuthenticateShop
      * @var InstallShop
      */
     protected $installShopAction;
+
+    /**
+     * The action for verify theme support
+     *
+     * @var VerifyThemeSupport
+     */
+    protected $verifyThemeSupport;
 
     /**
      * The action for dispatching scripts.
@@ -49,23 +57,26 @@ class AuthenticateShop
     /**
      * Setup.
      *
-     * @param IApiHelper       $apiHelper              The API helper.
-     * @param InstallShop      $installShopAction      The action for installing a shop.
-     * @param DispatchScripts  $dispatchScriptsAction  The action for dispatching scripts.
-     * @param DispatchWebhooks $dispatchWebhooksAction The action for dispatching webhooks.
-     * @param AfterAuthorize   $afterAuthorizeAction   The action for after authorize actions.
+     * @param IApiHelper            $apiHelper              The API helper.
+     * @param InstallShop           $installShopAction      The action for installing a shop.
+     * @param VerifyThemeSupport    $verifyThemeSupport     The action for verify theme support
+     * @param DispatchScripts       $dispatchScriptsAction  The action for dispatching scripts.
+     * @param DispatchWebhooks      $dispatchWebhooksAction The action for dispatching webhooks.
+     * @param AfterAuthorize        $afterAuthorizeAction   The action for after authorize actions.
      *
      * @return void
      */
     public function __construct(
         IApiHelper $apiHelper,
         InstallShop $installShopAction,
+        VerifyThemeSupport $verifyThemeSupport,
         DispatchScripts $dispatchScriptsAction,
         DispatchWebhooks $dispatchWebhooksAction,
         AfterAuthorize $afterAuthorizeAction
     ) {
         $this->apiHelper = $apiHelper;
         $this->installShopAction = $installShopAction;
+        $this->verifyThemeSupport = $verifyThemeSupport;
         $this->dispatchScriptsAction = $dispatchScriptsAction;
         $this->dispatchWebhooksAction = $dispatchWebhooksAction;
         $this->afterAuthorizeAction = $afterAuthorizeAction;
@@ -101,7 +112,12 @@ class AuthenticateShop
         }
 
         // Fire the post processing jobs
-        call_user_func($this->dispatchScriptsAction, $result['shop_id'], false);
+        $themeSupportLevel = call_user_func($this->verifyThemeSupport, $result['shop_id']);
+
+        if (in_array($themeSupportLevel, Util::getShopifyConfig('theme_support.unacceptable_levels'))) {
+            call_user_func($this->dispatchScriptsAction, $result['shop_id'], false);
+        }
+
         call_user_func($this->dispatchWebhooksAction, $result['shop_id'], false);
         call_user_func($this->afterAuthorizeAction, $result['shop_id']);
 
