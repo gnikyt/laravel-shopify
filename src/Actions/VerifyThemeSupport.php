@@ -266,7 +266,7 @@ class VerifyThemeSupport
         return Cache::remember(
             "asset_{$this->mainTheme->getId()->toNative()}_{$file['key']}",
             now()->{$this->cacheInterval}($this->cacheDuration),
-            function (array $file) use ($shop) {
+            function () use ($shop, $file) {
                 return $shop->api()->rest(
                     'GET',
                     "/admin/themes/{$this->mainTheme->getId()->toNative()}/assets",
