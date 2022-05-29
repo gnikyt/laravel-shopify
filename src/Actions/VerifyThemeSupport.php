@@ -167,7 +167,7 @@ class VerifyThemeSupport
         return Cache::remember(
             "assets_{$this->mainTheme->getId()->toNative()}",
             now()->{$this->cacheInterval}($this->cacheDuration),
-            function ($shop) {
+            function () use ($shop) {
                 return $shop->api()->rest(
                     'GET',
                     "/admin/themes/{$this->mainTheme->getId()->toNative()}/assets.json"
@@ -266,7 +266,7 @@ class VerifyThemeSupport
         return Cache::remember(
             "asset_{$this->mainTheme->getId()->toNative()}_{$file['key']}",
             now()->{$this->cacheInterval}($this->cacheDuration),
-            function (ShopModel $shop, array $file) {
+            function (array $file) use ($shop) {
                 return $shop->api()->rest(
                     'GET',
                     "/admin/themes/{$this->mainTheme->getId()->toNative()}/assets",
