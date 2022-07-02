@@ -13,7 +13,7 @@ use Osiset\ShopifyApp\Http\Middleware\AuthWebhook;
 use Osiset\ShopifyApp\Http\Middleware\Billable;
 use Osiset\ShopifyApp\Http\Middleware\VerifyShopify;
 
-class Kernel extends \Orchestra\Testbench\Http\Kernel
+class Kernel extends \Orchestra\Testbench\Foundation\Http\Kernel
 {
     /**
      * The application's route middleware.
@@ -35,5 +35,27 @@ class Kernel extends \Orchestra\Testbench\Http\Kernel
         'auth.webhook' => AuthWebhook::class,
         'auth.proxy' => AuthProxy::class,
         'billable' => Billable::class,
+    ];
+
+    /**
+     * The application's route middleware groups.
+     *
+     * @var array
+     */
+    protected $middlewareGroups = [
+        'web' => [
+            \Illuminate\Cookie\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            // \Illuminate\Session\Middleware\AuthenticateSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        ],
+
+        'api' => [
+            'throttle:api',
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        ],
     ];
 }

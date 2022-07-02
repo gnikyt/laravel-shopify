@@ -35,10 +35,10 @@ trait BillingController
      * @return ViewView
      */
     public function index(
-        ?int $plan = null,
         Request $request,
         ShopQuery $shopQuery,
-        GetPlanUrl $getPlanUrl
+        GetPlanUrl $getPlanUrl,
+        ?int $plan = null,
     ): ViewView {
         // Get the shop
         $shop = $shopQuery->getByDomain(ShopDomain::fromNative($request->get('shop')));
