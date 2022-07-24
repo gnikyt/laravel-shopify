@@ -102,7 +102,7 @@ class VerifyShopify
         }
 
         if (Util::getShopifyConfig('spa_frontend_used')) {
-            $storeResult = $this->checkPreviousInstallation($request);
+            $storeResult = !$this->isApiRequest($request) && $this->checkPreviousInstallation($request);
 
             if ($storeResult) {
                 return $next($request);
@@ -110,6 +110,7 @@ class VerifyShopify
         }
 
         $tokenSource = $this->getAccessTokenFromRequest($request);
+
         if ($tokenSource === null) {
             //Check if there is a store record in the database
             return $this->checkPreviousInstallation($request)
