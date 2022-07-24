@@ -470,5 +470,15 @@ return [
         * The table name for Plan model.
         */
         'plans' => 'plans',
-    ]
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Determines whether the SPA is used
+    |--------------------------------------------------------------------------
+    |
+    | If you use SPA (React or Vue), you don't need a redirect to the JWT token retrieval page
+    |
+    */
+    'spa_frontend_used' => (bool) env('SHOPIFY_SPA_FRONTEND_USED', false),
 ];
