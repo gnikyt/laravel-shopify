@@ -74,7 +74,10 @@ trait BillingController
     ): RedirectResponse {
         // Get the shop
         $shop = $shopQuery->getByDomain(ShopDomain::fromNative($request->query('shop')));
-
+        if(!$request->has('charge_id'))
+            return Redirect::route(Util::getShopifyConfig('route_names.home'), [
+                'shop' => $shop->getDomain()->toNative(),
+            ]);
         // Activate the plan and save
         $result = $activatePlan(
             $shop->getId(),
