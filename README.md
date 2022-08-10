@@ -17,11 +17,10 @@ __*__ *Wiki pages*
 
 - [Goals](#goals)
 - [Documentation](#documentation)
-- [Installation](https://github.com/osiset/laravel-shopify/wiki/Installation)*  *(New video guide to come soon)*
+- [Installation](https://github.com/osiset/laravel-shopify/wiki/Installation)*
 - [Route List](https://github.com/osiset/laravel-shopify/wiki/Route-List)*
 - [Usage](https://github.com/osiset/laravel-shopify/wiki/Usage)*
 - [Changelog](https://github.com/osiset/laravel-shopify/wiki/Changelog)*
-- [Roadmap](https://github.com/osiset/laravel-shopify/wiki/Roadmap)*
 - [Contributing Guide](https://github.com/osiset/laravel-shopify/blob/master/CONTRIBUTING.md)
 - [LICENSE](#license)
 
