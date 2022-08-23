@@ -68,7 +68,6 @@ trait AuthController
                     'shopOrigin' => $shopOrigin,
                 ]
             );
-
         } else {
             // Go to home route
             return Redirect::route(
