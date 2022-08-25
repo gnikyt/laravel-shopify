@@ -14,13 +14,13 @@ class CreateShopsTable extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table(Util::getShopifyConfig('table_names.shops'), function (Blueprint $table) {
             $table->boolean('shopify_grandfathered')->default(false);
             $table->string('shopify_namespace')->nullable(true)->default(null);
             $table->boolean('shopify_freemium')->default(false);
             $table->integer('plan_id')->unsigned()->nullable();
 
-            if (! Schema::hasColumn('users', 'deleted_at')) {
+            if (! Schema::hasColumn(Util::getShopifyConfig('table_names.shops'), 'deleted_at')) {
                 $table->softDeletes();
             }
 
@@ -35,8 +35,8 @@ class CreateShopsTable extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropForeign('users_plan_id_foreign');
+        Schema::table(Util::getShopifyConfig('table_names.shops'), function (Blueprint $table) {
+            $table->dropForeign(Util::getShopifyConfig('table_names.shops') . '_plan_id_foreign');
             $table->dropColumn([
                 'shopify_grandfathered',
                 'shopify_namespace',

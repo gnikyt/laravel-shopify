@@ -470,5 +470,10 @@ return [
         * The table name for Plan model.
         */
         'plans' => 'plans',
+
+        /*
+         * The table name for the Shop.
+         */
+        'shops' => 'users',
     ]
 ];

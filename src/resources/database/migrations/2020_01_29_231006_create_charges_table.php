@@ -5,6 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Schema;
 use Osiset\ShopifyApp\Util;
+use Illuminate\Support\Str;
 
 class CreateChargesTable extends Migration
 {
@@ -79,13 +80,13 @@ class CreateChargesTable extends Migration
             $table->softDeletes();
 
             if ($this->getLaravelVersion() < 5.8) {
-                $table->integer('user_id')->unsigned();
+                $table->integer(Str::singular(Util::getShopifyConfig('table_names.shops')) . '_id')->unsigned();
             } else {
-                $table->bigInteger('user_id')->unsigned();
+                $table->bigInteger(Str::singular(Util::getShopifyConfig('table_names.shops')) . '_id')->unsigned();
             }
 
             // Linking
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign(Str::singular(Util::getShopifyConfig('table_names.shops')) . '_id')->references('id')->on(Util::getShopifyConfig('table_names.shops'))->onDelete('cascade');
             $table->foreign('plan_id')->references('id')->on(Util::getShopifyConfig('table_names.plans', 'plans'));
         });
     }
