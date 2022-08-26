@@ -60,6 +60,9 @@ jobs:
       - name: Install Laravel and Orchestra Testbench
         run: composer require "illuminate/contracts:${{ matrix.laravel }}" --no-interaction --no-update
 
+      - name: Allow composer-normalize plugin
+        run: composer config allow-plugins.ergebnis/composer-normalize true
+
       - name: Get composer cache directory
         id: composer-cache
         run: echo "::set-output name=dir::$(composer config cache-files-dir)"

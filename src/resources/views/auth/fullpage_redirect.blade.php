@@ -6,6 +6,8 @@
 
         <title>Redirecting...</title>
 
+        <script src="https://unpkg.com/@shopify/app-bridge{!! $appBridgeVersion !!}"></script>
+        <script src="https://unpkg.com/@shopify/app-bridge-utils{!! $appBridgeVersion !!}"></script>
         <script type="text/javascript">
             document.addEventListener('DOMContentLoaded', function () {
                 var redirectUrl = "{!! $authUrl !!}";
@@ -17,11 +19,17 @@
                     normalizedLink = document.createElement('a');
                     normalizedLink.href = redirectUrl;
 
-                    data = JSON.stringify({
-                        message: 'Shopify.API.remoteRedirect',
-                        data: { location: redirectUrl },
+                    var AppBridge = window['app-bridge'];
+                    var createApp = AppBridge.default;
+                    var Redirect = AppBridge.actions.Redirect;
+                    var app = createApp({
+                        apiKey: "{{!! $apiKey !!}}",
+                        shopOrigin: "{{!! $shopOrigin !!}}",
+                        host: "{{!! $host !!}}",
                     });
-                    window.parent.postMessage(data, "https://{{ $shopDomain }}");
+
+                    var redirect = Redirect.create(app);
+                    redirect.dispatch(Redirect.Action.REMOTE, normalizedLink.href);
                 }
             });
         </script>
