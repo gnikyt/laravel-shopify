@@ -41,7 +41,10 @@
         "phpunit/phpunit": "~8.0 || ^9.0"
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "ergebnis/composer-normalize": true
+        }
     },
     "extra": {
         "laravel": {
