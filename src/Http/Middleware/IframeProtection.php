@@ -5,8 +5,8 @@ namespace Osiset\ShopifyApp\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 
 /**
  * Responsibility for protection against clickjaking
@@ -46,7 +46,7 @@ class IframeProtection
         $response = $next($request);
 
         $shop = Cache::remember(
-            'frame-ancestors_' . $request->get('shop'),
+            'frame-ancestors_'.$request->get('shop'),
             now()->addMinutes(20),
             function () use ($request) {
                 return $this->shopQuery->getByDomain(ShopDomain::fromRequest($request));
