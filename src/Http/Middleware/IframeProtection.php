@@ -48,7 +48,9 @@ class IframeProtection
         $shop = Cache::remember(
             'frame-ancestors_' . $request->get('shop'),
             now()->addMinutes(20),
-            fn () => $this->shopQuery->getByDomain(ShopDomain::fromRequest($request))
+            function () use ($request) {
+                return $this->shopQuery->getByDomain(ShopDomain::fromRequest($request));
+            }
         );
 
         $domain = $shop
