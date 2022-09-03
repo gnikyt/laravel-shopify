@@ -5,6 +5,7 @@ namespace Osiset\ShopifyApp\Actions;
 use Illuminate\Http\Request;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
+use Osiset\ShopifyApp\Util;
 
 /**
  * Authenticates a shop and fires post authentication actions.
@@ -49,11 +50,11 @@ class AuthenticateShop
     /**
      * Setup.
      *
-     * @param IApiHelper       $apiHelper              The API helper.
-     * @param InstallShop      $installShopAction      The action for installing a shop.
-     * @param DispatchScripts  $dispatchScriptsAction  The action for dispatching scripts.
-     * @param DispatchWebhooks $dispatchWebhooksAction The action for dispatching webhooks.
-     * @param AfterAuthorize   $afterAuthorizeAction   The action for after authorize actions.
+     * @param IApiHelper            $apiHelper              The API helper.
+     * @param InstallShop           $installShopAction      The action for installing a shop.
+     * @param DispatchScripts       $dispatchScriptsAction  The action for dispatching scripts.
+     * @param DispatchWebhooks      $dispatchWebhooksAction The action for dispatching webhooks.
+     * @param AfterAuthorize        $afterAuthorizeAction   The action for after authorize actions.
      *
      * @return void
      */
@@ -101,7 +102,10 @@ class AuthenticateShop
         }
 
         // Fire the post processing jobs
-        call_user_func($this->dispatchScriptsAction, $result['shop_id'], false);
+        if (in_array($result['theme_support_level'], Util::getShopifyConfig('theme_support.unacceptable_levels'))) {
+            call_user_func($this->dispatchScriptsAction, $result['shop_id'], false);
+        }
+
         call_user_func($this->dispatchWebhooksAction, $result['shop_id'], false);
         call_user_func($this->afterAuthorizeAction, $result['shop_id']);
 
