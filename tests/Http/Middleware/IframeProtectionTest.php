@@ -5,11 +5,9 @@ namespace Osiset\ShopifyApp\Test\Http\Middleware;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Http;
 use Osiset\ShopifyApp\Http\Middleware\IframeProtection;
 use Osiset\ShopifyApp\Storage\Queries\Shop as ShopQuery;
 use Osiset\ShopifyApp\Test\TestCase;
-use Osiset\ShopifyApp\Util;
 
 class IframeProtectionTest extends TestCase
 {
