@@ -113,7 +113,8 @@ class ShopifyAppProvider extends ServiceProvider
         $this->app->bind(InstallShopAction::class, function ($app) {
             return new InstallShopAction(
                 $app->make(IShopQuery::class),
-                $app->make(IShopCommand::class)
+                $app->make(IShopCommand::class),
+                $app->make(VerifyThemeSupportAction::class),
             );
         });
 

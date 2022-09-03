@@ -52,6 +52,7 @@ class AuthenticateShop
      *
      * @param IApiHelper            $apiHelper              The API helper.
      * @param InstallShop           $installShopAction      The action for installing a shop.
+     * @param VerifyThemeSupport    $verifyThemeSupport     The action for verify theme support
      * @param DispatchScripts       $dispatchScriptsAction  The action for dispatching scripts.
      * @param DispatchWebhooks      $dispatchWebhooksAction The action for dispatching webhooks.
      * @param AfterAuthorize        $afterAuthorizeAction   The action for after authorize actions.
@@ -61,12 +62,14 @@ class AuthenticateShop
     public function __construct(
         IApiHelper $apiHelper,
         InstallShop $installShopAction,
+        VerifyThemeSupport $verifyThemeSupport,
         DispatchScripts $dispatchScriptsAction,
         DispatchWebhooks $dispatchWebhooksAction,
         AfterAuthorize $afterAuthorizeAction
     ) {
         $this->apiHelper = $apiHelper;
         $this->installShopAction = $installShopAction;
+        $this->verifyThemeSupport = $verifyThemeSupport;
         $this->dispatchScriptsAction = $dispatchScriptsAction;
         $this->dispatchWebhooksAction = $dispatchWebhooksAction;
         $this->afterAuthorizeAction = $afterAuthorizeAction;
@@ -100,6 +103,8 @@ class AuthenticateShop
             // Throw exception, something is wrong
             return [$result, null];
         }
+
+        dd($result);
 
         // Fire the post processing jobs
         if (in_array($result['theme_support_level'], Util::getShopifyConfig('theme_support.unacceptable_levels'))) {

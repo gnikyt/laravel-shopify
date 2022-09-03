@@ -8,6 +8,7 @@ use Osiset\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
 use Osiset\ShopifyApp\Contracts\Objects\Values\PlanId as PlanIdValue;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopId as ShopIdValue;
+use Osiset\ShopifyApp\Contracts\Objects\Values\ThemeSupportLevel as ThemeSupportLevelValue;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as ShopQuery;
 use Osiset\ShopifyApp\Contracts\ShopModel;
 use Osiset\ShopifyApp\Util;
@@ -75,6 +76,17 @@ class Shop implements ShopCommand
         $shop = $this->getShop($shopId);
         $shop->password = $token->toNative();
         $shop->password_updated_at = Carbon::now();
+
+        return $shop->save();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setThemeSupportLevel(ShopIdValue $shopId, ThemeSupportLevelValue $themeSupportLevel): bool
+    {
+        $shop = $this->getShop($shopId);
+        $shop->theme_support_level = $themeSupportLevel->toNative();
 
         return $shop->save();
     }
