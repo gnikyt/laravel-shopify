@@ -27,21 +27,22 @@ class IframeProtectionTest extends TestCase
 
     public function testIframeProtectionWithAuthorizedShop(): void
     {
-        $route = Util::getShopifyConfig('route_names.home');
         $shop = factory($this->model)->create();
         $this->auth->login($shop);
 
         $domain = auth()->user()->name;
         $expectedHeader = "frame-ancestors https://$domain https://admin.shopify.com";
 
-        Http::fake([
-            $route => Http::response([], 200, [
-                'Content-Security-Policy' => "frame-ancestors https://$domain https://admin.shopify.com",
-            ]),
-        ]);
+        $request = new Request();
+        $shopQueryStub = $this->createStub(ShopQuery::class);
+        $shopQueryStub->method('getByDomain')->willReturn($shop);
+        $next = function () {
+            return new Response('Test Response');
+        };
 
-        $response = Http::get($route);
-        $currentHeader = $response->getHeader('content-security-policy')[0];
+        $middleware = new IframeProtection($shopQueryStub);
+        $response = $middleware->handle($request, $next);
+        $currentHeader = $response->headers->get('content-security-policy');
 
         $this->assertNotEmpty($currentHeader);
         $this->assertEquals($expectedHeader, $currentHeader);
@@ -52,11 +53,12 @@ class IframeProtectionTest extends TestCase
         $expectedHeader = 'frame-ancestors https://*.myshopify.com https://admin.shopify.com';
 
         $request = new Request();
+        $shopQuery = new ShopQuery();
         $next = function () {
             return new Response('Test Response');
         };
 
-        $middleware = new IframeProtection(new ShopQuery());
+        $middleware = new IframeProtection($shopQuery);
         $response = $middleware->handle($request, $next);
         $currentHeader = $response->headers->get('content-security-policy');
 
