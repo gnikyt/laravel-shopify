@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Http;
 use Osiset\ShopifyApp\Http\Middleware\IframeProtection;
 use Osiset\ShopifyApp\Storage\Queries\Shop as ShopQuery;
 use Osiset\ShopifyApp\Test\TestCase;
+use Osiset\ShopifyApp\Util;
 
 class IframeProtectionTest extends TestCase
 {
@@ -26,26 +27,30 @@ class IframeProtectionTest extends TestCase
 
     public function testIframeProtectionWithAuthorizedShop(): void
     {
+        $route = Util::getShopifyConfig('route_names.home');
         $shop = factory($this->model)->create();
         $this->auth->login($shop);
 
         $domain = auth()->user()->name;
-        $header = "frame-ancestors https://$domain https://admin.shopify.com";
+        $expectedHeader = "frame-ancestors https://$domain https://admin.shopify.com";
 
         Http::fake([
-            route('home') => Http::response([], 200, [
+            $route => Http::response([], 200, [
                 'Content-Security-Policy' => "frame-ancestors https://$domain https://admin.shopify.com",
             ]),
         ]);
 
-        $response = Http::get(route('home'));
+        $response = Http::get($route);
+        $currentHeader = $response->getHeader('content-security-policy')[0];
 
-        $this->assertNotEmpty($response->getHeader('content-security-policy'));
-        $this->assertEquals("frame-ancestors https://$domain https://admin.shopify.com", $header);
+        $this->assertNotEmpty($currentHeader);
+        $this->assertEquals($expectedHeader, $currentHeader);
     }
 
     public function testIframeProtectionWithUnauthorizedShop(): void
     {
+        $expectedHeader = 'frame-ancestors https://*.myshopify.com https://admin.shopify.com';
+
         $request = new Request();
         $next = function () {
             return new Response('Test Response');
@@ -53,10 +58,9 @@ class IframeProtectionTest extends TestCase
 
         $middleware = new IframeProtection(new ShopQuery());
         $response = $middleware->handle($request, $next);
+        $currentHeader = $response->headers->get('content-security-policy');
 
-        $header = $response->headers->get('content-security-policy');
-
-        $this->assertNotEmpty($header);
-        $this->assertEquals('frame-ancestors https://*.myshopify.com https://admin.shopify.com', $header);
+        $this->assertNotEmpty($currentHeader);
+        $this->assertEquals($expectedHeader, $currentHeader);
     }
 }
