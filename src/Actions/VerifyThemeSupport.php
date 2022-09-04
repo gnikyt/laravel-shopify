@@ -2,10 +2,10 @@
 
 namespace Osiset\ShopifyApp\Actions;
 
-use Osiset\ShopifyApp\Services\ThemeHelper;
-use Osiset\ShopifyApp\Objects\Values\ShopId;
-use Osiset\ShopifyApp\Objects\Enums\ThemeSupportLevel;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use Osiset\ShopifyApp\Objects\Enums\ThemeSupportLevel;
+use Osiset\ShopifyApp\Objects\Values\ShopId;
+use Osiset\ShopifyApp\Services\ThemeHelper;
 
 /**
  * Activates a plan for a shop.
@@ -31,6 +31,7 @@ class VerifyThemeSupport
      *
      * @param IShopQuery     $shopQuery               The querier for shops.
      * @param ThemeHelper    $themeHelper             Theme helper.
+     *
      * @return void
      */
     public function __construct(
