@@ -2,12 +2,12 @@
 
 namespace Osiset\ShopifyApp\Test\Actions;
 
-use Osiset\ShopifyApp\Test\TestCase;
-use Osiset\ShopifyApp\Services\ThemeHelper;
-use Osiset\ShopifyApp\Objects\Values\ShopId;
 use Osiset\ShopifyApp\Actions\VerifyThemeSupport;
-use Osiset\ShopifyApp\Objects\Enums\ThemeSupportLevel;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use Osiset\ShopifyApp\Objects\Enums\ThemeSupportLevel;
+use Osiset\ShopifyApp\Objects\Values\ShopId;
+use Osiset\ShopifyApp\Services\ThemeHelper;
+use Osiset\ShopifyApp\Test\TestCase;
 
 class VerifyThemeSupportTest extends TestCase
 {
@@ -84,6 +84,7 @@ class VerifyThemeSupportTest extends TestCase
      * Create ThemeHelper stub
      *
      * @param int $level
+     *
      * @return ThemeHelper
      */
     protected function createThemeHelperStub(int $level): ThemeHelper
