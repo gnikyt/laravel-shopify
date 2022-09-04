@@ -49,7 +49,7 @@ class InstallShop
     public function __construct(
         IShopQuery $shopQuery,
         IShopCommand $shopCommand,
-        VerifyThemeSupport $verifyThemeSupport,
+        VerifyThemeSupport $verifyThemeSupport
     ) {
         $this->shopQuery = $shopQuery;
         $this->shopCommand = $shopCommand;
