@@ -27,6 +27,13 @@ class AuthenticateShop
     protected $installShopAction;
 
     /**
+     * The action for determine the level of support for extensions.
+     *
+     * @var VerifyThemeSupport
+     */
+    protected $verifyThemeSupport;
+
+    /**
      * The action for dispatching scripts.
      *
      * @var DispatchScripts
