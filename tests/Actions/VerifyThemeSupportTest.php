@@ -102,7 +102,7 @@ class VerifyThemeSupportTest extends TestCase
         $themeHelperStub->method('mainSections')->willReturn($defaultThemeResponse);
         $themeHelperStub->method('sectionsWithAppBlock')->willReturn(
             $level === ThemeSupportLevel::PARTIAL
-            ? [...$defaultThemeResponse, random_int(1, 99)]
+            ? array_merge($defaultThemeResponse, [random_int(1, 99)])
             : $defaultThemeResponse
         );
 
