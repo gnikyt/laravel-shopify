@@ -35,7 +35,7 @@ class ThemeHelper
      *
      * @var IShopModel
      */
-    protected IShopModel $shop;
+    protected $shop;
 
     /**
      * Querier for shops.
