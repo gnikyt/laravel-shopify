@@ -139,14 +139,14 @@ class BillingControllerTest extends TestCase
         ]);
         //Log in
         $this->auth->login($shop);
-        $url = 'https://example.myshopify.com/billing/process/9999?shop='.$shop->name;
+        $url = 'https://example-app.com/billing/process/9999?shop='.$shop->name;
         // Try to go to bill without a plan id which happens when you cancel the charge
         $response = $this->call(
             'get',
             $url,
             ['shop' => $shop->name]
         );
-        //Confirm we get sent back to the homepage of shopify
-        $response->assertRedirect('https://example.myshopify.com?shop='.$shop->name);
+        //Confirm we get sent back to the homepage of the app
+        $response->assertRedirect('https://example-app.com?shop='.$shop->name);
     }
 }
