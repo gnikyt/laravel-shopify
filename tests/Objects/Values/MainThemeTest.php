@@ -10,11 +10,11 @@ use Osiset\ShopifyApp\Test\TestCase;
 
 class MainThemeTest extends TestCase
 {
-    const THEME_ID = 1;
+    public const THEME_ID = 1;
 
-    const THEME_NAME = 'Dawn';
+    public const THEME_NAME = 'Dawn';
 
-    const THEME_ROLE = 'main';
+    public const THEME_ROLE = 'main';
 
     /**
      * @var MainTheme
@@ -28,7 +28,7 @@ class MainThemeTest extends TestCase
         $this->mainTheme = MainTheme::fromNative([
             'id' => self::THEME_ID,
             'name' => self::THEME_NAME,
-            'role' => self::THEME_ROLE
+            'role' => self::THEME_ROLE,
         ]);
     }
 
