@@ -140,7 +140,7 @@ class BillingControllerTest extends TestCase
         //Log in
         $this->auth->login($shop);
         $url = 'https://example-app.com/billing/process/9999?shop='.$shop->name;
-        // Try to go to bill without a plan id which happens when you cancel the charge
+        // Try to go to bill without a charge id which happens when you cancel the charge
         $response = $this->call(
             'get',
             $url,
