@@ -78,14 +78,4 @@ class VerifyThemeSupport
 
         return ThemeSupportLevel::UNSUPPORTED;
     }
-
-    /**
-     * Get theme helper.
-     *
-     * @return  ThemeHelper
-     */
-    public function getThemeHelper()
-    {
-        return $this->themeHelper;
-    }
 }
