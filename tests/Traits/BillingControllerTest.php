@@ -131,8 +131,8 @@ class BillingControllerTest extends TestCase
         $response->assertSessionHas('success');
     }
 
-    public function testReturnToSettingScreenNoPlan(){
-
+    public function testReturnToSettingScreenNoPlan()
+    {
         // Set up a shop
         $shop = factory($this->model)->create([
             'plan_id' => null,
@@ -144,7 +144,7 @@ class BillingControllerTest extends TestCase
         $response = $this->call(
             'get',
             $url,
-           ['shop' => $shop->name]
+            ['shop' => $shop->name]
         );
         //Confirm we get sent back to the homepage of shopify
         $response->assertRedirect('https://example.myshopify.com?shop='.$shop->name);
