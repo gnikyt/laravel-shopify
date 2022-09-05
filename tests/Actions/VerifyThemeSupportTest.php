@@ -11,11 +11,6 @@ use Osiset\ShopifyApp\Test\TestCase;
 
 class VerifyThemeSupportTest extends TestCase
 {
-    /**
-     * @var \Osiset\ShopifyApp\Actions\InstallShop
-     */
-    protected $action;
-
     public function setUp(): void
     {
         parent::setUp();
