@@ -5,7 +5,7 @@ namespace Osiset\ShopifyApp\Services;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
-use Osiset\ShopifyApp\Contracts\ShopModel;
+use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
 use Osiset\ShopifyApp\Objects\Values\MainTheme;
 use Osiset\ShopifyApp\Objects\Values\ShopId;
 use Osiset\ShopifyApp\Util;
@@ -33,9 +33,9 @@ class ThemeHelper
     /**
      * Current shop instance
      *
-     * @var ShopModel
+     * @var IShopModel
      */
-    protected ShopModel $shop;
+    protected IShopModel $shop;
 
     /**
      * Querier for shops.
@@ -73,7 +73,7 @@ class ThemeHelper
     /**
      * Setup.
      *
-     * @param IShopQuery     $shopQuery               The querier for shops.
+     * @param IShopQuery     $shopQuery The querier for shops.
      *
      * @return void
      */
@@ -125,8 +125,6 @@ class ThemeHelper
 
     /**
      * Extract main theme assets
-     *
-     * @param ShopModel $shop
      *
      * @return void
      */
