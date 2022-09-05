@@ -39,8 +39,7 @@ trait BillingController
         ShopQuery  $shopQuery,
         GetPlanUrl $getPlanUrl,
         ?int       $plan = null
-    ): ViewView
-    {
+    ): ViewView {
         // Get the shop
         $shop = $shopQuery->getByDomain(ShopDomain::fromNative($request->get('shop')));
 
@@ -72,19 +71,19 @@ trait BillingController
         Request      $request,
         ShopQuery    $shopQuery,
         ActivatePlan $activatePlan
-    ): RedirectResponse
-    {
+    ): RedirectResponse {
         // Get the shop
         $shop = $shopQuery->getByDomain(ShopDomain::fromNative($request->query('shop')));
-        if (!$request->has('charge_id'))
+        if (!$request->has('charge_id')) {
             return Redirect::route(Util::getShopifyConfig('route_names.home'), [
                 'shop' => $shop->getDomain()->toNative(),
             ]);
+        }
         // Activate the plan and save
         $result = $activatePlan(
             $shop->getId(),
             PlanId::fromNative($plan),
-            ChargeReference::fromNative((int)$request->query('charge_id'))
+            ChargeReference::fromNative((int) $request->query('charge_id'))
         );
 
         // Go to homepage of app
