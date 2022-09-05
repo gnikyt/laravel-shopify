@@ -123,7 +123,6 @@ class ShopifyAppProvider extends ServiceProvider
             return new AuthenticateShopAction(
                 $app->make(IApiHelper::class),
                 $app->make(InstallShopAction::class),
-                $app->make(VerifyThemeSupportAction::class),
                 $app->make(DispatchScriptsAction::class),
                 $app->make(DispatchWebhooksAction::class),
                 $app->make(AfterAuthorizeAction::class)
