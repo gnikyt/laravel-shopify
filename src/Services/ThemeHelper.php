@@ -4,8 +4,10 @@ namespace Osiset\ShopifyApp\Services;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
+use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use Osiset\ShopifyApp\Contracts\ShopModel;
 use Osiset\ShopifyApp\Objects\Values\MainTheme;
+use Osiset\ShopifyApp\Objects\Values\ShopId;
 use Osiset\ShopifyApp\Util;
 
 /**
@@ -27,6 +29,20 @@ class ThemeHelper
      * Asset field
      */
     public const ASSET_FIELD = 'key';
+
+    /**
+     * Current shop instance
+     *
+     * @var ShopModel
+     */
+    protected ShopModel $shop;
+
+    /**
+     * Querier for shops.
+     *
+     * @var IShopQuery
+     */
+    protected $shopQuery;
 
     /**
      * Interval for caching the request: minutes, seconds, hours, days, etc.
@@ -55,17 +71,21 @@ class ThemeHelper
     protected $assets;
 
     /**
-     * Constructor.
+     * Setup.
+     *
+     * @param IShopQuery     $shopQuery               The querier for shops.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(IShopQuery $shopQuery)
     {
-        $this->cacheInterval = Str::of(Util::getShopifyConfig('theme_support.cache_interval'))
+        $this->shopQuery = $shopQuery;
+
+        $this->cacheInterval = (string) Str::of(Util::getShopifyConfig('theme_support.cache_interval'))
             ->plural()
             ->ucfirst()
-            ->start('add')
-            ->__toString();
+            ->start('add');
+
         $this->cacheDuration = Util::getShopifyConfig('theme_support.cache_duration');
     }
 
@@ -82,20 +102,22 @@ class ThemeHelper
     /**
      * Extract store main theme
      *
-     * @param ShopModel $shop
+     * @param ShopId $shopId The shop ID.
      *
      * @return void
      */
-    public function extractStoreMainTheme(ShopModel $shop): void
+    public function extractStoreMainTheme(ShopId $shopId): void
     {
-        $themesResponse = $shop->api()->rest('GET', '/admin/themes.json');
+        $this->shop = $this->shopQuery->getById($shopId);
+
+        $themesResponse = $this->shop->api()->rest('GET', '/admin/themes.json');
 
         if (!$themesResponse['errors'] && isset($themesResponse['body']['themes'])) {
             $themes = $themesResponse['body']['themes']->toArray();
-            $key = array_search($this::MAIN_ROLE, array_column($themes, $this::THEME_FIELD));
+            $key = array_search(self::MAIN_ROLE, array_column($themes, self::THEME_FIELD));
 
             $this->mainTheme = MainTheme::fromNative($themes[$key]);
-            $this->extractThemeAssets($shop);
+            $this->extractThemeAssets();
         } else {
             $this->mainTheme = MainTheme::fromNative([]);
         }
@@ -108,13 +130,13 @@ class ThemeHelper
      *
      * @return void
      */
-    private function extractThemeAssets(ShopModel $shop): void
+    private function extractThemeAssets(): void
     {
         $this->assets = Cache::remember(
             "assets_{$this->mainTheme->getId()->toNative()}",
             now()->{$this->cacheInterval}($this->cacheDuration),
-            function () use ($shop) {
-                return $shop->api()->rest(
+            function () {
+                return $this->shop->api()->rest(
                     'GET',
                     "/admin/themes/{$this->mainTheme->getId()->toNative()}/assets.json"
                 )['body']['assets']->toArray();
@@ -148,15 +170,14 @@ class ThemeHelper
     /**
      * Retrieve the body of JSON templates and find what section is set as `main`
      *
-     * @param ShopModel $shop
      * @param array $templateJSONFiles
      *
      * @return array
      */
-    public function mainSections(ShopModel $shop, array $templateJSONFiles): array
+    public function mainSections(array $templateJSONFiles): array
     {
-        return array_filter(array_map(function ($file) use ($shop) {
-            $assetResponse = $this->fetchAsset($shop, $file);
+        return array_filter(array_map(function ($file) {
+            $assetResponse = $this->fetchAsset($file);
             $asset = $assetResponse['body']['asset']->toArray();
             $assetValue = json_decode($asset['value'], true);
 
@@ -175,17 +196,16 @@ class ThemeHelper
     /**
      * Request the content of each section and check if it has a schema that contains a block of type '@app'
      *
-     * @param ShopModel $shop
      * @param array $templateMainSections
      *
      * @return array
      */
-    public function sectionsWithAppBlock(ShopModel $shop, array $templateMainSections): array
+    public function sectionsWithAppBlock(array $templateMainSections): array
     {
-        return array_filter(array_map(function ($file) use ($shop) {
+        return array_filter(array_map(function ($file) {
             $acceptsAppBlock = false;
 
-            $assetResponse = $this->fetchAsset($shop, $file);
+            $assetResponse = $this->fetchAsset($file);
             $asset = $assetResponse['body']['asset']->toArray();
 
             preg_match('/\{\%\s+schema\s+\%\}([\s\S]*?)\{\%\s+endschema\s+\%\}/m', $asset['value'], $matches);
@@ -202,18 +222,17 @@ class ThemeHelper
     /**
      * Fetch asset
      *
-     * @param ShopModel $shop
      * @param array $file
      *
      * @return array
      */
-    private function fetchAsset(ShopModel $shop, array $file): array
+    private function fetchAsset(array $file): array
     {
         return Cache::remember(
             "asset_{$this->mainTheme->getId()->toNative()}_{$file['key']}",
             now()->{$this->cacheInterval}($this->cacheDuration),
-            function () use ($shop, $file) {
-                return $shop->api()->rest(
+            function () use ($file) {
+                return $this->shop->api()->rest(
                     'GET',
                     "/admin/themes/{$this->mainTheme->getId()->toNative()}/assets",
                     [

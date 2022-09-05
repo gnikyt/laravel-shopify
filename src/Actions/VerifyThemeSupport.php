@@ -51,18 +51,16 @@ class VerifyThemeSupport
      */
     public function __invoke(ShopId $shopId): int
     {
-        $shop = $this->shopQuery->getById($shopId);
-        $this->themeHelper->extractStoreMainTheme($shop);
+        $this->themeHelper->extractStoreMainTheme($shopId);
 
         if ($this->themeHelper->themeIsReady()) {
             $templateJSONFiles = $this->themeHelper->templateJSONFiles();
-            $templateMainSections = $this->themeHelper->mainSections($shop, $templateJSONFiles);
-            $sectionsWithAppBlock = $this->themeHelper->sectionsWithAppBlock($shop, $templateMainSections);
+            $templateMainSections = $this->themeHelper->mainSections($templateJSONFiles);
+            $sectionsWithAppBlock = $this->themeHelper->sectionsWithAppBlock($templateMainSections);
 
             $hasTemplates = count($templateJSONFiles) > 0;
             $allTemplatesHasRightType = count($templateJSONFiles) === count($sectionsWithAppBlock);
             $templatesСountWithRightType = count($sectionsWithAppBlock);
-
 
             switch (true) {
                 case $hasTemplates && $allTemplatesHasRightType:
