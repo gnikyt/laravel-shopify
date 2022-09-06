@@ -27,18 +27,18 @@ trait BillingController
     /**
      * Redirects to billing screen for Shopify.
      *
-     * @param Request     $request     The request object.
-     * @param ShopQuery    $shopQuery    The shop querier.
-     * @param GetPlanUrl  $getPlanUrl  The action for getting the plan URL.
-     * @param int|null    $plan        The plan's ID, if provided in route.
+     * @param Request $request The request object.
+     * @param ShopQuery $shopQuery The shop querier.
+     * @param GetPlanUrl $getPlanUrl The action for getting the plan URL.
+     * @param int|null $plan The plan's ID, if provided in route.
      *
      * @return ViewView
      */
     public function index(
-        Request $request,
-        ShopQuery $shopQuery,
+        Request    $request,
+        ShopQuery  $shopQuery,
         GetPlanUrl $getPlanUrl,
-        ?int $plan = null
+        ?int       $plan = null
     ): ViewView {
         // Get the shop
         $shop = $shopQuery->getByDomain(ShopDomain::fromNative($request->get('shop')));
@@ -59,22 +59,26 @@ trait BillingController
     /**
      * Processes the response from the customer.
      *
-     * @param int          $plan         The plan's ID.
-     * @param Request      $request      The HTTP request object.
-     * @param ShopQuery    $shopQuery    The shop querier.
+     * @param int $plan The plan's ID.
+     * @param Request $request The HTTP request object.
+     * @param ShopQuery $shopQuery The shop querier.
      * @param ActivatePlan $activatePlan The action for activating the plan for a shop.
      *
      * @return RedirectResponse
      */
     public function process(
-        int $plan,
-        Request $request,
-        ShopQuery $shopQuery,
+        int          $plan,
+        Request      $request,
+        ShopQuery    $shopQuery,
         ActivatePlan $activatePlan
     ): RedirectResponse {
         // Get the shop
         $shop = $shopQuery->getByDomain(ShopDomain::fromNative($request->query('shop')));
-
+        if (!$request->has('charge_id')) {
+            return Redirect::route(Util::getShopifyConfig('route_names.home'), [
+                'shop' => $shop->getDomain()->toNative(),
+            ]);
+        }
         // Activate the plan and save
         $result = $activatePlan(
             $shop->getId(),
@@ -94,7 +98,7 @@ trait BillingController
     /**
      * Allows for setting a usage charge.
      *
-     * @param StoreUsageCharge    $request             The verified request.
+     * @param StoreUsageCharge $request The verified request.
      * @param ActivateUsageCharge $activateUsageCharge The action for activating a usage charge.
      *
      * @return RedirectResponse
