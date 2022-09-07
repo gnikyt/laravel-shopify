@@ -234,7 +234,7 @@ class ApiHelper implements IApiHelper
      * {@inheritdoc}
      * TODO: Convert to GraphQL.
      */
-    public function activateCharge(ChargeType $chargeType, ChargeReference $chargeRef): ResponseAccess
+    public function activateCharge(ChargeType $chargeType, ChargeReference $chargeRef)
     {
         // API path
         $typeString = $this->chargeApiPath($chargeType);

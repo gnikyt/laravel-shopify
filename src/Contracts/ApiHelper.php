@@ -123,7 +123,7 @@ interface ApiHelper
      *
      * @return ResponseAccess
      */
-    public function activateCharge(ChargeType $chargeType, ChargeReference $chargeRef): ResponseAccess;
+    public function activateCharge(ChargeType $chargeType, ChargeReference $chargeRef);
 
     /**
      * Create a charge.
