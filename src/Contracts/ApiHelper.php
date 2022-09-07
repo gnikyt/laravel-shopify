@@ -121,7 +121,7 @@ interface ApiHelper
      *
      * @throws RequestException
      *
-     * @return ResponseAccess
+     * @return mixed
      */
     public function activateCharge(ChargeType $chargeType, ChargeReference $chargeRef);
 
