@@ -5,6 +5,7 @@ namespace Osiset\ShopifyApp\Storage\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 use Osiset\ShopifyApp\Objects\Enums\ChargeStatus;
 use Osiset\ShopifyApp\Objects\Enums\ChargeType;
 use Osiset\ShopifyApp\Objects\Values\ChargeId;
@@ -18,6 +19,8 @@ class Charge extends Model
 {
     use SoftDeletes;
 
+    protected $userTableId = 'user_id';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -25,7 +28,6 @@ class Charge extends Model
      */
     protected $fillable = [
         'type',
-        'user_id',
         'charge_id',
         'plan_id',
         'status',
@@ -48,6 +50,16 @@ class Charge extends Model
      * @var array
      */
     protected $dates = ['deleted_at'];
+
+    public function __construct(array $attributes = [])
+    {
+        $this->userTableId = Str::singular(Util::getShopifyConfig('table_names.shops', 'users')) . '_id';
+        $this->fillable[] = $this->userTableId;
+
+        parent::__construct($attributes);
+
+
+    }
 
     /**
      * Get table name.
@@ -88,7 +100,7 @@ class Charge extends Model
     {
         return $this->belongsTo(
             Util::getShopifyConfig('user_model'),
-            'user_id',
+            $this->userTableId,
             'id'
         );
     }

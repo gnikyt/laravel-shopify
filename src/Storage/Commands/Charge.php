@@ -3,6 +3,7 @@
 namespace Osiset\ShopifyApp\Storage\Commands;
 
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 use Osiset\ShopifyApp\Contracts\Commands\Charge as ChargeCommand;
 use Osiset\ShopifyApp\Contracts\Queries\Charge as ChargeQuery;
 use Osiset\ShopifyApp\Objects\Enums\ChargeStatus;
@@ -50,10 +51,12 @@ class Charge implements ChargeCommand
             return $obj instanceof Carbon;
         };
 
+        $userTableId = Str::singular(Util::getShopifyConfig('table_names.shops', 'users')) . '_id';
+
         $chargeClass = Util::getShopifyConfig('models.charge', ChargeModel::class);
         $charge = new $chargeClass();
         $charge->plan_id = $chargeObj->planId->toNative();
-        $charge->user_id = $chargeObj->shopId->toNative();
+        $charge->$userTableId = $chargeObj->shopId->toNative();
         $charge->charge_id = $chargeObj->chargeReference->toNative();
         $charge->type = $chargeObj->chargeType->toNative();
         $charge->status = $chargeObj->chargeStatus->toNative();
@@ -89,10 +92,11 @@ class Charge implements ChargeCommand
      */
     public function makeUsage(UsageChargeTransfer $chargeObj): ChargeId
     {
+        $userTableId = Str::singular(Util::getShopifyConfig('table_names.shops', 'users')) . '_id';
         // Create the charge
         $chargeClass = Util::getShopifyConfig('models.charge', ChargeModel::class);
         $charge = new $chargeClass();
-        $charge->user_id = $chargeObj->shopId->toNative();
+        $charge->$userTableId = $chargeObj->shopId->toNative();
         $charge->charge_id = $chargeObj->chargeReference->toNative();
         $charge->type = $chargeObj->chargeType->toNative();
         $charge->status = $chargeObj->chargeStatus->toNative();

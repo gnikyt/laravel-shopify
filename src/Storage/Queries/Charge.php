@@ -2,6 +2,7 @@
 
 namespace Osiset\ShopifyApp\Storage\Queries;
 
+use Illuminate\Support\Str;
 use Osiset\ShopifyApp\Contracts\Queries\Charge as IChargeQuery;
 use Osiset\ShopifyApp\Objects\Values\ChargeId;
 use Osiset\ShopifyApp\Objects\Values\ChargeReference;
@@ -21,6 +22,8 @@ class Charge implements IChargeQuery
      */
     protected $chargeModel;
 
+    protected $userTableId;
+
     /**
      * Init for charge command.
      */
@@ -28,6 +31,7 @@ class Charge implements IChargeQuery
     {
         $chargeClass = Util::getShopifyConfig('models.charge', ChargeModel::class);
         $this->chargeModel = new $chargeClass();
+        $this->userTableId = Str::singular(Util::getShopifyConfig('table_names.shops', 'users')) . '_id';
     }
 
 
@@ -61,7 +65,7 @@ class Charge implements IChargeQuery
     {
         return $this->chargeModel->query()
             ->where('charge_id', $chargeRef->toNative())
-            ->where('user_id', $shopId->toNative())
+            ->where($this->userTableId, $shopId->toNative())
             ->get()
             ->first();
     }
