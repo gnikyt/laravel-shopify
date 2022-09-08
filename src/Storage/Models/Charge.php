@@ -50,7 +50,7 @@ class Charge extends Model
 
     public function __construct(array $attributes = [])
     {
-        $this->fillable[] = Util::getShopsTable(true);
+        $this->fillable[] = Util::getShopsTableForeignKey();
 
         parent::__construct($attributes);
 
@@ -96,7 +96,7 @@ class Charge extends Model
     {
         return $this->belongsTo(
             Util::getShopifyConfig('user_model'),
-            Util::getShopsTable(true),
+            Util::getShopsTableForeignKey(),
             'id'
         );
     }

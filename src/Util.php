@@ -212,20 +212,22 @@ class Util
 
 
     /**
-     * Get the table name / table foreign_id for shop
-     *
-     * @param bool $foreignId
+     * Get the table name for shop
      *
      * @return string
      */
-    public static function getShopsTable(bool $foreignId = false): string
+    public static function getShopsTable(): string
     {
-        $shopTable = Util::getShopifyConfig('table_names.shops') ?? 'users';
+        return Util::getShopifyConfig('table_names.shops') ?? 'users';
+    }
 
-        if ($foreignId) {
-            return Str::singular($shopTable) . '_id' ;
-        }
-
-        return $shopTable;
+    /**
+     * Get the table foreign key for shop
+     *
+     * @return string
+     */
+    public static function getShopsTableForeignKey(): string
+    {
+        return Str::singular(self::getShopsTable()) . '_id';
     }
 }
