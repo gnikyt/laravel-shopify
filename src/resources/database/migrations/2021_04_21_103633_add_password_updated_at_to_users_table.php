@@ -14,7 +14,7 @@ class AddPasswordUpdatedAtToUsersTable extends Migration
      */
     public function up()
     {
-        Schema::table(Util::getShopifyConfig('table_names.shops'), function (Blueprint $table) {
+        Schema::table(Util::getShopsTable(), function (Blueprint $table) {
             $table->date('password_updated_at')->nullable();
         });
     }
@@ -26,7 +26,7 @@ class AddPasswordUpdatedAtToUsersTable extends Migration
      */
     public function down()
     {
-        Schema::table(Util::getShopifyConfig('table_names.shops'), function (Blueprint $table) {
+        Schema::table(Util::getShopsTable(), function (Blueprint $table) {
             $table->dropColumn('password_updated_at');
         });
     }

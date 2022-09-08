@@ -209,4 +209,23 @@ class Util
                   ->upper()
                   ->replaceMatches('/[^A-Z_]/', '_');
     }
+
+
+    /**
+     * Get the table name / table foreign_id for shop
+     *
+     * @param bool $foreignId
+     *
+     * @return string
+     */
+    public static function getShopsTable(bool $foreignId = false): string
+    {
+        $shopTable = Util::getShopifyConfig('table_names.shops') ?? 'users';
+
+        if ($foreignId) {
+            return Str::singular($shopTable) . '_id' ;
+        }
+
+        return $shopTable;
+    }
 }
