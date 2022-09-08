@@ -130,4 +130,23 @@ class BillingControllerTest extends TestCase
         $response->assertRedirect('http://localhost');
         $response->assertSessionHas('success');
     }
+
+    public function testReturnToSettingScreenNoPlan()
+    {
+        // Set up a shop
+        $shop = factory($this->model)->create([
+            'plan_id' => null,
+        ]);
+        //Log in
+        $this->auth->login($shop);
+        $url = 'https://example-app.com/billing/process/9999?shop='.$shop->name;
+        // Try to go to bill without a charge id which happens when you cancel the charge
+        $response = $this->call(
+            'get',
+            $url,
+            ['shop' => $shop->name]
+        );
+        //Confirm we get sent back to the homepage of the app
+        $response->assertRedirect('https://example-app.com?shop='.$shop->name);
+    }
 }
