@@ -477,9 +477,11 @@ return [
     | Checking theme compatibility
     |--------------------------------------------------------------------------
     |
-    | It is necessary to check if your application is compatible with the theme app blocks.
+    | It is necessary to check if your application is compatible with
+    | the theme app blocks.
     |
     */
+
     'theme_support' => [
         /**
          * Specify the name of the template the app will integrate with
@@ -502,4 +504,15 @@ return [
             Osiset\ShopifyApp\Objects\Enums\ThemeSupportLevel::UNSUPPORTED
         ]
     ]
+
+    /*
+    |--------------------------------------------------------------------------
+    | Session token refresh
+    |--------------------------------------------------------------------------
+    |
+    | For AppBridge, how often to refresh the session token for the user.
+    |
+    */
+
+    'session_token_refresh_interval' => env('SESSION_TOKEN_REFRESH_INTERVAL', 2000)
 ];
