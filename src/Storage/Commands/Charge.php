@@ -50,10 +50,12 @@ class Charge implements ChargeCommand
             return $obj instanceof Carbon;
         };
 
+        $shopTableId = Util::getShopsTableForeignKey();
+
         $chargeClass = Util::getShopifyConfig('models.charge', ChargeModel::class);
         $charge = new $chargeClass();
         $charge->plan_id = $chargeObj->planId->toNative();
-        $charge->user_id = $chargeObj->shopId->toNative();
+        $charge->$shopTableId = $chargeObj->shopId->toNative();
         $charge->charge_id = $chargeObj->chargeReference->toNative();
         $charge->type = $chargeObj->chargeType->toNative();
         $charge->status = $chargeObj->chargeStatus->toNative();
@@ -89,10 +91,11 @@ class Charge implements ChargeCommand
      */
     public function makeUsage(UsageChargeTransfer $chargeObj): ChargeId
     {
+        $shopTableId = Util::getShopsTableForeignKey();
         // Create the charge
         $chargeClass = Util::getShopifyConfig('models.charge', ChargeModel::class);
         $charge = new $chargeClass();
-        $charge->user_id = $chargeObj->shopId->toNative();
+        $charge->$shopTableId = $chargeObj->shopId->toNative();
         $charge->charge_id = $chargeObj->chargeReference->toNative();
         $charge->type = $chargeObj->chargeType->toNative();
         $charge->status = $chargeObj->chargeStatus->toNative();

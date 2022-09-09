@@ -470,7 +470,12 @@ return [
         * The table name for Plan model.
         */
         'plans' => 'plans',
+
+        /*
+         * The table name for the Shop.
+         */
+        'shops' => 'users',
     ],
 
-    'session_token_refresh_interval' => env('SESSION_TOKEN_REFRESH_INTERVAL', 2000)
+    'session_token_refresh_interval' => env('SESSION_TOKEN_REFRESH_INTERVAL', 2000),
 ];
