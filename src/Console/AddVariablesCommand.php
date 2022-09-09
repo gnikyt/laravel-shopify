@@ -84,7 +84,7 @@ class AddVariablesCommand extends Command
         return $this->option('force')
             ? true
             : $this->confirm(
-                "This will invalidate $key variable. Are you sure you want to override $key?"
+                "This will invalidate {$key} variable. Are you sure you want to override {$key}?"
             );
     }
 
