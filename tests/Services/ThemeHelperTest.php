@@ -3,8 +3,8 @@
 namespace Osiset\ShopifyApp\Test\Services;
 
 use Osiset\ShopifyApp\Services\ThemeHelper;
-use Osiset\ShopifyApp\Test\TestCase;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
+use Osiset\ShopifyApp\Test\TestCase;
 
 class ThemeHelperTest extends TestCase
 {

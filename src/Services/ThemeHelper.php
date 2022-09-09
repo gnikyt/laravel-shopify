@@ -156,6 +156,7 @@ class ThemeHelper
             foreach ($blockTemplates as $template) {
                 if ($asset['key'] == "templates/$template.json") {
                     $match = true;
+
                     break;
                 }
             }

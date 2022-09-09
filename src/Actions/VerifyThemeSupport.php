@@ -29,8 +29,8 @@ class VerifyThemeSupport
     /**
      * Setup.
      *
-     * @param IShopQuery     $shopQuery               The querier for shops.
-     * @param ThemeHelper    $themeHelper             Theme helper.
+     * @param IShopQuery  $shopQuery   The querier for shops.
+     * @param ThemeHelper $themeHelper Theme helper.
      *
      * @return void
      */
