@@ -503,7 +503,7 @@ return [
         'unacceptable_levels' => [
             Osiset\ShopifyApp\Objects\Enums\ThemeSupportLevel::UNSUPPORTED
         ]
-    ]
+    ],
 
     /*
     |--------------------------------------------------------------------------
