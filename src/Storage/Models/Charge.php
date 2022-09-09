@@ -53,8 +53,6 @@ class Charge extends Model
         $this->fillable[] = Util::getShopsTableForeignKey();
 
         parent::__construct($attributes);
-
-
     }
 
     /**
