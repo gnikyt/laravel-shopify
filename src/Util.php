@@ -218,7 +218,7 @@ class Util
      */
     public static function getShopsTable(): string
     {
-        return Util::getShopifyConfig('table_names.shops') ?? 'users';
+        return self::getShopifyConfig('table_names.shops') ?? 'users';
     }
 
     /**
@@ -228,6 +228,6 @@ class Util
      */
     public static function getShopsTableForeignKey(): string
     {
-        return Str::singular(self::getShopsTable()) . '_id';
+        return Str::singular(self::getShopsTable()).'_id';
     }
 }

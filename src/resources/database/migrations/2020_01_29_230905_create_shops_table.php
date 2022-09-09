@@ -36,7 +36,7 @@ class CreateShopsTable extends Migration
     public function down(): void
     {
         Schema::table(Util::getShopsTable(), function (Blueprint $table) {
-            $table->dropForeign(Util::getShopsTable() . '_plan_id_foreign');
+            $table->dropForeign(Util::getShopsTable().'_plan_id_foreign');
             $table->dropColumn([
                 'shopify_grandfathered',
                 'shopify_namespace',
