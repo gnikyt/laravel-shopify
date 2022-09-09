@@ -1,0 +1,13 @@
+{
+    "asset": {
+      "key": "sections/product.liquid",
+      "public_url": null,
+      "value": "<div class=\"{% if section.settings.include_margins %}page-width{% endif %}\">\r\n  {%- for block in section.blocks -%}\r\n    {% render block %}\r\n  {%- endfor -%}\r\n<\/div>\r\n\r\n{% schema %}\r\n{\r\n  \"name\": \"t:sections.apps.name\",\r\n  \"tag\": \"section\",\r\n  \"class\": \"section\",\r\n  \"settings\": [\r\n    {\r\n      \"type\": \"checkbox\",\r\n      \"id\": \"include_margins\",\r\n      \"default\": true,\r\n      \"label\": \"t:sections.apps.settings.include_margins.label\"\r\n    }\r\n  ],\r\n  \"blocks\": [\r\n    {\r\n      \"type\": \"@app\"\r\n    }\r\n  ],\r\n  \"presets\": [\r\n    {\r\n      \"name\": \"t:sections.apps.presets.name\"\r\n    }\r\n  ]\r\n}\r\n{% endschema %}",
+      "created_at": "2010-07-12T15:31:50-04:00",
+      "updated_at": "2010-07-12T15:31:50-04:00",
+      "content_type": "application/x-liquid",
+      "size": 1068,
+      "checksum": null,
+      "theme_id": 828155753
+    }
+  }
