@@ -470,5 +470,7 @@ return [
         * The table name for Plan model.
         */
         'plans' => 'plans',
-    ]
+    ],
+
+    'session_token_refresh_interval' => env('SESSION_TOKEN_REFRESH_INTERVAL', 2000)
 ];
