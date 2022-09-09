@@ -53,7 +53,7 @@ final class ShopDomain implements ShopDomainValue
 
             // Headers: Referer
             DataSource::REFERER()->toNative() => function () use ($request): ?string {
-                $url = parse_url($request->header('referer'), PHP_URL_QUERY);
+                $url = parse_url($request->header('referer', ''), PHP_URL_QUERY);
                 if (! $url) {
                     return null;
                 }

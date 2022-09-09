@@ -96,6 +96,7 @@ abstract class TestCase extends OrchestraTestCase
             'prefix' => '',
         ]);
         $app['config']->set('auth.providers.users.model', UserStub::class);
+        $app['config']->set('logging.deprecations', 'errorlog');
     }
 
     protected function setupDatabase($app): void
