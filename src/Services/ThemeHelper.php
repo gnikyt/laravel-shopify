@@ -11,27 +11,27 @@ use Osiset\ShopifyApp\Objects\Values\ShopId;
 use Osiset\ShopifyApp\Util;
 
 /**
- * Helper for dealing with cookie and cookie issues.
+ * Helper for dealing with theme and theme assets.
  */
 class ThemeHelper
 {
     /**
-     * Main theme role
+     * Main theme role.
      */
     public const MAIN_ROLE = 'main';
 
     /**
-     * Theme field
+     * Theme field.
      */
     public const THEME_FIELD = 'role';
 
     /**
-     * Asset field
+     * Asset field.
      */
     public const ASSET_FIELD = 'key';
 
     /**
-     * Current shop instance
+     * Current shop instance.
      *
      * @var IShopModel
      */
@@ -52,28 +52,28 @@ class ThemeHelper
     protected $cacheInterval;
 
     /**
-     * Cache duration
+     * Cache duration.
      *
      * @var int
      */
     protected $cacheDuration;
 
     /**
-     * Shop main theme
+     * Shop main theme.
      *
      * @var MainTheme
      */
     protected $mainTheme;
 
     /**
-     * Theme assets
+     * Theme assets.
      */
     protected $assets;
 
     /**
      * Setup.
      *
-     * @param IShopQuery     $shopQuery The querier for shops.
+     * @param IShopQuery $shopQuery The querier for shops.
      *
      * @return void
      */
@@ -90,7 +90,7 @@ class ThemeHelper
     }
 
     /**
-     * Theme is set and ready for testing
+     * Determine if theme is set and ready for testing.
      *
      * @return bool
      */
@@ -100,7 +100,7 @@ class ThemeHelper
     }
 
     /**
-     * Extract store main theme
+     * Extract store's main theme.
      *
      * @param ShopId $shopId The shop ID.
      *
@@ -111,7 +111,6 @@ class ThemeHelper
         $this->shop = $this->shopQuery->getById($shopId);
 
         $themesResponse = $this->shop->api()->rest('GET', '/admin/themes.json');
-
         if (!$themesResponse['errors'] && isset($themesResponse['body']['themes'])) {
             $themes = $themesResponse['body']['themes']->toArray();
             $key = array_search(self::MAIN_ROLE, array_column($themes, self::THEME_FIELD));
@@ -124,7 +123,7 @@ class ThemeHelper
     }
 
     /**
-     * Extract main theme assets
+     * Extract main theme's assets.
      *
      * @return void
      */
@@ -143,7 +142,8 @@ class ThemeHelper
     }
 
     /**
-     * Check if JSON template files exist for the template specified in APP_BLOCK_TEMPLATES
+     * Check if JSON template files exist for
+     * the template specified in `APP_BLOCK_TEMPLATES`.
      *
      * @return array
      */
@@ -156,7 +156,6 @@ class ThemeHelper
             foreach ($blockTemplates as $template) {
                 if ($asset['key'] == "templates/$template.json") {
                     $match = true;
-
                     break;
                 }
             }
@@ -166,9 +165,9 @@ class ThemeHelper
     }
 
     /**
-     * Retrieve the body of JSON templates and find what section is set as `main`
+     * Retrieve the body of JSON templates and find what section is set as `main`.
      *
-     * @param array $templateJSONFiles
+     * @param array $templateJSONFiles The template files to filter through.
      *
      * @return array
      */
@@ -192,9 +191,10 @@ class ThemeHelper
     }
 
     /**
-     * Request the content of each section and check if it has a schema that contains a block of type '@app'
+     * Request the contents of each section then check
+     * if it has a schema that contains a block of type '@app'.
      *
-     * @param array $templateMainSections
+     * @param array $templateMainSections The template's main sections to filter through.
      *
      * @return array
      */
@@ -218,9 +218,9 @@ class ThemeHelper
     }
 
     /**
-     * Fetch asset
+     * Fetch a theme's asset.
      *
-     * @param array $file
+     * @param array $file The theme file information to fetch or retrieve from cache.
      *
      * @return array
      */
