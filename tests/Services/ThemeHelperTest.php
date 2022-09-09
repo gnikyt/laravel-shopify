@@ -68,7 +68,7 @@ class ThemeHelperTest extends TestCase
             'shopify-app.theme_support.templates',
             [
                 'shop', // Matches fixture data for `templates/shop.json`
-            ],
+            ]
         );
         $this->assertNotEmpty($this->helper->templateJSONFiles());
     }
