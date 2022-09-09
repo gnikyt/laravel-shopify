@@ -84,7 +84,7 @@ class ThemeHelperTest extends TestCase
             'shopify-app.theme_support.templates',
             [
                 'shop', // Matches fixture data for `templates/shop.json`
-            ],
+            ]
         );
 
         // Run extraction
@@ -116,7 +116,7 @@ class ThemeHelperTest extends TestCase
             'shopify-app.theme_support.templates',
             [
                 'shop', // Matches fixture data for `templates/shop.json`
-            ],
+            ]
         );
 
         // Run extraction
