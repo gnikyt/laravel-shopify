@@ -24,6 +24,18 @@ class CreateShopsTable extends Migration
                 $table->softDeletes();
             }
 
+            if (! Schema::hasColumn(Util::getShopsTable(), 'name')) {
+                $table->string('name')->nullable();
+            }
+
+            if (! Schema::hasColumn(Util::getShopsTable(), 'email')) {
+                $table->string('email')->nullable();
+            }
+
+            if (! Schema::hasColumn(Util::getShopsTable(), 'password')) {
+                $table->string('password', 100)->nullable();
+            }
+
             $table->foreign('plan_id')->references('id')->on(Util::getShopifyConfig('table_names.plans', 'plans'));
         });
     }
@@ -38,6 +50,9 @@ class CreateShopsTable extends Migration
         Schema::table(Util::getShopsTable(), function (Blueprint $table) {
             $table->dropForeign(Util::getShopsTable().'_plan_id_foreign');
             $table->dropColumn([
+                'name',
+                'email',
+                'password',
                 'shopify_grandfathered',
                 'shopify_namespace',
                 'shopify_freemium',
