@@ -19,6 +19,7 @@ use Osiset\ShopifyApp\Actions\DispatchScripts as DispatchScriptsAction;
 use Osiset\ShopifyApp\Actions\DispatchWebhooks as DispatchWebhooksAction;
 use Osiset\ShopifyApp\Actions\GetPlanUrl as GetPlanUrlAction;
 use Osiset\ShopifyApp\Actions\InstallShop as InstallShopAction;
+use Osiset\ShopifyApp\Console\AddVariablesCommand;
 use Osiset\ShopifyApp\Console\WebhookJobMakeCommand;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use Osiset\ShopifyApp\Contracts\Commands\Charge as IChargeCommand;
@@ -78,6 +79,7 @@ class ShopifyAppProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/resources/config/shopify-app.php', 'shopify-app');
 
         $this->commands([
+            AddVariablesCommand::class,
             WebhookJobMakeCommand::class,
         ]);
 
