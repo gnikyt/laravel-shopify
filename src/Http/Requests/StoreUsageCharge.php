@@ -73,6 +73,7 @@ class StoreUsageCharge extends FormRequest
             'price' => 'required|numeric',
             'description' => 'required|string',
             'redirect' => 'nullable|string',
+            'shop' => 'required|string',
         ];
     }
 }
