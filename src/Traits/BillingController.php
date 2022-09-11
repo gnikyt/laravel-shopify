@@ -113,14 +113,15 @@ trait BillingController
         ActivateUsageCharge $activateUsageCharge,
         ShopQuery           $shopQuery
     ): RedirectResponse {
-        // Valid the request params.
-        $validated = $request->validated();
 
         // Get the shop from the shop param after it has been validated.
-        $shop = $shopQuery->getByDomain(ShopDomain::fromNative($validated['shop']));
+        $shop = $shopQuery->getByDomain(ShopDomain::fromNative($request->get('shop')));
         if (!$shop) {
             throw new MissingShopDomainException('Shop parameter is missing from request');
         }
+
+        // Valid the request params.
+        $validated = $request->validated();
 
         // Create the transfer object
         $ucd = new UsageChargeDetailsTransfer();
