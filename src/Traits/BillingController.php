@@ -115,10 +115,10 @@ trait BillingController
     ): RedirectResponse {
 
         // Get the shop from the shop param after it has been validated.
-        $shop = $shopQuery->getByDomain(ShopDomain::fromNative($request->get('shop')));
-        if (!$shop) {
+        if (!$request->get('shop')) {
             throw new MissingShopDomainException('Shop parameter is missing from request');
         }
+        $shop = $shopQuery->getByDomain(ShopDomain::fromNative($request->get('shop')));
 
         // Valid the request params.
         $validated = $request->validated();
