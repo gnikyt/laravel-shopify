@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Osiset\ShopifyApp\Util;
 
 class AddPasswordUpdatedAtToUsersTable extends Migration
 {
@@ -13,7 +14,7 @@ class AddPasswordUpdatedAtToUsersTable extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table(Util::getShopsTable(), function (Blueprint $table) {
             $table->date('password_updated_at')->nullable();
         });
     }
@@ -25,7 +26,7 @@ class AddPasswordUpdatedAtToUsersTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table(Util::getShopsTable(), function (Blueprint $table) {
             $table->dropColumn('password_updated_at');
         });
     }
