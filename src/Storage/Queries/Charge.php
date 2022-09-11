@@ -61,7 +61,7 @@ class Charge implements IChargeQuery
     {
         return $this->chargeModel->query()
             ->where('charge_id', $chargeRef->toNative())
-            ->where('user_id', $shopId->toNative())
+            ->where(Util::getShopsTableForeignKey(), $shopId->toNative())
             ->get()
             ->first();
     }

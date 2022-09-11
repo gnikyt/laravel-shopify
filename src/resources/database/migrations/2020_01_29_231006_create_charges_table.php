@@ -79,13 +79,13 @@ class CreateChargesTable extends Migration
             $table->softDeletes();
 
             if ($this->getLaravelVersion() < 5.8) {
-                $table->integer('user_id')->unsigned();
+                $table->integer(Util::getShopsTableForeignKey())->unsigned();
             } else {
-                $table->bigInteger('user_id')->unsigned();
+                $table->bigInteger(Util::getShopsTableForeignKey())->unsigned();
             }
 
             // Linking
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign(Util::getShopsTableForeignKey())->references('id')->on(Util::getShopsTable())->onDelete('cascade');
             $table->foreign('plan_id')->references('id')->on(Util::getShopifyConfig('table_names.plans', 'plans'));
         });
     }

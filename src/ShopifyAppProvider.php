@@ -80,6 +80,7 @@ class ShopifyAppProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/resources/config/shopify-app.php', 'shopify-app');
 
         $this->commands([
+            AddVariablesCommand::class,
             WebhookJobMakeCommand::class,
         ]);
 
