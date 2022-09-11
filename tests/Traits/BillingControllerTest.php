@@ -189,7 +189,6 @@ class BillingControllerTest extends TestCase
 
     public function testUsageChargeFailWithoutShopParam(): void
     {
-
         $this->withoutExceptionHandling();
         $this->expectException(MissingShopDomainException::class);
 
@@ -218,7 +217,7 @@ class BillingControllerTest extends TestCase
         $data = [
             'description' => 'One email',
             'price' => 1.00,
-            'redirect' => 'https://localhost/usage-success', ];
+            'redirect' => 'https://localhost/usage-success',];
         $signature = Util::createHmac(['data' => $data, 'buildQuery' => true], $secret);
 
         // Run the call

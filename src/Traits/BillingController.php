@@ -113,7 +113,6 @@ trait BillingController
         ActivateUsageCharge $activateUsageCharge,
         ShopQuery           $shopQuery
     ): RedirectResponse {
-
         // Get the shop from the shop param after it has been validated.
         if (!$request->get('shop')) {
             throw new MissingShopDomainException('Shop parameter is missing from request');
