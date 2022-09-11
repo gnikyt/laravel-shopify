@@ -101,7 +101,7 @@ class VerifyShopify
             return $next($request);
         }
 
-        if (Util::getShopifyConfig('spa_frontend_used')) {
+        if (!Util::useNativeAppBridge()) {
             $storeResult = !$this->isApiRequest($request) && $this->checkPreviousInstallation($request);
 
             if ($storeResult) {
