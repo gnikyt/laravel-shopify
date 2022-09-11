@@ -4,6 +4,7 @@ namespace Osiset\ShopifyApp\Test;
 
 use Illuminate\Support\Facades\Config;
 use LogicException;
+use Osiset\ShopifyApp\Objects\Enums\FrontendEngine;
 use Osiset\ShopifyApp\Util;
 use stdClass;
 
@@ -104,5 +105,23 @@ class UtilTest extends TestCase
             'ORDERS_PARTIALLY_FULFILLED',
             Util::getGraphQLWebhookTopic('ORDERS_PARTIALLY_FULFILLED')
         );
+    }
+
+    public function testUseNativeAppBridgeIsTrue(): void
+    {
+        Config::set('shopify-app.frontend_engine', FrontendEngine::VUE);
+
+        $result = Util::useNativeAppBridge();
+
+        $this->assertTrue($result);
+    }
+
+    public function testUseNativeAppBridgeIsFalse(): void
+    {
+        Config::set('shopify-app.frontend_engine', FrontendEngine::REACT);
+
+        $result = Util::useNativeAppBridge();
+
+        $this->assertFalse($result);
     }
 }
