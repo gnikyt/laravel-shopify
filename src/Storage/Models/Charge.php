@@ -25,7 +25,6 @@ class Charge extends Model
      */
     protected $fillable = [
         'type',
-        'user_id',
         'charge_id',
         'plan_id',
         'status',
@@ -48,6 +47,13 @@ class Charge extends Model
      * @var array
      */
     protected $dates = ['deleted_at'];
+
+    public function __construct(array $attributes = [])
+    {
+        $this->fillable[] = Util::getShopsTableForeignKey();
+
+        parent::__construct($attributes);
+    }
 
     /**
      * Get table name.
@@ -88,7 +94,7 @@ class Charge extends Model
     {
         return $this->belongsTo(
             Util::getShopifyConfig('user_model'),
-            'user_id',
+            Util::getShopsTableForeignKey(),
             'id'
         );
     }

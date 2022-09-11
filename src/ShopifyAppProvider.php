@@ -19,6 +19,7 @@ use Osiset\ShopifyApp\Actions\DispatchScripts as DispatchScriptsAction;
 use Osiset\ShopifyApp\Actions\DispatchWebhooks as DispatchWebhooksAction;
 use Osiset\ShopifyApp\Actions\GetPlanUrl as GetPlanUrlAction;
 use Osiset\ShopifyApp\Actions\InstallShop as InstallShopAction;
+use Osiset\ShopifyApp\Console\AddVariablesCommand;
 use Osiset\ShopifyApp\Console\WebhookJobMakeCommand;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use Osiset\ShopifyApp\Contracts\Commands\Charge as IChargeCommand;
@@ -30,6 +31,7 @@ use Osiset\ShopifyApp\Directives\SessionToken;
 use Osiset\ShopifyApp\Http\Middleware\AuthProxy;
 use Osiset\ShopifyApp\Http\Middleware\AuthWebhook;
 use Osiset\ShopifyApp\Http\Middleware\Billable;
+use Osiset\ShopifyApp\Http\Middleware\IframeProtection;
 use Osiset\ShopifyApp\Http\Middleware\VerifyShopify;
 use Osiset\ShopifyApp\Macros\TokenRedirect;
 use Osiset\ShopifyApp\Macros\TokenRoute;
@@ -77,6 +79,7 @@ class ShopifyAppProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/resources/config/shopify-app.php', 'shopify-app');
 
         $this->commands([
+            AddVariablesCommand::class,
             WebhookJobMakeCommand::class,
         ]);
 
@@ -305,6 +308,8 @@ class ShopifyAppProvider extends ServiceProvider
         $this->app['router']->aliasMiddleware('auth.webhook', AuthWebhook::class);
         $this->app['router']->aliasMiddleware('billable', Billable::class);
         $this->app['router']->aliasMiddleware('verify.shopify', VerifyShopify::class);
+
+        $this->app['router']->pushMiddlewareToGroup('web', IframeProtection::class);
     }
 
     /**

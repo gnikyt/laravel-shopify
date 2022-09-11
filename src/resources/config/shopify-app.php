@@ -470,6 +470,11 @@ return [
         * The table name for Plan model.
         */
         'plans' => 'plans',
+
+        /*
+         * The table name for the Shop.
+         */
+        'shops' => 'users',
     ],
 
     /*
@@ -480,5 +485,7 @@ return [
     | If you use SPA (React or Vue), you don't need a redirect to the JWT token retrieval page
     |
     */
-    'spa_frontend_used' => (bool) env('SHOPIFY_SPA_FRONTEND_USED', false),
+    'spa_frontend_used' => (bool) env('SHOPIFY_SPA_FRONTEND_USED', false),,
+
+    'session_token_refresh_interval' => env('SESSION_TOKEN_REFRESH_INTERVAL', 2000),
 ];
