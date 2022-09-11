@@ -490,5 +490,5 @@ return [
     | No changes are made for Vue.js and Blade.
     |
     */
-    'frontend_engine' => \Osiset\ShopifyApp\Objects\Enums\FrontendEngine::BLADE
+    'frontend_engine' => \Osiset\ShopifyApp\Objects\Enums\FrontendEngine::BLADE,
 ];

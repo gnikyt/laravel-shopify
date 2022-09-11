@@ -6,8 +6,8 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use LogicException;
-use Osiset\ShopifyApp\Objects\Values\Hmac;
 use Osiset\ShopifyApp\Objects\Enums\FrontendEngine;
+use Osiset\ShopifyApp\Objects\Values\Hmac;
 
 /**
  * Utilities and helpers used in various parts of the package.
@@ -235,7 +235,7 @@ class Util
     /**
      * Checking to see if you need to use the native App Bridge
      *
-     * @return boolean
+     * @return bool
      */
     public static function useNativeAppBridge(): bool
     {
