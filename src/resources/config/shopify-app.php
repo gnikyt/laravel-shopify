@@ -477,15 +477,18 @@ return [
         'shops' => 'users',
     ],
 
+    'session_token_refresh_interval' => env('SESSION_TOKEN_REFRESH_INTERVAL', 2000),
+
     /*
     |--------------------------------------------------------------------------
-    | Determines whether the SPA is used
+    | Frontend engine used
     |--------------------------------------------------------------------------
     |
-    | If you use SPA (React or Vue), you don't need a redirect to the JWT token retrieval page
+    | Available engines: BLADE, VUE, REACT.
+    | For example, if you use React, you do not need to be redirected to a separate page to get the JWT token.
+    |
+    | No changes are made for Vue.js and Blade.
     |
     */
-    'spa_frontend_used' => (bool) env('SHOPIFY_SPA_FRONTEND_USED', false),,
-
-    'session_token_refresh_interval' => env('SESSION_TOKEN_REFRESH_INTERVAL', 2000),
+    'frontend_engine' => \Osiset\ShopifyApp\Objects\Enums\FrontendEngine::BLADE
 ];
