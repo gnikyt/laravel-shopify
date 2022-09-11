@@ -112,7 +112,7 @@ class BillingControllerTest extends TestCase
         $response = $this->call(
             'post',
             '/billing/usage-charge',
-            array_merge($data, ['signature' => $signature->toNative()])
+            array_merge($data, ['signature' => $signature->toNative(), 'shop' => $shop->name])
         );
         $response->assertRedirect($data['redirect']);
         $response->assertSessionHas('success');
@@ -125,7 +125,7 @@ class BillingControllerTest extends TestCase
         $response = $this->call(
             'post',
             '/billing/usage-charge',
-            array_merge($data, ['signature' => $signature->toNative()])
+            array_merge($data, ['signature' => $signature->toNative(), 'shop' => $shop->name])
         );
         $response->assertRedirect('http://localhost');
         $response->assertSessionHas('success');
