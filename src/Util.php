@@ -239,8 +239,8 @@ class Util
      */
     public static function useNativeAppBridge(): bool
     {
-        $currentFrontendEngine = self::getShopifyConfig('frontend_engine') ?? FrontendEngine::BLADE;
+        $currentFrontendEngine = self::getShopifyConfig('frontend_engine') ?? FrontendEngine::BLADE();
 
-        return !$currentFrontendEngine->isSame(FrontendEngine::REACT);
+        return !$currentFrontendEngine->isSame(FrontendEngine::REACT());
     }
 }
