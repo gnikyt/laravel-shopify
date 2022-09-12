@@ -68,7 +68,7 @@ class UtilTest extends TestCase
 
     public function testGetShopifyConfig(): void
     {
-        Config::set('shopify-app.config_api_callback', function (string $key, $shop) {
+        $this->app['config']->set('shopify-app.config_api_callback', function (string $key, $shop) {
             if ($key === 'api_secret') {
                 return 'hello world';
             }
@@ -104,5 +104,23 @@ class UtilTest extends TestCase
             'ORDERS_PARTIALLY_FULFILLED',
             Util::getGraphQLWebhookTopic('ORDERS_PARTIALLY_FULFILLED')
         );
+    }
+
+    public function testUseNativeAppBridgeIsTrue(): void
+    {
+        $this->app['config']->set('shopify-app.frontend_engine', 'VUE');
+
+        $result = Util::useNativeAppBridge();
+
+        $this->assertTrue($result);
+    }
+
+    public function testUseNativeAppBridgeIsFalse(): void
+    {
+        $this->app['config']->set('shopify-app.frontend_engine', 'REACT');
+
+        $result = Util::useNativeAppBridge();
+
+        $this->assertFalse($result);
     }
 }
