@@ -484,11 +484,10 @@ return [
     | Frontend engine used
     |--------------------------------------------------------------------------
     |
-    | Available engines: BLADE, VUE, REACT.
+    | Available engines: "BLADE", "VUE", or "REACT".
     | For example, if you use React, you do not need to be redirected to a separate page to get the JWT token.
-    |
     | No changes are made for Vue.js and Blade.
     |
     */
-    'frontend_engine' => \Osiset\ShopifyApp\Objects\Enums\FrontendEngine::BLADE(),
+    'frontend_engine' => env('SHOPIFY_FRONTEND_ENGINE', 'BLADE'),
 ];

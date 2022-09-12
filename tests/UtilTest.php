@@ -109,7 +109,7 @@ class UtilTest extends TestCase
 
     public function testUseNativeAppBridgeIsTrue(): void
     {
-        $this->app['config']->set('shopify-app.frontend_engine', FrontendEngine::VUE());
+        $this->app['config']->set('shopify-app.frontend_engine', 'VUE');
 
         $result = Util::useNativeAppBridge();
 
@@ -118,7 +118,7 @@ class UtilTest extends TestCase
 
     public function testUseNativeAppBridgeIsFalse(): void
     {
-        $this->app['config']->set('shopify-app.frontend_engine', FrontendEngine::REACT());
+        $this->app['config']->set('shopify-app.frontend_engine', 'REACT');
 
         $result = Util::useNativeAppBridge();
 

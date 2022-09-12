@@ -47,11 +47,11 @@ class CookieHelper
      */
     public function setCookiePolicy(): void
     {
-        $this->app['config']->set('session.expire_on_close', true);
+        Config::set('session.expire_on_close', true);
 
         if ($this->checkSameSiteNoneCompatible()) {
-            $this->app['config']->set('session.secure', true);
-            $this->app['config']->set('session.same_site', 'none');
+            Config::set('session.secure', true);
+            Config::set('session.same_site', 'none');
         }
     }
 
