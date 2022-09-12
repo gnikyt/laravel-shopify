@@ -69,7 +69,7 @@ class UtilTest extends TestCase
 
     public function testGetShopifyConfig(): void
     {
-        Config::set('shopify-app.config_api_callback', function (string $key, $shop) {
+        $this->app['config']->set('shopify-app.config_api_callback', function (string $key, $shop) {
             if ($key === 'api_secret') {
                 return 'hello world';
             }
@@ -109,7 +109,7 @@ class UtilTest extends TestCase
 
     public function testUseNativeAppBridgeIsTrue(): void
     {
-        Config::set('shopify-app.frontend_engine', FrontendEngine::VUE());
+        $this->app['config']->set('shopify-app.frontend_engine', FrontendEngine::VUE());
 
         $result = Util::useNativeAppBridge();
 
@@ -118,7 +118,7 @@ class UtilTest extends TestCase
 
     public function testUseNativeAppBridgeIsFalse(): void
     {
-        Config::set('shopify-app.frontend_engine', FrontendEngine::REACT());
+        $this->app['config']->set('shopify-app.frontend_engine', FrontendEngine::REACT());
 
         $result = Util::useNativeAppBridge();
 
