@@ -241,12 +241,6 @@ class Util
     {
         $currentFrontendEngine = self::getShopifyConfig('frontend_engine') ?? FrontendEngine::BLADE;
 
-        switch ($currentFrontendEngine) {
-            case FrontendEngine::REACT:
-                return false;
-
-            default:
-                return true;
-        }
+        return !$currentFrontendEngine->isSame(FrontendEngine::REACT);
     }
 }
