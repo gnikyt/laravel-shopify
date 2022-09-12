@@ -4,7 +4,6 @@ namespace Osiset\ShopifyApp\Test;
 
 use Illuminate\Support\Facades\Config;
 use LogicException;
-use Osiset\ShopifyApp\Objects\Enums\FrontendEngine;
 use Osiset\ShopifyApp\Util;
 use stdClass;
 
