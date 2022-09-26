@@ -5,6 +5,7 @@ namespace Osiset\ShopifyApp\Actions;
 use Exception;
 use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use Osiset\ShopifyApp\Messaging\Events\AppInstalled;
 use Osiset\ShopifyApp\Objects\Enums\AuthMode;
 use Osiset\ShopifyApp\Objects\Values\AccessToken;
 use Osiset\ShopifyApp\Objects\Values\NullAccessToken;
@@ -87,6 +88,9 @@ class InstallShop
             // Get the data and set the access token
             $data = $apiHelper->getAccessData($code);
             $this->shopCommand->setAccessToken($shop->getId(), AccessToken::fromNative($data['access_token']));
+
+            // Fire the AppInstalled event
+            AppInstalled::dispatch($shop);
 
             return [
                 'completed' => true,
