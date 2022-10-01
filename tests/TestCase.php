@@ -22,6 +22,9 @@ use Osiset\ShopifyApp\Util;
 
 abstract class TestCase extends OrchestraTestCase
 {
+    /**
+     * Fixes the issue with test bench core.
+     * */
     public static $latestResponse = null;
     /**
      * User model.
@@ -35,10 +38,6 @@ abstract class TestCase extends OrchestraTestCase
      * @var array
      */
     protected $tokenDefaults;
-
-    /*
-     * Fixes the issue with test bench core.
-     * */
     /**
      * Carbon time.
      *
