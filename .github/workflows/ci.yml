@@ -13,7 +13,7 @@ jobs:
           - '8.1'
         analysis: [ true ]
         coverage: [ 'xdebug' ]
-        normalize: [ true ]
+        normalize: [ false ]
         validate: [ true ]
         laravel:
           - '8.83'
