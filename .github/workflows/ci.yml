@@ -10,38 +10,14 @@ jobs:
       max-parallel: 3
       matrix:
         php:
-          - '7.2'
-          - '7.3'
-          - '7.4'
-          - '8.0'
-        analysis: [ false ]
-        coverage: [ 'none' ]
-        normalize: [ false ]
-        validate: [ false ]
+          - '8.1'
+        analysis: [ true ]
+        coverage: [ 'xdebug' ]
+        normalize: [ true ]
+        validate: [ true ]
         laravel:
-          - '7.0'
-          - '8.22'
+          - '8.83'
           - '9.0'
-        exclude:
-          - php: '7.2'
-            laravel: '8.22'
-          - php: '7.2'
-            laravel: '9.0'
-          - php: '7.3'
-            laravel: '9.0'
-          - php: '7.4'
-            laravel: '9.0'
-          - php: '8.0'
-            laravel: '7.0'
-          - php: '8.0'
-            laravel: '9.0'
-        include:
-          - php: '8.0'
-            laravel: '9.0'
-            analysis: true
-            coverage: 'xdebug'
-            normalize: true
-            validate: true
 
     name: PHP ${{ matrix.php }} / Laravel ${{ matrix.laravel }}
 
