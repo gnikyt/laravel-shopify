@@ -10,6 +10,7 @@ jobs:
       max-parallel: 3
       matrix:
         php:
+          - '8.0'
           - '8.1'
         analysis: [ true ]
         coverage: [ 'xdebug' ]
