@@ -16,6 +16,7 @@ use Osiset\ShopifyApp\Http\Requests\StoreUsageCharge;
 use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
 use Osiset\ShopifyApp\Objects\Values\ChargeReference;
 use Osiset\ShopifyApp\Objects\Values\NullablePlanId;
+use Osiset\ShopifyApp\Objects\Values\NullableShopDomain;
 use Osiset\ShopifyApp\Objects\Values\PlanId;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Storage\Queries\Shop as ShopQuery;
@@ -41,7 +42,8 @@ trait BillingController
         ShopQuery  $shopQuery,
         GetPlanUrl $getPlanUrl,
         ?int       $plan = null
-    ): ViewView {
+    ): ViewView
+    {
         // Get the shop
         $shop = $shopQuery->getByDomain(ShopDomain::fromNative($request->get('shop')));
 
@@ -73,7 +75,8 @@ trait BillingController
         Request      $request,
         ShopQuery    $shopQuery,
         ActivatePlan $activatePlan
-    ): RedirectResponse {
+    ): RedirectResponse
+    {
         // Get the shop
         $shop = $shopQuery->getByDomain(ShopDomain::fromNative($request->query('shop')));
         if (!$request->has('charge_id')) {
@@ -85,7 +88,7 @@ trait BillingController
         $result = $activatePlan(
             $shop->getId(),
             PlanId::fromNative($plan),
-            ChargeReference::fromNative((int) $request->query('charge_id'))
+            ChargeReference::fromNative((int)$request->query('charge_id'))
         );
 
         // Go to homepage of app
@@ -104,20 +107,23 @@ trait BillingController
      * @param ActivateUsageCharge $activateUsageCharge The action for activating a usage charge.
      * @param ShopQuery $shopQuery The shop querier.
      *
+     * @return RedirectResponse
      * @throws MissingShopDomainException|ChargeNotRecurringException
      *
-     * @return RedirectResponse
      */
     public function usageCharge(
         StoreUsageCharge    $request,
         ActivateUsageCharge $activateUsageCharge,
         ShopQuery           $shopQuery
-    ): RedirectResponse {
+    ): RedirectResponse
+    {
+
+        $shopDomain = NullableShopDomain::fromNative($request->get('shop'));
         // Get the shop from the shop param after it has been validated.
-        if (!$request->get('shop')) {
+        if ($shopDomain->isNull()) {
             throw new MissingShopDomainException('Shop parameter is missing from request');
         }
-        $shop = $shopQuery->getByDomain(ShopDomain::fromNative($request->get('shop')));
+        $shop = $shopQuery->getByDomain($shopDomain);
 
         // Valid the request params.
         $validated = $request->validated();
