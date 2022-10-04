@@ -10,10 +10,13 @@ use Illuminate\Support\Facades\View;
 use Osiset\ShopifyApp\Actions\ActivatePlan;
 use Osiset\ShopifyApp\Actions\ActivateUsageCharge;
 use Osiset\ShopifyApp\Actions\GetPlanUrl;
+use Osiset\ShopifyApp\Exceptions\ChargeNotRecurringException;
+use Osiset\ShopifyApp\Exceptions\MissingShopDomainException;
 use Osiset\ShopifyApp\Http\Requests\StoreUsageCharge;
 use Osiset\ShopifyApp\Objects\Transfers\UsageChargeDetails as UsageChargeDetailsTransfer;
 use Osiset\ShopifyApp\Objects\Values\ChargeReference;
 use Osiset\ShopifyApp\Objects\Values\NullablePlanId;
+use Osiset\ShopifyApp\Objects\Values\NullableShopDomain;
 use Osiset\ShopifyApp\Objects\Values\PlanId;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Storage\Queries\Shop as ShopQuery;
@@ -100,11 +103,25 @@ trait BillingController
      *
      * @param StoreUsageCharge $request The verified request.
      * @param ActivateUsageCharge $activateUsageCharge The action for activating a usage charge.
+     * @param ShopQuery $shopQuery The shop querier.
+     *
+     * @throws MissingShopDomainException|ChargeNotRecurringException
      *
      * @return RedirectResponse
      */
-    public function usageCharge(StoreUsageCharge $request, ActivateUsageCharge $activateUsageCharge): RedirectResponse
-    {
+    public function usageCharge(
+        StoreUsageCharge    $request,
+        ActivateUsageCharge $activateUsageCharge,
+        ShopQuery           $shopQuery
+    ): RedirectResponse {
+        $shopDomain = NullableShopDomain::fromNative($request->get('shop'));
+        // Get the shop from the shop param after it has been validated.
+        if ($shopDomain->isNull()) {
+            throw new MissingShopDomainException('Shop parameter is missing from request');
+        }
+        $shop = $shopQuery->getByDomain($shopDomain);
+
+        // Valid the request params.
         $validated = $request->validated();
 
         // Create the transfer object
@@ -113,7 +130,7 @@ trait BillingController
         $ucd->description = $validated['description'];
 
         // Activate and save the usage charge
-        $activateUsageCharge($request->user()->getId(), $ucd);
+        $activateUsageCharge($shop->getId(), $ucd);
 
         // All done, return with success
         return isset($validated['redirect'])
