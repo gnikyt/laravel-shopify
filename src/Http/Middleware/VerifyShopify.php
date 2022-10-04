@@ -101,7 +101,16 @@ class VerifyShopify
             return $next($request);
         }
 
+        if (!Util::useNativeAppBridge()) {
+            $storeResult = !$this->isApiRequest($request) && $this->checkPreviousInstallation($request);
+
+            if ($storeResult) {
+                return $next($request);
+            }
+        }
+
         $tokenSource = $this->getAccessTokenFromRequest($request);
+
         if ($tokenSource === null) {
             //Check if there is a store record in the database
             return $this->checkPreviousInstallation($request)
