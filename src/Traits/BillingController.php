@@ -92,6 +92,7 @@ trait BillingController
         // Go to homepage of app
         return Redirect::route(Util::getShopifyConfig('route_names.home'), [
             'shop' => $shop->getDomain()->toNative(),
+            'billing' => $result ? 'success' : 'failure'
         ])->with(
             $result ? 'success' : 'failure',
             'billing'
