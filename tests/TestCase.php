@@ -23,19 +23,21 @@ use Osiset\ShopifyApp\Util;
 abstract class TestCase extends OrchestraTestCase
 {
     /**
+     * Fixes the issue with test bench core.
+     * */
+    public static $latestResponse = null;
+    /**
      * User model.
      *
      * @var ShopModel
      */
     protected $model;
-
     /**
      * Token creation defaults.
      *
      * @var array
      */
     protected $tokenDefaults;
-
     /**
      * Carbon time.
      *
@@ -76,6 +78,15 @@ abstract class TestCase extends OrchestraTestCase
         ];
     }
 
+    protected function setupDatabase($app): void
+    {
+        // Run Laravel migrations
+        $this->loadLaravelMigrations();
+
+        // Run package migration
+        $this->artisan('migrate')->run();
+    }
+
     protected function getPackageProviders($app): array
     {
         // ConsoleServiceProvider required to make migrations work
@@ -102,15 +113,6 @@ abstract class TestCase extends OrchestraTestCase
         ]);
         $app['config']->set('auth.providers.users.model', UserStub::class);
         $app['config']->set('logging.deprecations', 'errorlog');
-    }
-
-    protected function setupDatabase($app): void
-    {
-        // Run Laravel migrations
-        $this->loadLaravelMigrations();
-
-        // Run package migration
-        $this->artisan('migrate')->run();
     }
 
     protected function swapEnvironment(string $env, Closure $fn): void
