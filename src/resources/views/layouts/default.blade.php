@@ -32,7 +32,6 @@
                 var app = createApp({
                     apiKey: "{{ \Osiset\ShopifyApp\Util::getShopifyConfig('api_key', $shopDomain ?? Auth::user()->name ) }}",
                     host: new URLSearchParams(location.search).get("host"),
-                    forceRedirect: true,
                 });
             </script>
 

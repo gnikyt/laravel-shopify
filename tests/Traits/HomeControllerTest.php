@@ -26,7 +26,6 @@ class HomeControllerTest extends TestCase
 
         $this->call('get', '/', ['token' => $this->buildToken()])
             ->assertOk()
-            ->assertSee('apiKey: "'.Util::getShopifyConfig('api_key').'"', false)
-            ->assertSee("shopOrigin: \"{$shop->name}\"", false);
+            ->assertSee('apiKey: "'.Util::getShopifyConfig('api_key').'"', false);
     }
 }
