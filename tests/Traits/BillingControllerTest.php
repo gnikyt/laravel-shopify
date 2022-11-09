@@ -78,8 +78,11 @@ class BillingControllerTest extends TestCase
         // Refresh the model
         $shop->refresh();
 
+        $hostValue = urlencode(base64_encode($shop->getDomain()->toNative().'/admin'));
         // Assert we've redirected and shop has been updated
         $response->assertRedirect();
+        $response->assertRedirectContains('&host='.$hostValue);
+        $response->assertRedirectContains('&billing=success');
         $this->assertNotNull($shop->plan);
     }
 

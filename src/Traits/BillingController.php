@@ -94,6 +94,7 @@ trait BillingController
         return Redirect::route(Util::getShopifyConfig('route_names.home'), [
             'shop' => $shop->getDomain()->toNative(),
             'host' => base64_encode($shop->getDomain()->toNative().'/admin'),
+            'billing' => $result ? 'success' : 'failure',
         ])->with(
             $result ? 'success' : 'failure',
             'billing'
