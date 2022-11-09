@@ -152,7 +152,8 @@ class BillingControllerTest extends TestCase
             ['shop' => $shop->name]
         );
         //Confirm we get sent back to the homepage of the app
-        $response->assertRedirect('https://example-app.com?shop='.$shop->name);
+        $hostValue = urlencode(base64_encode($shop->getDomain()->toNative().'/admin'));
+        $response->assertRedirect('https://example-app.com?shop='.$shop->name.'&host='.$hostValue);
     }
 
     public function testUsageChargeSuccessWithShopParam(): void
