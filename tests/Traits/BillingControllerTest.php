@@ -3,6 +3,7 @@
 namespace Osiset\ShopifyApp\Test\Traits;
 
 use Illuminate\Auth\AuthManager;
+use Illuminate\Support\Str;
 use Osiset\ShopifyApp\Exceptions\MissingShopDomainException;
 use Osiset\ShopifyApp\Storage\Models\Charge;
 use Osiset\ShopifyApp\Storage\Models\Plan;
@@ -78,8 +79,11 @@ class BillingControllerTest extends TestCase
         // Refresh the model
         $shop->refresh();
 
+        $hostValue = urlencode(base64_encode($shop->getDomain()->toNative().'/admin'));
         // Assert we've redirected and shop has been updated
         $response->assertRedirect();
+        $this->assertTrue(Str::contains($response->headers->get('Location'), '&host='.$hostValue));
+        $this->assertTrue(Str::contains($response->headers->get('Location'), '&billing=success'));
         $this->assertNotNull($shop->plan);
     }
 
@@ -148,7 +152,8 @@ class BillingControllerTest extends TestCase
             ['shop' => $shop->name]
         );
         //Confirm we get sent back to the homepage of the app
-        $response->assertRedirect('https://example-app.com?shop='.$shop->name);
+        $hostValue = urlencode(base64_encode($shop->getDomain()->toNative().'/admin'));
+        $response->assertRedirect('https://example-app.com?shop='.$shop->name.'&host='.$hostValue);
     }
 
     public function testUsageChargeSuccessWithShopParam(): void
