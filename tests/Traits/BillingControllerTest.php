@@ -51,13 +51,15 @@ class BillingControllerTest extends TestCase
         );
     }
 
-    public function testShopAcceptsBilling(): void
+    public function testReactFrontendShopAcceptsBilling(): void
     {
         // Stub the responses
         ApiStub::stubResponses([
             'post_recurring_application_charges',
             'post_recurring_application_charges_activate',
         ]);
+
+        config(['shopify-app.frontend_engine' => 'REACT']);
 
         // Create the shop and log them in
         $shop = factory($this->model)->create();
@@ -84,6 +86,44 @@ class BillingControllerTest extends TestCase
         $response->assertRedirect();
         $this->assertTrue(Str::contains($response->headers->get('Location'), '&host='.$hostValue));
         $this->assertTrue(Str::contains($response->headers->get('Location'), '&billing=success'));
+        $this->assertNotNull($shop->plan);
+    }
+
+    public function testBladeFrontendShopAcceptsBilling(): void
+    {
+        // Stub the responses
+        ApiStub::stubResponses([
+            'post_recurring_application_charges',
+            'post_recurring_application_charges_activate',
+        ]);
+
+        config(['shopify-app.frontend_engine' => 'BLADE']);
+
+        // Create the shop and log them in
+        $shop = factory($this->model)->create();
+        $this->auth->login($shop);
+
+        // Make the plan
+        $plan = factory(Util::getShopifyConfig('models.plan', Plan::class))->states('type_recurring')->create();
+
+        // Run the call
+        $response = $this->call(
+            'get',
+            "/billing/process/{$plan->id}",
+            [
+                'charge_id' => 1,
+                'shop' => $shop->getDomain()->toNative(),
+            ]
+        );
+
+        // Refresh the model
+        $shop->refresh();
+
+        $hostValue = urlencode(base64_encode($shop->getDomain()->toNative().'/admin'));
+        // Assert we've redirected and shop has been updated
+        $response->assertRedirect();
+        $this->assertFalse(Str::contains($response->headers->get('Location'), '&host='.$hostValue));
+        $this->assertFalse(Str::contains($response->headers->get('Location'), '&billing=success'));
         $this->assertNotNull($shop->plan);
     }
 
