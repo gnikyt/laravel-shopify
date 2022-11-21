@@ -205,7 +205,7 @@ class VerifyShopify
             throw new HttpException('Shop is not installed or missing data.', Response::HTTP_FORBIDDEN);
         }
 
-        return $this->installRedirect(ShopDomain::fromRequest($request));
+        return $this->installRedirect($request);
     }
 
     /**
@@ -301,6 +301,7 @@ class VerifyShopify
             [
                 'shop' => ShopDomain::fromRequest($request)->toNative(),
                 'target' => $target,
+                'host' => $request->input('host'),
             ]
         );
     }
@@ -312,11 +313,11 @@ class VerifyShopify
      *
      * @return RedirectResponse
      */
-    protected function installRedirect(ShopDomainValue $shopDomain): RedirectResponse
+    protected function installRedirect(Request $request): RedirectResponse
     {
         return Redirect::route(
             Util::getShopifyConfig('route_names.authenticate'),
-            ['shop' => $shopDomain->toNative()]
+            ['shop' =>ShopDomain::fromRequest($request)->toNative(), 'host' => $request->input('host')]
         );
     }
 
