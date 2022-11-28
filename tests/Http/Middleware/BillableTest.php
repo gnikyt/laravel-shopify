@@ -3,6 +3,7 @@
 namespace Osiset\ShopifyApp\Test\Http\Middleware;
 
 use Illuminate\Auth\AuthManager;
+use Illuminate\Support\Facades\Request;
 use Osiset\ShopifyApp\Http\Middleware\Billable as BillableMiddleware;
 use Osiset\ShopifyApp\Storage\Models\Charge;
 use Osiset\ShopifyApp\Storage\Models\Plan;
@@ -25,13 +26,15 @@ class BillableTest extends TestCase
 
     public function testEnabledBillingWithUnpaidShop(): void
     {
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(['shop' => 'mystore123.myshopify.com']);
+
         // Enable billing and set a shop
-        $shop = factory($this->model)->create();
-        $this->auth->login($shop);
         $this->app['config']->set('shopify-app.billing_enabled', true);
+        factory($this->model)->create(['name' => 'mystore123.myshopify.com']);
 
         // Run the middleware
-        $result = $this->runMiddleware(BillableMiddleware::class);
+        $result = $this->runMiddleware(BillableMiddleware::class, $newRequest);
 
         // Assert it was not called and redirect happened
         $this->assertFalse($result[0]);
@@ -40,21 +43,25 @@ class BillableTest extends TestCase
 
     public function testEnabledBillingWithPaidShop(): void
     {
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(['shop' => 'mystore123.myshopify.com']);
+
         // Enable billing and set a shop
+        $this->app['config']->set('shopify-app.billing_enabled', true);
+
         $plan = factory(Util::getShopifyConfig('models.plan', Plan::class))->states('type_recurring')->create();
         $shop = factory($this->model)->create([
+            'name' => 'mystore123.myshopify.com',
             'plan_id' => $plan->getId()->toNative(),
         ]);
+
         factory(Util::getShopifyConfig('models.charge', Charge::class))->states('type_recurring')->create([
             'plan_id' => $plan->getId()->toNative(),
             'user_id' => $shop->getId()->toNative(),
         ]);
 
-        $this->auth->login($shop);
-        $this->app['config']->set('shopify-app.billing_enabled', true);
-
         // Run the middleware
-        $result = $this->runMiddleware(BillableMiddleware::class);
+        $result = $this->runMiddleware(BillableMiddleware::class, $newRequest);
 
         // Assert it was called
         $this->assertTrue($result[0]);
@@ -62,13 +69,19 @@ class BillableTest extends TestCase
 
     public function testEnabledBillingWithGrandfatheredShop(): void
     {
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(['shop' => 'mystore123.myshopify.com']);
+
         // Enable billing and set a shop
-        $shop = factory($this->model)->states('grandfathered')->create();
-        $this->auth->login($shop);
         $this->app['config']->set('shopify-app.billing_enabled', true);
+        factory($this->model)
+            ->states('grandfathered')
+            ->create([
+                'name' => 'mystore123.myshopify.com',
+            ]);
 
         // Run the middleware
-        $result = $this->runMiddleware(BillableMiddleware::class);
+        $result = $this->runMiddleware(BillableMiddleware::class, $newRequest);
 
         // Assert it was called
         $this->assertTrue($result[0]);
@@ -76,13 +89,19 @@ class BillableTest extends TestCase
 
     public function testEnabledBillingWithFreemiumShop(): void
     {
+        $currentRequest = Request::instance();
+        $newRequest = $currentRequest->duplicate(['shop' => 'mystore123.myshopify.com']);
+
         // Enable billing and set a shop
-        $shop = factory($this->model)->states('freemium')->create();
-        $this->auth->login($shop);
         $this->app['config']->set('shopify-app.billing_enabled', true);
+        factory($this->model)
+            ->states('freemium')
+            ->create([
+                'name' => 'mystore123.myshopify.com',
+            ]);
 
         // Run the middleware
-        $result = $this->runMiddleware(BillableMiddleware::class);
+        $result = $this->runMiddleware(BillableMiddleware::class, $newRequest);
 
         // Assert it was called
         $this->assertTrue($result[0]);
@@ -91,9 +110,8 @@ class BillableTest extends TestCase
     public function testDisabledBillingShouldPassOn(): void
     {
         // Ensure billing is disabled and set a shop
-        $shop = factory($this->model)->create();
-        $this->auth->login($shop);
         $this->app['config']->set('shopify-app.billing_enabled', false);
+        factory($this->model)->create();
 
         // Run the middleware
         $result = $this->runMiddleware(BillableMiddleware::class);
