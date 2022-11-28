@@ -4,7 +4,6 @@ namespace Osiset\ShopifyApp\Messaging\Events;
 
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Osiset\ShopifyApp\Contracts\ShopModel as IShopModel;
 use Osiset\ShopifyApp\Objects\Values\ShopId;
 
 /**

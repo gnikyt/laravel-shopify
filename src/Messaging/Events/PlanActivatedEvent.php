@@ -50,5 +50,4 @@ class PlanActivatedEvent
         $this->plan = $plan;
         $this->chargeId = $chargeId;
     }
-
 }

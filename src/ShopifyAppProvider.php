@@ -347,6 +347,5 @@ class ShopifyAppProvider extends ServiceProvider
                 Event::listen($event, $listener);
             }
         }
-
     }
 }
