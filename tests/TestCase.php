@@ -43,6 +43,11 @@ abstract class TestCase extends OrchestraTestCase
      */
     protected $now;
 
+    /*
+     * Fixes the issue with test bench core.
+     * */
+    public static $latestResponse = null;
+
     public function setUp(): void
     {
         parent::setUp();

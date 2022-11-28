@@ -6,6 +6,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use LogicException;
+use Osiset\ShopifyApp\Objects\Enums\FrontendEngine;
 use Osiset\ShopifyApp\Objects\Values\Hmac;
 
 /**
@@ -229,5 +230,20 @@ class Util
     public static function getShopsTableForeignKey(): string
     {
         return Str::singular(self::getShopsTable()).'_id';
+    }
+
+    /**
+     * Checking to see if you need to use the native App Bridge
+     *
+     * @return bool
+     */
+    public static function useNativeAppBridge(): bool
+    {
+        $frontendEngine = FrontendEngine::fromNative(
+            self::getShopifyConfig('frontend_engine') ?? 'BLADE'
+        );
+        $reactEngine = FrontendEngine::fromNative('REACT');
+
+        return !$frontendEngine->isSame($reactEngine);
     }
 }

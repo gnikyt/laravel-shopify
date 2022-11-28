@@ -31,6 +31,15 @@
                 window.jQuery.ajaxSettings.headers = { 'Authorization': bearer };
             }
         }
+		
+		if (window.Livewire) {
+            // livewire
+            window.livewire.addHeaders({
+                'Authorization': bearer,
+                'content-type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            });
+        }
 
         if (window.axios) {
             // Axios

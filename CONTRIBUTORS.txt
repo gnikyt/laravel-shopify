@@ -1,12 +1,20 @@
-# [...document.getElementsByClassName('contrib-person')].map(n => n.getElementsByClassName('avatar')[0].alt).sort().join('\n');
-Enmaboya
+# Contributors to Laravel Shopify package.
+# One contibutor per line, containing their Github handle.
+# Data taken from https://github.com/osiset/laravel-shopify/graphs/contributors
+# Using `[...document.getElementsByClassName('contrib-person')].map(n => n.getElementsByClassName('avatar')[0].alt).sort().join('\n');`
+
+EClaraLeigh
 ImgBotApp
+ItsGageH
 Jamesking56
+Kyon147
+LonnyX
 aaronlp
 aepnat
 amosmos
 andrewscofield
 andthink
+ansezz
 awebartisan
 azhar25git
 baorv
@@ -14,11 +22,13 @@ bilfeldt
 bravemaster619
 c4l3b
 clydesantiago
+dancrodev
 darrynten
 dellow
 dhritimannath
+enmaboya
 ericnkatz
-florinsith
+grumpyoldflo
 honzah1
 ilamp
 jedimdan
@@ -28,13 +38,21 @@ mat-dropshipspy
 mehulvadodariya2012
 msonowal
 mtownsend5512
+nahid
 ncpope
 niveshsaharan
 oanhnn
+olavoasantos
 onurkose
 osiset
 parkourben99
 savchukoleksii
 seka19
 squatto
+steveperrycreative
+stevesweets
+thang12l
+therealdb
 tuimz
+usmanpakistan
+vkislichenko
