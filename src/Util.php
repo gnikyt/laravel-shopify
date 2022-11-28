@@ -246,4 +246,11 @@ class Util
 
         return !$frontendEngine->isSame($reactEngine);
     }
+
+    public static function hasAppLegacySupport(string $feature): bool
+    {
+        $legacySupports = self::getShopifyConfig('app_legacy_supports') ?? [];
+
+        return (bool) Arr::get($legacySupports, $feature, true);
+    }
 }

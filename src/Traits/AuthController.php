@@ -11,6 +11,7 @@ use Osiset\ShopifyApp\Actions\AuthenticateShop;
 use Osiset\ShopifyApp\Exceptions\MissingAuthUrlException;
 use Osiset\ShopifyApp\Exceptions\MissingShopDomainException;
 use Osiset\ShopifyApp\Exceptions\SignatureVerificationException;
+use Osiset\ShopifyApp\Messaging\Events\ShopAuthenticatedEvent;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Util;
 
@@ -56,6 +57,8 @@ trait AuthController
 
             $shopDomain = $shopDomain->toNative();
             $shopOrigin = $shopDomain ?? $request->user()->name;
+
+            event(new ShopAuthenticatedEvent($result['shop_id']));
 
             return View::make(
                 'shopify-app::auth.fullpage_redirect',

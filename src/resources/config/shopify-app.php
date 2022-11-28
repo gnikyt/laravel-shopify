@@ -326,6 +326,42 @@ return [
 
     'billing_redirect' => env('SHOPIFY_BILLING_REDIRECT', '/billing/process'),
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Enable legacy support for features
+    |--------------------------------------------------------------------------
+    |
+    */
+    'app_legacy_supports' => [
+        'after_authenticate_job' => true,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Register listeners to the events
+    |--------------------------------------------------------------------------
+    |
+    */
+
+    'listen' => [
+        \Osiset\ShopifyApp\Messaging\Events\AppInstalledEvent::class => [
+            // \App\Listeners\MyListener::class,
+        ],
+        \Osiset\ShopifyApp\Messaging\Events\ShopAuthenticatedEvent::class => [
+            // \App\Listeners\MyListener::class,
+        ],
+        \Osiset\ShopifyApp\Messaging\Events\ShopDeletedEvent::class => [
+            // \App\Listeners\MyListener::class,
+        ],
+        \Osiset\ShopifyApp\Messaging\Events\AppUninstalledEvent::class => [
+            // \App\Listeners\MyListener::class,
+        ],
+        \Osiset\ShopifyApp\Messaging\Events\PlanActivatedEvent::class => [
+            // \App\Listeners\MyListener::class,
+        ],
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Shopify Webhooks
@@ -382,8 +418,13 @@ return [
     | This, like webhooks and scripttag jobs, will fire every time a shop
     | authenticates, not just once.
     |
+    |
     */
 
+    /**
+     * @deprecated This will be removed in the next major version.
+     * @see
+     */
     'after_authenticate_job' => [
         /*
             [
