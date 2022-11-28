@@ -19,7 +19,7 @@ class ShopAuthenticatedEvent
      *
      * @var ShopId
      */
-    public ShopId $shopId;
+    public $shopId;
 
     /**
      * Create a new event instance.

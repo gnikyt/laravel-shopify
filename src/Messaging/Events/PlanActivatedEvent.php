@@ -21,21 +21,21 @@ class PlanActivatedEvent
      *
      * @var IShopModel
      */
-    public IShopModel $shop;
+    public $shop;
 
     /**
      * Plan's instance.
      *
      * @var Model
      */
-    public Model $plan;
+    public $plan;
 
     /**
      * Charge ID
      *
      * @var ChargeId
      */
-    public ChargeId $chargeId;
+    public $chargeId;
 
     /**
      * Create a new event instance.

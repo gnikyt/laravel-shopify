@@ -19,7 +19,7 @@ class AppUninstalledEvent
      *
      * @var IShopModel
      */
-    public IShopModel $shop;
+    public $shop;
 
     /**
      * Create a new event instance.
