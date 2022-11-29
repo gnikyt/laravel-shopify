@@ -250,7 +250,7 @@ class ChargeHelper
      *
      * @return PlanDetailsTransfer
      */
-    public function details(Plan $plan, IShopModel $shop): PlanDetailsTransfer
+    public function details(Plan $plan, IShopModel $shop, string $host): PlanDetailsTransfer
     {
         // Handle capped amounts for UsageCharge API
         $isCapped = isset($plan->capped_amount) && $plan->capped_amount > 0;
@@ -267,7 +267,7 @@ class ChargeHelper
         $transfer->returnUrl = URL::secure(
             Util::getShopifyConfig('billing_redirect'),
             ['plan' => $plan->getId()->toNative()]
-        ).'?'.http_build_query(['shop' => $shop->getDomain()->toNative()]);
+        ).'?'.http_build_query(['shop' => $shop->getDomain()->toNative(), 'host'=>$host]);
 
         return $transfer;
     }

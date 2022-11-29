@@ -102,7 +102,7 @@ class ActivatePlan
      *
      * @return ChargeId
      */
-    public function __invoke(ShopId $shopId, PlanId $planId, ChargeReference $chargeRef): ChargeId
+    public function __invoke(ShopId $shopId, PlanId $planId, ChargeReference $chargeRef, string $host): ChargeId
     {
         // Get the shop
         $shop = $this->shopQuery->getById($shopId);
@@ -136,7 +136,7 @@ class ActivatePlan
             $transfer->billingOn = null;
             $transfer->trialEndsOn = null;
         }
-        $transfer->planDetails = $this->chargeHelper->details($plan, $shop);
+        $transfer->planDetails = $this->chargeHelper->details($plan, $shop, $host);
 
         // Create the charge
         $charge = $this->chargeCommand->make($transfer);

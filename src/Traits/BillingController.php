@@ -49,7 +49,8 @@ trait BillingController
         // Get the plan URL for redirect
         $url = $getPlanUrl(
             $shop->getId(),
-            NullablePlanId::fromNative($plan)
+            NullablePlanId::fromNative($plan),
+            $request->input('host'),
         );
 
         // Do a fullpage redirect
@@ -80,18 +81,21 @@ trait BillingController
         if (!$request->has('charge_id')) {
             return Redirect::route(Util::getShopifyConfig('route_names.home'), [
                 'shop' => $shop->getDomain()->toNative(),
+                'host' => $request->input('host'),
             ]);
         }
         // Activate the plan and save
         $result = $activatePlan(
             $shop->getId(),
             PlanId::fromNative($plan),
-            ChargeReference::fromNative((int) $request->query('charge_id'))
+            ChargeReference::fromNative((int) $request->query('charge_id')),
+            $request->input('host')
         );
 
         // Go to homepage of app
         return Redirect::route(Util::getShopifyConfig('route_names.home'), [
             'shop' => $shop->getDomain()->toNative(),
+            'host'=>$request->input('host')
         ])->with(
             $result ? 'success' : 'failure',
             'billing'
