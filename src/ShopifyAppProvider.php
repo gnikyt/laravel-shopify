@@ -68,6 +68,10 @@ class ShopifyAppProvider extends ServiceProvider
         $this->bootMiddlewares();
         $this->bootMacros();
         $this->bootDirectives();
+
+        if (version_compare($this->app->version(), '8.0.0', '<')) {
+            $this->registerEvents();
+        }
     }
 
     /**
@@ -84,9 +88,12 @@ class ShopifyAppProvider extends ServiceProvider
             WebhookJobMakeCommand::class,
         ]);
 
-        $this->booting(function () {
-            $this->registerEvents();
-        });
+        if (version_compare($this->app->version(), '8.0.0', '>=')) {
+            $this->booting(function () {
+                $this->registerEvents();
+            });
+        }
+
 
         // Services (start)
         $this->app->bind(IApiHelper::class, function () {
