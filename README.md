@@ -10,6 +10,8 @@
 
 **Please read [this announcement](https://github.com/osiset/laravel-shopify/discussions/1276).**
 
+@kyon147 is going to maintain a version which you can find here https://github.com/Kyon147/laravel-shopify 
+
 ----
 
 A full-featured Laravel package for aiding in Shopify App development, similar to `shopify_app` for Rails. Works for Laravel 7 and up.
