@@ -28,6 +28,7 @@ trait WebhookController
 
         $jobClass::dispatch(
             $request->header('x-shopify-shop-domain'),
+            $request->header('x-shopify-webhook-id'),
             $jobData
         )->onQueue(Util::getShopifyConfig('job_queues')['webhooks']);
 

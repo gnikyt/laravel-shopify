@@ -9,7 +9,9 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Osiset\ShopifyApp\Actions\CancelCurrentPlan;
 use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
+use Osiset\ShopifyApp\Contracts\Objects\Values\WebhookId;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use Osiset\ShopifyApp\Contracts\WebhookJob;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Util;
 use stdClass;
@@ -17,7 +19,7 @@ use stdClass;
 /**
  * Webhook job responsible for handling when the app is uninstalled.
  */
-class AppUninstalledJob implements ShouldQueue
+class AppUninstalledJob implements WebhookJob
 {
     use Dispatchable;
     use InteractsWithQueue;
@@ -30,26 +32,33 @@ class AppUninstalledJob implements ShouldQueue
      * @var ShopDomain|string
      */
     protected $domain;
-
     /**
      * The webhook data.
      *
      * @var object
      */
     protected $data;
+    /**
+     * The webhook id
+     *
+     * @var WebhookId|string
+     */
+    protected $webhookId;
 
     /**
      * Create a new job instance.
      *
-     * @param string   $domain The shop domain.
-     * @param stdClass $data   The webhook data (JSON decoded).
+     * @param ShopDomain|string $shopId    The shop Domain.
+     * @param WebhookId|string  $webhookId The webhooks ID.
+     * @param stdClass          $data      The webhook data (JSON decoded).
      *
      * @return void
      */
-    public function __construct(string $domain, stdClass $data)
+    public function __construct(string $domain, string $webhookId, stdClass $data)
     {
         $this->domain = $domain;
         $this->data = $data;
+        $this->webhookId = $webhookId;
     }
 
     /**
@@ -62,8 +71,8 @@ class AppUninstalledJob implements ShouldQueue
      * @return bool
      */
     public function handle(
-        IShopCommand $shopCommand,
-        IShopQuery $shopQuery,
+        IShopCommand      $shopCommand,
+        IShopQuery        $shopQuery,
         CancelCurrentPlan $cancelCurrentPlanAction
     ): bool {
         // Convert the domain
