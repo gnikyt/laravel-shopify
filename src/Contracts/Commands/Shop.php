@@ -6,6 +6,7 @@ use Osiset\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
 use Osiset\ShopifyApp\Contracts\Objects\Values\PlanId as PlanIdValue;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopId as ShopIdValue;
+use Osiset\ShopifyApp\Contracts\Objects\Values\ThemeSupportLevel as ThemeSupportLevelValue;
 
 /**
  * Represents commands for shops.
@@ -41,6 +42,16 @@ interface Shop
      * @return bool
      */
     public function setAccessToken(ShopIdValue $shopId, AccessTokenValue $token): bool;
+
+    /**
+     * Sets the Online Store 2.0 support level
+     *
+     * @param ShopIdValue       $shopId The shop's ID.
+     * @param ThemeSupportLevel $themeSupportLevel  Support level
+     *
+     * @return bool
+     */
+    public function setThemeSupportLevel(ShopIdValue $shopId, ThemeSupportLevelValue $themeSupportLevel): bool;
 
     /**
      * Cleans the shop's properties (token, plan).

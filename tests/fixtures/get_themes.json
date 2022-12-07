@@ -1,0 +1,37 @@
+{
+  "themes": [
+    {
+      "id": 828155753,
+      "name": "Comfort",
+      "created_at": "2022-07-02T01:51:59-04:00",
+      "updated_at": "2022-07-02T01:51:59-04:00",
+      "role": "main",
+      "theme_store_id": null,
+      "previewable": true,
+      "processing": false,
+      "admin_graphql_api_id": "gid://shopify/Theme/828155753"
+    },
+    {
+      "id": 976877075,
+      "name": "Preview of Parallax",
+      "created_at": "2022-07-02T01:51:59-04:00",
+      "updated_at": "2022-07-02T01:51:59-04:00",
+      "role": "demo",
+      "theme_store_id": 688,
+      "previewable": true,
+      "processing": false,
+      "admin_graphql_api_id": "gid://shopify/Theme/976877075"
+    },
+    {
+      "id": 752253240,
+      "name": "Sandbox",
+      "created_at": "2022-07-02T01:51:59-04:00",
+      "updated_at": "2022-07-02T01:51:59-04:00",
+      "role": "unpublished",
+      "theme_store_id": null,
+      "previewable": true,
+      "processing": false,
+      "admin_graphql_api_id": "gid://shopify/Theme/752253240"
+    }
+  ]
+}

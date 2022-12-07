@@ -197,7 +197,7 @@ return [
     |
     */
 
-    'api_scopes' => env('SHOPIFY_API_SCOPES', 'read_products,write_products'),
+    'api_scopes' => env('SHOPIFY_API_SCOPES', 'read_products,write_products,read_themes'),
 
     /*
     |--------------------------------------------------------------------------
@@ -476,6 +476,48 @@ return [
          */
         'shops' => 'users',
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Checking theme compatibility
+    |--------------------------------------------------------------------------
+    |
+    | It is necessary to check if your application is compatible with
+    | the theme app blocks.
+    |
+    */
+
+    'theme_support' => [
+        /**
+         * Specify the name of the template the app will integrate with
+         */
+        'templates' => ['product', 'collection', 'index'],
+        /**
+         * Interval for caching the request: minutes, seconds, hours, days, etc.
+         */
+        'cache_interval' => 'hours',
+        /**
+         * Cache duration
+         */
+        'cache_duration' => '12',
+         /**
+         * At which levels of theme support the use of "theme app extension" is not available
+         * and script tags will be installed.
+         * Available levels: FULL, PARTIAL, UNSUPPORTED.
+         */
+        'unacceptable_levels' => [
+            Osiset\ShopifyApp\Objects\Enums\ThemeSupportLevel::UNSUPPORTED
+        ]
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Session token refresh
+    |--------------------------------------------------------------------------
+    |
+    | For AppBridge, how often to refresh the session token for the user.
+    |
+    */
 
     'session_token_refresh_interval' => env('SESSION_TOKEN_REFRESH_INTERVAL', 2000),
 

@@ -9,6 +9,7 @@ use Osiset\ShopifyApp\Objects\Enums\AuthMode;
 use Osiset\ShopifyApp\Objects\Values\AccessToken;
 use Osiset\ShopifyApp\Objects\Values\NullAccessToken;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
+use Osiset\ShopifyApp\Objects\Values\ThemeSupportLevel;
 use Osiset\ShopifyApp\Util;
 
 /**
@@ -31,18 +32,28 @@ class InstallShop
     protected $shopCommand;
 
     /**
+     * The action for verify theme support
+     *
+     * @var VerifyThemeSupport
+     */
+    protected $verifyThemeSupport;
+
+    /**
      * Setup.
      *
      * @param IShopQuery  $shopQuery   The querier for the shop.
+     * @param VerifyThemeSupport    $verifyThemeSupport     The action for verify theme support
      *
      * @return void
      */
     public function __construct(
         IShopQuery $shopQuery,
-        IShopCommand $shopCommand
+        IShopCommand $shopCommand,
+        VerifyThemeSupport $verifyThemeSupport
     ) {
         $this->shopQuery = $shopQuery;
         $this->shopCommand = $shopCommand;
+        $this->verifyThemeSupport = $verifyThemeSupport;
     }
 
     /**
@@ -57,6 +68,7 @@ class InstallShop
     {
         // Get the shop
         $shop = $this->shopQuery->getByDomain($shopDomain, [], true);
+
         if ($shop === null) {
             // Shop does not exist, make them and re-get
             $this->shopCommand->make($shopDomain, NullAccessToken::fromNative(null));
@@ -88,10 +100,14 @@ class InstallShop
             $data = $apiHelper->getAccessData($code);
             $this->shopCommand->setAccessToken($shop->getId(), AccessToken::fromNative($data['access_token']));
 
+            $themeSupportLevel = call_user_func($this->verifyThemeSupport, $shop->getId());
+            $this->shopCommand->setThemeSupportLevel($shop->getId(), ThemeSupportLevel::fromNative($themeSupportLevel));
+
             return [
                 'completed' => true,
                 'url' => null,
                 'shop_id' => $shop->getId(),
+                'theme_support_level' => $themeSupportLevel,
             ];
         } catch (Exception $e) {
             // Just return the default setting
@@ -99,6 +115,7 @@ class InstallShop
                 'completed' => false,
                 'url' => null,
                 'shop_id' => null,
+                'theme_support_level' => null,
             ];
         }
     }
