@@ -59,7 +59,7 @@ class IframeProtection
             ? $shop->name
             : '*.myshopify.com';
 
-        $iframeAncestors = "frame-ancestors admin.shopify.com $domain";
+        $iframeAncestors = "frame-ancestors https://admin.shopify.com https://$domain";
 
         if (!blank($ancestors)) {
             $iframeAncestors .= ' ' . $ancestors;
