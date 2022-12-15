@@ -102,9 +102,11 @@ class VerifyShopify
         }
 
         if (!Util::useNativeAppBridge()) {
-            $storeResult = !$this->isApiRequest($request) && $this->checkPreviousInstallation($request);
+            $shop = $this->getShopIfAlreadyInstalled($request);
+            $storeResult = !$this->isApiRequest($request) && $shop;
 
             if ($storeResult) {
+                $this->loginFromShop($shop);
                 return $next($request);
             }
         }
@@ -510,5 +512,36 @@ class VerifyShopify
         $shop = $this->shopQuery->getByDomain(ShopDomain::fromRequest($request), [], true);
 
         return $shop && $shop->password && ! $shop->trashed();
+    }
+
+    /**
+     * Get shop model if there is a store record in the database.
+     *
+     * @param Request $request The request object.
+     *
+     * @return ?ShopModel
+     */
+    protected function getShopIfAlreadyInstalled(Request $request): ?ShopModel
+    {
+        $shop = $this->shopQuery->getByDomain(ShopDomain::fromRequest($request), [], true);
+
+        return $shop && $shop->password && ! $shop->trashed() ? $shop : null;
+    }
+
+    /**
+     * Login and validate store
+     *
+     * @param ShopModel $shop
+     * @return void
+     */
+    protected function loginFromShop(ShopModel $shop): void
+    {
+        // Override auth guard
+        if (($guard = Util::getShopifyConfig('shop_auth_guard'))) {
+            $this->auth->setDefaultDriver($guard);
+        }
+
+        // All is well, login the shop
+        $this->auth->login($shop);
     }
 }
