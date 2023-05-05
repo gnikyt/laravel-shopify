@@ -3,6 +3,8 @@
 namespace Osiset\ShopifyApp\Test\Traits;
 
 use Illuminate\Auth\AuthManager;
+use Illuminate\Support\Str;
+use Osiset\ShopifyApp\Exceptions\MissingShopDomainException;
 use Osiset\ShopifyApp\Storage\Models\Charge;
 use Osiset\ShopifyApp\Storage\Models\Plan;
 use Osiset\ShopifyApp\Test\Stubs\Api as ApiStub;
@@ -49,13 +51,15 @@ class BillingControllerTest extends TestCase
         );
     }
 
-    public function testShopAcceptsBilling(): void
+    public function testReactFrontendShopAcceptsBilling(): void
     {
         // Stub the responses
         ApiStub::stubResponses([
             'post_recurring_application_charges',
             'post_recurring_application_charges_activate',
         ]);
+
+        config(['shopify-app.frontend_engine' => 'REACT']);
 
         // Create the shop and log them in
         $shop = factory($this->model)->create();
@@ -77,8 +81,49 @@ class BillingControllerTest extends TestCase
         // Refresh the model
         $shop->refresh();
 
+        $hostValue = urlencode(base64_encode($shop->getDomain()->toNative().'/admin'));
         // Assert we've redirected and shop has been updated
         $response->assertRedirect();
+        $this->assertTrue(Str::contains($response->headers->get('Location'), '&host='.$hostValue));
+        $this->assertTrue(Str::contains($response->headers->get('Location'), '&billing=success'));
+        $this->assertNotNull($shop->plan);
+    }
+
+    public function testBladeFrontendShopAcceptsBilling(): void
+    {
+        // Stub the responses
+        ApiStub::stubResponses([
+            'post_recurring_application_charges',
+            'post_recurring_application_charges_activate',
+        ]);
+
+        config(['shopify-app.frontend_engine' => 'BLADE']);
+
+        // Create the shop and log them in
+        $shop = factory($this->model)->create();
+        $this->auth->login($shop);
+
+        // Make the plan
+        $plan = factory(Util::getShopifyConfig('models.plan', Plan::class))->states('type_recurring')->create();
+
+        // Run the call
+        $response = $this->call(
+            'get',
+            "/billing/process/{$plan->id}",
+            [
+                'charge_id' => 1,
+                'shop' => $shop->getDomain()->toNative(),
+            ]
+        );
+
+        // Refresh the model
+        $shop->refresh();
+
+        $hostValue = urlencode(base64_encode($shop->getDomain()->toNative().'/admin'));
+        // Assert we've redirected and shop has been updated
+        $response->assertRedirect();
+        $this->assertFalse(Str::contains($response->headers->get('Location'), '&host='.$hostValue));
+        $this->assertFalse(Str::contains($response->headers->get('Location'), '&billing=success'));
         $this->assertNotNull($shop->plan);
     }
 
@@ -112,7 +157,7 @@ class BillingControllerTest extends TestCase
         $response = $this->call(
             'post',
             '/billing/usage-charge',
-            array_merge($data, ['signature' => $signature->toNative()])
+            array_merge($data, ['signature' => $signature->toNative(), 'shop' => $shop->name])
         );
         $response->assertRedirect($data['redirect']);
         $response->assertSessionHas('success');
@@ -125,13 +170,13 @@ class BillingControllerTest extends TestCase
         $response = $this->call(
             'post',
             '/billing/usage-charge',
-            array_merge($data, ['signature' => $signature->toNative()])
+            array_merge($data, ['signature' => $signature->toNative(), 'shop' => $shop->name])
         );
         $response->assertRedirect('http://localhost');
         $response->assertSessionHas('success');
     }
 
-    public function testReturnToSettingScreenNoPlan()
+    public function testReturnToSettingScreenNoPlan(): void
     {
         // Set up a shop
         $shop = factory($this->model)->create([
@@ -147,6 +192,85 @@ class BillingControllerTest extends TestCase
             ['shop' => $shop->name]
         );
         //Confirm we get sent back to the homepage of the app
-        $response->assertRedirect('https://example-app.com?shop='.$shop->name);
+        $hostValue = urlencode(base64_encode($shop->getDomain()->toNative().'/admin'));
+        $response->assertRedirect('https://example-app.com?shop='.$shop->name.'&host='.$hostValue);
+    }
+
+    public function testUsageChargeSuccessWithShopParam(): void
+    {
+        // Stub the responses
+        ApiStub::stubResponses([
+            'post_recurring_application_charges_usage_charges_alt',
+        ]);
+
+        // Create the shop
+        $plan = factory(Util::getShopifyConfig('models.plan', Plan::class))->states('type_recurring')->create();
+        $shop = factory($this->model)->create([
+            'plan_id' => $plan->getId()->toNative(),
+        ]);
+        factory(Util::getShopifyConfig('models.charge', Charge::class))->states('type_recurring')->create([
+            'plan_id' => $plan->getId()->toNative(),
+            'user_id' => $shop->getId()->toNative(),
+        ]);
+
+        // Login the shop
+        $this->auth->login($shop);
+
+        // Set up the data for the usage charge and the signature for it
+        $secret = $this->app['config']->get('shopify-app.api_secret');
+        $data = ['description' => 'One email', 'price' => 1.00, 'redirect' => 'https://localhost/usage-success'];
+        $signature = Util::createHmac(['data' => $data, 'buildQuery' => true], $secret);
+
+        // Run the call
+        $response = $this->call(
+            'post',
+            '/billing/usage-charge',
+            array_merge($data, ['signature' => $signature->toNative(), 'shop' => $shop->name])
+        );
+        $response->assertRedirect($data['redirect']);
+        $response->assertSessionHas('success');
+        $this->assertDatabaseHas('charges', ['description' => 'One email']);
+    }
+
+    public function testUsageChargeFailWithoutShopParam(): void
+    {
+        $this->withoutExceptionHandling();
+        $this->expectException(MissingShopDomainException::class);
+
+        // Stub the responses
+        ApiStub::stubResponses([
+            'post_recurring_application_charges_usage_charges_alt',
+        ]);
+
+        // Create the shop
+        $plan = factory(Util::getShopifyConfig('models.plan', Plan::class))
+            ->states('type_recurring')->create();
+        $shop = factory($this->model)->create([
+            'plan_id' => $plan->getId()->toNative(),
+        ]);
+        factory(Util::getShopifyConfig('models.charge', Charge::class))
+            ->states('type_recurring')->create([
+                'plan_id' => $plan->getId()->toNative(),
+                'user_id' => $shop->getId()->toNative(),
+            ]);
+
+        // Login the shop
+        $this->auth->login($shop);
+
+        // Set up the data for the usage charge and the signature for it
+        $secret = $this->app['config']->get('shopify-app.api_secret');
+        $data = [
+            'description' => 'One email',
+            'price' => 1.00,
+            'redirect' => 'https://localhost/usage-success',];
+        $signature = Util::createHmac(['data' => $data, 'buildQuery' => true], $secret);
+
+        // Run the call
+        $response = $this->call(
+            'post',
+            '/billing/usage-charge',
+            array_merge($data, ['signature' => $signature->toNative()])
+        );
+        $this->assertDatabaseMissing('charges', ['description' => 'One email']);
     }
 }
