@@ -54,7 +54,7 @@ class AfterAuthorize
             $job = Arr::get($config, 'job');
             if (Arr::get($config, 'inline', false)) {
                 // Run this job immediately
-                $job::dispatchNow($shop);
+                $job::dispatchSync($shop);
             } else {
                 // Run later
                 $job::dispatch($shop)

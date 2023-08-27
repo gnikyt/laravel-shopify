@@ -33,7 +33,7 @@ class AppUninstalledTest extends TestCase
         $this->assertNotEmpty($shop->password);
 
         // Run the job
-        AppUninstalledJob::dispatchNow(
+        AppUninstalledJob::dispatchSync(
             $shop->getDomain()->toNative(),
             json_decode(file_get_contents(__DIR__.'/../../fixtures/app_uninstalled.json'))
         );
