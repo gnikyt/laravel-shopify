@@ -5,6 +5,7 @@ namespace Osiset\ShopifyApp;
 use Illuminate\Routing\Redirector;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Osiset\ShopifyApp\Actions\ActivatePlan as ActivatePlanAction;
 use Osiset\ShopifyApp\Actions\ActivateUsageCharge as ActivateUsageChargeAction;
@@ -67,6 +68,10 @@ class ShopifyAppProvider extends ServiceProvider
         $this->bootMiddlewares();
         $this->bootMacros();
         $this->bootDirectives();
+
+        if (version_compare($this->app->version(), '8.0.0', '<')) {
+            $this->registerEvents();
+        }
     }
 
     /**
@@ -82,6 +87,13 @@ class ShopifyAppProvider extends ServiceProvider
             AddVariablesCommand::class,
             WebhookJobMakeCommand::class,
         ]);
+
+        if (version_compare($this->app->version(), '8.0.0', '>=')) {
+            $this->booting(function () {
+                $this->registerEvents();
+            });
+        }
+
 
         // Services (start)
         $this->app->bind(IApiHelper::class, function () {
@@ -331,5 +343,16 @@ class ShopifyAppProvider extends ServiceProvider
     private function bootDirectives(): void
     {
         Blade::directive('sessionToken', new SessionToken());
+    }
+
+    private function registerEvents(): void
+    {
+        $events = Util::getShopifyConfig('listen');
+
+        foreach ($events as $event => $listeners) {
+            foreach (array_unique($listeners, SORT_REGULAR) as $listener) {
+                Event::listen($event, $listener);
+            }
+        }
     }
 }

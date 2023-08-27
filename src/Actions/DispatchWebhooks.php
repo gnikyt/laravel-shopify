@@ -61,7 +61,7 @@ class DispatchWebhooks
 
         // Run the installer job
         if ($inline) {
-            ($this->jobClass)::dispatchNow(
+            ($this->jobClass)::dispatchSync(
                 $shop->getId(),
                 $webhooks
             );

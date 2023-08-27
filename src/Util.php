@@ -17,7 +17,7 @@ class Util
     /**
      * HMAC creation helper.
      *
-     * @param array  $opts   The options for building the HMAC.
+     * @param array $opts The options for building the HMAC.
      * @param string $secret The app secret key.
      *
      * @return Hmac
@@ -36,7 +36,7 @@ class Util
             ksort($data);
             $queryCompiled = [];
             foreach ($data as $key => $value) {
-                $queryCompiled[] = "{$key}=".(is_array($value) ? implode(',', $value) : $value);
+                $queryCompiled[] = "{$key}=" . (is_array($value) ? implode(',', $value) : $value);
             }
             $data = implode(
                 $buildQueryWithJoin ? '&' : '',
@@ -61,7 +61,7 @@ class Util
      * See: https://github.com/rack/rack/blob/f9ad97fd69a6b3616d0a99e6bedcfb9de2f81f6c/lib/rack/query_parser.rb#L36
      *
      * @param string $queryString The query string.
-     * @param string|null $delimiter  The delimiter.
+     * @param string|null $delimiter The delimiter.
      *
      * @return mixed
      */
@@ -72,12 +72,12 @@ class Util
 
         $params = [];
         $split = preg_split(
-            $delimiter ? $commonSeparator[$delimiter] || '/['.$delimiter.']\s*/' : $defaultSeparator,
+            $delimiter ? $commonSeparator[$delimiter] || '/[' . $delimiter . ']\s*/' : $defaultSeparator,
             $queryString ?? ''
         );
 
         foreach ($split as $part) {
-            if (! $part) {
+            if (!$part) {
                 continue;
             }
 
@@ -135,7 +135,7 @@ class Util
     /**
      * Checks if the route should be registered or not.
      *
-     * @param string     $routeToCheck The route name to check.
+     * @param string $routeToCheck The route name to check.
      * @param bool|array $routesToExclude The routes which are to be excluded.
      *
      * @return bool
@@ -158,8 +158,8 @@ class Util
      * Used as a helper function so it is accessible in Blade.
      * The second param of `shop` is important for `config_api_callback`.
      *
-     * @param string $key  The key to lookup.
-     * @param mixed  $shop The shop domain (string, ShopDomain, etc).
+     * @param string $key The key to lookup.
+     * @param mixed $shop The shop domain (string, ShopDomain, etc).
      *
      * @return mixed
      */
@@ -207,8 +207,8 @@ class Util
     public static function getGraphQLWebhookTopic(string $topic): string
     {
         return Str::of($topic)
-                  ->upper()
-                  ->replaceMatches('/[^A-Z_]/', '_');
+            ->upper()
+            ->replaceMatches('/[^A-Z_]/', '_');
     }
 
 
@@ -229,7 +229,7 @@ class Util
      */
     public static function getShopsTableForeignKey(): string
     {
-        return Str::singular(self::getShopsTable()).'_id';
+        return Str::singular(self::getShopsTable()) . '_id';
     }
 
     /**
@@ -245,5 +245,12 @@ class Util
         $reactEngine = FrontendEngine::fromNative('REACT');
 
         return !$frontendEngine->isSame($reactEngine);
+    }
+
+    public static function hasAppLegacySupport(string $feature): bool
+    {
+        $legacySupports = self::getShopifyConfig('app_legacy_supports') ?? [];
+
+        return (bool)Arr::get($legacySupports, $feature, true);
     }
 }

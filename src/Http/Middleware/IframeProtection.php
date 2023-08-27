@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
+use Osiset\ShopifyApp\Util;
 
 /**
  * Responsibility for protection against clickjaking
@@ -44,6 +45,7 @@ class IframeProtection
     public function handle(Request $request, Closure $next)
     {
         $response = $next($request);
+        $ancestors = Util::getShopifyConfig('iframe_ancestors');
 
         $shop = Cache::remember(
             'frame-ancestors_'.$request->get('shop'),
@@ -57,9 +59,15 @@ class IframeProtection
             ? $shop->name
             : '*.myshopify.com';
 
+        $iframeAncestors = "frame-ancestors https://admin.shopify.com https://$domain";
+
+        if (!blank($ancestors)) {
+            $iframeAncestors .= ' ' . $ancestors;
+        }
+
         $response->headers->set(
             'Content-Security-Policy',
-            "frame-ancestors https://$domain https://admin.shopify.com"
+            $iframeAncestors
         );
 
         return $response;

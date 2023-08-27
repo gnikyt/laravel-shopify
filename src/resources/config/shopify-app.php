@@ -56,13 +56,13 @@ return [
     */
 
     'route_names' => [
-        'home'                 => env('SHOPIFY_ROUTE_NAME_HOME', 'home'),
-        'authenticate'         => env('SHOPIFY_ROUTE_NAME_AUTHENTICATE', 'authenticate'),
-        'authenticate.token'   => env('SHOPIFY_ROUTE_NAME_AUTHENTICATE_TOKEN', 'authenticate.token'),
-        'billing'              => env('SHOPIFY_ROUTE_NAME_BILLING', 'billing'),
-        'billing.process'      => env('SHOPIFY_ROUTE_NAME_BILLING_PROCESS', 'billing.process'),
+        'home' => env('SHOPIFY_ROUTE_NAME_HOME', 'home'),
+        'authenticate' => env('SHOPIFY_ROUTE_NAME_AUTHENTICATE', 'authenticate'),
+        'authenticate.token' => env('SHOPIFY_ROUTE_NAME_AUTHENTICATE_TOKEN', 'authenticate.token'),
+        'billing' => env('SHOPIFY_ROUTE_NAME_BILLING', 'billing'),
+        'billing.process' => env('SHOPIFY_ROUTE_NAME_BILLING_PROCESS', 'billing.process'),
         'billing.usage_charge' => env('SHOPIFY_ROUTE_NAME_BILLING_USAGE_CHARGE', 'billing.usage_charge'),
-        'webhook'              => env('SHOPIFY_ROUTE_NAME_WEBHOOK', 'webhook'),
+        'webhook' => env('SHOPIFY_ROUTE_NAME_WEBHOOK', 'webhook'),
     ],
 
     /*
@@ -326,6 +326,42 @@ return [
 
     'billing_redirect' => env('SHOPIFY_BILLING_REDIRECT', '/billing/process'),
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Enable legacy support for features
+    |--------------------------------------------------------------------------
+    |
+    */
+    'app_legacy_supports' => [
+        'after_authenticate_job' => true,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Register listeners to the events
+    |--------------------------------------------------------------------------
+    |
+    */
+
+    'listen' => [
+        \Osiset\ShopifyApp\Messaging\Events\AppInstalledEvent::class => [
+            // \App\Listeners\MyListener::class,
+        ],
+        \Osiset\ShopifyApp\Messaging\Events\ShopAuthenticatedEvent::class => [
+            // \App\Listeners\MyListener::class,
+        ],
+        \Osiset\ShopifyApp\Messaging\Events\ShopDeletedEvent::class => [
+            // \App\Listeners\MyListener::class,
+        ],
+        \Osiset\ShopifyApp\Messaging\Events\AppUninstalledEvent::class => [
+            // \App\Listeners\MyListener::class,
+        ],
+        \Osiset\ShopifyApp\Messaging\Events\PlanActivatedEvent::class => [
+            // \App\Listeners\MyListener::class,
+        ],
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Shopify Webhooks
@@ -382,8 +418,13 @@ return [
     | This, like webhooks and scripttag jobs, will fire every time a shop
     | authenticates, not just once.
     |
+    |
     */
 
+    /*
+     * @deprecated This will be removed in the next major version.
+     * @see
+     */
     'after_authenticate_job' => [
         /*
             [
@@ -404,8 +445,8 @@ return [
     */
 
     'job_queues' => [
-        'webhooks'           => env('WEBHOOKS_JOB_QUEUE', null),
-        'scripttags'         => env('SCRIPTTAGS_JOB_QUEUE', null),
+        'webhooks' => env('WEBHOOKS_JOB_QUEUE', null),
+        'scripttags' => env('SCRIPTTAGS_JOB_QUEUE', null),
         'after_authenticate' => env('AFTER_AUTHENTICATE_JOB_QUEUE', null),
     ],
 
@@ -490,4 +531,6 @@ return [
     |
     */
     'frontend_engine' => env('SHOPIFY_FRONTEND_ENGINE', 'BLADE'),
+
+    'iframe_ancestors' => '',
 ];

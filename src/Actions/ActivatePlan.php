@@ -8,6 +8,7 @@ use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
 use Osiset\ShopifyApp\Contracts\Objects\Values\PlanId;
 use Osiset\ShopifyApp\Contracts\Queries\Plan as IPlanQuery;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use Osiset\ShopifyApp\Messaging\Events\PlanActivatedEvent;
 use Osiset\ShopifyApp\Objects\Enums\ChargeStatus;
 use Osiset\ShopifyApp\Objects\Enums\ChargeType;
 use Osiset\ShopifyApp\Objects\Enums\PlanType;
@@ -141,6 +142,8 @@ class ActivatePlan
         // Create the charge
         $charge = $this->chargeCommand->make($transfer);
         $this->shopCommand->setToPlan($shopId, $planId);
+
+        event(new PlanActivatedEvent($shop, $plan, $charge));
 
         return $charge;
     }

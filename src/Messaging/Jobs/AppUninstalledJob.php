@@ -10,6 +10,7 @@ use Illuminate\Queue\SerializesModels;
 use Osiset\ShopifyApp\Actions\CancelCurrentPlan;
 use Osiset\ShopifyApp\Contracts\Commands\Shop as IShopCommand;
 use Osiset\ShopifyApp\Contracts\Queries\Shop as IShopQuery;
+use Osiset\ShopifyApp\Messaging\Events\AppUninstalledEvent;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
 use Osiset\ShopifyApp\Util;
 use stdClass;
@@ -88,6 +89,8 @@ class AppUninstalledJob implements ShouldQueue
 
         // Soft delete the shop.
         $shopCommand->softDelete($shopId);
+
+        event(new AppUninstalledEvent($shop));
 
         return true;
     }

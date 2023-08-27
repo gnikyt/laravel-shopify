@@ -4,7 +4,9 @@ namespace Osiset\ShopifyApp\Actions;
 
 use Illuminate\Http\Request;
 use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
+use Osiset\ShopifyApp\Messaging\Events\AppInstalledEvent;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
+use Osiset\ShopifyApp\Util;
 
 /**
  * Authenticates a shop and fires post authentication actions.
@@ -104,6 +106,9 @@ class AuthenticateShop
         call_user_func($this->dispatchScriptsAction, $result['shop_id'], false);
         call_user_func($this->dispatchWebhooksAction, $result['shop_id'], false);
         call_user_func($this->afterAuthorizeAction, $result['shop_id']);
+
+        event(new AppInstalledEvent($result['shop_id']));
+
 
         return [$result, true];
     }

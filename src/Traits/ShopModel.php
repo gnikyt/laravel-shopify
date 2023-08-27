@@ -11,6 +11,7 @@ use Osiset\ShopifyApp\Contracts\ApiHelper as IApiHelper;
 use Osiset\ShopifyApp\Contracts\Objects\Values\AccessToken as AccessTokenValue;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopDomain as ShopDomainValue;
 use Osiset\ShopifyApp\Contracts\Objects\Values\ShopId as ShopIdValue;
+use Osiset\ShopifyApp\Messaging\Events\ShopDeletedEvent;
 use Osiset\ShopifyApp\Objects\Values\AccessToken;
 use Osiset\ShopifyApp\Objects\Values\SessionContext;
 use Osiset\ShopifyApp\Objects\Values\ShopDomain;
@@ -51,6 +52,10 @@ trait ShopModel
     protected static function bootShopModel(): void
     {
         static::addGlobalScope(new Namespacing());
+
+        static::deleted(function ($shop) {
+            event(new ShopDeletedEvent($shop));
+        });
     }
 
     /**
